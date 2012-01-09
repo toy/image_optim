@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+
+require 'image_optim'
+require 'progress'
+require 'optparse'
+
+options = {}
+
+option_parser = OptionParser.new do |op|
+  op.banner = <<-TEXT
+#{op.program_name}, version #{ImageOptim.version}
+
+Usege:
+  #{op.program_name} [options] image_path …
+
+  TEXT
+
+  op.on('--[no-]threads NUMBER', Integer, 'Number of threads or disable (defaults to number of processors)') do |threads|
+    options[:threads] = threads
+  end
+
+  ImageOptim::Worker.klasses.each do |klass|
+    bin = klass.underscored_name.to_sym
+    op.on("--[no-]#{bin} PATH", "#{bin} path or disable") do |path|
+      options[bin] = path
+    end
+  end
+
+  op.on_tail('-h', '--help', 'Show full help') do
+    puts option_parser.help
+    exit
+  end
+
+  op.on_tail('-v', '--version', 'Show version') do
+    puts ImageOptim.version
+    exit
+  end
+end
+
+begin
+  option_parser.parse!
+rescue OptionParser::ParseError => e
+  abort "#{e.to_s}\n\n#{option_parser.help}"
+end
+
+if ARGV.empty?
+  abort "specify image paths to optimize\n\n#{option_parser.help}"
+else
+  io = ImageOptim.new(options)
+  paths = ARGV
+  paths = paths.with_progress('optimizing') if paths.length > 1
+
+  lines = paths.map do |path|
+    before = File.size(path)
+    result = io.optimize_image!(path)
+    after = File.size(path)
+    "#{result ? '%5.2f%%' % (100.0 * after / before) : '--.--%'}  #{path}"
+  end
+  puts lines
+end

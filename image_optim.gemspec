@@ -15,5 +15,9 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = %w[lib]
 
+  s.add_dependency 'fspath', '~> 2.0.1'
+  s.add_dependency 'image_size', '~> 1.0.4'
+  s.add_dependency 'progress', '~> 2.4.0'
+  s.add_dependency 'in_threads', '~> 1.1.1'
   s.add_development_dependency 'rspec'
 end
