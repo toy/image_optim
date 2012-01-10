@@ -43,11 +43,11 @@ class ImageOptim
       end
       worker = klass.new(worker_options)
       klass.image_formats.each do |format|
-        workers_by_format[format] ||= []
-        workers_by_format[format] << worker
+        @workers_by_format[format] ||= []
+        @workers_by_format[format] << worker
       end
     end
-    workers_by_format.each do |format, workers|
+    @workers_by_format.each do |format, workers|
       workers.replace workers.sort_by(&:run_priority)
     end
 
@@ -64,10 +64,15 @@ class ImageOptim
     assert_options_empty!(options)
   end
 
+  # Get workers for image
+  def workers_for_image(path)
+    @workers_by_format[ImagePath.new(path).format]
+  end
+
   # Optimize one file, return new path or nil if optimization failed
   def optimize_image(original)
     original = ImagePath.new(original)
-    if workers = workers_by_format[original.format]
+    if workers = workers_for_image(original)
       result = workers.inject(original) do |current, worker|
         worker.optimize(current) || current
       end
