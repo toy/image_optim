@@ -73,10 +73,20 @@ class ImageOptim
   def optimize_image(original)
     original = ImagePath.new(original)
     if workers = workers_for_image(original)
-      result = workers.inject(original) do |current, worker|
-        worker.optimize(current) || current
+      result = nil
+      ts = [original, original.temp_path]
+      workers.each do |worker|
+        if result && ts.length < 3
+          ts << original.temp_path
+        end
+        if worker.optimize(*ts.last(2))
+          result = ts.last
+          if ts.length == 3
+            ts[-2, 2] = ts[-1], ts[-2]
+          end
+        end
       end
-      result == original ? nil : result
+      result
     end
   end
 

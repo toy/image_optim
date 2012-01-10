@@ -44,13 +44,8 @@ class ImageOptim
     end
 
     # Optimize file, return new path or nil if optimization failed
-    def optimize(src)
-      dst = src.temp_path
-      if Util.run bin, *command_args(src, dst)
-        if dst.size? && dst.size < src.size
-          dst
-        end
-      end
+    def optimize(src, dst)
+      Util.run(bin, *command_args(src, dst)) && dst.size? && dst.size < src.size
     end
 
     # Name of binary determined from class name
