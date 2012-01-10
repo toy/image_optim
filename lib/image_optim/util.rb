@@ -1,3 +1,5 @@
+require 'shellwords'
+
 class ImageOptim
   module Util
     # Run command redirecting both stdout and stderr to /dev/null, raising signal if command was signaled and return successfulness
