@@ -35,7 +35,7 @@ class ImageOptim
     def initialize(options = {})
       get_option!(options, :bin, default_bin)
       parse_options(options)
-      raise "`#{bin}` not found" unless Util.run('which', bin)
+      raise "`#{bin}` not found" if `which #{bin.to_s.shellescape}`.empty?
       assert_options_empty!(options)
     end
 
