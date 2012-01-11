@@ -99,24 +99,18 @@ class ImageOptim
     end
   end
 
-  # Optimize multiple images, returning list of results
-  # yields path and result if block given
-  def optimize_images(paths)
-    apply_threading(paths).map do |path|
-      result = optimize_image(path)
-      yield path, result if block_given?
-      result
-    end
+  # Optimize multiple images
+  # if block given yields path and result for each image and returns array of yield results
+  # else return array of results
+  def optimize_images(paths, &block)
+    run_method_for(paths, :optimize_image, &block)
   end
 
-  # Optimize multiple images in place, returning list of results
-  # yields path and result if block given
-  def optimize_images!(paths)
-    apply_threading(paths).map do |path|
-      result = optimize_image!(path)
-      yield path, result if block_given?
-      result
-    end
+  # Optimize multiple images in place
+  # if block given yields path and result for each image and returns array of yield results
+  # else return array of results
+  def optimize_images!(paths, &block)
+    run_method_for(paths, :optimize_image!, &block)
   end
 
   # Optimization methods with default options
@@ -133,6 +127,18 @@ class ImageOptim
   end
 
 private
+
+  def run_method_for(array, method_name, &block)
+    method = method(method_name)
+    apply_threading(array).map do |path|
+      result = method.call(path)
+      if block
+        block.call(path, result)
+      else
+        result
+      end
+    end
+  end
 
   def apply_threading(array)
     if threads > 1 && array.length > 1

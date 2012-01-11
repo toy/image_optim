@@ -113,4 +113,45 @@ describe ImageOptim do
       end
     end
   end
+
+  describe "optimize multiple" do
+    let(:srcs){ ('a'..'z').to_a }
+
+    before do
+      srcs.each do |src|
+        ImageOptim::ImagePath.should_receive(:new).with(src).and_return(src)
+      end
+    end
+
+    %w[optimize_images optimize_images!].each do |list_method|
+      single_method = list_method.sub('images', 'image')
+      describe "without block" do
+        it "should optimize images and return array of results" do
+          io = ImageOptim.new
+          dsts = []
+          srcs.each do |src|
+            dst = "#{src}_"
+            io.should_receive(single_method).with(src).and_return(dst)
+            dsts << dst
+          end
+          io.send(list_method, srcs).should == dsts
+        end
+      end
+
+      describe "given block" do
+        it "should optimize images, yield path and result for each and return array of yield results" do
+          io = ImageOptim.new
+          srcs.each do |src|
+            io.should_receive(single_method).with(src).and_return("#{src}_")
+          end
+          results = []
+          io.send(list_method, srcs) do |src, dst|
+            result = "#{src} #{dst}"
+            results << "#{src} #{dst}"
+            result
+          end.should == results
+        end
+      end
+    end
+  end
 end
