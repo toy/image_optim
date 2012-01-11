@@ -14,6 +14,15 @@ class ImageOptim
       FileUtils.copy_file(self, dst, true)
     end
 
+    # Atomic replace self with other file
+    def replace_with(src)
+      temp_path(dirname) do |temp|
+        copy(temp)
+        temp.write(src.read)
+        temp.rename(self)
+      end
+    end
+
     # Get format using ImageSize
     def format
       open{ |f| ImageSize.new(f) }.format

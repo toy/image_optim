@@ -94,11 +94,7 @@ class ImageOptim
   def optimize_image!(original)
     original = ImagePath.new(original)
     if result = optimize_image(original)
-      original.temp_path(original.dirname) do |temp|
-        original.copy(temp)
-        temp.write(result.read)
-        temp.rename(original)
-      end
+      original.replace_with(result)
       true
     end
   end
