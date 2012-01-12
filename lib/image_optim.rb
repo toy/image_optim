@@ -51,7 +51,7 @@ class ImageOptim
       workers.replace workers.sort_by(&:run_priority)
     end
 
-    threads = case options[:threads]
+    threads = case options.delete(:threads)
     when true, nil
       Util.processor_count
     when false
