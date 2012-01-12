@@ -8,12 +8,8 @@ image_dir = spec_dir / 'images'
 def temp_copy_path(original)
   original.class.temp_dir do |dir|
     temp_path = dir / original.basename
-    begin
-      original.copy(temp_path)
-      yield temp_path
-    ensure
-      temp_path.unlink if temp_path.exist?
-    end
+    original.copy(temp_path)
+    yield temp_path
   end
 end
 
