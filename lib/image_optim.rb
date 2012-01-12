@@ -51,13 +51,14 @@ class ImageOptim
       workers.replace workers.sort_by(&:run_priority)
     end
 
-    threads = case options.delete(:threads)
+    threads = options.delete(:threads)
+    threads = case threads
     when true, nil
       Util.processor_count
     when false
       1
     else
-      options[:threads].to_i
+      threads.to_i
     end
     @threads = limit_with_range(threads, 1..16)
 
@@ -129,10 +130,9 @@ class ImageOptim
 private
 
   def run_method_for(paths, method_name, &block)
-    method = method(method_name)
     apply_threading(paths).map do |path|
       path = ImagePath.new(path)
-      result = method.call(path)
+      result = send(method_name, path)
       if block
         block.call(path, result)
       else
