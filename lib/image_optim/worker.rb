@@ -47,6 +47,11 @@ class ImageOptim
     def run_first?
     end
 
+    # Priority in list of workers
+    def run_priority
+      run_first? ? 0 : 1
+    end
+
     # Optimize file from src to dst, return boolean representing success status
     def optimize(src, dst)
       pid = fork do
@@ -65,12 +70,6 @@ class ImageOptim
     # Name of binary determined from class name
     def default_bin
       self.class.underscored_name
-    end
-
-  private
-
-    def run_priority
-      run_first? ? 0 : 1
     end
   end
 end
