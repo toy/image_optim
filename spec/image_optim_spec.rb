@@ -141,14 +141,14 @@ describe ImageOptim do
       describe "given block" do
         it "should optimize images, yield path and result for each and return array of yield results" do
           io = ImageOptim.new
-          srcs.each do |src|
-            io.should_receive(single_method).with(src).and_return("#{src}_")
-          end
           results = []
-          io.send(list_method, srcs) do |src, dst|
-            result = "#{src} #{dst}"
+          srcs.each do |src|
+            dst = "#{src}_"
+            io.should_receive(single_method).with(src).and_return(dst)
             results << "#{src} #{dst}"
-            result
+          end
+          io.send(list_method, srcs) do |src, dst|
+            "#{src} #{dst}"
           end.should == results
         end
       end
