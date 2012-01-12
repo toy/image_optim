@@ -28,6 +28,17 @@ class ImageOptim
   #
   #     ImageOptim.new(:advpng => {:level => 3}, :optipng => {:level => 2}, :jpegoptim => {:bin => 'jpegoptim345'})
   def initialize(options = {})
+    threads = options.delete(:threads)
+    threads = case threads
+    when true, nil
+      Util.processor_count
+    when false
+      1
+    else
+      threads.to_i
+    end
+    @threads = limit_with_range(threads, 1..16)
+
     @workers_by_format = {}
     Worker.klasses.each do |klass|
       case worker_options = options.delete(klass.underscored_name.to_sym)
@@ -50,17 +61,6 @@ class ImageOptim
     @workers_by_format.each do |format, workers|
       workers.replace workers.sort_by(&:run_priority)
     end
-
-    threads = options.delete(:threads)
-    threads = case threads
-    when true, nil
-      Util.processor_count
-    when false
-      1
-    else
-      threads.to_i
-    end
-    @threads = limit_with_range(threads, 1..16)
 
     assert_options_empty!(options)
   end
