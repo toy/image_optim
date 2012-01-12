@@ -13,7 +13,7 @@ def temp_copy_path(original)
   end
 end
 
-Tempfile.class_eval do
+class Tempfile
   alias_method :initialize_orig, :initialize
 
   def initialize(*args, &block)
