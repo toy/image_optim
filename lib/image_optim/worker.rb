@@ -31,9 +31,13 @@ class ImageOptim
     # Binary name or path
     attr_reader :bin
 
+    # Binary name or path
+    attr_reader :nice
+
     # Configure (raises on extra options), find binary (raises if not found)
     def initialize(options = {})
       get_option!(options, :bin, default_bin)
+      get_option!(options, :nice, 10){ |v| v.to_i }
       parse_options(options)
       raise "`#{bin}` not found" if `which #{bin.to_s.shellescape}`.empty?
       assert_options_empty!(options)
@@ -48,6 +52,7 @@ class ImageOptim
       pid = fork do
         $stdout.reopen('/dev/null', 'w')
         $stderr.reopen('/dev/null', 'w')
+        Process.setpriority(Process::PRIO_PROCESS, 0, nice)
         exec bin, *command_args(src, dst)
       end
       Process.wait pid

@@ -20,6 +20,10 @@ Usege:
     options[:threads] = threads
   end
 
+  op.on('--[no-]nice NUMBER', Integer, 'Nice levle (defaults to 10)') do |nice|
+    options[:nice] = nice
+  end
+
   ImageOptim::Worker.klasses.each do |klass|
     bin = klass.underscored_name.to_sym
     op.on("--[no-]#{bin} PATH", "#{bin} path or disable") do |path|

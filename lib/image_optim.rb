@@ -27,7 +27,24 @@ class ImageOptim
   # or hash with options to worker and :bin specifying binary
   #
   #     ImageOptim.new(:advpng => {:level => 3}, :optipng => {:level => 2}, :jpegoptim => {:bin => 'jpegoptim345'})
+  #
+  # use :threads to set number of parallel optimizers to run (passing true or nil determines number of processors, false disables parallel processing)
+  #
+  #     ImageOptim.new(:threads => 8)
+  #
+  # use :nice to specify optimizers nice level (true or nil makes it 10, false makes it 0)
+  #
+  #     ImageOptim.new(:threads => 8)
   def initialize(options = {})
+    nice = case nice = options.delete(:nice)
+    when true, nil
+      10
+    when false
+      0
+    else
+      nice.to_i
+    end
+
     threads = options.delete(:threads)
     threads = case threads
     when true, nil
@@ -52,7 +69,7 @@ class ImageOptim
       else
         raise "Got #{worker_options.inspect} for #{klass.name} options"
       end
-      worker = klass.new(worker_options)
+      worker = klass.new({:nice => nice}.merge(worker_options))
       klass.image_formats.each do |format|
         @workers_by_format[format] ||= []
         @workers_by_format[format] << worker
