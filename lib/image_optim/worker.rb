@@ -43,9 +43,18 @@ class ImageOptim
     def run_first?
     end
 
-    # Optimize file, return new path or nil if optimization failed
+    # Optimize file from src to dst, return boolean representing success status
     def optimize(src, dst)
-      Util.run(bin, *command_args(src, dst)) && dst.size? && dst.size < src.size
+      pid = fork do
+        $stdout.reopen('/dev/null', 'w')
+        $stderr.reopen('/dev/null', 'w')
+        exec bin, *command_args(src, dst)
+      end
+      Process.wait pid
+      if $?.signaled?
+        raise SignalException.new($?.termsig)
+      end
+      $?.success? && dst.size? && dst.size < src.size
     end
 
     # Name of binary determined from class name

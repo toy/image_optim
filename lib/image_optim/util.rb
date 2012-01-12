@@ -2,15 +2,6 @@ require 'shellwords'
 
 class ImageOptim
   module Util
-    # Run command redirecting both stdout and stderr to /dev/null, raising signal if command was signaled and return successfulness
-    def self.run(*args)
-      res = system "#{args.map(&:to_s).shelljoin} &> /dev/null"
-      if $?.signaled?
-        raise SignalException.new($?.termsig)
-      end
-      res
-    end
-
     # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
     def self.processor_count
       @processor_count ||= case host_os = RbConfig::CONFIG['host_os']
