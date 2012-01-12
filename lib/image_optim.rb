@@ -94,7 +94,7 @@ class ImageOptim
   def optimize_image!(original)
     original = ImagePath.new(original)
     if result = optimize_image(original)
-      original.replace_with(result)
+      result.replace(original)
       true
     end
   end
@@ -128,9 +128,10 @@ class ImageOptim
 
 private
 
-  def run_method_for(array, method_name, &block)
+  def run_method_for(paths, method_name, &block)
     method = method(method_name)
-    apply_threading(array).map do |path|
+    apply_threading(paths).map do |path|
+      path = ImagePath.new(path)
       result = method.call(path)
       if block
         block.call(path, result)
@@ -141,7 +142,7 @@ private
   end
 
   def apply_threading(array)
-    if threads > 1 && array.length > 1
+    if threads > 1
       array.in_threads(threads)
     else
       array
