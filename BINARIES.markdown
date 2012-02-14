@@ -1,4 +1,4 @@
-# How to install `advpng`, `gifsicle`, `jpegoptim`, `jpegtran`, `optipng`, `pngcrush`, `pngout`*
+# How to install advpng, gifsicle, jpegoptim, jpegtran, optipng, pngcrush, pngout*
 
 ## Linux - Debian/Ubuntu
 
@@ -18,7 +18,7 @@ You will also need to build install `jpegoptim` and `pngcrush` by hand (see belo
 
     brew install advancecomp gifsicle jpegoptim jpeg optipng pngcrush
 
-## Build and install `jpegoptim`
+## Build and install jpegoptim
 
     cd /tmp
     curl -O http://www.kokkonen.net/tjko/src/jpegoptim-1.2.4.tar.gz
@@ -26,7 +26,7 @@ You will also need to build install `jpegoptim` and `pngcrush` by hand (see belo
     cd jpegoptim-1.2.4
     ./configure && make && make install
 
-## Build and install `pngcrush`
+## Build and install pngcrush
 
     cd /tmp
     curl -O http://iweb.dl.sourceforge.net/project/pmt/pngcrush/1.7.24/pngcrush-1.7.24.tar.bz2
@@ -34,10 +34,8 @@ You will also need to build install `jpegoptim` and `pngcrush` by hand (see belo
     cd pngcrush-1.7.24
     make && cp -f pngcrush /usr/local/bin
 
-## * - `pngout`
+## * - pngout
 
 `pngout` is not free or open source software and only has [binary versions](http://www.jonof.id.au/kenutils) available.
 
 _Note: pngout is not required to use `image_optim`._
-
-- 
