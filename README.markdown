@@ -18,7 +18,7 @@ Based on [ImageOptim.app](http://imageoptim.pornel.net/).
 
     sudo yum install -y advancecomp gifsicle libjpeg optipng
 
-You will also need to build install `jpegoptim` and `pngcrush` by hand (see below).
+You will also need to install `jpegoptim` and `pngcrush` from source:
 
 #### jpegoptim
 
@@ -48,7 +48,7 @@ You will also need to build install `jpegoptim` and `pngcrush` by hand (see belo
 
 You can install `pngout` by downloading and installing the [binary versions](http://www.jonof.id.au/kenutils).
 
-_Note: pngout is not free or open-source._
+_Note: pngout is free to use even in commercial soft, but you can not redistribute, repackage or reuse it without consent and agreement of creator. [license](http://advsys.net/ken/utils.htm#pngoutkziplicense)_
 
 ## Usage
 
