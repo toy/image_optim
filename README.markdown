@@ -1,8 +1,14 @@
 # image_optim
 
-Optimize images (jpeg, png, gif) using external utilities (advpng, gifsicle, jpegoptim, jpegtran, optipng, pngcrush, pngout).
+Optimize (lossless compress) images (jpeg, png, gif) using external utilities (advpng, gifsicle, jpegoptim, jpegtran, optipng, pngcrush, pngout).
 
 Based on [ImageOptim.app](http://imageoptim.pornel.net/).
+
+## Installation
+
+    gem install image_optim
+
+Then, [install the binaries](https://github.com/toy/image_optim/blob/master/BINARIES.markdown).
 
 ## Usage
 
@@ -26,7 +32,7 @@ Optimize image getting temp path:
 
 Optimize image in place:
 
-    io.optimize_image('b.jpg')
+    io.optimize_image!('b.jpg')
 
 Multiple images:
 
