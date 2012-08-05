@@ -56,6 +56,8 @@ class ImageOptim
     end
     @threads = limit_with_range(threads, 1..16)
 
+    verbose = options.delete(:verbose)
+
     @workers_by_format = {}
     Worker.klasses.each do |klass|
       case worker_options = options.delete(klass.underscored_name.to_sym)
@@ -69,7 +71,7 @@ class ImageOptim
       else
         raise "Got #{worker_options.inspect} for #{klass.name} options"
       end
-      worker = klass.new({:nice => nice}.merge(worker_options))
+      worker = klass.new({:nice => nice, :verbose => verbose}.merge(worker_options))
       klass.image_formats.each do |format|
         @workers_by_format[format] ||= []
         @workers_by_format[format] << worker

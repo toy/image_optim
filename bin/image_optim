@@ -31,12 +31,16 @@ Usege:
     end
   end
 
+  op.on('-v', '--verbose', 'Verbose info') do |verbose|
+    options[:verbose] = verbose
+  end
+
   op.on_tail('-h', '--help', 'Show full help') do
     puts option_parser.help
     exit
   end
 
-  op.on_tail('-v', '--version', 'Show version') do
+  op.on_tail('--version', 'Show version') do
     puts ImageOptim.version
     exit
   end

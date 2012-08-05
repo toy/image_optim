@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'shellwords'
 require 'image_optim'
 
@@ -34,10 +36,14 @@ class ImageOptim
     # Binary name or path
     attr_reader :nice
 
+    # Be verbose
+    attr_reader :verbose
+
     # Configure (raises on extra options), find binary (raises if not found)
     def initialize(options = {})
       get_option!(options, :bin, default_bin)
       get_option!(options, :nice, 10){ |v| v.to_i }
+      get_option!(options, :verbose, false)
       parse_options(options)
       raise "`#{bin}` not found" if `which #{bin.to_s.shellescape}`.empty?
       assert_options_empty!(options)
@@ -54,17 +60,24 @@ class ImageOptim
 
     # Optimize file from src to dst, return boolean representing success status
     def optimize(src, dst)
+      command = [bin, *command_args(src, dst)].map(&:to_s).shelljoin
+      start = Time.now
       pid = fork do
         $stdout.reopen('/dev/null', 'w')
         $stderr.reopen('/dev/null', 'w')
         Process.setpriority(Process::PRIO_PROCESS, 0, nice)
-        exec bin, *command_args(src, dst)
+        exec command
       end
       Process.wait pid
+      duration = Time.now - start
       if $?.signaled?
         raise SignalException.new($?.termsig)
       end
-      $?.success? && dst.size? && dst.size < src.size
+      success = $?.success? && dst.size? && dst.size < src.size
+      if verbose
+        print "#{success ? '✓' : '✗'} #{duration}s #{command}\n"
+      end
+      success
     end
 
     # Name of binary determined from class name
