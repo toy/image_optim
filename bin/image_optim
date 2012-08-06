@@ -55,7 +55,11 @@ end
 if ARGV.empty?
   abort "specify image paths to optimize\n\n#{option_parser.help}"
 else
-  io = ImageOptim.new(options)
+  io = begin
+    ImageOptim.new(options)
+  rescue ImageOptim::ConfigurationError, ImageOptim::BinaryNotFoundError => e
+    abort e
+  end
   paths = ARGV.reject do |arg|
     unless File.file?(arg)
       $stderr << "WARN: #{arg} is not a file\n"
@@ -112,5 +116,7 @@ else
     end
   end
   lines, src_sizes, dst_sizes = results.transpose
-  $stdout.puts lines, "Total: #{size_percent(src_sizes.inject(:+), dst_sizes.inject(:+))}\n"
+  if lines
+    $stdout.puts lines, "Total: #{size_percent(src_sizes.inject(:+), dst_sizes.inject(:+))}\n"
+  end
 end

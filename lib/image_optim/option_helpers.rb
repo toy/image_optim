@@ -26,7 +26,7 @@ class ImageOptim
     # Raise unless all options are deleted
     def assert_options_empty!(options)
       unless options.empty?
-        raise "unknown options #{options.inspect} for #{self}"
+        raise ConfigurationError, "unknown options #{options.inspect} for #{self}"
       end
     end
   end

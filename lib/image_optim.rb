@@ -6,6 +6,9 @@ class ImageOptim
   autoload :Util, 'image_optim/util'
   autoload :Worker, 'image_optim/worker'
 
+  class ConfigurationError < StandardError; end
+  class BinaryNotFoundError < StandardError; end
+
   include OptionHelpers
 
   # Hash of initialized workers by format they apply to
@@ -69,7 +72,7 @@ class ImageOptim
       when String
         worker_options = {:bin => worker_options}
       else
-        raise "Got #{worker_options.inspect} for #{klass.name} options"
+        raise ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
       end
       worker = klass.new({:nice => nice, :verbose => verbose}.merge(worker_options))
       klass.image_formats.each do |format|
