@@ -59,6 +59,8 @@ class ImageOptim
     end
     @threads = limit_with_range(threads, 1..16)
 
+    leave_color = options.delete(:leave_color)
+
     verbose = options.delete(:verbose)
 
     @workers_by_format = {}
@@ -74,7 +76,7 @@ class ImageOptim
       else
         raise ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
       end
-      worker = klass.new({:nice => nice, :verbose => verbose}.merge(worker_options))
+      worker = klass.new({:nice => nice, :verbose => verbose, :leave_color => leave_color}.merge(worker_options))
       klass.image_formats.each do |format|
         @workers_by_format[format] ||= []
         @workers_by_format[format] << worker

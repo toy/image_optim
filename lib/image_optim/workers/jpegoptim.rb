@@ -28,7 +28,7 @@ class ImageOptim
       get_option!(options, :strip_comments, true){ |v| !!v }
       get_option!(options, :strip_exif, true){ |v| !!v }
       get_option!(options, :strip_iptc, true){ |v| !!v }
-      get_option!(options, :strip_icc, true){ |v| !!v }
+      get_option!(options, :strip_icc, !leave_color){ |v| !!v }
       get_option!(options, :max_quality, 100){ |v| v.to_i }
     end
 

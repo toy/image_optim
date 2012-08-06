@@ -19,15 +19,22 @@ class ImageOptim
   private
 
     def parse_options(options)
-      get_option!(options, :chunks, :alla){ |v| Array(v).map(&:to_s) }
+      get_option!(options, :chunks, leave_color ? :allc : :alla){ |v| Array(v).map(&:to_s) }
       get_option!(options, :fix, false){ |v| !!v }
       get_option!(options, :brute, false){ |v| !!v }
     end
 
     def command_args(src, dst)
       args = %W[-reduce -cc -q -- #{src} #{dst}]
-      Array(chunks).each do |chunk|
-        args.unshift '-rem', chunk
+      if chunks == :allc
+        args.unshift '-rem', 'allb'
+        %w[gAMA cHRM sRGB iCCP].each do |chunk|
+          args.unshift '-keep', chunk
+        end
+      else
+        Array(chunks).each do |chunk|
+          args.unshift '-rem', chunk
+        end
       end
       args.unshift '-fix' if fix
       args.unshift '-brute' if brute

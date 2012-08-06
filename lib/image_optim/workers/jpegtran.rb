@@ -11,7 +11,7 @@ class ImageOptim
   private
 
     def parse_options(options)
-      get_option!(options, :copy, false){ |v| !!v }
+      get_option!(options, :copy, leave_color){ |v| !!v }
       get_option!(options, :progressive, true){ |v| !!v }
     end
 

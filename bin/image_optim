@@ -25,6 +25,10 @@ Usege:
     options[:nice] = nice
   end
 
+  op.on('--[no-]color', 'Preserve color information (false by default)') do |leave_color|
+    options[:leave_color] = leave_color
+  end
+
   ImageOptim::Worker.klasses.each do |klass|
     bin = klass.underscored_name.to_sym
     op.on("--[no-]#{bin} PATH", "#{bin} path or disable") do |path|

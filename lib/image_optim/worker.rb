@@ -39,11 +39,15 @@ class ImageOptim
     # Be verbose
     attr_reader :verbose
 
+    # Leave color
+    attr_reader :leave_color
+
     # Configure (raises on extra options), find binary (raises if not found)
     def initialize(options = {})
       get_option!(options, :bin, default_bin)
       get_option!(options, :nice, 10){ |v| v.to_i }
       get_option!(options, :verbose, false)
+      get_option!(options, :leave_color, false)
       parse_options(options)
       raise BinaryNotFoundError, "`#{bin}` not found" if `which #{bin.to_s.shellescape}`.empty?
       assert_options_empty!(options)
