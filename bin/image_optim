@@ -20,7 +20,7 @@ Usege:
     options[:threads] = threads
   end
 
-  op.on('--[no-]nice NUMBER', Integer, 'Nice levle (defaults to 10)') do |nice|
+  op.on('--[no-]nice NUMBER', Integer, 'Nice level (defaults to 10)') do |nice|
     options[:nice] = nice
   end
 
