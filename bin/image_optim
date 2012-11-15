@@ -4,6 +4,7 @@
 require 'image_optim'
 require 'progress'
 require 'optparse'
+require 'find'
 
 options = {}
 
@@ -31,6 +32,10 @@ Usege:
     end
   end
 
+  op.on('-r', '-R', '--recursive', 'Scan directories') do |recursive|
+    options[:recursive] = recursive
+  end
+
   op.on('-v', '--verbose', 'Verbose info') do |verbose|
     options[:verbose] = verbose
   end
@@ -55,14 +60,25 @@ end
 if ARGV.empty?
   abort "specify image paths to optimize\n\n#{option_parser.help}"
 else
+  recursive = options.delete(:recursive)
   io = begin
     ImageOptim.new(options)
   rescue ImageOptim::ConfigurationError, ImageOptim::BinaryNotFoundError => e
     abort e
   end
-  paths = ARGV.reject do |arg|
-    unless File.file?(arg)
-      $stderr << "WARN: #{arg} is not a file\n"
+
+  paths = []
+  ARGV.each do |arg|
+    if File.file?(arg)
+      paths << arg
+    else
+      if recursive
+        Find.find(arg) do |path|
+          paths << path if File.file?(path)
+        end
+      else
+        $stderr << "WARN: #{arg} is not a file\n"
+      end
     end
   end
   paths = paths.with_progress('optimizing') if paths.length > 1
