@@ -77,7 +77,7 @@ else
           paths << path if File.file?(path)
         end
       else
-        $stderr << "WARN: #{arg} is not a file\n"
+        warn "#{arg} is not a file"
       end
     end
   end
