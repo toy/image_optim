@@ -70,7 +70,11 @@ else
   paths = []
   ARGV.each do |arg|
     if File.file?(arg)
-      paths << arg
+      if io.optimizable?(arg)
+        paths << arg
+      else
+        warn "#{arg} is not an image or there is no optimizer for it"
+      end
     else
       if recursive
         Find.find(arg) do |path|
