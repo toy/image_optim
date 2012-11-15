@@ -74,7 +74,7 @@ else
     else
       if recursive
         Find.find(arg) do |path|
-          paths << path if File.file?(path)
+          paths << path if File.file?(path) && io.optimizable?(path)
         end
       else
         warn "#{arg} is not a file"

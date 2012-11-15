@@ -149,6 +149,10 @@ class ImageOptim
     Gem.loaded_specs['image_optim'].version.to_s rescue nil
   end
 
+  def optimizable?(path)
+    !!workers_for_image(path)
+  end
+
 private
 
   def run_method_for(paths, method_name, &block)
