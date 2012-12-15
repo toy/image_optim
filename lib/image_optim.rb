@@ -181,5 +181,5 @@ end
   jpegoptim jpegtran
   gifsicle
 ].each do |worker|
-  require "image_optim/workers/#{worker}"
+  require "image_optim/worker/#{worker}"
 end
