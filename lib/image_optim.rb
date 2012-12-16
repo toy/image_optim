@@ -1,9 +1,9 @@
 require 'in_threads'
+require 'shellwords'
 
 class ImageOptim
   autoload :ImagePath, 'image_optim/image_path'
   autoload :OptionHelpers, 'image_optim/option_helpers'
-  autoload :Util, 'image_optim/util'
   autoload :Worker, 'image_optim/worker'
 
   class ConfigurationError < StandardError; end
@@ -51,7 +51,7 @@ class ImageOptim
     threads = options.delete(:threads)
     threads = case threads
     when true, nil
-      Util.processor_count
+      processor_count
     when false
       1
     else
@@ -173,6 +173,28 @@ private
     else
       array
     end
+  end
+
+  # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
+  def processor_count
+    @processor_count ||= case host_os = RbConfig::CONFIG['host_os']
+    when /darwin9/
+      `hwprefs cpu_count`
+    when /darwin/
+      (`which hwprefs` != '') ? `hwprefs thread_count` : `sysctl -n hw.ncpu`
+    when /linux/
+      `grep -c processor /proc/cpuinfo`
+    when /freebsd/
+      `sysctl -n hw.ncpu`
+    when /mswin|mingw/
+      require 'win32ole'
+      wmi = WIN32OLE.connect('winmgmts://')
+      cpu = wmi.ExecQuery('select NumberOfLogicalProcessors from Win32_Processor')
+      cpu.to_enum.first.NumberOfLogicalProcessors
+    else
+      warn "Unknown architecture (#{host_os}) assuming one processor."
+      1
+    end.to_i
   end
 end
 
