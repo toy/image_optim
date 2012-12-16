@@ -1,6 +1,6 @@
 autorotate jpeg based on exif (jhead -auotrot)
 timeout workers?
 make possible to create gem with integrated binaries
-don't fail but warn on bins not present
+don't fail but warn on bins not present, warn only when bin is going to be used
 better documentation
 preserve time/attrs option?
