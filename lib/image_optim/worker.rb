@@ -45,7 +45,7 @@ class ImageOptim
       get_option!(options, :nice, 10){ |v| v.to_i }
       get_option!(options, :verbose, false)
       parse_options(options)
-      raise BinaryNotFoundError, "`#{bin}` not found" if `which #{bin.to_s.shellescape}`.empty?
+      raise BinaryNotFoundError, "`#{bin}` not found" unless system("which -s #{bin.to_s.shellescape}")
       assert_options_empty!(options)
     end
 
