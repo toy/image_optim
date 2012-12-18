@@ -60,29 +60,32 @@ class ImageOptim
 
     # Optimize file from src to dst, return boolean representing success status
     def optimize(src, dst)
-      command = [bin, *command_args(src, dst)].map(&:to_s).shelljoin
-      start = Time.now
-      pid = fork do
-        $stdout.reopen('/dev/null', 'w')
-        $stderr.reopen('/dev/null', 'w')
-        Process.setpriority(Process::PRIO_PROCESS, 0, nice)
-        exec command
-      end
-      Process.wait pid
-      duration = Time.now - start
-      if $?.signaled?
-        raise SignalException.new($?.termsig)
-      end
-      success = $?.success? && dst.size? && dst.size < src.size
-      if verbose
-        print "#{success ? '✓' : '✗'} #{duration}s #{command}\n"
-      end
-      success
+      execute(bin, *command_args(src, dst)) && dst.size? && dst.size < src.size
     end
 
     # Name of binary determined from class name
     def default_bin
       self.class.underscored_name
+    end
+
+  private
+
+    def execute(command, *arguments)
+      command = [command, *arguments].map(&:to_s).shelljoin
+      start = Time.now
+
+      Process.wait(fork do
+        $stdout.reopen('/dev/null', 'w')
+        $stderr.reopen('/dev/null', 'w')
+        Process.setpriority(Process::PRIO_PROCESS, 0, nice)
+        exec command
+      end)
+
+      raise SignalException.new($?.termsig) if $?.signaled?
+
+      print "#{$?.success? ? '✓' : '✗'} #{Time.now - start}s #{command}\n" if verbose
+
+      $?.success?
     end
   end
 end
