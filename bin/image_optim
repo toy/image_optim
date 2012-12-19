@@ -10,7 +10,7 @@ options = {}
 
 option_parser = OptionParser.new do |op|
   op.banner = <<-TEXT
-#{op.program_name}, version #{ImageOptim.version}
+#{op.program_name} v#{ImageOptim.version}
 
 Usege:
   #{op.program_name} [options] image_path …
