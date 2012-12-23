@@ -10,7 +10,7 @@ Optimize (lossless compress) images (jpeg, png, gif) using external utilities:
 * [pngcrush](http://pmt.sourceforge.net/pngcrush/)
 * [pngout](http://www.advsys.net/ken/util/pngout.htm)
 
-Based on [ImageOptim.app](http://imageoptim.pornel.net/).
+Based on [ImageOptim.app](http://imageoptim.com/).
 
 ## Gem Installation
 
