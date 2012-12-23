@@ -1,6 +1,14 @@
 # image_optim
 
-Optimize (lossless compress) images (jpeg, png, gif) using external utilities (advpng, gifsicle, jpegoptim, jpegtran, optipng, pngcrush, pngout).
+Optimize (lossless compress) images (jpeg, png, gif) using external utilities:
+
+* [advpng](http://advancemame.sourceforge.net/doc-advpng.html) from [AdvanceCOMP](http://advancemame.sourceforge.net/comp-readme.html)
+* [gifsicle](http://www.lcdf.org/gifsicle/)
+* [jpegoptim](http://www.kokkonen.net/tjko/projects.html)
+* jpegtran from [Independent JPEG Group's JPEG library](http://www.ijg.org/)
+* [optipng](http://optipng.sourceforge.net/)
+* [pngcrush](http://pmt.sourceforge.net/pngcrush/)
+* [pngout](http://www.advsys.net/ken/util/pngout.htm)
 
 Based on [ImageOptim.app](http://imageoptim.pornel.net/).
 
