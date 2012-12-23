@@ -11,15 +11,27 @@ class ImageOptim
 
     private
 
+      def has_jpegrescan
+        system("which -s jpegrescan")
+      end
+
+      def default_bin
+        has_jpegrescan ? 'jpegrescan' : super
+      end
+
       def parse_options(options)
         get_option!(options, :copy, false){ |v| !!v }
         get_option!(options, :progressive, true){ |v| !!v }
       end
 
       def command_args(src, dst)
-        args = %W[-optimize -outfile #{dst} #{src}]
-        args.unshift '-copy', copy ? 'all' : 'none'
-        args.unshift '-progressive' if progressive
+        if has_jpegrescan
+          args = %W[#{src} #{dst}]
+        else
+          args = %W[-optimize -outfile #{dst} #{src}]
+          args.unshift '-copy', copy ? 'all' : 'none'
+          args.unshift '-progressive' if progressive
+        end
         args
       end
     end
