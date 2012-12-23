@@ -5,7 +5,9 @@ class ImageOptim
       value = default
       if options.has_key?(name)
         value = options.delete(name)
-        value = yield(value) if block_given?
+      end
+      if block_given?
+        value = yield(value)
       end
       instance_variable_set("@#{name}", value)
     end
