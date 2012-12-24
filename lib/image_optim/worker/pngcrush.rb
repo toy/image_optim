@@ -3,7 +3,7 @@ require 'image_optim/worker'
 class ImageOptim
   class Worker
     class Pngcrush < Worker
-      # List of chunks to remove or 'alla' or 'allb' (defaults to 'alla')
+      # List of chunks to remove or 'alla' - all except tRNS/transparency or 'allb' - all except tRNS and gAMA/gamma (defaults to 'alla')
       attr_reader :chunks
 
       # Fix otherwise fatal conditions such as bad CRCs (defaults to false)
@@ -27,7 +27,7 @@ class ImageOptim
 
       def command_args(src, dst)
         args = %W[-reduce -cc -q -- #{src} #{dst}]
-        Array(chunks).each do |chunk|
+        chunks.each do |chunk|
           args.unshift '-rem', chunk
         end
         args.unshift '-fix' if fix
