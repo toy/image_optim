@@ -61,7 +61,7 @@ if ARGV.empty?
   abort "specify image paths to optimize\n\n#{option_parser.help}"
 else
   recursive = options.delete(:recursive)
-  io = begin
+  image_optim = begin
     ImageOptim.new(options)
   rescue ImageOptim::ConfigurationError, ImageOptim::BinaryNotFoundError => e
     abort e
@@ -70,7 +70,7 @@ else
   paths = []
   ARGV.each do |arg|
     if File.file?(arg)
-      if io.optimizable?(arg)
+      if image_optim.optimizable?(arg)
         paths << arg
       else
         warn "#{arg} is not an image or there is no optimizer for it"
@@ -78,7 +78,7 @@ else
     else
       if recursive
         Find.find(arg) do |path|
-          paths << path if File.file?(path) && io.optimizable?(path)
+          paths << path if File.file?(path) && image_optim.optimizable?(path)
         end
       else
         warn "#{arg} is not a file"
@@ -125,7 +125,7 @@ else
     '%5.2f%% %s' % [100 - 100.0 * dst_size / src_size, Space.space(src_size - dst_size)]
   end
 
-  results = io.optimize_images(paths) do |src, dst|
+  results = image_optim.optimize_images(paths) do |src, dst|
     if dst
       src_size, dst_size = src.size, dst.size
       percent = size_percent(src_size, dst_size)

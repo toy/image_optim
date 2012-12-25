@@ -68,29 +68,29 @@ In terminal:
 
 Initilize optimizer (options are described in comments for ImageOptim, Worker and all workers):
 
-    io = ImageOptim.new
+    image_optim = ImageOptim.new
 
-    io = ImageOptim.new(:pngout => false)
+    image_optim = ImageOptim.new(:pngout => false)
 
-    io = ImageOptim.new(:nice => 20)
+    image_optim = ImageOptim.new(:nice => 20)
 
 Optimize image getting temp path:
 
-    io.optimize_image('a.png')
+    image_optim.optimize_image('a.png')
 
 Optimize image in place:
 
-    io.optimize_image!('b.jpg')
+    image_optim.optimize_image!('b.jpg')
 
 Multiple images:
 
-    io.optimize_images(Dir['*.png']) do |unoptimized, optimized|
+    image_optim.optimize_images(Dir['*.png']) do |unoptimized, optimized|
       if optimized
         puts "#{unoptimized} => #{optimized}"
       end
     end
 
-    io.optimize_images!(Dir['*.*'])
+    image_optim.optimize_images!(Dir['*.*'])
 
 ## Copyright
 

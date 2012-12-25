@@ -47,14 +47,14 @@ describe ImageOptim do
       it "should optimize image" do
         temp_copy_path(original) do |unoptimized|
           Tempfile.reset_call_count
-          io = ImageOptim.new
-          optimized = io.optimize_image(unoptimized)
+          image_optim = ImageOptim.new
+          optimized = image_optim.optimize_image(unoptimized)
           optimized.should be_a(FSPath)
           unoptimized.read.should == original.read
           optimized.size.should > 0
           optimized.size.should < unoptimized.size
           optimized.read.should_not == unoptimized.read
-          if io.workers_for_image(unoptimized).length > 1
+          if image_optim.workers_for_image(unoptimized).length > 1
             Tempfile.call_count.should be_in_range(1..2)
           else
             Tempfile.call_count.should === 1
@@ -65,12 +65,12 @@ describe ImageOptim do
       it "should optimize image in place" do
         temp_copy_path(original) do |path|
           Tempfile.reset_call_count
-          io = ImageOptim.new
-          io.optimize_image!(path).should be_true
+          image_optim = ImageOptim.new
+          image_optim.optimize_image!(path).should be_true
           path.size.should > 0
           path.size.should < original.size
           path.read.should_not == original.read
-          if io.workers_for_image(path).length > 1
+          if image_optim.workers_for_image(path).length > 1
             Tempfile.call_count.should be_in_range(2..3)
           else
             Tempfile.call_count.should === 2
@@ -127,27 +127,27 @@ describe ImageOptim do
       single_method = list_method.sub('images', 'image')
       describe "without block" do
         it "should optimize images and return array of results" do
-          io = ImageOptim.new
+          image_optim = ImageOptim.new
           dsts = []
           srcs.each do |src|
             dst = "#{src}_"
-            io.should_receive(single_method).with(src).and_return(dst)
+            image_optim.should_receive(single_method).with(src).and_return(dst)
             dsts << dst
           end
-          io.send(list_method, srcs).should == dsts
+          image_optim.send(list_method, srcs).should == dsts
         end
       end
 
       describe "given block" do
         it "should optimize images, yield path and result for each and return array of yield results" do
-          io = ImageOptim.new
+          image_optim = ImageOptim.new
           results = []
           srcs.each do |src|
             dst = "#{src}_"
-            io.should_receive(single_method).with(src).and_return(dst)
+            image_optim.should_receive(single_method).with(src).and_return(dst)
             results << "#{src} #{dst}"
           end
-          io.send(list_method, srcs) do |src, dst|
+          image_optim.send(list_method, srcs) do |src, dst|
             "#{src} #{dst}"
           end.should == results
         end
