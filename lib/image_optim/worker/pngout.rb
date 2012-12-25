@@ -10,8 +10,8 @@ class ImageOptim
       attr_reader :strategy
 
       # Always run first
-      def run_first?
-        true
+      def run_order
+        -1
       end
 
     private

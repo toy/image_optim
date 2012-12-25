@@ -10,8 +10,8 @@ class ImageOptim
       attr_reader :max_quality
 
       # Run first if max_quality < 100
-      def run_first?
-        max_quality < 100
+      def run_order
+        max_quality < 100 ? -1 : 0
       end
 
     private

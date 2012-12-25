@@ -81,7 +81,7 @@ class ImageOptim
       end
     end
     @workers_by_format.each do |format, workers|
-      workers.replace workers.sort_by(&:run_priority)
+      workers.replace workers.sort_by(&:run_order)
     end
 
     assert_options_empty!(options)

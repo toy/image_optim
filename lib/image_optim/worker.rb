@@ -49,13 +49,9 @@ class ImageOptim
       assert_options_empty!(options)
     end
 
-    # Put first in list of workers
-    def run_first?
-    end
-
-    # Priority in list of workers
-    def run_priority
-      run_first? ? 0 : 1
+    # Ordering in list of workers
+    def run_order
+      0
     end
 
     # Optimize file from src to dst, return boolean representing success status
