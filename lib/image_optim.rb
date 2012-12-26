@@ -10,9 +10,6 @@ class ImageOptim
 
   include OptionHelpers
 
-  # Hash of initialized workers by format they apply to
-  attr_reader :workers_by_format
-
   # Number of threads to run with
   attr_reader :threads
 
