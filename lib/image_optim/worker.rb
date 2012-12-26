@@ -69,7 +69,7 @@ class ImageOptim
 
       raise SignalException.new($?.termsig) if $?.signaled?
 
-      print "#{$?.success? ? '✓' : '✗'} #{Time.now - start}s #{command}\n" if verbose
+      $stderr << "#{$?.success? ? '✓' : '✗'} #{Time.now - start}s #{command}\n" if verbose
 
       $?.success?
     end
