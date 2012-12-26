@@ -30,16 +30,9 @@ class ImageOptim
 
     include OptionHelpers
 
-    # Nice level
-    attr_reader :nice
-
-    # Be verbose
-    attr_reader :verbose
-
     # Configure (raises on extra options)
-    def initialize(options = {})
-      get_option!(options, :nice, 10){ |v| v.to_i }
-      get_option!(options, :verbose, false)
+    def initialize(image_optim, options = {})
+      @image_optim = image_optim
       parse_options(options)
       assert_options_empty!(options)
     end
@@ -63,13 +56,13 @@ class ImageOptim
       Process.wait(fork do
         $stdout.reopen('/dev/null', 'w')
         $stderr.reopen('/dev/null', 'w')
-        Process.setpriority(Process::PRIO_PROCESS, 0, nice)
+        Process.setpriority(Process::PRIO_PROCESS, 0, @image_optim.nice)
         exec command
       end)
 
       raise SignalException.new($?.termsig) if $?.signaled?
 
-      $stderr << "#{$?.success? ? '✓' : '✗'} #{Time.now - start}s #{command}\n" if verbose
+      $stderr << "#{$?.success? ? '✓' : '✗'} #{Time.now - start}s #{command}\n" if @image_optim.verbose?
 
       $?.success?
     end

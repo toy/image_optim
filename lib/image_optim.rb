@@ -10,8 +10,16 @@ class ImageOptim
 
   include OptionHelpers
 
+  # Nice level
+  attr_reader :nice
+
   # Number of threads to run with
   attr_reader :threads
+
+  # Verbose output?
+  def verbose?
+    @verbose
+  end
 
   # Initialize workers, specify options using worker underscored name:
   #
@@ -29,9 +37,10 @@ class ImageOptim
   #
   # use :nice to specify optimizers nice level (true or nil makes it 10, false makes it 0)
   #
-  #     ImageOptim.new(:threads => 8)
+  #     ImageOptim.new(:nice => 20)
   def initialize(options = {})
-    nice = case nice = options.delete(:nice)
+    nice = options.delete(:nice)
+    @nice = case nice
     when true, nil
       10
     when false
@@ -51,7 +60,7 @@ class ImageOptim
     end
     @threads = limit_with_range(threads, 1..16)
 
-    verbose = options.delete(:verbose)
+    @verbose = !!options.delete(:verbose)
 
     @workers_by_format = {}
     Worker.klasses.each do |klass|
@@ -64,7 +73,7 @@ class ImageOptim
       else
         raise ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
       end
-      worker = klass.new({:nice => nice, :verbose => verbose}.merge(worker_options))
+      worker = klass.new(self, worker_options)
       klass.image_formats.each do |format|
         @workers_by_format[format] ||= []
         @workers_by_format[format] << worker
