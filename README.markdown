@@ -12,11 +12,11 @@ Optimize (lossless compress) images (jpeg, png, gif) using external utilities:
 
 Based on [ImageOptim.app](http://imageoptim.com/).
 
-## Gem Installation
+## Gem installation
 
     gem install image_optim
 
-## Binaries Installation
+## Binaries installation
 
 ### Linux - Debian/Ubuntu
 
@@ -52,7 +52,7 @@ You will also need to install `jpegoptim` and `pngcrush` from source:
 
     brew install advancecomp gifsicle jpegoptim jpeg optipng pngcrush
 
-## pngout Installation (optional)
+## pngout installation (optional)
 
 You can install `pngout` by downloading and installing the [binary versions](http://www.jonof.id.au/kenutils).
 
