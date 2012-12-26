@@ -54,14 +54,14 @@ class ImageOptim
       0
     end
 
-    # Optimize file from src to dst, return boolean representing success status
-    def optimize(src, dst)
-      execute(bin, *command_args(src, dst)) && dst.size? && dst.size < src.size
-    end
-
     # Name of binary determined from class name
     def default_bin
       self.class.underscored_name
+    end
+
+    # Check if operation resulted in optimized file
+    def optimized?(src, dst)
+      dst.size? && dst.size < src.size
     end
 
   private

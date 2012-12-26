@@ -14,6 +14,16 @@ class ImageOptim
         max_quality < 100 ? -1 : 0
       end
 
+      def optimize(src, dst)
+        src.copy(dst)
+        args = %W[-q -- #{dst}]
+        strip.each do |strip_marker|
+          args.unshift "--strip-#{strip_marker}"
+        end
+        args.unshift "-m#{max_quality}" if max_quality < 100
+        execute(:jpegoptim, *args) && optimized?(src, dst)
+      end
+
     private
 
       def parse_options(options)
@@ -25,16 +35,6 @@ class ImageOptim
           markers & possible_markers
         end
         get_option!(options, :max_quality, 100){ |v| v.to_i }
-      end
-
-      def command_args(src, dst)
-        src.copy(dst)
-        args = %W[-q -- #{dst}]
-        strip.each do |strip_marker|
-          args.unshift "--strip-#{strip_marker}"
-        end
-        args.unshift "-m#{max_quality}" if max_quality < 100
-        args
       end
     end
   end

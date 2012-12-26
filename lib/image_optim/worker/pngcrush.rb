@@ -17,22 +17,22 @@ class ImageOptim
         -1
       end
 
-    private
-
-      def parse_options(options)
-        get_option!(options, :chunks, :alla){ |v| Array(v).map(&:to_s) }
-        get_option!(options, :fix, false){ |v| !!v }
-        get_option!(options, :brute, false){ |v| !!v }
-      end
-
-      def command_args(src, dst)
+      def optimize(src, dst)
         args = %W[-reduce -cc -q -- #{src} #{dst}]
         chunks.each do |chunk|
           args.unshift '-rem', chunk
         end
         args.unshift '-fix' if fix
         args.unshift '-brute' if brute
-        args
+        execute(:pngcrush, *args) && optimized?(src, dst)
+      end
+
+    private
+
+      def parse_options(options)
+        get_option!(options, :chunks, :alla){ |v| Array(v).map(&:to_s) }
+        get_option!(options, :fix, false){ |v| !!v }
+        get_option!(options, :brute, false){ |v| !!v }
       end
     end
   end
