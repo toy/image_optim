@@ -33,7 +33,7 @@ class ImageOptim
     # Binary name or path
     attr_reader :bin
 
-    # Binary name or path
+    # Nice level
     attr_reader :nice
 
     # Be verbose
