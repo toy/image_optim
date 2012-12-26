@@ -30,33 +30,23 @@ class ImageOptim
 
     include OptionHelpers
 
-    # Binary name or path
-    attr_reader :bin
-
     # Nice level
     attr_reader :nice
 
     # Be verbose
     attr_reader :verbose
 
-    # Configure (raises on extra options), find binary (raises if not found)
+    # Configure (raises on extra options)
     def initialize(options = {})
-      get_option!(options, :bin, default_bin)
       get_option!(options, :nice, 10){ |v| v.to_i }
       get_option!(options, :verbose, false)
       parse_options(options)
-      raise BinaryNotFoundError, "`#{bin}` not found" unless system("which -s #{bin.to_s.shellescape}")
       assert_options_empty!(options)
     end
 
     # Ordering in list of workers
     def run_order
       0
-    end
-
-    # Name of binary determined from class name
-    def default_bin
-      self.class.underscored_name
     end
 
     # Check if operation resulted in optimized file

@@ -27,8 +27,8 @@ Usege:
 
   ImageOptim::Worker.klasses.each do |klass|
     bin = klass.underscored_name.to_sym
-    op.on("--[no-]#{bin} PATH", "#{bin} path or disable") do |path|
-      options[bin] = path
+    op.on("--no-#{bin}", "disable #{bin} worker") do |enable|
+      options[bin] = enable
     end
   end
 
@@ -63,7 +63,7 @@ else
   recursive = options.delete(:recursive)
   image_optim = begin
     ImageOptim.new(options)
-  rescue ImageOptim::ConfigurationError, ImageOptim::BinaryNotFoundError => e
+  rescue ImageOptim::ConfigurationError => e
     abort e
   end
 

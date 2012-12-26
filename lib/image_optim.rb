@@ -7,7 +7,6 @@ class ImageOptim
   autoload :Worker, 'image_optim/worker'
 
   class ConfigurationError < StandardError; end
-  class BinaryNotFoundError < StandardError; end
 
   include OptionHelpers
 
@@ -23,13 +22,9 @@ class ImageOptim
   #
   #     ImageOptim.new(:pngcrush => false)
   #
-  # string to set binary
+  # or hash with options to worker
   #
-  #     ImageOptim.new(:pngout => '/special/path/bin/pngout123')
-  #
-  # or hash with options to worker and :bin specifying binary
-  #
-  #     ImageOptim.new(:advpng => {:level => 3}, :optipng => {:level => 2}, :jpegoptim => {:bin => 'jpegoptim345'})
+  #     ImageOptim.new(:advpng => {:level => 3}, :optipng => {:level => 2})
   #
   # use :threads to set number of parallel optimizers to run (passing true or nil determines number of processors, false disables parallel processing)
   #
@@ -69,8 +64,6 @@ class ImageOptim
         worker_options = {}
       when false
         next
-      when String
-        worker_options = {:bin => worker_options}
       else
         raise ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
       end
