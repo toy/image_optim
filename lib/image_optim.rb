@@ -74,13 +74,13 @@ class ImageOptim
         raise ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
       end
       worker = klass.new(self, worker_options)
-      klass.image_formats.each do |format|
+      worker.image_formats.each do |format|
         @workers_by_format[format] ||= []
         @workers_by_format[format] << worker
       end
     end
     @workers_by_format.each do |format, workers|
-      workers.replace workers.sort_by(&:run_order)
+      workers.replace workers.sort_by(&:run_order) # There is no sort_by! in ruby 1.8
     end
 
     assert_options_empty!(options)

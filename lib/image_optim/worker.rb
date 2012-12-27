@@ -16,12 +16,6 @@ class ImageOptim
         klasses << base
       end
 
-      # List of formats which worker can optimize
-      def image_formats
-        format_from_name = name.downcase[/gif|jpeg|png/]
-        format_from_name ? [format_from_name.to_sym] : []
-      end
-
       # Undercored class name
       def underscored_name
         @underscored_name ||= name.split('::').last.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase
@@ -35,6 +29,12 @@ class ImageOptim
       @image_optim = image_optim
       parse_options(options)
       assert_options_empty!(options)
+    end
+
+    # List of formats which worker can optimize
+    def image_formats
+      format_from_name = self.class.name.downcase[/gif|jpeg|png/]
+      format_from_name ? [format_from_name.to_sym] : []
     end
 
     # Ordering in list of workers
