@@ -49,8 +49,8 @@ class ImageOptim
 
   private
 
-    def execute(command, *arguments)
-      command = [command, *arguments].map(&:to_s).shelljoin
+    def execute(bin, *arguments)
+      command = [bin, *arguments].map(&:to_s).shelljoin
       start = Time.now
 
       Process.wait(fork do
