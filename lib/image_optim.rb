@@ -137,7 +137,7 @@ class ImageOptim
 
   # Optimization methods with default options
   def self.method_missing(method, *args, &block)
-    if method.to_s =~ /^optimize/
+    if method.to_s =~ /^optimize_images?\!?$/
       new.send(method, *args, &block)
     else
       super
