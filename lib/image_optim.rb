@@ -186,6 +186,7 @@ class ImageOptim
 
 private
 
+  # Run method for each path and yield each path and result if block given
   def run_method_for(paths, method_name, &block)
     apply_threading(paths).map do |path|
       path = ImagePath.new(path)
@@ -198,6 +199,7 @@ private
     end
   end
 
+  # Apply threading if threading is allowed and array is longer than 1
   def apply_threading(array)
     if threads > 1 && array.length > 1
       array.in_threads(threads)
