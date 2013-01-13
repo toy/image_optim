@@ -49,11 +49,18 @@ class ImageOptim
 
   private
 
+    def resolve_bin!(bin)
+      @image_optim.resolve_bin!(bin)
+    end
+
     def execute(bin, *arguments)
+      resolve_bin!(bin)
+
       command = [bin, *arguments].map(&:to_s).shelljoin
       start = Time.now
 
       Process.wait(fork do
+        ENV['PATH'] = "#{@image_optim.resolve_dir}:#{ENV['PATH']}"
         $stdout.reopen('/dev/null', 'w')
         $stderr.reopen('/dev/null', 'w')
         Process.setpriority(Process::PRIO_PROCESS, 0, @image_optim.nice)

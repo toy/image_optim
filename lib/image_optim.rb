@@ -7,6 +7,7 @@ class ImageOptim
   autoload :Worker, 'image_optim/worker'
 
   class ConfigurationError < StandardError; end
+  class BinNotFoundError < StandardError; end
 
   include OptionHelpers
 
@@ -39,6 +40,9 @@ class ImageOptim
   #
   #     ImageOptim.new(:nice => 20)
   def initialize(options = {})
+    @resolved_bins = {}
+    @resolver_lock = Mutex.new
+
     nice = options.delete(:nice)
     @nice = case nice
     when true, nil
@@ -150,6 +154,29 @@ class ImageOptim
 
   def optimizable?(path)
     !!workers_for_image(path)
+  end
+
+  attr_reader :resolve_dir
+  def resolve_bin!(bin)
+    bin = bin.to_sym
+    @resolved_bins.include?(bin) || @resolver_lock.synchronize do
+      @resolved_bins.include?(bin) || begin
+        if path = ENV["#{bin}_bin".upcase]
+          unless @resolve_dir
+            @resolve_dir = FSPath.temp_dir
+            at_exit{ FileUtils.remove_entry_secure @resolve_dir }
+          end
+          symlink = @resolve_dir / bin
+          symlink.make_symlink(File.expand_path(path))
+          at_exit{ symlink.unlink }
+
+          @resolved_bins[bin] = system(*%W[which -s #{symlink}])
+        else
+          @resolved_bins[bin] = system(*%W[which -s #{bin}])
+        end
+      end
+    end
+    @resolved_bins[bin] or raise BinNotFoundError, "`#{bin}` not found"
   end
 
 private
