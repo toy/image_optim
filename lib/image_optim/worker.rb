@@ -49,10 +49,12 @@ class ImageOptim
 
   private
 
+    # Forward bin resolving to image_optim
     def resolve_bin!(bin)
       @image_optim.resolve_bin!(bin)
     end
 
+    # Run command setting priority and hiding output
     def execute(bin, *arguments)
       resolve_bin!(bin)
 
