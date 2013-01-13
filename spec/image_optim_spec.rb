@@ -95,6 +95,28 @@ describe ImageOptim do
     end
   end
 
+  describe "bunch" do
+    it "should optimize" do
+      copies = TEST_IMAGES.map(&:temp_copy)
+      optimized_images = ImageOptim.optimize_images(copies)
+      TEST_IMAGES.zip(copies, optimized_images).each do |original, copy, optimized_image|
+        optimized_image.should be_a(ImageOptim::ImagePath)
+        optimized_image.size.should be_in_range(1...original.size)
+        optimized_image.read.should_not == original.read
+        copy.read.should == original.read
+      end
+    end
+
+    it "should optimize in place" do
+      copies = TEST_IMAGES.map(&:temp_copy)
+      ImageOptim.optimize_images!(copies)
+      TEST_IMAGES.zip(copies).each do |original, copy|
+        copy.size.should be_in_range(1...original.size)
+        copy.read.should_not == original.read
+      end
+    end
+  end
+
   describe "unsupported" do
     let(:original){ ImageOptim::ImagePath.new(__FILE__) }
 
