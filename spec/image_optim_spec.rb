@@ -37,17 +37,17 @@ end
 
 describe ImageOptim do
   describe "isolated" do
-    describe "optimize copy" do
+    describe "optimize" do
       TEST_IMAGES.each do |original|
         it "should optimize #{original}" do
           copy = original.temp_copy
 
           Tempfile.reset_init_count
           image_optim = ImageOptim.new
-          optimized = image_optim.optimize_image(copy)
-          optimized.should be_a(ImageOptim::ImagePath)
-          optimized.size.should be_in_range(1...original.size)
-          optimized.read.should_not == original.read
+          optimized_image = image_optim.optimize_image(copy)
+          optimized_image.should be_a(ImageOptim::ImagePath)
+          optimized_image.size.should be_in_range(1...original.size)
+          optimized_image.read.should_not == original.read
           copy.read.should == original.read
 
           if image_optim.workers_for_image(original).length > 1
@@ -102,9 +102,9 @@ describe ImageOptim do
       copy = original.temp_copy
 
       Tempfile.reset_init_count
-      optimized = ImageOptim.optimize_image(copy)
+      optimized_image = ImageOptim.optimize_image(copy)
       Tempfile.init_count.should == 0
-      optimized.should be_nil
+      optimized_image.should be_nil
       copy.read.should == original.read
     end
 
