@@ -1,3 +1,5 @@
+readme about ENV['XXX_BIN']
+leave_color branch
 autorotate jpeg based on exif (jhead -auotrot)
 timeout workers?
 make possible to create gem with integrated binaries
