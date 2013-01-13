@@ -153,11 +153,15 @@ class ImageOptim
     Gem.loaded_specs['image_optim'].version.to_s rescue nil
   end
 
+  # Are there workers for file at path?
   def optimizable?(path)
     !!workers_for_image(path)
   end
 
+  # Temp directory for symlinks to bins with path coming from ENV
   attr_reader :resolve_dir
+
+  # Check existance of binary, create symlink if ENV contains path for key XXX_BIN where XXX is upper case bin name
   def resolve_bin!(bin)
     bin = bin.to_sym
     @resolved_bins.include?(bin) || @resolver_lock.synchronize do
