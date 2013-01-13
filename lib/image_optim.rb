@@ -199,7 +199,7 @@ private
   end
 
   def apply_threading(array)
-    if threads > 1
+    if threads > 1 && array.length > 1
       array.in_threads(threads)
     else
       array
