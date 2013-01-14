@@ -13,18 +13,22 @@ end
 
 Tempfile.class_eval do
   def self.init_count
-    @@init_count
+    class_variable_get(:@@init_count)
+  end
+
+  def self.init_count=(value)
+    class_variable_set(:@@init_count, value)
   end
 
   def self.reset_init_count
-    @@init_count = 0
+    self.init_count = 0
   end
 
   reset_init_count
 
   alias_method :initialize_orig, :initialize
   def initialize(*args, &block)
-    @@init_count += 1
+    self.class.init_count += 1
     initialize_orig(*args, &block)
   end
 end
