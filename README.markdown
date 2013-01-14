@@ -52,7 +52,7 @@ You will also need to install `jpegoptim` and `pngcrush` from source:
 
     brew install advancecomp gifsicle jpegoptim jpeg optipng pngcrush
 
-## pngout installation (optional)
+### pngout installation (optional)
 
 You can install `pngout` by downloading and installing the [binary versions](http://www.jonof.id.au/kenutils).
 
