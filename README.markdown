@@ -60,11 +60,13 @@ _Note: pngout is free to use even in commercial soft, but you can not redistribu
 
 ## Usage
 
-In terminal:
+### From shell
 
     image_optim *.{jpg,png,gif}
 
     image_optim -h
+
+### From ruby
 
 Initilize optimizer (options are described in comments for ImageOptim, Worker and all workers):
 
