@@ -110,4 +110,4 @@ Multiple images:
 
 ## Copyright
 
-Copyright (c) 2012 Ivan Kuchin. See LICENSE.txt for details.
+Copyright (c) 2012-2013 Ivan Kuchin. See LICENSE.txt for details.
