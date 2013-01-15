@@ -1,11 +1,11 @@
 require 'in_threads'
 require 'shellwords'
 
-class ImageOptim
-  autoload :ImagePath, 'image_optim/image_path'
-  autoload :OptionHelpers, 'image_optim/option_helpers'
-  autoload :Worker, 'image_optim/worker'
+require 'image_optim/image_path'
+require 'image_optim/option_helpers'
+require 'image_optim/worker'
 
+class ImageOptim
   class ConfigurationError < StandardError; end
   class BinNotFoundError < StandardError; end
 

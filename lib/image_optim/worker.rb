@@ -1,6 +1,7 @@
 # encoding: UTF-8
 
 require 'shellwords'
+
 require 'image_optim'
 
 class ImageOptim

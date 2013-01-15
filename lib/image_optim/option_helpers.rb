@@ -1,3 +1,5 @@
+require 'image_optim'
+
 class ImageOptim
   module OptionHelpers
     # Remove option from hash and run through block or return default

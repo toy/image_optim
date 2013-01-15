@@ -1,6 +1,8 @@
 require 'fspath'
 require 'image_size'
 
+require 'image_optim'
+
 class ImageOptim
   class ImagePath < FSPath
     # Get temp path for this file with same extension
