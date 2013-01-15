@@ -16,6 +16,20 @@ Based on [ImageOptim.app](http://imageoptim.com/).
 
     gem install image_optim
 
+## Binaries location
+
+Simplest way for `image_optim` to locate binaries is to install them in common location present in `PATH` (see [Binaries installation](#binaries-installation)).
+
+If you cannot install to common location, then install to custom one and add it to `PATH`.
+
+Specify custom bin location using `XXX_BIN` environment variable (`JPEGOPTIM_BIN`, `OPTIPNG_BIN`, …).
+
+Besides permanently setting environment variables in `~/.profile`, `~/.bash_profile`, `~/.bashrc`, `~/.zshrc`, … they can be set:
+
+* before command: `PATH="/custom/location:$PATH" image_optim *.jpg`
+
+* inside script: `ENV['PATH'] = "/custom/location:#{ENV['PATH']}"; ImageOptim.optimize_images([…])`
+
 ## Binaries installation
 
 ### Linux - Debian/Ubuntu
