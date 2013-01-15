@@ -44,11 +44,11 @@ You will also need to install `jpegoptim` and `pngcrush` from source:
     cd pngcrush-1.7.43
     make && cp -f pngcrush /usr/local/bin
 
-### OS X - Macports
+### OS X: Macports
 
     sudo port install advancecomp gifsicle jpegoptim jpeg optipng pngcrush
 
-### OS X - Brew
+### OS X: Brew
 
     brew install advancecomp gifsicle jpegoptim jpeg optipng pngcrush
 
