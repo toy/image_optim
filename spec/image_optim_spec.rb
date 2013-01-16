@@ -196,7 +196,7 @@ describe ImageOptim do
     it "should resolve bin in path" do
       with_env 'LS_BIN', nil do
         image_optim = ImageOptim.new
-        image_optim.should_receive(:system).with(*%w[which -s ls]).once.and_return(true)
+        image_optim.should_receive(:bin_accessible?).with(:ls).once.and_return(true)
         FSPath.should_not_receive(:temp_dir)
 
         5.times do
@@ -212,7 +212,7 @@ describe ImageOptim do
         symlink = stub(:symlink)
 
         image_optim = ImageOptim.new
-        image_optim.should_receive(:system).with(*%W[which -s #{symlink}]).once.and_return(true)
+        image_optim.should_receive(:bin_accessible?).with(symlink).once.and_return(true)
         FSPath.should_receive(:temp_dir).once.and_return(tmpdir)
         tmpdir.should_receive(:/).with(:image_optim).once.and_return(symlink)
         symlink.should_receive(:make_symlink).with(File.expand_path(path)).once
@@ -235,7 +235,7 @@ describe ImageOptim do
     it "should raise on failure to resolve bin" do
       with_env 'SHOULD_NOT_EXIST_BIN', nil do
         image_optim = ImageOptim.new
-        image_optim.should_receive(:system).with(*%w[which -s should_not_exist]).once.and_return(false)
+        image_optim.should_receive(:bin_accessible?).with(:should_not_exist).once.and_return(false)
         FSPath.should_not_receive(:temp_dir)
 
         5.times do
@@ -253,7 +253,7 @@ describe ImageOptim do
         symlink = stub(:symlink)
 
         image_optim = ImageOptim.new
-        image_optim.should_receive(:system).with(*%W[which -s #{symlink}]).once.and_return(false)
+        image_optim.should_receive(:bin_accessible?).with(symlink).once.and_return(false)
         FSPath.should_receive(:temp_dir).once.and_return(tmpdir)
         tmpdir.should_receive(:/).with(:should_not_exist).once.and_return(symlink)
         symlink.should_receive(:make_symlink).with(File.expand_path(path)).once
