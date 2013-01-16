@@ -17,6 +17,12 @@ Usege:
 
   TEXT
 
+  op.on('-r', '-R', '--recursive', 'Recurively scan directories for images') do |recursive|
+    options[:recursive] = recursive
+  end
+
+  op.separator nil
+
   op.on('--[no-]threads NUMBER', Integer, 'Number of threads or disable (defaults to number of processors)') do |threads|
     options[:threads] = threads
   end
@@ -25,6 +31,8 @@ Usege:
     options[:nice] = nice
   end
 
+  op.separator nil
+
   ImageOptim::Worker.klasses.each do |klass|
     bin = klass.underscored_name.to_sym
     op.on("--no-#{bin}", "disable #{bin} worker") do |enable|
@@ -32,9 +40,7 @@ Usege:
     end
   end
 
-  op.on('-r', '-R', '--recursive', 'Scan directories') do |recursive|
-    options[:recursive] = recursive
-  end
+  op.separator nil
 
   op.on('-v', '--verbose', 'Verbose info') do |verbose|
     options[:verbose] = verbose
