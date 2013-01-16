@@ -210,7 +210,7 @@ private
 
   # Check if bin can be accessed
   def bin_accessible?(bin)
-    system(*%W[which -s #{bin}])
+    `which #{bin.to_s.shellescape}` != ''
   end
 
   # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
