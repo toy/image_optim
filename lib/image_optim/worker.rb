@@ -63,7 +63,7 @@ class ImageOptim
       env_path = "#{@image_optim.resolve_dir}:#{ENV['PATH']}"
       start = Time.now
 
-      system "env PATH=#{env_path.shellescape} nice -n #{@image_optim.nice} #{command} >& /dev/null"
+      system "env PATH=#{env_path.shellescape} nice -n #{@image_optim.nice} #{command} > /dev/null 2>&1"
 
       raise SignalException.new($?.termsig) if $?.signaled?
 
