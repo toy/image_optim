@@ -199,12 +199,12 @@ private
     end
   end
 
-  # Apply threading if threading is allowed and array is longer than 1
-  def apply_threading(array)
-    if threads > 1 && array.length > 1
-      array.in_threads(threads)
+  # Apply threading if threading is allowed
+  def apply_threading(enum)
+    if threads > 1
+      enum.in_threads(threads)
     else
-      array
+      enum
     end
   end
 
