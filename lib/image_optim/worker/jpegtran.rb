@@ -31,7 +31,7 @@ class ImageOptim
       def parse_options(options)
         get_option!(options, :copy_chunks, false){ |v| !!v }
         get_option!(options, :progressive, true){ |v| !!v }
-        get_option!(options, :jpegrescan, true){ |v| !!v }
+        get_option!(options, :jpegrescan, false){ |v| !!v }
       end
     end
   end
