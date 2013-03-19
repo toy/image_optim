@@ -6,6 +6,8 @@ require 'image_optim'
 
 class ImageOptim
   class Worker
+    ENV['PATH'] += ":#{File.expand_path('../../../vendor', __FILE__)}"
+
     class << self
       # List of avaliable workers
       def klasses
