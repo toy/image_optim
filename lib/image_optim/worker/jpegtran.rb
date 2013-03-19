@@ -14,7 +14,7 @@ class ImageOptim
 
       def optimize(src, dst)
         if jpegrescan
-          args = %W[#{dst} #{src}]
+          args = %W[#{src} #{dst}]
           args.unshift '-s' unless copy_chunks
           resolve_bin!(:jpegtran)
           execute(:jpegrescan, *args) && optimized?(src, dst)
