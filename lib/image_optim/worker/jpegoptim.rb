@@ -13,7 +13,7 @@ class ImageOptim
       end
 
       # Maximum image quality factor (defaults to 100)
-      option(:max_quality, 100){ |v| v.to_i }
+      option(:max_quality, 100){ |v| OptionHelpers.limit_with_range(v.to_i, 0..100) }
 
       # Run first if max_quality < 100
       def run_order
