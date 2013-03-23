@@ -6,8 +6,6 @@ require 'image_optim'
 
 class ImageOptim
   class Worker
-    ENV['PATH'] += ":#{File.expand_path('../../../vendor', __FILE__)}"
-
     class << self
       # List of avaliable workers
       def klasses
@@ -62,10 +60,9 @@ class ImageOptim
       resolve_bin!(bin)
 
       command = [bin, *arguments].map(&:to_s).shelljoin
-      env_path = "#{@image_optim.resolve_dir}:#{ENV['PATH']}"
       start = Time.now
 
-      system "env PATH=#{env_path.shellescape} nice -n #{@image_optim.nice} #{command} > /dev/null 2>&1"
+      system "env PATH=#{@image_optim.env_path.shellescape} nice -n #{@image_optim.nice} #{command} > /dev/null 2>&1"
 
       raise SignalException.new($?.termsig) if $?.signaled?
 

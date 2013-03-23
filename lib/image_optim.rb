@@ -184,6 +184,13 @@ class ImageOptim
     @resolved_bins[bin] or raise BinNotFoundError, "`#{bin}` not found"
   end
 
+  VENDOR_PATH = File.expand_path('../../vendor', __FILE__)
+
+  # Join resolve_dir, default path and vendor path for PATH environment variable
+  def env_path
+    "#{resolve_dir}:#{ENV['PATH']}:#{VENDOR_PATH}"
+  end
+
 private
 
   # Run method for each path and yield each path and result if block given
@@ -210,7 +217,7 @@ private
 
   # Check if bin can be accessed
   def bin_accessible?(bin)
-    `which #{bin.to_s.shellescape}` != ''
+    `env PATH=#{env_path.shellescape} which #{bin.to_s.shellescape}` != ''
   end
 
   # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
