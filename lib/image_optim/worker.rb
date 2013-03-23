@@ -21,6 +21,15 @@ class ImageOptim
       def underscored_name
         @underscored_name ||= name.split('::').last.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase
       end
+
+      def option_definitions
+        @option_definitions ||= []
+      end
+
+      def option(name, default, &proc)
+        attr_reader name
+        option_definitions << {:name => name, :default => default, :proc => proc}
+      end
     end
 
     include OptionHelpers
@@ -28,7 +37,9 @@ class ImageOptim
     # Configure (raises on extra options)
     def initialize(image_optim, options = {})
       @image_optim = image_optim
-      parse_options(options)
+      self.class.option_definitions.each do |option_definition|
+        get_option!(options, option_definition[:name], option_definition[:default], &option_definition[:proc])
+      end
       assert_options_empty!(options)
     end
 

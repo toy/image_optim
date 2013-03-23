@@ -62,7 +62,7 @@ class ImageOptim
     else
       threads.to_i
     end
-    @threads = limit_with_range(threads, 1..16)
+    @threads = OptionHelpers.limit_with_range(threads, 1..16)
 
     @verbose = !!options.delete(:verbose)
 

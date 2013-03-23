@@ -4,10 +4,16 @@ class ImageOptim
   class Worker
     class Jpegoptim < Worker
       # List of extra markers to strip: comments, exif, iptc, icc (defaults to 'all')
-      attr_reader :strip
+      option(:strip, :all) do |v|
+        markers = Array(v).map(&:to_s)
+        possible_markers = %w[all comments exif iptc icc]
+        unknown_markers = markers - possible_markers
+        warn "Unknown markers for jpegoptim: #{unknown_markers.join(', ')}" unless unknown_markers.empty?
+        markers & possible_markers
+      end
 
       # Maximum image quality factor (defaults to 100)
-      attr_reader :max_quality
+      option(:max_quality, 100){ |v| v.to_i }
 
       # Run first if max_quality < 100
       def run_order
@@ -22,19 +28,6 @@ class ImageOptim
         end
         args.unshift "-m#{max_quality}" if max_quality < 100
         execute(:jpegoptim, *args) && optimized?(src, dst)
-      end
-
-    private
-
-      def parse_options(options)
-        get_option!(options, :strip, :all) do |v|
-          markers = Array(v).map(&:to_s)
-          possible_markers = %w[all comments exif iptc icc]
-          unknown_markers = markers - possible_markers
-          warn "Unknown markers for jpegoptim: #{unknown_markers.join(', ')}" unless unknown_markers.empty?
-          markers & possible_markers
-        end
-        get_option!(options, :max_quality, 100){ |v| v.to_i }
       end
     end
   end

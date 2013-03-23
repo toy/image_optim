@@ -15,7 +15,7 @@ class ImageOptim
     end
 
     # Ensure number is in range
-    def limit_with_range(number, range)
+    def self.limit_with_range(number, range)
       if range.include?(number)
         number
       elsif number < range.first
