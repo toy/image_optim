@@ -7,7 +7,7 @@ require 'image_optim'
 class ImageOptim
   class Worker
     class << self
-      # List of avaliable workers
+      # List of available workers
       def klasses
         @klasses ||= []
       end
@@ -17,7 +17,7 @@ class ImageOptim
         klasses << base
       end
 
-      # Undercored class name
+      # Underscored class name
       def underscored_name
         @underscored_name ||= name.split('::').last.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase
       end
