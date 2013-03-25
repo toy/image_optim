@@ -42,7 +42,7 @@ Usege:
 
   op.separator nil
 
-  op.on('-v', '--verbose', 'Verbose info') do |verbose|
+  op.on('-v', '--verbose', 'Verbose output') do |verbose|
     options[:verbose] = verbose
   end
 
