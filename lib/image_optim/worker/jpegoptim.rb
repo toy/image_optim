@@ -3,7 +3,7 @@ require 'image_optim/worker'
 class ImageOptim
   class Worker
     class Jpegoptim < Worker
-      option(:strip, %w[all], 'List of extra markers to strip: comments, exif, iptc, icc or all') do |v|
+      option(:strip, :all, Array, 'List of extra markers to strip: comments, exif, iptc, icc or all') do |v|
         values = Array(v).map(&:to_s)
         known_values = %w[all comments exif iptc icc]
         unknown_values = values - known_values

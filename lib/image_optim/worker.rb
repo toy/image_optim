@@ -26,9 +26,9 @@ class ImageOptim
         @option_definitions ||= []
       end
 
-      def option(name, default, description, &proc)
+      def option(name, default, type, description = nil, &proc)
         attr_reader name
-        option_definitions << {:name => name, :default => default, :description => description, :proc => proc}
+        option_definitions << OptionDefinition.new(name, default, type, description, &proc)
       end
     end
 
@@ -38,7 +38,7 @@ class ImageOptim
     def initialize(image_optim, options = {})
       @image_optim = image_optim
       self.class.option_definitions.each do |option_definition|
-        get_option!(options, option_definition[:name], option_definition[:default], &option_definition[:proc])
+        get_option!(options, option_definition.name, option_definition.default, &option_definition.proc)
       end
       assert_options_empty!(options)
     end

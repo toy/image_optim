@@ -3,7 +3,8 @@ require 'image_optim/worker'
 class ImageOptim
   class Worker
     class Pngcrush < Worker
-      option(:chunks, %w[alla], 'List of chunks to remove or \'alla\' - all except tRNS/transparency or \'allb\' - all except tRNS and gAMA/gamma'){ |v| Array(v).map(&:to_s) }
+      option(:chunks, :alla, Array, 'List of chunks to remove or \'alla\' - all except tRNS/transparency or '\
+                                '\'allb\' - all except tRNS and gAMA/gamma'){ |v| Array(v).map(&:to_s) }
 
       option(:fix, false, 'Fix otherwise fatal conditions such as bad CRCs'){ |v| !!v }
 
