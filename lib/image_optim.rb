@@ -151,7 +151,7 @@ class ImageOptim
 
   # Version of image_optim gem spec loaded
   def self.version
-    Gem.loaded_specs['image_optim'].version.to_s rescue nil
+    Gem.loaded_specs['image_optim'].version.to_s rescue 'DEV'
   end
 
   # Are there workers for file at path?
