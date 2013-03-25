@@ -26,9 +26,9 @@ class ImageOptim
         @option_definitions ||= []
       end
 
-      def option(name, default, &proc)
+      def option(name, default, description, &proc)
         attr_reader name
-        option_definitions << {:name => name, :default => default, :proc => proc}
+        option_definitions << {:name => name, :default => default, :description => description, :proc => proc}
       end
     end
 

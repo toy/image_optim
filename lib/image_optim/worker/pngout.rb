@@ -3,11 +3,11 @@ require 'image_optim/worker'
 class ImageOptim
   class Worker
     class Pngout < Worker
-      # Copy optional chunks (defaults to false)
-      option(:copy_chunks, false){ |v| !!v }
+      option(:copy_chunks, false, 'Copy optional chunks'){ |v| !!v }
 
-      # Strategy: 0 - xtreme, 1 - intense, 2 - longest Match, 3 - huffman Only, 4 - uncompressed (defaults to 0)
-      option(:strategy, 0){ |v| OptionHelpers.limit_with_range(v.to_i, 0..4) }
+      option(:strategy, 0, 'Strategy: 0 - xtreme, 1 - intense, 2 - longest Match, 3 - huffman Only, 4 - uncompressed') do |v|
+        OptionHelpers.limit_with_range(v.to_i, 0..4)
+      end
 
       # Always run first
       def run_order

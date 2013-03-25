@@ -3,11 +3,11 @@ require 'image_optim/worker'
 class ImageOptim
   class Worker
     class Optipng < Worker
-      # Optimization level preset 0..7 (0 is least, 7 is best, defaults to 6)
-      option(:level, 6){ |v| OptionHelpers.limit_with_range(v.to_i, 0..7) }
+      option(:level, 6, 'Optimization level preset 0 is least, 7 is best'){ |v| OptionHelpers.limit_with_range(v.to_i, 0..7) }
 
-      # Interlace, true - interlace on, false - interlace off, nil - as is in original image (defaults to false)
-      option(:interlace, false){ |v| v && true }
+      option(:interlace, false, 'Interlace, true - interlace on, false - interlace off, nil - as is in original image') do |v|
+        v && true
+      end
 
       def optimize(src, dst)
         src.copy(dst)

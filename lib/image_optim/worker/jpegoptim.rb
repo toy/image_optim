@@ -3,17 +3,15 @@ require 'image_optim/worker'
 class ImageOptim
   class Worker
     class Jpegoptim < Worker
-      # List of extra markers to strip: comments, exif, iptc, icc (defaults to 'all')
-      option(:strip, :all) do |v|
-        markers = Array(v).map(&:to_s)
-        possible_markers = %w[all comments exif iptc icc]
-        unknown_markers = markers - possible_markers
-        warn "Unknown markers for jpegoptim: #{unknown_markers.join(', ')}" unless unknown_markers.empty?
-        markers & possible_markers
+      option(:strip, %w[all], 'List of extra markers to strip: comments, exif, iptc, icc or all') do |v|
+        values = Array(v).map(&:to_s)
+        known_values = %w[all comments exif iptc icc]
+        unknown_values = values - known_values
+        warn "Unknown markers for jpegoptim: #{unknown_values.join(', ')}" unless unknown_values.empty?
+        values & unknown_values
       end
 
-      # Maximum image quality factor (defaults to 100)
-      option(:max_quality, 100){ |v| OptionHelpers.limit_with_range(v.to_i, 0..100) }
+      option(:max_quality, 100, 'Maximum image quality factor 0..100'){ |v| OptionHelpers.limit_with_range(v.to_i, 0..100) }
 
       # Run first if max_quality < 100
       def run_order
