@@ -34,7 +34,7 @@ Usege:
   op.separator nil
 
   ImageOptim::Worker.klasses.each do |klass|
-    bin = klass.underscored_name.to_sym
+    bin = klass.bin_sym
     op.on("--no-#{bin}", "disable #{bin} worker") do |enable|
       options[bin] = enable
     end

@@ -17,9 +17,9 @@ class ImageOptim
         klasses << base
       end
 
-      # Underscored class name
-      def underscored_name
-        @underscored_name ||= name.split('::').last.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase
+      # Underscored class name symbol
+      def bin_sym
+        @underscored_name ||= name.split('::').last.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase.to_sym
       end
 
       def option_definitions

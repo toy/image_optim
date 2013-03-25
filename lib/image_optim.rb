@@ -69,7 +69,7 @@ class ImageOptim
 
     @workers_by_format = {}
     Worker.klasses.each do |klass|
-      case worker_options = options.delete(klass.underscored_name.to_sym)
+      case worker_options = options.delete(klass.bin_sym)
       when Hash
       when true, nil
         worker_options = {}
