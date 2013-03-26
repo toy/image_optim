@@ -6,6 +6,7 @@ class OptionDefinition
     if type.is_a?(String)
       type, description = default.class, type
     end
+
     @name, @description = name.to_s, description.to_s
     @default, @type, @proc = default, type, proc
   end

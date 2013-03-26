@@ -10,6 +10,8 @@ class ImageOptim
   class ConfigurationError < StandardError; end
   class BinNotFoundError < StandardError; end
 
+  class TrueFalseNil; end
+
   include OptionHelpers
 
   # Nice level
