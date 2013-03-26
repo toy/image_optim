@@ -107,7 +107,7 @@ else
   image_optim = begin
     ImageOptim.new(options)
   rescue ImageOptim::ConfigurationError => e
-    abort e
+    abort e.to_s
   end
 
   paths = []
