@@ -100,6 +100,23 @@ rescue OptionParser::ParseError => e
   abort "#{e.to_s}\n\n#{option_parser.help}"
 end
 
+if options[:verbose]
+  def print_options(options, level = 1)
+    prefix = '  ' * level
+    options.each do |key, value|
+      if value.is_a?(Hash)
+        puts "#{prefix}#{key}:"
+        print_options(value, level + 1)
+      else
+        puts "#{prefix}#{key}: #{value.inspect}"
+      end
+    end
+  end
+
+  puts 'Options:'
+  print_options(options)
+end
+
 if ARGV.empty?
   abort "specify image paths to optimize\n\n#{option_parser.help}"
 else
