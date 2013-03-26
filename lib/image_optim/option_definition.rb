@@ -7,7 +7,8 @@ class OptionDefinition
       type, description = default.class, type
     end
 
-    @name, @description = name.to_s, description.to_s
+    @name = name.to_sym
+    @description = description.to_s
     @default, @type, @proc = default, type, proc
   end
 end

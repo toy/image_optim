@@ -71,7 +71,7 @@ Usege:
 
       op.on("--#{bin}-#{name} #{marking}", type, *description) do |value|
         options[bin] = {} unless options[bin].is_a?(Hash)
-        options[bin][option_definition.name] = value
+        options[bin][option_definition.name.to_sym] = value
       end
     end
   end
