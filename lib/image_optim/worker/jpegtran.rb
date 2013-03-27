@@ -3,14 +3,11 @@ require 'image_optim/worker'
 class ImageOptim
   class Worker
     class Jpegtran < Worker
-      # Copy all chunks or none (defaults to false)
-      attr_reader :copy_chunks
+      option(:copy_chunks, false, 'Copy all chunks'){ |v| !!v }
 
-      # Create progressive JPEG file (defaults to true)
-      attr_reader :progressive
+      option(:progressive, true, 'Create progressive JPEG file'){ |v| !!v }
 
-      # Use jpegtran through jpegrescan, ignore progressive option (defaults to true)
-      attr_reader :jpegrescan
+      option(:jpegrescan, false, 'Use jpegtran through jpegrescan, ignore progressive option'){ |v| !!v }
 
       def optimize(src, dst)
         if jpegrescan
@@ -24,14 +21,6 @@ class ImageOptim
           args.unshift '-progressive' if progressive
           execute(:jpegtran, *args) && optimized?(src, dst)
         end
-      end
-
-    private
-
-      def parse_options(options)
-        get_option!(options, :copy_chunks, false){ |v| !!v }
-        get_option!(options, :progressive, true){ |v| !!v }
-        get_option!(options, :jpegrescan, false){ |v| !!v }
       end
     end
   end

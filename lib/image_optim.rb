@@ -3,11 +3,14 @@ require 'shellwords'
 
 require 'image_optim/image_path'
 require 'image_optim/option_helpers'
+require 'image_optim/option_definition'
 require 'image_optim/worker'
 
 class ImageOptim
   class ConfigurationError < StandardError; end
   class BinNotFoundError < StandardError; end
+
+  class TrueFalseNil; end
 
   include OptionHelpers
 
@@ -62,13 +65,13 @@ class ImageOptim
     else
       threads.to_i
     end
-    @threads = limit_with_range(threads, 1..16)
+    @threads = OptionHelpers.limit_with_range(threads, 1..16)
 
     @verbose = !!options.delete(:verbose)
 
     @workers_by_format = {}
     Worker.klasses.each do |klass|
-      case worker_options = options.delete(klass.underscored_name.to_sym)
+      case worker_options = options.delete(klass.bin_sym)
       when Hash
       when true, nil
         worker_options = {}
@@ -150,7 +153,7 @@ class ImageOptim
 
   # Version of image_optim gem spec loaded
   def self.version
-    Gem.loaded_specs['image_optim'].version.to_s rescue nil
+    Gem.loaded_specs['image_optim'].version.to_s rescue 'DEV'
   end
 
   # Are there workers for file at path?
