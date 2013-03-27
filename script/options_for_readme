@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+
+$: << File.expand_path('../../lib', __FILE__)
+
+require 'image_optim'
+
+ImageOptim::Worker.klasses.each_with_index do |klass, i|
+  puts "### #{klass.bin_sym}"
+  klass.option_definitions.each do |option_definition|
+    puts "* `:#{option_definition.name}` — #{option_definition.description} *(defaults to #{option_definition.default})*"
+  end
+  puts
+end
