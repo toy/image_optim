@@ -110,6 +110,8 @@ Multiple images:
 
 ## Options
 
+Worker can be disabled by passing false instead of options hash.
+
 ### pngcrush
 * `:chunks` — List of chunks to remove or 'alla' - all except tRNS/transparency or 'allb' - all except tRNS and gAMA/gamma *(defaults to alla)*
 * `:fix` — Fix otherwise fatal conditions such as bad CRCs *(defaults to false)*
