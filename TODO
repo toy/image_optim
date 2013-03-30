@@ -1,7 +1,5 @@
 leave_color branch
 autorotate jpeg based on exif (jhead -auotrot)
 timeout workers?
-don't fail but warn on bins not present
-better documentation
+fail worker instead of process on bin not present?
 preserve time/attrs option?
-jpegrescan
