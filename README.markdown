@@ -26,9 +26,21 @@ Specify custom bin location using `XXX_BIN` environment variable (`JPEGOPTIM_BIN
 
 Besides permanently setting environment variables in `~/.profile`, `~/.bash_profile`, `~/.bashrc`, `~/.zshrc`, … they can be set:
 
-* before command: `PATH="/custom/location:$PATH" image_optim *.jpg`
+* before command:
 
-* inside script: `ENV['PATH'] = "/custom/location:#{ENV['PATH']}"; ImageOptim.optimize_images([…])`
+  `PATH="/custom/location:$PATH" image_optim *.jpg`
+
+  for example:
+
+  `PATH="/Applications/ImageOptim.app/Contents/MacOS:$PATH" image_optim *.jpg`
+
+* inside script:
+
+  `ENV['PATH'] = "/custom/location:#{ENV['PATH']}"; ImageOptim.optimize_images([…])`
+
+  for example:
+
+  `ENV['PATH'] = "/Applications/ImageOptim.app/Contents/MacOS:#{ENV['PATH']}"; ImageOptim.optimize_images([…])`
 
 ## Binaries installation
 
