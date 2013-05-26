@@ -8,7 +8,7 @@ class ImageOptim
         known_values = %w[all comments exif iptc icc]
         unknown_values = values - known_values
         warn "Unknown markers for jpegoptim: #{unknown_values.join(', ')}" unless unknown_values.empty?
-        values & unknown_values
+        values & known_values
       end
 
       option(:max_quality, 100, 'Maximum image quality factor 0..100'){ |v| OptionHelpers.limit_with_range(v.to_i, 0..100) }
