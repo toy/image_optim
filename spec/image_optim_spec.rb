@@ -3,7 +3,7 @@ require 'rspec'
 require 'image_optim'
 require 'tempfile'
 
-TEST_IMAGES = (ImageOptim::ImagePath.new(__FILE__).dirname.relative_path_from(Dir.pwd) / 'images').glob('*')
+TEST_IMAGES = ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/**/*.*')
 
 Fixnum.class_eval do
   def in_range?(range)
