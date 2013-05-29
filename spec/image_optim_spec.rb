@@ -3,7 +3,7 @@ require 'rspec'
 require 'image_optim'
 require 'tempfile'
 
-TEST_IMAGES = (ImageOptim::ImagePath.new(__FILE__).dirname.relative_path_from(Dir.pwd) / 'images').glob('*')
+TEST_IMAGES = ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/**/*.*')
 
 Fixnum.class_eval do
   def in_range?(range)
@@ -272,6 +272,19 @@ describe ImageOptim do
         FileUtils.should_receive(:remove_entry_secure).with(tmpdir)
         symlink.should_receive(:unlink)
         at_exit_blocks.each(&:call)
+      end
+    end
+  end
+
+  describe "auto orienting" do
+    original = ImageOptim::ImagePath.new(__FILE__).dirname / 'images/orient/original.png'
+    ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/orient/*.jpg').each do |jpg|
+      it "should rotate #{jpg}" do
+        image_optim = ImageOptim.new
+        oriented = image_optim.optimize_image(jpg)
+        nrmse = `compare -metric RMSE #{original.to_s.shellescape} #{oriented.to_s.shellescape} /dev/null 2>&1`[/\((\d+\.\d+)\)/, 1]
+        nrmse.should_not be_nil
+        nrmse.to_f.should be < 0.005
       end
     end
   end

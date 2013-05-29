@@ -1,7 +1,6 @@
 preserve color (leave_color branch)
 preserve all extra stuff
 global level of optimization #10
-autorotate jpeg based on exif (jhead -auotrot)
 timeout workers?
 	based on file size?
 fail worker instead of process on bin not present?

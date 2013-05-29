@@ -46,7 +46,8 @@ class ImageOptim
     # List of formats which worker can optimize
     def image_formats
       format_from_name = self.class.name.downcase[/gif|jpeg|png/]
-      format_from_name ? [format_from_name.to_sym] : []
+      raise "#{self.class}: can't guess applicable format from worker name" unless format_from_name
+      [format_from_name.to_sym]
     end
 
     # Ordering in list of workers

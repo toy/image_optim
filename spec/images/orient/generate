@@ -1,0 +1,18 @@
+#!/bin/sh
+
+convert -size 2x2 xc:black -fill '#f00' -draw 'point 0,1' -fill '#0f0' -draw 'point 1,0' -fill '#00f' -draw 'point 1,1' -scale 64x64 original.png
+
+convert original.png             0.jpg
+convert original.png             1.jpg
+convert original.png -flop       2.jpg
+convert original.png -rotate 180 3.jpg
+convert original.png -flip       4.jpg
+convert original.png -transpose  5.jpg
+convert original.png -rotate 270 6.jpg
+convert original.png -transverse 7.jpg
+convert original.png -rotate 90  8.jpg
+
+exiv2 -M"add Exif.Photo.UserComment image_optim-spec" *.jpg
+for i in {1..8}; do
+  exiv2 -M"add Exif.Image.Orientation Short $i" $i.jpg
+done
