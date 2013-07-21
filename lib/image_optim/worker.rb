@@ -69,18 +69,31 @@ class ImageOptim
 
     # Run command setting priority and hiding output
     def execute(bin, *arguments)
-      resolve_bin!(bin)
+      command = build_command!(bin, *arguments)
 
-      command = [bin, *arguments].map(&:to_s).shelljoin
       start = Time.now
 
-      system "env PATH=#{@image_optim.env_path.shellescape} nice -n #{@image_optim.nice} #{command} > /dev/null 2>&1"
+      success = run_command(command)
+
+      $stderr << "#{success ? '✓' : '✗'} #{Time.now - start}s #{command}\n" if @image_optim.verbose?
+
+      success
+    end
+
+    # Build command string
+    def build_command!(bin, *arguments)
+      resolve_bin!(bin)
+
+      [bin, *arguments].map(&:to_s).shelljoin
+    end
+
+    # Run command defining environment, setting nice level, removing output and reraising signal exception
+    def run_command(command)
+      success = system "env PATH=#{@image_optim.env_path.shellescape} nice -n #{@image_optim.nice} #{command} > /dev/null 2>&1"
 
       raise SignalException.new($?.termsig) if $?.signaled?
 
-      $stderr << "#{$?.success? ? '✓' : '✗'} #{Time.now - start}s #{command}\n" if @image_optim.verbose?
-
-      $?.success?
+      success
     end
   end
 end
