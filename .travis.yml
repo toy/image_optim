@@ -1,5 +1,4 @@
 language:
-  - objective-c
   - ruby
 rvm:
   - 1.8.7
@@ -13,8 +12,5 @@ rvm:
   - ree
 script: bundle exec rspec
 before_install:
-  - wget -U curl http://imageoptim.com/ImageOptim.tbz2
-  - tar -xjf ImageOptim.tbz2
-  - brew install jhead
-env:
-  - PATH=ImageOptim.app/Contents/MacOS:$PATH
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
