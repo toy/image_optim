@@ -14,3 +14,8 @@ script: bundle exec rspec
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
+  - wget http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz
+  - tar -xzf pngout-*-linux.tar.gz
+  - mv pngout-*-linux pngout-linux
+env:
+  - PATH=pngout-linux/x86_64:$PATH
