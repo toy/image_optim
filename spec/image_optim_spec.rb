@@ -208,8 +208,8 @@ describe ImageOptim do
     it "should resolve bin specified in ENV" do
       path = (FSPath(__FILE__).dirname / '../bin/image_optim').relative_path_from(Dir.pwd).to_s
       with_env 'IMAGE_OPTIM_BIN', path do
-        tmpdir = stub(:tmpdir)
-        symlink = stub(:symlink)
+        tmpdir = double(:tmpdir)
+        symlink = double(:symlink)
 
         image_optim = ImageOptim.new
         image_optim.should_receive(:bin_accessible?).with(symlink).once.and_return(true)
@@ -249,8 +249,8 @@ describe ImageOptim do
     it "should raise on failure to resolve bin specified in ENV" do
       path = (FSPath(__FILE__).dirname / '../bin/should_not_exist_bin').relative_path_from(Dir.pwd).to_s
       with_env 'SHOULD_NOT_EXIST_BIN', path do
-        tmpdir = stub(:tmpdir)
-        symlink = stub(:symlink)
+        tmpdir = double(:tmpdir)
+        symlink = double(:symlink)
 
         image_optim = ImageOptim.new
         image_optim.should_receive(:bin_accessible?).with(symlink).once.and_return(false)
