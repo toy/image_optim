@@ -22,7 +22,7 @@ class ImageOptim
       src.temp_path(src.dirname) do |temp|
         src.copy(temp)
         temp.write(read)
-        temp.rename(src)
+        temp.rename(src.to_s)
       end
     end
 
