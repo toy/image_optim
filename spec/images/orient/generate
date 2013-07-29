@@ -12,6 +12,9 @@ convert original.png -rotate 270 6.jpg
 convert original.png -transverse 7.jpg
 convert original.png -rotate 90  8.jpg
 
+convert original.png original.jpg
+rm original.png
+
 exiv2 -M"add Exif.Photo.UserComment image_optim-spec" *.jpg
 for i in {1..8}; do
   exiv2 -M"add Exif.Image.Orientation Short $i" $i.jpg

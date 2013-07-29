@@ -277,12 +277,12 @@ describe ImageOptim do
   end
 
   describe "auto orienting" do
-    original = ImageOptim::ImagePath.new(__FILE__).dirname / 'images/orient/original.png'
-    ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/orient/*.jpg').each do |jpg|
+    original = ImageOptim::ImagePath.new(__FILE__).dirname / 'images/orient/original.jpg'
+    ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/orient/?.jpg').each do |jpg|
       it "should rotate #{jpg}" do
         image_optim = ImageOptim.new
         oriented = image_optim.optimize_image(jpg)
-        nrmse = `compare -metric RMSE #{original.to_s.shellescape} #{oriented.to_s.shellescape} /dev/null 2>&1`[/\((\d+\.\d+)\)/, 1]
+        nrmse = `compare -metric RMSE #{original.to_s.shellescape} #{oriented.to_s.shellescape} /dev/null 2>&1`[/\((\d+(\.\d+)?)\)/, 1]
         nrmse.should_not be_nil
         nrmse.to_f.should be < 0.005
       end
