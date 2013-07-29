@@ -4,6 +4,7 @@ Optimize (lossless compress) images (jpeg, png, gif) using external utilities:
 
 * [advpng](http://advancemame.sourceforge.net/doc-advpng.html) from [AdvanceCOMP](http://advancemame.sourceforge.net/comp-readme.html)
 * [gifsicle](http://www.lcdf.org/gifsicle/)
+* [jhead](http://www.sentex.net/~mwandel/jhead/)
 * [jpegoptim](http://www.kokkonen.net/tjko/projects.html)
 * jpegtran from [Independent JPEG Group's JPEG library](http://www.ijg.org/)
 * [optipng](http://optipng.sourceforge.net/)
@@ -46,11 +47,11 @@ Besides permanently setting environment variables in `~/.profile`, `~/.bash_prof
 
 ### Linux - Debian/Ubuntu
 
-    sudo apt-get install -y advancecomp gifsicle jpegoptim libjpeg-progs optipng pngcrush
+    sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
 
 ### Linux - RHEL/Fedora/Centos
 
-    sudo yum install -y advancecomp gifsicle libjpeg optipng
+    sudo yum install -y advancecomp gifsicle jhead libjpeg optipng
 
 You will also need to install `jpegoptim` and `pngcrush` from source:
 
@@ -72,11 +73,11 @@ You will also need to install `jpegoptim` and `pngcrush` from source:
 
 ### OS X: Macports
 
-    sudo port install advancecomp gifsicle jpegoptim jpeg optipng pngcrush
+    sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
 
 ### OS X: Brew
 
-    brew install advancecomp gifsicle jpegoptim jpeg optipng pngcrush
+    brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
 
 ### pngout installation (optional)
 
