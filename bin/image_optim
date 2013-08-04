@@ -145,7 +145,6 @@ else
       end
     end
   end
-  paths = paths.with_progress('optimizing') if paths.length > 1
 
   module Space
     SIZE_SYMBOLS = %w[B K M G T P E Z Y].freeze
@@ -185,14 +184,17 @@ else
     '%5.2f%% %s' % [100 - 100.0 * dst_size / src_size, Space.space(src_size - dst_size)]
   end
 
-  results = image_optim.optimize_images(paths) do |src, dst|
-    if dst
-      src_size, dst_size = src.size, dst.size
-      percent = size_percent(src_size, dst_size)
-      dst.replace(src)
-      ["#{percent}  #{src}", src_size, dst_size]
-    else
-      ["------ #{Space::EMPTY_SPACE}  #{src}", src.size, src.size]
+  results = Progress.start('optimizing', paths.length) do
+    image_optim.optimize_images(paths) do |src, dst|
+      Progress.step
+      if dst
+        src_size, dst_size = src.size, dst.size
+        percent = size_percent(src_size, dst_size)
+        dst.replace(src)
+        ["#{percent}  #{src}", src_size, dst_size]
+      else
+        ["------ #{Space::EMPTY_SPACE}  #{src}", src.size, src.size]
+      end
     end
   end
   lines, src_sizes, dst_sizes = results.transpose
