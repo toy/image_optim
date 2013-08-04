@@ -13,6 +13,8 @@ Optimize (lossless compress) images (jpeg, png, gif) using external utilities:
 
 Based on [ImageOptim.app](http://imageoptim.com/).
 
+[![Build Status](https://travis-ci.org/toy/image_optim.png?branch=master)](https://travis-ci.org/toy/image_optim)
+
 ## Gem installation
 
     gem install image_optim
