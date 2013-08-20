@@ -145,7 +145,6 @@ else
       end
     end
   end
-  paths = paths.with_progress('optimizing') if paths.length > 1
 
   module Space
     SIZE_SYMBOLS = %w[B K M G T P E Z Y].freeze
@@ -185,6 +184,7 @@ else
     '%5.2f%% %s' % [100 - 100.0 * dst_size / src_size, Space.space(src_size - dst_size)]
   end
 
+  paths = paths.with_progress('optimizing')
   results = image_optim.optimize_images(paths) do |src, dst|
     if dst
       src_size, dst_size = src.size, dst.size
