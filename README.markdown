@@ -10,6 +10,7 @@ Optimize (lossless compress) images (jpeg, png, gif) using external utilities:
 * [optipng](http://optipng.sourceforge.net/)
 * [pngcrush](http://pmt.sourceforge.net/pngcrush/)
 * [pngout](http://www.advsys.net/ken/util/pngout.htm)
+* [zopfli](https://code.google.com/p/zopfli/)
 
 Based on [ImageOptim.app](http://imageoptim.com/).
 
