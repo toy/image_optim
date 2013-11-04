@@ -247,9 +247,9 @@ private
 end
 
 %w[
-  pngcrush pngout optipng advpng
+  pngcrush pngout optipng advpng zopfli
   jhead jpegoptim jpegtran
-  gifsicle zopfli
+  gifsicle
 ].each do |worker|
   require "image_optim/worker/#{worker}"
 end
