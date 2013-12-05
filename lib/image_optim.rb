@@ -170,7 +170,6 @@ class ImageOptim
           end
           symlink = @resolve_dir / bin
           symlink.make_symlink(File.expand_path(path))
-          at_exit{ symlink.unlink }
 
           @resolved_bins[bin] = bin_accessible?(symlink)
         else

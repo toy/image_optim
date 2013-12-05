@@ -218,7 +218,7 @@ describe ImageOptim do
         symlink.should_receive(:make_symlink).with(File.expand_path(path)).once
 
         at_exit_blocks = []
-        image_optim.should_receive(:at_exit).twice do |&block|
+        image_optim.should_receive(:at_exit).once do |&block|
           at_exit_blocks.unshift(block)
         end
 
@@ -227,7 +227,6 @@ describe ImageOptim do
         end
 
         FileUtils.should_receive(:remove_entry_secure).with(tmpdir)
-        symlink.should_receive(:unlink)
         at_exit_blocks.each(&:call)
       end
     end
@@ -259,7 +258,7 @@ describe ImageOptim do
         symlink.should_receive(:make_symlink).with(File.expand_path(path)).once
 
         at_exit_blocks = []
-        image_optim.should_receive(:at_exit).twice do |&block|
+        image_optim.should_receive(:at_exit).once do |&block|
           at_exit_blocks.unshift(block)
         end
 
@@ -270,7 +269,6 @@ describe ImageOptim do
         end
 
         FileUtils.should_receive(:remove_entry_secure).with(tmpdir)
-        symlink.should_receive(:unlink)
         at_exit_blocks.each(&:call)
       end
     end
