@@ -124,6 +124,13 @@ class ImageOptim
     run_method_for(paths.map{ |path| ImagePath.new(path) }, :optimize_image!, &block)
   end
 
+  # Optimize multiple image datas
+  # if block given yields original and result for each image data and returns array of yield results
+  # else return array of results
+  def optimize_images_data(datas, &block)
+    run_method_for(datas, :optimize_image_data, &block)
+  end
+
   # Optimization methods with default options
   def self.method_missing(method, *args, &block)
     if method_defined?(method) && method.to_s =~ /^optimize_image/

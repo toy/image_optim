@@ -131,6 +131,13 @@ describe ImageOptim do
         copy.read.should_not == original.read
       end
     end
+
+    it "should optimize datas" do
+      optimized_images_datas = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
+      TEST_IMAGES.zip(optimized_images_datas).each do |original, optimized_image_data|
+        optimized_image_data.should == ImageOptim.optimize_image(original.temp_copy).read
+      end
+    end
   end
 
   describe "unsupported" do
