@@ -1,6 +1,9 @@
 require 'in_threads'
 require 'shellwords'
 
+require 'image_optim/bin_resolver'
+require 'image_optim/config'
+require 'image_optim/handler'
 require 'image_optim/image_path'
 require 'image_optim/option_helpers'
 require 'image_optim/option_definition'
@@ -11,8 +14,6 @@ class ImageOptim
   class BinNotFoundError < StandardError; end
 
   class TrueFalseNil; end
-
-  include OptionHelpers
 
   # Nice level
   attr_reader :nice
@@ -43,54 +44,28 @@ class ImageOptim
   #
   #     ImageOptim.new(:nice => 20)
   def initialize(options = {})
-    @resolved_bins = {}
-    @resolver_lock = Mutex.new
+    @bin_resolver = BinResolver.new
 
-    nice = options.delete(:nice)
-    @nice = case nice
-    when true, nil
-      10
-    when false
-      0
-    else
-      nice.to_i
-    end
-
-    threads = options.delete(:threads)
-    threads = case threads
-    when true, nil
-      processor_count
-    when false
-      1
-    else
-      threads.to_i
-    end
-    @threads = OptionHelpers.limit_with_range(threads, 1..16)
-
-    @verbose = !!options.delete(:verbose)
+    config = Config.new(options)
+    @nice = config.nice
+    @threads = config.threads
+    @verbose = config.verbose
 
     @workers_by_format = {}
     Worker.klasses.each do |klass|
-      case worker_options = options.delete(klass.bin_sym)
-      when Hash
-      when true, nil
-        worker_options = {}
-      when false
-        next
-      else
-        raise ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
-      end
-      worker = klass.new(self, worker_options)
-      worker.image_formats.each do |format|
-        @workers_by_format[format] ||= []
-        @workers_by_format[format] << worker
+      if worker_options = config.for_worker(klass)
+        worker = klass.new(self, worker_options)
+        worker.image_formats.each do |format|
+          @workers_by_format[format] ||= []
+          @workers_by_format[format] << worker
+        end
       end
     end
     @workers_by_format.each do |format, workers|
       workers.replace workers.sort_by(&:run_order) # There is no sort_by! in ruby 1.8
     end
 
-    assert_options_empty!(options)
+    config.assert_no_unused_options!
   end
 
   # Get workers for image
@@ -102,20 +77,13 @@ class ImageOptim
   def optimize_image(original)
     original = ImagePath.new(original)
     if workers = workers_for_image(original)
-      result = nil
-      ts = [original, original.temp_path]
+      handler = Handler.new(original)
       workers.each do |worker|
-        if result && ts.length < 3
-          ts << original.temp_path
-        end
-        if worker.optimize(*ts.last(2))
-          result = ts.last
-          if ts.length == 3
-            ts[-2, 2] = ts[-1], ts[-2]
-          end
+        handler.process do |src, dst|
+          worker.optimize(src, dst)
         end
       end
-      result
+      handler.result
     end
   end
 
@@ -162,36 +130,18 @@ class ImageOptim
   end
 
   # Temp directory for symlinks to bins with path coming from ENV
-  attr_reader :resolve_dir
+  def resolve_dir
+    @bin_resolver.dir
+  end
 
   # Check existance of binary, create symlink if ENV contains path for key XXX_BIN where XXX is upper case bin name
   def resolve_bin!(bin)
-    bin = bin.to_sym
-    @resolved_bins.include?(bin) || @resolver_lock.synchronize do
-      @resolved_bins.include?(bin) || begin
-        if path = ENV["#{bin}_bin".upcase]
-          unless @resolve_dir
-            @resolve_dir = FSPath.temp_dir
-            at_exit{ FileUtils.remove_entry_secure @resolve_dir }
-          end
-          symlink = @resolve_dir / bin
-          symlink.make_symlink(File.expand_path(path))
-          at_exit{ symlink.unlink }
-
-          @resolved_bins[bin] = bin_accessible?(symlink)
-        else
-          @resolved_bins[bin] = bin_accessible?(bin)
-        end
-      end
-    end
-    @resolved_bins[bin] or raise BinNotFoundError, "`#{bin}` not found"
+    @bin_resolver.resolve!(bin)
   end
-
-  VENDOR_PATH = File.expand_path('../../vendor', __FILE__)
 
   # Join resolve_dir, default path and vendor path for PATH environment variable
   def env_path
-    "#{resolve_dir}:#{ENV['PATH']}:#{VENDOR_PATH}"
+    @bin_resolver.env_path
   end
 
 private
@@ -216,33 +166,6 @@ private
     else
       enum
     end
-  end
-
-  # Check if bin can be accessed
-  def bin_accessible?(bin)
-    `env PATH=#{env_path.shellescape} which #{bin.to_s.shellescape}` != ''
-  end
-
-  # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
-  def processor_count
-    @processor_count ||= case host_os = RbConfig::CONFIG['host_os']
-    when /darwin9/
-      `hwprefs cpu_count`
-    when /darwin/
-      (`which hwprefs` != '') ? `hwprefs thread_count` : `sysctl -n hw.ncpu`
-    when /linux/
-      `grep -c processor /proc/cpuinfo`
-    when /freebsd/
-      `sysctl -n hw.ncpu`
-    when /mswin|mingw/
-      require 'win32ole'
-      wmi = WIN32OLE.connect('winmgmts://')
-      cpu = wmi.ExecQuery('select NumberOfLogicalProcessors from Win32_Processor')
-      cpu.to_enum.first.NumberOfLogicalProcessors
-    else
-      warn "Unknown architecture (#{host_os}) assuming one processor."
-      1
-    end.to_i
   end
 end
 
