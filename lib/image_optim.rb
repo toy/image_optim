@@ -1,6 +1,7 @@
 require 'in_threads'
 require 'shellwords'
 
+require 'image_optim/bin_resolver'
 require 'image_optim/handler'
 require 'image_optim/image_path'
 require 'image_optim/option_helpers'
@@ -44,8 +45,7 @@ class ImageOptim
   #
   #     ImageOptim.new(:nice => 20)
   def initialize(options = {})
-    @resolved_bins = {}
-    @resolver_lock = Mutex.new
+    @bin_resolver = BinResolver.new
 
     nice = options.delete(:nice)
     @nice = case nice
@@ -156,35 +156,18 @@ class ImageOptim
   end
 
   # Temp directory for symlinks to bins with path coming from ENV
-  attr_reader :resolve_dir
+  def resolve_dir
+    @bin_resolver.dir
+  end
 
   # Check existance of binary, create symlink if ENV contains path for key XXX_BIN where XXX is upper case bin name
   def resolve_bin!(bin)
-    bin = bin.to_sym
-    @resolved_bins.include?(bin) || @resolver_lock.synchronize do
-      @resolved_bins.include?(bin) || begin
-        if path = ENV["#{bin}_bin".upcase]
-          unless @resolve_dir
-            @resolve_dir = FSPath.temp_dir
-            at_exit{ FileUtils.remove_entry_secure @resolve_dir }
-          end
-          symlink = @resolve_dir / bin
-          symlink.make_symlink(File.expand_path(path))
-
-          @resolved_bins[bin] = bin_accessible?(symlink)
-        else
-          @resolved_bins[bin] = bin_accessible?(bin)
-        end
-      end
-    end
-    @resolved_bins[bin] or raise BinNotFoundError, "`#{bin}` not found"
+    @bin_resolver.resolve!(bin)
   end
-
-  VENDOR_PATH = File.expand_path('../../vendor', __FILE__)
 
   # Join resolve_dir, default path and vendor path for PATH environment variable
   def env_path
-    "#{resolve_dir}:#{ENV['PATH']}:#{VENDOR_PATH}"
+    @bin_resolver.env_path
   end
 
 private
@@ -209,11 +192,6 @@ private
     else
       enum
     end
-  end
-
-  # Check if bin can be accessed
-  def bin_accessible?(bin)
-    `env PATH=#{env_path.shellescape} which #{bin.to_s.shellescape}` != ''
   end
 
   # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
