@@ -96,6 +96,20 @@ class ImageOptim
     end
   end
 
+  # Optimize image data, return new data or nil if optimization failed
+  def optimize_image_data(original_data)
+    format = ImageSize.new(original_data).format
+    ImagePath.temp_file %W[image_optim .#{format}] do |temp|
+      temp.binmode
+      temp.write(original_data)
+      temp.close
+
+      if result = optimize_image(temp.path)
+        result.read
+      end
+    end
+  end
+
   # Optimize multiple images
   # if block given yields path and result for each image and returns array of yield results
   # else return array of results

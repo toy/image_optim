@@ -83,6 +83,18 @@ describe ImageOptim do
       end
     end
 
+    describe "optimize image data" do
+      TEST_IMAGES.each do |original|
+        it "should optimize #{original}" do
+          image_optim = ImageOptim.new
+          optimized_data = image_optim.optimize_image_data(original.read)
+          optimized_data.should == image_optim.optimize_image(original.temp_copy).read
+
+          image_optim.optimize_image_data(optimized_data).should be_nil
+        end
+      end
+    end
+
     describe "stop optimizing" do
       TEST_IMAGES.each do |original|
         it "should stop optimizing #{original}" do
