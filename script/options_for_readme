@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
 
-$: << File.expand_path('../../lib', __FILE__)
+$:.unshift File.expand_path('../../lib', __FILE__)
 
 require 'image_optim'
 
