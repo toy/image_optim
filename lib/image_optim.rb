@@ -2,6 +2,7 @@ require 'in_threads'
 require 'shellwords'
 
 require 'image_optim/bin_resolver'
+require 'image_optim/config'
 require 'image_optim/handler'
 require 'image_optim/image_path'
 require 'image_optim/option_helpers'
@@ -13,8 +14,6 @@ class ImageOptim
   class BinNotFoundError < StandardError; end
 
   class TrueFalseNil; end
-
-  include OptionHelpers
 
   # Nice level
   attr_reader :nice
@@ -47,51 +46,26 @@ class ImageOptim
   def initialize(options = {})
     @bin_resolver = BinResolver.new
 
-    nice = options.delete(:nice)
-    @nice = case nice
-    when true, nil
-      10
-    when false
-      0
-    else
-      nice.to_i
-    end
-
-    threads = options.delete(:threads)
-    threads = case threads
-    when true, nil
-      processor_count
-    when false
-      1
-    else
-      threads.to_i
-    end
-    @threads = OptionHelpers.limit_with_range(threads, 1..16)
-
-    @verbose = !!options.delete(:verbose)
+    config = Config.new(options)
+    @nice = config.nice
+    @threads = config.threads
+    @verbose = config.verbose
 
     @workers_by_format = {}
     Worker.klasses.each do |klass|
-      case worker_options = options.delete(klass.bin_sym)
-      when Hash
-      when true, nil
-        worker_options = {}
-      when false
-        next
-      else
-        raise ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
-      end
-      worker = klass.new(self, worker_options)
-      worker.image_formats.each do |format|
-        @workers_by_format[format] ||= []
-        @workers_by_format[format] << worker
+      if worker_options = config.for_worker(klass)
+        worker = klass.new(self, worker_options)
+        worker.image_formats.each do |format|
+          @workers_by_format[format] ||= []
+          @workers_by_format[format] << worker
+        end
       end
     end
     @workers_by_format.each do |format, workers|
       workers.replace workers.sort_by(&:run_order) # There is no sort_by! in ruby 1.8
     end
 
-    assert_options_empty!(options)
+    config.assert_no_unused_options!
   end
 
   # Get workers for image
@@ -192,28 +166,6 @@ private
     else
       enum
     end
-  end
-
-  # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
-  def processor_count
-    @processor_count ||= case host_os = RbConfig::CONFIG['host_os']
-    when /darwin9/
-      `hwprefs cpu_count`
-    when /darwin/
-      (`which hwprefs` != '') ? `hwprefs thread_count` : `sysctl -n hw.ncpu`
-    when /linux/
-      `grep -c processor /proc/cpuinfo`
-    when /freebsd/
-      `sysctl -n hw.ncpu`
-    when /mswin|mingw/
-      require 'win32ole'
-      wmi = WIN32OLE.connect('winmgmts://')
-      cpu = wmi.ExecQuery('select NumberOfLogicalProcessors from Win32_Processor')
-      cpu.to_enum.first.NumberOfLogicalProcessors
-    else
-      warn "Unknown architecture (#{host_os}) assuming one processor."
-      1
-    end.to_i
   end
 end
 
