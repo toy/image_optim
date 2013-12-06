@@ -155,7 +155,7 @@ Worker can be disabled by passing false instead of options hash.
 ### jpegtran
 * `:copy_chunks` — Copy all chunks *(defaults to false)*
 * `:progressive` — Create progressive JPEG file *(defaults to true)*
-* `:jpegrescan` — Use jpegtran through jpegrescan, ignore progressive option *(defaults to true)*
+* `:jpegrescan` — Use jpegtran through jpegrescan, ignore progressive option *(defaults to false)*
 
 ### gifsicle
 * `:interlace` — Turn interlacing on *(defaults to false)*
