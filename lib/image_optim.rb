@@ -196,3 +196,5 @@ end
 ].each do |worker|
   require "image_optim/worker/#{worker}"
 end
+
+require 'image_optim/railtie' if defined?(Rails)
