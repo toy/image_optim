@@ -8,9 +8,9 @@ require 'find'
 
 options = {}
 
-OptionParser.accept(ImageOptim::TrueFalseNil, OptionParser.top.atype[TrueClass][0].merge('nil' => nil)){ |arg, val| val }
-
 option_parser = OptionParser.new do |op|
+  op.accept(ImageOptim::TrueFalseNil, OptionParser.top.atype[TrueClass][0].merge('nil' => nil)){ |arg, val| val }
+
   op.banner = <<-TEXT
 #{op.program_name} v#{ImageOptim.version}
 
