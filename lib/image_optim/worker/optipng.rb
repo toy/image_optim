@@ -1,4 +1,6 @@
 require 'image_optim/worker'
+require 'image_optim/option_helpers'
+require 'image_optim/true_false_nil'
 
 class ImageOptim
   class Worker

@@ -1,4 +1,6 @@
 require 'image_optim/option_helpers'
+require 'image_optim/configuration_error'
+require 'image_optim/worker'
 
 class ImageOptim
   class Config

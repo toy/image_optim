@@ -1,4 +1,4 @@
-require 'image_optim'
+require 'image_optim/configuration_error'
 
 class ImageOptim
   module OptionHelpers

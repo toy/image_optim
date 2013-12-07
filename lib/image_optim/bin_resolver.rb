@@ -1,4 +1,6 @@
-require 'image_optim'
+require 'image_optim/bin_not_found_error'
+require 'thread'
+require 'fspath'
 
 class ImageOptim
   class BinResolver
