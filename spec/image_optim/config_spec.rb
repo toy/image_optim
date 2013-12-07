@@ -1,4 +1,5 @@
 $:.unshift File.expand_path('../../../lib', __FILE__)
+require 'rspec'
 require 'image_optim/config'
 
 class ImageOptim
@@ -53,25 +54,27 @@ class ImageOptim
     end
 
     describe "for_worker" do
+      class Abc < Worker; end
+
       it "should return empty hash by default" do
         config = Config.new({})
-        config.for_worker(Worker::Jhead).should == {}
+        config.for_worker(Abc).should == {}
       end
 
       it "should return passed hash" do
-        config = Config.new({:jhead => {:option => true}})
-        config.for_worker(Worker::Jhead).should == {:option => true}
+        config = Config.new({:abc => {:option => true}})
+        config.for_worker(Abc).should == {:option => true}
       end
 
       it "should return passed false" do
-        config = Config.new({:jhead => false})
-        config.for_worker(Worker::Jhead).should == false
+        config = Config.new({:abc => false})
+        config.for_worker(Abc).should == false
       end
 
       it "should raise on unknown optino" do
-        config = Config.new({:jhead => 13})
+        config = Config.new({:abc => 13})
         proc {
-          config.for_worker(Worker::Jhead)
+          config.for_worker(Abc)
         }.should raise_error(ConfigurationError)
       end
     end
