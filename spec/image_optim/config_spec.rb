@@ -54,7 +54,9 @@ class ImageOptim
     end
 
     describe "for_worker" do
-      class Abc < Worker; end
+      class Abc < Worker
+        def image_formats; []; end
+      end
 
       it "should return empty hash by default" do
         config = Config.new({})
