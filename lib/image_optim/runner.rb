@@ -137,6 +137,10 @@ class ImageOptim
             |Usege:
             |  #{op.program_name} [options] image_path …
             |
+            |Configuration will be read and prepanded to options from two paths:
+            |  #{ImageOptim::Config::GLOBAL_CONFIG_PATH}
+            |  #{ImageOptim::Config::LOCAL_CONFIG_PATH} (in current working directory)
+            |
           TEXT
 
           op.on('-r', '-R', '--recursive', 'Recurively scan directories for images') do |recursive|
