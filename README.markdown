@@ -126,6 +126,20 @@ Multiple images:
 
     image_optim.optimize_images!(Dir['*.*'])
 
+## Configuration
+
+Configuration in YAML format will be read and prepanded to options from two paths:
+
+* `$XDG_CONFIG_HOME/image_optim.yml` (by default `~/.config/image_optim.yml`)
+* `.image_optim.yml` in current working directory
+
+Example configuration:
+
+    nice: 20
+    pngout: false # disable
+    optipng:
+      level: 5
+
 ## Options
 
 Worker can be disabled by passing false instead of options hash.
