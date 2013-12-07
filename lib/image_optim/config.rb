@@ -1,4 +1,7 @@
 require 'image_optim/option_helpers'
+require 'image_optim/configuration_error'
+require 'image_optim/hash_helpers'
+require 'image_optim/worker'
 require 'yaml'
 
 class ImageOptim
