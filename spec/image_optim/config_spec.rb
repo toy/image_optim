@@ -3,6 +3,10 @@ require 'image_optim/config'
 
 class ImageOptim
   describe Config do
+    before do
+      Config.stub(:global => {}, :local => {})
+    end
+
     describe "assert_no_unused_options!" do
       it "should not raise when no unused options" do
         config = Config.new({})
