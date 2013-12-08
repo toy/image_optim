@@ -1,13 +1,47 @@
 require 'image_optim/option_helpers'
 require 'image_optim/configuration_error'
+require 'image_optim/hash_helpers'
 require 'image_optim/worker'
+require 'yaml'
 
 class ImageOptim
   class Config
     include OptionHelpers
 
+    GLOBAL_CONFIG_PATH = File.join(File.expand_path(ENV['XDG_CONFIG_HOME'] || '~/.config'), 'image_optim.yml')
+    LOCAL_CONFIG_PATH = '.image_optim.yml'
+
+    class << self
+      def global
+        File.file?(GLOBAL_CONFIG_PATH) ? read(GLOBAL_CONFIG_PATH) : {}
+      end
+
+      def local
+        File.file?(LOCAL_CONFIG_PATH) ? read(LOCAL_CONFIG_PATH) : {}
+      end
+
+    private
+
+      def read(path)
+        config = YAML.load_file(path)
+        unless config.is_a?(Hash)
+          raise "excpected hash, got #{config.inspect}"
+        end
+        HashHelpers.deep_symbolise_keys(config)
+      rescue => e
+        warn "exception when reading #{path}: #{e}"
+        {}
+      end
+    end
+
     def initialize(options)
-      @options = options.dup
+      @options = [
+        Config.global,
+        Config.local,
+        HashHelpers.deep_symbolise_keys(options),
+      ].inject do |memo, hash|
+        HashHelpers.deep_merge(memo, hash)
+      end
     end
 
     def assert_no_unused_options!
