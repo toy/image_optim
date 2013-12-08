@@ -138,6 +138,8 @@ Automatic assets processing can be turned off by setting `config.assets.image_op
 
 Worker can be disabled by passing false instead of options hash.
 
+<!---<worker-options>-->
+
 ### pngcrush
 * `:chunks` — List of chunks to remove or 'alla' - all except tRNS/transparency or 'allb' - all except tRNS and gAMA/gamma *(defaults to alla)*
 * `:fix` — Fix otherwise fatal conditions such as bad CRCs *(defaults to false)*
@@ -161,10 +163,12 @@ Worker can be disabled by passing false instead of options hash.
 ### jpegtran
 * `:copy_chunks` — Copy all chunks *(defaults to false)*
 * `:progressive` — Create progressive JPEG file *(defaults to true)*
-* `:jpegrescan` — Use jpegtran through jpegrescan, ignore progressive option *(defaults to true)*
+* `:jpegrescan` — Use jpegtran through jpegrescan, ignore progressive option *(defaults to false)*
 
 ### gifsicle
 * `:interlace` — Turn interlacing on *(defaults to false)*
+
+<!---</worker-options>-->
 
 ## Copyright
 

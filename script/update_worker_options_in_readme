@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+
+$:.unshift File.expand_path('../../lib', __FILE__)
+
+require 'image_optim'
+
+README_FILE = File.expand_path('../../README.markdown', __FILE__)
+BEGIN_MARKER = '<!---<worker-options>-->'
+END_MARKER = '<!---</worker-options>-->'
+
+def worker_options
+  io = StringIO.new
+
+  ImageOptim::Worker.klasses.each_with_index do |klass, i|
+    unless klass.option_definitions.empty?
+      io.puts "### #{klass.bin_sym}"
+      klass.option_definitions.each do |option_definition|
+        io.puts "* `:#{option_definition.name}` — #{option_definition.description} *(defaults to #{option_definition.default})*"
+      end
+      io.puts
+    end
+  end
+
+  io.string
+end
+
+readme = File.read(README_FILE)
+
+if readme.sub!(/#{Regexp.escape(BEGIN_MARKER)}.*#{Regexp.escape(END_MARKER)}/m, "#{BEGIN_MARKER}\n\n#{worker_options.strip}\n\n#{END_MARKER}")
+  File.open(README_FILE, 'w') do |f|
+    f.write readme
+  end
+else
+  abort "Did not update worker options"
+end

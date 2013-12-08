@@ -1,8 +1,8 @@
 # encoding: UTF-8
 
+require 'image_optim/option_definition'
+require 'image_optim/option_helpers'
 require 'shellwords'
-
-require 'image_optim'
 
 class ImageOptim
   class Worker
