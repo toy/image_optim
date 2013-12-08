@@ -142,6 +142,10 @@ Example configuration:
 
 ## Options
 
+* `:nice` — Nice level *(defaults to 10)*
+* `:threads` — Number of threads or disable *(defaults to number of processors)*
+* `:verbose` — Verbose output *(defaults to false)*
+
 Worker can be disabled by passing false instead of options hash.
 
 <!---<worker-options>-->
