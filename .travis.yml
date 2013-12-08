@@ -17,7 +17,3 @@ before_install:
   - mv pngout-*-linux pngout-linux
 env:
   - PATH=pngout-linux/x86_64:$PATH
-matrix:
-  allow_failures:
-    - rvm: jruby-18mode
-    - rvm: jruby-19mode
