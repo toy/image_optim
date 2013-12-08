@@ -40,6 +40,10 @@ ImageOptim::ImagePath.class_eval do
 end
 
 describe ImageOptim do
+  before do
+    ImageOptim::Config.stub(:global => {}, :local => {})
+  end
+
   describe "isolated" do
     describe "optimize" do
       TEST_IMAGES.each do |original|

@@ -134,6 +134,20 @@ As image optimization can be time consuming you may prefer to optimize original 
 
 Automatic assets processing can be turned off by setting `config.assets.image_optim = false`.
 
+## Configuration
+
+Configuration in YAML format will be read and prepanded to options from two paths:
+
+* `$XDG_CONFIG_HOME/image_optim.yml` (by default `~/.config/image_optim.yml`)
+* `.image_optim.yml` in current working directory
+
+Example configuration:
+
+    nice: 20
+    pngout: false # disable
+    optipng:
+      level: 5
+
 ## Options
 
 Worker can be disabled by passing false instead of options hash.
