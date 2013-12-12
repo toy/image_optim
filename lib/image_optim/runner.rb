@@ -60,8 +60,14 @@ class ImageOptim
 
         files = get_optimisable_files(args, image_optim, recursive)
 
-        files = files.with_progress('optimizing')
-        results = image_optim.optimize_images(files) do |src, dst|
+        optimize!(files, image_optim)
+      end
+
+    private
+
+      def optimize!(files, image_optim)
+        lines, src_sizes, dst_sizes =
+        image_optim.optimize_images(files.with_progress('optimizing')) do |src, dst|
           if dst
             src_size, dst_size = src.size, dst.size
             percent = size_percent(src_size, dst_size)
@@ -70,14 +76,10 @@ class ImageOptim
           else
             ["------ #{Space::EMPTY_SPACE}  #{src}", src.size, src.size]
           end
-        end
-        lines, src_sizes, dst_sizes = results.transpose
-        if lines
-          $stdout.puts lines, "Total: #{size_percent(src_sizes.inject(:+), dst_sizes.inject(:+))}\n"
-        end
-      end
+        end.transpose
 
-    private
+        $stdout.puts lines, "Total: #{size_percent(src_sizes.inject(:+), dst_sizes.inject(:+))}\n"
+      end
 
       def size_percent(src_size, dst_size)
         '%5.2f%% %s' % [100 - 100.0 * dst_size / src_size, Space.space(src_size - dst_size)]
