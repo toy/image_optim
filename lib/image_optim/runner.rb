@@ -55,7 +55,7 @@ class ImageOptim
         end
 
         if args.empty?
-          abort 'no paths to optimize'
+          abort 'specify paths to optimize'
         end
 
         files = get_optimisable_files(args, image_optim, recursive)
