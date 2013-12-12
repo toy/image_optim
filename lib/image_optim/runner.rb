@@ -39,10 +39,8 @@ class ImageOptim
 
     class << self
 
-      def run!(args)
-        args = args.dup
-
-        options = parse_options!(args)
+      def run!(args, options)
+        options = HashHelpers.deep_symbolise_keys(options)
 
         if options[:verbose]
           puts YAML.dump('Options' => HashHelpers.deep_stringify_keys(options)).sub(/\A---\n/, '')
@@ -105,111 +103,6 @@ class ImageOptim
           end
         end
         files
-      end
-
-      def parse_options!(args)
-        options = {}
-
-        parser = option_parser(options)
-        begin
-          parser.parse!(args)
-        rescue OptionParser::ParseError => e
-          abort "#{e.to_s}\n\n#{parser.help}"
-        end
-
-        options
-      end
-
-      def option_parser(options)
-        OptionParser.new do |op|
-          op.accept(ImageOptim::TrueFalseNil, OptionParser.top.atype[TrueClass][0].merge('nil' => nil)){ |arg, val| val }
-
-          op.banner = <<-TEXT.gsub(/^\s*\|/, '')
-            |#{op.program_name} v#{ImageOptim.version}
-            |
-            |Usege:
-            |  #{op.program_name} [options] image_path …
-            |
-            |Configuration will be read and prepanded to options from two paths:
-            |  #{ImageOptim::Config::GLOBAL_CONFIG_PATH}
-            |  #{ImageOptim::Config::LOCAL_CONFIG_PATH} (in current working directory)
-            |
-          TEXT
-
-          op.on('-r', '-R', '--recursive', 'Recurively scan directories for images') do |recursive|
-            options[:recursive] = recursive
-          end
-
-          op.separator nil
-
-          op.on('--[no-]threads N', Integer, 'Number of threads or disable (defaults to number of processors)') do |threads|
-            options[:threads] = threads
-          end
-
-          op.on('--[no-]nice N', Integer, 'Nice level (defaults to 10)') do |nice|
-            options[:nice] = nice
-          end
-
-          op.separator nil
-          op.separator '  Disabling workers:'
-
-          ImageOptim::Worker.klasses.each do |klass|
-            bin = klass.bin_sym
-            op.on("--no-#{bin}", "disable #{bin} worker") do |enable|
-              options[bin] = enable
-            end
-          end
-
-          op.separator nil
-          op.separator '  Worker options:'
-
-          ImageOptim::Worker.klasses.each_with_index do |klass, i|
-            op.separator nil unless i.zero?
-
-            bin = klass.bin_sym
-            klass.option_definitions.each do |option_definition|
-              name = option_definition.name.to_s.gsub('_', '-')
-              default = option_definition.default
-              type = option_definition.type
-
-              type, marking = case
-              when [TrueClass, FalseClass, ImageOptim::TrueFalseNil].include?(type)
-                [type, 'B']
-              when Integer >= type
-                [Integer, 'N']
-              when Array >= type
-                [Array, 'a,b,c']
-              else
-                raise "Unknown type #{type}"
-              end
-
-              description = "#{option_definition.description.gsub(' - ', ' - ')} (defaults to #{default})"
-              description = description.scan(/(.*?.{1,60})(?:\s|\z)/).flatten.join("\n  ").split("\n")
-
-              op.on("--#{bin}-#{name} #{marking}", type, *description) do |value|
-                options[bin] = {} unless options[bin].is_a?(Hash)
-                options[bin][option_definition.name.to_sym] = value
-              end
-            end
-          end
-
-          op.separator nil
-          op.separator '  Common options:'
-
-          op.on('-v', '--verbose', 'Verbose output') do |verbose|
-            options[:verbose] = verbose
-          end
-
-          op.on_tail('-h', '--help', 'Show full help') do
-            puts op.help
-            exit
-          end
-
-          op.on_tail('--version', 'Show version') do
-            puts ImageOptim.version
-            exit
-          end
-        end
       end
 
     end
