@@ -11,13 +11,11 @@ require 'yaml'
 class ImageOptim
   class Runner
     module Space
-      SIZE_SYMBOLS = %w[B K M G T P E Z Y].freeze
+      SIZE_SYMBOLS = %w[B K M G T P E].freeze
       PRECISION = 1
       LENGTH = 4 + PRECISION + 1
-      COEF = 1 / Math.log(10)
 
       EMPTY_SPACE = ' ' * LENGTH
-      NOT_COUNTED_SPACE = '!' * LENGTH
 
       class << self
         attr_writer :base10
@@ -25,19 +23,14 @@ class ImageOptim
           @denominator ||= @base10 ? 1000.0 : 1024.0
         end
 
-        def space(size, options = {})
+        def space(size)
           case size
-          when false
-            NOT_COUNTED_SPACE.bold.red
           when 0, nil
             EMPTY_SPACE
           else
-            number, degree = size, 0
-            while number.abs >= 1000 && degree < SIZE_SYMBOLS.length - 1
-              number /= denominator
-              degree += 1
-            end
-
+            log_denominator = Math.log(size) / Math.log(denominator)
+            degree = [log_denominator.floor, SIZE_SYMBOLS.length - 1].min
+            number = size / (denominator ** degree)
             "#{degree == 0 ? number.to_s : "%.#{PRECISION}f" % number}#{SIZE_SYMBOLS[degree]}".rjust(LENGTH)
           end
         end
