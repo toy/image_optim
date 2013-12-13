@@ -58,6 +58,8 @@ class ImageOptim
     end
 
     config.assert_no_unused_options!
+
+    puts config if verbose?
   end
 
   # Get workers for image

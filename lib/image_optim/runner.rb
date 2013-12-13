@@ -42,10 +42,6 @@ class ImageOptim
       def run!(args, options)
         options = HashHelpers.deep_symbolise_keys(options)
 
-        if options[:verbose]
-          puts YAML.dump('Options' => HashHelpers.deep_stringify_keys(options)).sub(/\A---\n/, '')
-        end
-
         recursive = options.delete(:recursive)
 
         image_optim = begin

@@ -106,6 +106,10 @@ class ImageOptim
       end
     end
 
+    def to_s
+      YAML.dump(HashHelpers.deep_stringify_keys(@options)).sub(/\A---\n/, '')
+    end
+
   private
 
     # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
