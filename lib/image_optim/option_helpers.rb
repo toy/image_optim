@@ -14,12 +14,5 @@ class ImageOptim
         range.last
       end
     end
-
-    # Raise unless all options are deleted
-    def assert_options_empty!(options)
-      unless options.empty?
-        raise ConfigurationError, "unused options #{options.inspect} for #{self}"
-      end
-    end
   end
 end

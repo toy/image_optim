@@ -2,6 +2,7 @@ require 'image_optim/option_helpers'
 require 'image_optim/configuration_error'
 require 'image_optim/hash_helpers'
 require 'image_optim/worker'
+require 'set'
 require 'yaml'
 
 class ImageOptim
@@ -42,14 +43,24 @@ class ImageOptim
       ].inject do |memo, hash|
         HashHelpers.deep_merge(memo, hash)
       end
+      @used = Set.new
+    end
+
+    def get!(key)
+      key = key.to_sym
+      @used << key
+      @options[key]
     end
 
     def assert_no_unused_options!
-      assert_options_empty!(@options)
+      unknown_options = @options.reject{ |key, value| @used.include?(key) }
+      unless unknown_options.empty?
+        raise ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
+      end
     end
 
     def nice
-      nice = @options.delete(:nice)
+      nice = get!(:nice)
 
       case nice
       when true, nil
@@ -62,7 +73,7 @@ class ImageOptim
     end
 
     def threads
-      threads = @options.delete(:threads)
+      threads = get!(:threads)
 
       threads = case threads
       when true, nil
@@ -77,11 +88,11 @@ class ImageOptim
     end
 
     def verbose
-      !!@options.delete(:verbose)
+      !!get!(:verbose)
     end
 
     def for_worker(klass)
-      worker_options = @options.delete(klass.bin_sym)
+      worker_options = get!(klass.bin_sym)
 
       case worker_options
       when Hash
