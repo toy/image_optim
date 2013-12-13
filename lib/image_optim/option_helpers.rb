@@ -2,18 +2,6 @@ require 'image_optim/configuration_error'
 
 class ImageOptim
   module OptionHelpers
-    # Remove option from hash and run through block or return default
-    def get_option!(options, name, default)
-      value = default
-      if options.has_key?(name)
-        value = options.delete(name)
-      end
-      if block_given?
-        value = yield(value)
-      end
-      instance_variable_set("@#{name}", value)
-    end
-
     # Ensure number is in range
     def self.limit_with_range(number, range)
       if range.include?(number)

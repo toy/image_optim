@@ -38,7 +38,15 @@ class ImageOptim
     def initialize(image_optim, options = {})
       @image_optim = image_optim
       self.class.option_definitions.each do |option_definition|
-        get_option!(options, option_definition.name, option_definition.default, &option_definition.proc)
+        value = if options.has_key?(option_definition.name)
+          options.delete(option_definition.name)
+        else
+          option_definition.default
+        end
+        if option_definition.proc
+          value = option_definition.proc[value]
+        end
+        instance_variable_set("@#{option_definition.name}", value)
       end
       assert_options_empty!(options)
     end
