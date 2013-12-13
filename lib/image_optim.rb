@@ -53,9 +53,7 @@ class ImageOptim
         end
       end
     end
-    @workers_by_format.each do |format, workers|
-      workers.replace workers.sort_by(&:run_order) # There is no sort_by! in ruby 1.8
-    end
+    @workers_by_format.values.each(&:sort!)
 
     config.assert_no_unused_options!
 
