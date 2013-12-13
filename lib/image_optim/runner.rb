@@ -58,9 +58,18 @@ class ImageOptim
           abort 'specify paths to optimize'
         end
 
-        files = get_optimisable_files(args, image_optim, recursive)
+        errors = false
 
-        optimize!(files, image_optim)
+        files = get_optimisable_files(args, image_optim, recursive) do |error|
+          errors = true
+          warn error
+        end
+
+        unless files.empty?
+          optimize!(files, image_optim)
+        end
+
+        !errors
       end
 
     private
@@ -85,14 +94,14 @@ class ImageOptim
         '%5.2f%% %s' % [100 - 100.0 * dst_size / src_size, Space.space(src_size - dst_size)]
       end
 
-      def get_optimisable_files(args, image_optim, recursive)
+      def get_optimisable_files(args, image_optim, recursive, &error_block)
         files = []
         args.each do |arg|
           if File.file?(arg)
             if image_optim.optimizable?(arg)
               files << arg
             else
-              warn "#{arg} is not an image or there is no optimizer for it"
+              error_block.call "#{arg} is not an image or there is no optimizer for it"
             end
           else
             if recursive && File.directory?(arg)
@@ -100,7 +109,7 @@ class ImageOptim
                 files << path if File.file?(path) && image_optim.optimizable?(path)
               end
             else
-              warn "#{arg} does not exist"
+              error_block.call "#{arg} does not exist"
             end
           end
         end

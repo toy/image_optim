@@ -102,4 +102,4 @@ rescue OptionParser::ParseError => e
   abort "#{e.to_s}\n\n#{option_parser.help}"
 end
 
-ImageOptim::Runner.run!(args, options)
+ImageOptim::Runner.run!(args, options) or exit 1
