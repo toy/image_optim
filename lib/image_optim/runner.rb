@@ -31,7 +31,7 @@ class ImageOptim
             log_denominator = Math.log(size) / Math.log(denominator)
             degree = [log_denominator.floor, SIZE_SYMBOLS.length - 1].min
             number = size / (denominator ** degree)
-            "#{degree == 0 ? number.to_s : "%.#{PRECISION}f" % number}#{SIZE_SYMBOLS[degree]}".rjust(LENGTH)
+            "#{degree == 0 ? number.to_i : "%.#{PRECISION}f" % number}#{SIZE_SYMBOLS[degree]}".rjust(LENGTH)
           end
         end
       end
