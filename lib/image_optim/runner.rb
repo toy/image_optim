@@ -37,81 +37,70 @@ class ImageOptim
       end
     end
 
-    class << self
+    def initialize(args, options)
+      raise 'specify paths to optimize' if args.empty?
+      options = HashHelpers.deep_symbolise_keys(options)
+      @recursive = options.delete(:recursive)
+      @image_optim = ImageOptim.new(options)
+      @files = find_files(args)
+    end
 
-      def run!(args, options)
-        options = HashHelpers.deep_symbolise_keys(options)
-
-        recursive = options.delete(:recursive)
-
-        image_optim = begin
-          ImageOptim.new(options)
-        rescue ImageOptim::ConfigurationError => e
-          abort e.to_s
-        end
-
-        if args.empty?
-          abort 'specify paths to optimize'
-        end
-
-        errors = false
-
-        files = get_optimisable_files(args, image_optim, recursive) do |error|
-          errors = true
-          warn error
-        end
-
-        unless files.empty?
-          optimize!(files, image_optim)
-        end
-
-        !errors
-      end
-
-    private
-
-      def optimize!(files, image_optim)
+    def run!
+      unless @files.empty?
         lines, src_sizes, dst_sizes =
-        image_optim.optimize_images(files.with_progress('optimizing')) do |src, dst|
+        @image_optim.optimize_images(@files.with_progress('optimizing')) do |src, dst|
           if dst
             src_size, dst_size = src.size, dst.size
-            percent = size_percent(src_size, dst_size)
             dst.replace(src)
-            ["#{percent}  #{src}", src_size, dst_size]
+            ["#{size_percent(src_size, dst_size)}  #{src}", src_size, dst_size]
           else
             ["------ #{Space::EMPTY_SPACE}  #{src}", src.size, src.size]
           end
         end.transpose
 
-        $stdout.puts lines, "Total: #{size_percent(src_sizes.inject(:+), dst_sizes.inject(:+))}\n"
+        puts lines, "Total: #{size_percent(src_sizes.inject(:+), dst_sizes.inject(:+))}"
       end
 
-      def size_percent(src_size, dst_size)
-        '%5.2f%% %s' % [100 - 100.0 * dst_size / src_size, Space.space(src_size - dst_size)]
-      end
+      !warnings?
+    end
 
-      def get_optimisable_files(args, image_optim, recursive, &error_block)
-        files = []
-        args.each do |arg|
-          if File.file?(arg)
-            if image_optim.optimizable?(arg)
-              files << arg
-            else
-              error_block.call "#{arg} is not an image or there is no optimizer for it"
-            end
+    def warnings?
+      !!@warnings
+    end
+
+    def self.run!(args, options)
+      new(args, options).run!
+    end
+
+  private
+
+    def find_files(args)
+      files = []
+      args.each do |arg|
+        if File.file?(arg)
+          if @image_optim.optimizable?(arg)
+            files << arg
           else
-            if recursive && File.directory?(arg)
-              Find.find(arg) do |path|
-                files << path if File.file?(path) && image_optim.optimizable?(path)
-              end
-            else
-              error_block.call "#{arg} does not exist"
-            end
+            warning "#{arg} is not an image or there is no optimizer for it"
           end
+        elsif @recursive && File.directory?(arg)
+          Find.find(arg) do |path|
+            files << path if File.file?(path) && @image_optim.optimizable?(path)
+          end
+        else
+          warning "#{arg} does not exist"
         end
-        files
       end
+      files
+    end
 
+    def warning(message)
+      @warnings = true
+      warn message
+    end
+
+    def size_percent(src_size, dst_size)
+      '%5.2f%% %s' % [100 - 100.0 * dst_size / src_size, Space.space(src_size - dst_size)]
     end
 
   end
