@@ -102,5 +102,9 @@ begin
 rescue OptionParser::ParseError => e
   abort "#{e.to_s}\n\n#{option_parser.help}"
 rescue => e
-  abort e.to_s
+  if options[:verbose]
+    abort "#{e.to_s}\n#{e.backtrace.join("\n")}"
+  else
+    abort e.to_s
+  end
 end
