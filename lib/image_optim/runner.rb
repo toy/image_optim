@@ -47,18 +47,14 @@ class ImageOptim
 
     def run!
       unless @files.empty?
-        lines, src_sizes, dst_sizes =
-        @image_optim.optimize_images(@files.with_progress('optimizing')) do |src, dst|
-          if dst
-            src_size, dst_size = src.size, dst.size
-            dst.replace(src)
-            ["#{size_percent(src_size, dst_size)}  #{src}", src_size, dst_size]
-          else
-            ["------ #{Space::EMPTY_SPACE}  #{src}", src.size, src.size]
-          end
+        lines, original_sizes, optimized_sizes =
+        @image_optim.optimize_images!(@files.with_progress('optimizing')) do |original, optimized|
+          original_size = optimized ? optimized.original_size : original.size
+          optimized_size = optimized ? optimized.size : original.size
+          ["#{size_percent(original_size, optimized_size)}  #{original}", original_size, optimized_size]
         end.transpose
 
-        puts lines, "Total: #{size_percent(src_sizes.inject(:+), dst_sizes.inject(:+))}"
+        puts lines, "Total: #{size_percent(original_sizes.inject(:+), optimized_sizes.inject(:+))}"
       end
 
       !warnings?
@@ -99,8 +95,12 @@ class ImageOptim
       warn message
     end
 
-    def size_percent(src_size, dst_size)
-      '%5.2f%% %s' % [100 - 100.0 * dst_size / src_size, Space.space(src_size - dst_size)]
+    def size_percent(size_a, size_b)
+      if size_a == size_b
+        "------ #{Space::EMPTY_SPACE}"
+      else
+        '%5.2f%% %s' % [100 - 100.0 * size_b / size_a, Space.space(size_a - size_b)]
+      end
     end
 
   end
