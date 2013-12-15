@@ -65,7 +65,7 @@ class ImageOptim
     @workers_by_format[ImagePath.new(path).format]
   end
 
-  # Optimize one file, return new path or nil if optimization failed
+  # Optimize one file, return new path as OptimizedImagePath or nil if optimization failed
   def optimize_image(original)
     original = ImagePath.new(original)
     if workers = workers_for_image(original)
@@ -75,16 +75,18 @@ class ImageOptim
           worker.optimize(src, dst)
         end
       end
-      handler.result
+      if handler.result
+        ImagePath::Optimized.new(handler.result, original)
+      end
     end
   end
 
-  # Optimize one file in place, return optimization status
+  # Optimize one file in place, return original as OptimizedImagePath or nil if optimization failed
   def optimize_image!(original)
     original = ImagePath.new(original)
     if result = optimize_image(original)
       result.replace(original)
-      true
+      ImagePath::Optimized.new(original, result.original_size)
     end
   end
 
