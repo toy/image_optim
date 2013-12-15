@@ -53,11 +53,11 @@ class ImageOptim
         end
       end
     end
-    @workers_by_format.each do |format, workers|
-      workers.replace workers.sort_by(&:run_order) # There is no sort_by! in ruby 1.8
-    end
+    @workers_by_format.values.each(&:sort!)
 
     config.assert_no_unused_options!
+
+    puts config if verbose?
   end
 
   # Get workers for image
@@ -65,7 +65,7 @@ class ImageOptim
     @workers_by_format[to_image_path(path).format]
   end
 
-  # Optimize one file, return new path or nil if optimization failed
+  # Optimize one file, return new path as OptimizedImagePath or nil if optimization failed
   def optimize_image(original)
     original = to_image_path(original)
     if workers = workers_for_image(original)
@@ -75,16 +75,18 @@ class ImageOptim
           worker.optimize(src, dst)
         end
       end
-      handler.result
+      if handler.result
+        ImagePath::Optimized.new(handler.result, original)
+      end
     end
   end
 
-  # Optimize one file in place, return optimization status
+  # Optimize one file in place, return original as OptimizedImagePath or nil if optimization failed
   def optimize_image!(original)
     original = to_image_path(original)
     if result = optimize_image(original)
       result.replace(original)
-      true
+      ImagePath::Optimized.new(original, result.original_size)
     end
   end
 

@@ -32,15 +32,22 @@ class ImageOptim
       end
     end
 
-    include OptionHelpers
-
     # Configure (raises on extra options)
     def initialize(image_optim, options = {})
       @image_optim = image_optim
       self.class.option_definitions.each do |option_definition|
-        get_option!(options, option_definition.name, option_definition.default, &option_definition.proc)
+        value = if options.has_key?(option_definition.name)
+          options[option_definition.name]
+        else
+          option_definition.default
+        end
+        if option_definition.proc
+          value = option_definition.proc[value]
+        end
+        instance_variable_set("@#{option_definition.name}", value)
       end
-      assert_options_empty!(options)
+
+      assert_no_unknown_options!(options)
     end
 
     # List of formats which worker can optimize
@@ -55,12 +62,24 @@ class ImageOptim
       0
     end
 
+    def <=>(other)
+      run_order <=> other.run_order
+    end
+
     # Check if operation resulted in optimized file
     def optimized?(src, dst)
       dst.size? && dst.size < src.size
     end
 
   private
+
+    def assert_no_unknown_options!(options)
+      known_keys = self.class.option_definitions.map(&:name)
+      unknown_options = options.reject{ |key, value| known_keys.include?(key) }
+      unless unknown_options.empty?
+        raise ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
+      end
+    end
 
     # Forward bin resolving to image_optim
     def resolve_bin!(bin)
