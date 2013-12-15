@@ -144,11 +144,6 @@ class ImageOptim
     !!workers_for_image(path)
   end
 
-  # Temp directory for symlinks to bins with path coming from ENV
-  def resolve_dir
-    @bin_resolver.dir
-  end
-
   # Check existance of binary, create symlink if ENV contains path for key XXX_BIN where XXX is upper case bin name
   def resolve_bin!(bin)
     @bin_resolver.resolve!(bin)
