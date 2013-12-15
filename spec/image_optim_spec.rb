@@ -220,40 +220,4 @@ describe ImageOptim do
       end
     end
   end
-
-  describe "to_image_path" do
-    def to_image_path(x)
-      ImageOptim.new.instance_eval{ to_image_path(x) }
-    end
-
-    it "should return ImagePath for string" do
-      path = 'a'
-
-      to_image_path(path).should be_a(ImageOptim::ImagePath)
-      to_image_path(path).should eq(ImageOptim::ImagePath.new(path))
-
-      to_image_path(path).should_not eq(path)
-      to_image_path(path).should_not be(path)
-    end
-
-    it "should return ImagePath for Pathname" do
-      pathname = Pathname.new('a')
-
-      to_image_path(pathname).should be_a(ImageOptim::ImagePath)
-      to_image_path(pathname).should eq(ImageOptim::ImagePath.new(pathname))
-
-      to_image_path(pathname).should eq(pathname)
-      to_image_path(pathname).should_not be(pathname)
-    end
-
-    it "should return same instance for ImagePath" do
-      image_path = ImageOptim::ImagePath.new('a')
-
-      to_image_path(image_path).should be_a(ImageOptim::ImagePath)
-      to_image_path(image_path).should eq(ImageOptim::ImagePath.new(image_path))
-
-      to_image_path(image_path).should eq(image_path)
-      to_image_path(image_path).should be(image_path)
-    end
-  end
 end
