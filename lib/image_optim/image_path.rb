@@ -3,6 +3,27 @@ require 'image_size'
 
 class ImageOptim
   class ImagePath < FSPath
+    class Optimized < self
+      def initialize(path, original_or_size = nil)
+        super(path)
+        if original_or_size
+          if original_or_size.is_a?(Integer)
+            @original = self
+            @original_size = original_or_size
+          else
+            @original = ImagePath.new(original_or_size)
+            @original_size = @original.size
+          end
+        end
+      end
+
+      # Original path, use original_size to get its size as original can be overwritten
+      attr_reader :original
+
+      # Stored size of original
+      attr_reader :original_size
+    end
+
     # Get temp path for this file with same extension
     def temp_path(*args, &block)
       ext = extname
