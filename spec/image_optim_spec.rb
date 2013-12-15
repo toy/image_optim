@@ -87,6 +87,18 @@ describe ImageOptim do
       end
     end
 
+    describe "optimize image data" do
+      TEST_IMAGES.each do |original|
+        it "should optimize #{original}" do
+          image_optim = ImageOptim.new
+          optimized_data = image_optim.optimize_image_data(original.read)
+          optimized_data.should == image_optim.optimize_image(original.temp_copy).read
+
+          image_optim.optimize_image_data(optimized_data).should be_nil
+        end
+      end
+    end
+
     describe "stop optimizing" do
       TEST_IMAGES.each do |original|
         it "should stop optimizing #{original}" do
@@ -121,6 +133,13 @@ describe ImageOptim do
       TEST_IMAGES.zip(copies).each do |original, copy|
         copy.size.should be_in_range(1...original.size)
         copy.read.should_not == original.read
+      end
+    end
+
+    it "should optimize datas" do
+      optimized_images_datas = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
+      TEST_IMAGES.zip(optimized_images_datas).each do |original, optimized_image_data|
+        optimized_image_data.should == ImageOptim.optimize_image(original.temp_copy).read
       end
     end
   end
@@ -199,6 +218,42 @@ describe ImageOptim do
         nrmse.should_not be_nil
         nrmse.to_f.should be < 0.005
       end
+    end
+  end
+
+  describe "to_image_path" do
+    def to_image_path(x)
+      ImageOptim.new.instance_eval{ to_image_path(x) }
+    end
+
+    it "should return ImagePath for string" do
+      path = 'a'
+
+      to_image_path(path).should be_a(ImageOptim::ImagePath)
+      to_image_path(path).should eq(ImageOptim::ImagePath.new(path))
+
+      to_image_path(path).should_not eq(path)
+      to_image_path(path).should_not be(path)
+    end
+
+    it "should return ImagePath for Pathname" do
+      pathname = Pathname.new('a')
+
+      to_image_path(pathname).should be_a(ImageOptim::ImagePath)
+      to_image_path(pathname).should eq(ImageOptim::ImagePath.new(pathname))
+
+      to_image_path(pathname).should eq(pathname)
+      to_image_path(pathname).should_not be(pathname)
+    end
+
+    it "should return same instance for ImagePath" do
+      image_path = ImageOptim::ImagePath.new('a')
+
+      to_image_path(image_path).should be_a(ImageOptim::ImagePath)
+      to_image_path(image_path).should eq(ImageOptim::ImagePath.new(image_path))
+
+      to_image_path(image_path).should eq(image_path)
+      to_image_path(image_path).should be(image_path)
     end
   end
 end

@@ -126,6 +126,14 @@ Multiple images:
 
     image_optim.optimize_images!(Dir['*.*'])
 
+### From rails
+
+`ImageOptim::Railtie` will automatically initialize processing of assets if `config.assets.compress` is true.
+
+As image optimization can be time consuming you may prefer to optimize original asset files.
+
+Automatic assets processing can be turned off by setting `config.assets.image_optim = false`.
+
 ## Configuration
 
 Configuration in YAML format will be read and prepanded to options from two paths:

@@ -62,12 +62,12 @@ class ImageOptim
 
   # Get workers for image
   def workers_for_image(path)
-    @workers_by_format[ImagePath.new(path).format]
+    @workers_by_format[to_image_path(path).format]
   end
 
   # Optimize one file, return new path or nil if optimization failed
   def optimize_image(original)
-    original = ImagePath.new(original)
+    original = to_image_path(original)
     if workers = workers_for_image(original)
       handler = Handler.new(original)
       workers.each do |worker|
@@ -81,10 +81,24 @@ class ImageOptim
 
   # Optimize one file in place, return optimization status
   def optimize_image!(original)
-    original = ImagePath.new(original)
+    original = to_image_path(original)
     if result = optimize_image(original)
       result.replace(original)
       true
+    end
+  end
+
+  # Optimize image data, return new data or nil if optimization failed
+  def optimize_image_data(original_data)
+    format = ImageSize.new(original_data).format
+    ImagePath.temp_file %W[image_optim .#{format}] do |temp|
+      temp.binmode
+      temp.write(original_data)
+      temp.close
+
+      if result = optimize_image(temp.path)
+        result.read
+      end
     end
   end
 
@@ -92,19 +106,26 @@ class ImageOptim
   # if block given yields path and result for each image and returns array of yield results
   # else return array of results
   def optimize_images(paths, &block)
-    run_method_for(paths, :optimize_image, &block)
+    run_method_for(paths.map{ |path| to_image_path(path) }, :optimize_image, &block)
   end
 
   # Optimize multiple images in place
   # if block given yields path and result for each image and returns array of yield results
   # else return array of results
   def optimize_images!(paths, &block)
-    run_method_for(paths, :optimize_image!, &block)
+    run_method_for(paths.map{ |path| to_image_path(path) }, :optimize_image!, &block)
+  end
+
+  # Optimize multiple image datas
+  # if block given yields original and result for each image data and returns array of yield results
+  # else return array of results
+  def optimize_images_data(datas, &block)
+    run_method_for(datas, :optimize_image_data, &block)
   end
 
   # Optimization methods with default options
   def self.method_missing(method, *args, &block)
-    if method.to_s =~ /^optimize_images?\!?$/
+    if method_defined?(method) && method.to_s =~ /^optimize_image/
       new.send(method, *args, &block)
     else
       super
@@ -138,10 +159,13 @@ class ImageOptim
 
 private
 
+  def to_image_path(path)
+    path.is_a?(ImagePath) ? path : ImagePath.new(path)
+  end
+
   # Run method for each path and yield each path and result if block given
   def run_method_for(paths, method_name, &block)
     apply_threading(paths).map do |path|
-      path = ImagePath.new(path)
       result = send(method_name, path)
       if block
         block.call(path, result)
@@ -168,3 +192,5 @@ end
 ].each do |worker|
   require "image_optim/worker/#{worker}"
 end
+
+require 'image_optim/railtie' if defined?(Rails)
