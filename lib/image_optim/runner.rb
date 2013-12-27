@@ -79,12 +79,16 @@ class ImageOptim
           else
             warning "#{arg} is not an image or there is no optimizer for it"
           end
-        elsif @recursive && File.directory?(arg)
-          Find.find(arg) do |path|
-            files << path if File.file?(path) && @image_optim.optimizable?(path)
+        elsif @recursive
+          if File.directory?(arg)
+            Find.find(arg) do |path|
+              files << path if File.file?(path) && @image_optim.optimizable?(path)
+            end
+          else
+            warning "#{arg} is not a file or a directory or does not exist"
           end
         else
-          warning "#{arg} does not exist"
+          warning "#{arg} is not a file or does not exist"
         end
       end
       files
