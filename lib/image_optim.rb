@@ -179,7 +179,7 @@ private
 end
 
 %w[
-  pngcrush pngout optipng advpng
+  pngcrush pngout optipng advpng zopfli
   jhead jpegoptim jpegtran
   gifsicle
 ].each do |worker|
