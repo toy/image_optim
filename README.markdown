@@ -116,6 +116,10 @@ Optimize image in place:
 
     image_optim.optimize_image!('b.jpg')
 
+Optimize image data:
+
+    image_optim.optimize_image_data(data)
+
 Multiple images:
 
     image_optim.optimize_images(Dir['*.png']) do |unoptimized, optimized|
@@ -125,6 +129,8 @@ Multiple images:
     end
 
     image_optim.optimize_images!(Dir['*.*'])
+
+    image_optim.optimize_images_data(datas)
 
 ### From rails
 
