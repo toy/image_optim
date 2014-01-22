@@ -92,7 +92,7 @@ describe ImageOptim do
         it "should optimize #{original}" do
           image_optim = ImageOptim.new
           optimized_data = image_optim.optimize_image_data(original.read)
-          optimized_data.should == image_optim.optimize_image(original.temp_copy).read
+          optimized_data.should == image_optim.optimize_image(original.temp_copy).open('rb', &:read)
 
           image_optim.optimize_image_data(optimized_data).should be_nil
         end
@@ -139,7 +139,7 @@ describe ImageOptim do
     it "should optimize datas" do
       optimized_images_datas = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
       TEST_IMAGES.zip(optimized_images_datas).each do |original, optimized_image_data|
-        optimized_image_data.should == ImageOptim.optimize_image(original.temp_copy).read
+        optimized_image_data.should == ImageOptim.optimize_image(original.temp_copy).open('rb', &:read)
       end
     end
   end

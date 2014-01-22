@@ -99,7 +99,7 @@ class ImageOptim
       temp.close
 
       if result = optimize_image(temp.path)
-        result.read
+        result.open('rb', &:read)
       end
     end
   end
