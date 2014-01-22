@@ -196,4 +196,4 @@ Worker can be disabled by passing false instead of options hash.
 
 ## Copyright
 
-Copyright (c) 2012-2013 Ivan Kuchin. See LICENSE.txt for details.
+Copyright (c) 2012-2014 Ivan Kuchin. See LICENSE.txt for details.
