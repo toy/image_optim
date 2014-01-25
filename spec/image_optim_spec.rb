@@ -170,12 +170,6 @@ describe ImageOptim do
   describe "optimize multiple" do
     let(:srcs){ ('a'..'z').to_a }
 
-    before do
-      srcs.each do |src|
-        ImageOptim::ImagePath.should_receive(:new).with(src).and_return(src)
-      end
-    end
-
     %w[optimize_images optimize_images!].each do |list_method|
       describe list_method do
         single_method = list_method.sub('images', 'image')
