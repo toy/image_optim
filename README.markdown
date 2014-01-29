@@ -63,17 +63,17 @@ You will also need to install `jpegoptim` and `pngcrush` from source:
 #### jpegoptim
 
     cd /tmp
-    curl -O http://www.kokkonen.net/tjko/src/jpegoptim-1.2.4.tar.gz
-    tar zxf jpegoptim-1.2.4.tar.gz
-    cd jpegoptim-1.2.4
+    curl -O http://www.kokkonen.net/tjko/src/jpegoptim-1.3.0.tar.gz
+    tar zxf jpegoptim-1.3.0.tar.gz
+    cd jpegoptim-1.3.0
     ./configure && make && make install
 
 #### pngcrush
 
     cd /tmp
-    curl -O http://iweb.dl.sourceforge.net/project/pmt/pngcrush/1.7.43/pngcrush-1.7.43.tar.gz
-    tar zxf pngcrush-1.7.43.tar.gz
-    cd pngcrush-1.7.43
+    curl -O http://iweb.dl.sourceforge.net/project/pmt/pngcrush/1.7.70/pngcrush-1.7.70.tar.gz
+    tar zxf pngcrush-1.7.70.tar.gz
+    cd pngcrush-1.7.70
     make && cp -f pngcrush /usr/local/bin
 
 ### OS X: Macports
