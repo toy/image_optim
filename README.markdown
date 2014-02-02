@@ -20,7 +20,9 @@ Based on [ImageOptim.app](http://imageoptim.com/).
 
 ## Gem installation
 
-    gem install image_optim
+```sh
+gem install image_optim
+```
 
 ## Binaries location
 
@@ -52,37 +54,49 @@ Besides permanently setting environment variables in `~/.profile`, `~/.bash_prof
 
 ### Linux - Debian/Ubuntu
 
-    sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
+```bash
+sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
+```
 
 ### Linux - RHEL/Fedora/Centos
 
-    sudo yum install -y advancecomp gifsicle jhead libjpeg optipng
+```bash
+sudo yum install -y advancecomp gifsicle jhead libjpeg optipng
+```
 
 You will also need to install `jpegoptim` and `pngcrush` from source:
 
 #### jpegoptim
 
-    cd /tmp
-    curl -O http://www.kokkonen.net/tjko/src/jpegoptim-1.3.0.tar.gz
-    tar zxf jpegoptim-1.3.0.tar.gz
-    cd jpegoptim-1.3.0
-    ./configure && make && make install
+```bash
+cd /tmp
+curl -O http://www.kokkonen.net/tjko/src/jpegoptim-1.3.0.tar.gz
+tar zxf jpegoptim-1.3.0.tar.gz
+cd jpegoptim-1.3.0
+./configure && make && make install
+```
 
 #### pngcrush
 
-    cd /tmp
-    curl -O http://iweb.dl.sourceforge.net/project/pmt/pngcrush/1.7.70/pngcrush-1.7.70.tar.gz
-    tar zxf pngcrush-1.7.70.tar.gz
-    cd pngcrush-1.7.70
-    make && cp -f pngcrush /usr/local/bin
+```bash
+cd /tmp
+curl -O http://iweb.dl.sourceforge.net/project/pmt/pngcrush/1.7.70/pngcrush-1.7.70.tar.gz
+tar zxf pngcrush-1.7.70.tar.gz
+cd pngcrush-1.7.70
+make && cp -f pngcrush /usr/local/bin
+```
 
 ### OS X: Macports
 
-    sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
+```bash
+sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
+```
 
 ### OS X: Brew
 
-    brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
+```bash
+brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
+```
 
 ### pngout installation (optional)
 
@@ -94,43 +108,55 @@ _Note: pngout is free to use even in commercial soft, but you can not redistribu
 
 ### From shell
 
-    image_optim *.{jpg,png,gif}
+```sh
+image_optim *.{jpg,png,gif}
 
-    image_optim -h
+image_optim -h
+```
 
 ### From ruby
 
 Initilize optimizer:
 
-    image_optim = ImageOptim.new
+```ruby
+image_optim = ImageOptim.new
 
-    image_optim = ImageOptim.new(:pngout => false)
+image_optim = ImageOptim.new(:pngout => false)
 
-    image_optim = ImageOptim.new(:nice => 20)
+image_optim = ImageOptim.new(:nice => 20)
+```
 
 Optimize image getting temp path:
 
-    image_optim.optimize_image('a.png')
+```ruby
+image_optim.optimize_image('a.png')
+```
 
 Optimize image in place:
 
-    image_optim.optimize_image!('b.jpg')
+```ruby
+image_optim.optimize_image!('b.jpg')
+```
 
 Optimize image data:
 
-    image_optim.optimize_image_data(data)
+```ruby
+image_optim.optimize_image_data(data)
+```
 
 Multiple images:
 
-    image_optim.optimize_images(Dir['*.png']) do |unoptimized, optimized|
-      if optimized
-        puts "#{unoptimized} => #{optimized}"
-      end
-    end
+```ruby
+image_optim.optimize_images(Dir['*.png']) do |unoptimized, optimized|
+  if optimized
+    puts "#{unoptimized} => #{optimized}"
+  end
+end
 
-    image_optim.optimize_images!(Dir['*.*'])
+image_optim.optimize_images!(Dir['*.*'])
 
-    image_optim.optimize_images_data(datas)
+image_optim.optimize_images_data(datas)
+```
 
 ### From rails
 
@@ -149,10 +175,12 @@ Configuration in YAML format will be read and prepanded to options from two path
 
 Example configuration:
 
-    nice: 20
-    pngout: false # disable
-    optipng:
-      level: 5
+```yaml
+nice: 20
+pngout: false # disable
+optipng:
+  level: 5
+```
 
 ## Options
 
