@@ -4,7 +4,7 @@ class ImageOptim
   class Railtie < Rails::Railtie
     initializer 'image_optim.initializer' do |app|
       if app.config.assets.compress && app.config.assets.image_optim != false
-        image_optim = ImageOptim.new
+        image_optim = ImageOptim.new(app.config.assets.image_optim || {})
 
         processor = proc do |context, data|
           image_optim.optimize_image_data(data) || data
