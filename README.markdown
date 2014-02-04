@@ -19,6 +19,7 @@ Optimize (lossless compress) images (jpeg, png, gif, svg) using external utiliti
 * [pngcrush](http://pmt.sourceforge.net/pngcrush/)
 * [pngout](http://www.advsys.net/ken/util/pngout.htm)
 * [svgo](https://github.com/svg/svgo)
+* [pngquant](http://pngquant.org/)
 
 Based on [ImageOptim.app](http://imageoptim.com/).
 
@@ -81,13 +82,13 @@ Besides permanently setting environment variables in `~/.profile`, `~/.bash_prof
 ### Linux - Debian/Ubuntu
 
 ```bash
-sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
+sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush pngquant
 ```
 
 ### Linux - RHEL/Fedora/Centos
 
 ```bash
-sudo yum install -y advancecomp gifsicle jhead libjpeg optipng
+sudo yum install -y advancecomp gifsicle jhead libjpeg optipng pngquant
 ```
 
 You may also need to install `libjpeg-turbo-utils` instead of `libjpeg`:
@@ -273,6 +274,9 @@ Worker has no options
 
 ### :svgo =>
 Worker has no options
+
+### pngquant
+* `:speed` —  Speed/quality trade-off: 1 - brute-force, 10 - fastest *(defaults to 3)*
 
 <!---</worker-options>-->
 
