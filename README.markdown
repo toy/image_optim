@@ -81,13 +81,13 @@ Besides permanently setting environment variables in `~/.profile`, `~/.bash_prof
 ### Linux - Debian/Ubuntu
 
 ```bash
-sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
+sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush pngquant
 ```
 
 ### Linux - RHEL/Fedora/Centos
 
 ```bash
-sudo yum install -y advancecomp gifsicle jhead libjpeg optipng
+sudo yum install -y advancecomp gifsicle jhead libjpeg optipng pngquant
 ```
 
 You may also need to install `libjpeg-turbo-utils` instead of `libjpeg`:
