@@ -109,9 +109,9 @@ _Note: pngout is free to use even in commercial soft, but you can not redistribu
 
 svgo is available from NPM.
 
-~~~bash
+```bash
 npm install -g svgo
-~~~
+```
 
 ## Usage
 
