@@ -23,5 +23,13 @@ class ImageOptim
         end
       end
     end
+
+    # Remove extra temp files
+    def cleanup
+      if @dst
+        @dst.unlink
+        @dst = nil
+      end
+    end
   end
 end
