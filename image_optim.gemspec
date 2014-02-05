@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.require_paths = %w[lib]
 
   s.add_dependency 'fspath', '~> 2.1.0'
-  s.add_dependency 'image_size', '~> 1.1.2'
+  s.add_dependency 'image_size', '~> 1.2.0'
   s.add_dependency 'exifr', '~> 1.1.3'
   s.add_dependency 'progress', '~> 3.0.0'
   s.add_dependency 'in_threads', '~> 1.2.0'
