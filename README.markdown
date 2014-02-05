@@ -118,7 +118,7 @@ npm install -g svgo
 ### From shell
 
 ```sh
-image_optim *.{jpg,png,gif}
+image_optim *.{jpg,png,gif,svg}
 
 image_optim -h
 ```
