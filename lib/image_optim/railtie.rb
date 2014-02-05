@@ -13,6 +13,7 @@ class ImageOptim
         app.assets.register_preprocessor 'image/gif', :image_optim, &processor
         app.assets.register_preprocessor 'image/jpeg', :image_optim, &processor
         app.assets.register_preprocessor 'image/png', :image_optim, &processor
+        app.assets.register_preprocessor 'image/svg+xml', :image_optim, &processor
       end
     end
   end
