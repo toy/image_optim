@@ -75,6 +75,7 @@ class ImageOptim
           worker.optimize(src, dst)
         end
       end
+      handler.cleanup
       if handler.result
         ImagePath::Optimized.new(handler.result, original)
       end

@@ -40,5 +40,9 @@ describe ImageOptim::Handler do
       [src, dst].should == [temp_a, temp_b]; true
     end
     handler.result.should == temp_b
+
+    temp_a.should_receive(:unlink).once
+    handler.cleanup
+    handler.cleanup
   end
 end

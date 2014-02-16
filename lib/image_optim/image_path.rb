@@ -43,6 +43,7 @@ class ImageOptim
         src.copy(temp)
         temp.write(read)
         temp.rename(src.to_s)
+        unlink
       end
     end
 
