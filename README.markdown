@@ -1,6 +1,6 @@
 # image_optim
 
-Optimize (lossless compress) images (jpeg, png, gif) using external utilities:
+Optimize (lossless compress) images (jpeg, png, gif, svg) using external utilities:
 
 * [advpng](http://advancemame.sourceforge.net/doc-advpng.html) from [AdvanceCOMP](http://advancemame.sourceforge.net/comp-readme.html)
 * [gifsicle](http://www.lcdf.org/gifsicle/)
@@ -10,6 +10,7 @@ Optimize (lossless compress) images (jpeg, png, gif) using external utilities:
 * [optipng](http://optipng.sourceforge.net/)
 * [pngcrush](http://pmt.sourceforge.net/pngcrush/)
 * [pngout](http://www.advsys.net/ken/util/pngout.htm)
+* [svgo](https://github.com/svg/svgo)
 
 Based on [ImageOptim.app](http://imageoptim.com/).
 
@@ -104,12 +105,20 @@ You can install `pngout` by downloading and installing the [binary versions](htt
 
 _Note: pngout is free to use even in commercial soft, but you can not redistribute, repackage or reuse it without consent and agreement of creator. [license](http://advsys.net/ken/utils.htm#pngoutkziplicense)_
 
+### svgo installation (optional)
+
+`svgo` is available from NPM.
+
+```bash
+npm install -g svgo
+```
+
 ## Usage
 
 ### From shell
 
 ```sh
-image_optim *.{jpg,png,gif}
+image_optim *.{jpg,png,gif,svg}
 
 image_optim -h
 ```

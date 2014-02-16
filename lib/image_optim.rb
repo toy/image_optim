@@ -183,6 +183,7 @@ end
   pngcrush pngout optipng advpng
   jhead jpegoptim jpegtran
   gifsicle
+  svgo
 ].each do |worker|
   require "image_optim/worker/#{worker}"
 end
