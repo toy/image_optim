@@ -25,6 +25,23 @@ Based on [ImageOptim.app](http://imageoptim.com/).
 gem install image_optim
 ```
 
+### Bundler
+
+Add to your `Gemfile`:
+```ruby
+gem 'image_optim'
+```
+
+With version:
+```ruby
+gem 'image_optim', '~> 0.11'
+```
+
+If you want to check latest changes:
+```ruby
+gem 'image_optim', :git => 'git://github.com/toy/image_optim.git'
+```
+
 ## Binaries location
 
 Simplest way for `image_optim` to locate binaries is to install them in common location present in `PATH` (see [Binaries installation](#binaries-installation)).
@@ -125,7 +142,7 @@ image_optim -h
 
 ### From ruby
 
-Initilize optimizer:
+Initilize optimizer (or you can call optimization methods directly on `ImageOptim`):
 
 ```ruby
 image_optim = ImageOptim.new
@@ -171,7 +188,7 @@ image_optim.optimize_images_data(datas)
 
 `ImageOptim::Railtie` will automatically register sprockets preprocessor unless you set `config.assets.image_optim = false` or `config.assets.compress = false` (later for partial rails 3 compatibility).
 
-As image optimization can be time consuming you may prefer to optimize original asset files.
+Image optimization can be time consuming, so depending on your deployment process you may prefer to optimize original asset files.
 
 ## Configuration
 
