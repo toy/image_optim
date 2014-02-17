@@ -142,7 +142,7 @@ image_optim -h
 
 ### From ruby
 
-Initilize optimizer:
+Initilize optimizer (or you can call optimization methods directly on `ImageOptim`):
 
 ```ruby
 image_optim = ImageOptim.new
