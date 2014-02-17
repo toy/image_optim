@@ -3,7 +3,6 @@
 
 require 'image_optim/runner'
 
-args = ARGV.dup
 options = {}
 
 option_parser = OptionParser.new do |op|
@@ -97,6 +96,12 @@ option_parser = OptionParser.new do |op|
 end
 
 begin
+  args = ARGV.dup
+
+  if args == %w[-v]
+    args = %w[--version]
+  end
+
   option_parser.parse!(args)
   ImageOptim::Runner.run!(args, options) or exit 1
 rescue OptionParser::ParseError => e
