@@ -12,10 +12,8 @@ class ImageOptim
 
     def resolve!(bin)
       bin = bin.to_sym
-      unless @bins.include?(bin)
-        @lock.synchronize do
-          @bins[bin] = resolve?(bin) unless @bins.include?(bin)
-        end
+      resolving(bin) do
+        @bins[bin] = resolve?(bin)
       end
       @bins[bin] or raise BinNotFoundError, "`#{bin}` not found"
     end
@@ -27,6 +25,16 @@ class ImageOptim
     end
 
   private
+
+    def resolving(bin)
+      unless @bins.include?(bin)
+        @lock.synchronize do
+          unless @bins.include?(bin)
+            yield
+          end
+        end
+      end
+    end
 
     def resolve?(bin)
       if path = ENV["#{bin}_bin".upcase]
