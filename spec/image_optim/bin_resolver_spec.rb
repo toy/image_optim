@@ -93,4 +93,17 @@ describe ImageOptim::BinResolver do
       at_exit_blocks.each(&:call)
     end
   end
+
+  it "should resolve bin only once" do
+    with_env 'LS_BIN', nil do
+      resolver = ImageOptim::BinResolver.new
+      resolver.should_receive(:resolve?).once.with(:ls){ sleep 0.1; true }
+
+      10.times.map do
+        Thread.new do
+          resolver.resolve!(:ls)
+        end
+      end.each(&:join)
+    end
+  end
 end
