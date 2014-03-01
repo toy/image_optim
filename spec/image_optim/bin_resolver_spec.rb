@@ -17,7 +17,7 @@ describe ImageOptim::BinResolver do
       FSPath.should_not_receive(:temp_dir)
 
       5.times do
-        resolver.resolve!(:ls).should be_true
+        resolver.resolve!(:ls)
       end
       resolver.env_path.should == "#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}"
     end
@@ -41,7 +41,7 @@ describe ImageOptim::BinResolver do
       end
 
       5.times do
-        resolver.resolve!(:image_optim).should be_true
+        resolver.resolve!(:image_optim)
       end
       resolver.env_path.should == "#{tmpdir.to_str}:#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}"
 
