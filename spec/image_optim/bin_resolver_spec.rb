@@ -29,7 +29,7 @@ describe ImageOptim::BinResolver do
       symlink = double(:symlink)
 
       resolver = ImageOptim::BinResolver.new
-      resolver.should_receive(:accessible?).with(symlink).once.and_return(true)
+      resolver.should_receive(:accessible?).with(:image_optim).once.and_return(true)
       FSPath.should_receive(:temp_dir).once.and_return(tmpdir)
       tmpdir.should_receive(:/).with(:image_optim).once.and_return(symlink)
       symlink.should_receive(:make_symlink).with(File.expand_path(path)).once
@@ -69,7 +69,7 @@ describe ImageOptim::BinResolver do
       symlink = double(:symlink)
 
       resolver = ImageOptim::BinResolver.new
-      resolver.should_receive(:accessible?).with(symlink).once.and_return(false)
+      resolver.should_receive(:accessible?).with(:should_not_exist).once.and_return(false)
       FSPath.should_receive(:temp_dir).once.and_return(tmpdir)
       tmpdir.should_receive(:/).with(:should_not_exist).once.and_return(symlink)
       symlink.should_receive(:make_symlink).with(File.expand_path(path)).once

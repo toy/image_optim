@@ -36,11 +36,8 @@ class ImageOptim
         end
         symlink = @dir / bin
         symlink.make_symlink(File.expand_path(path))
-
-        accessible?(symlink)
-      else
-        accessible?(bin)
       end
+      accessible?(bin)
     end
 
     def accessible?(bin)
