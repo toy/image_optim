@@ -23,7 +23,7 @@ class ImageOptim
     VENDOR_PATH = File.expand_path('../../../vendor', __FILE__)
 
     def env_path
-      "#{dir}:#{ENV['PATH']}:#{VENDOR_PATH}"
+      [dir, ENV['PATH'], VENDOR_PATH].compact.join(':')
     end
 
   private
