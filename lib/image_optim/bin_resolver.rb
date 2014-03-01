@@ -23,7 +23,7 @@ class ImageOptim
     VENDOR_PATH = File.expand_path('../../../vendor', __FILE__)
 
     def env_path
-      "#{dir}:#{ENV['PATH']}:#{VENDOR_PATH}"
+      [dir, ENV['PATH'], VENDOR_PATH].compact.join(':')
     end
 
   private
@@ -36,11 +36,8 @@ class ImageOptim
         end
         symlink = @dir / bin
         symlink.make_symlink(File.expand_path(path))
-
-        accessible?(symlink)
-      else
-        accessible?(bin)
       end
+      accessible?(bin)
     end
 
     def accessible?(bin)

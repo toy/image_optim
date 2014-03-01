@@ -19,6 +19,7 @@ describe ImageOptim::BinResolver do
       5.times do
         resolver.resolve!(:ls).should be_true
       end
+      resolver.env_path.should == "#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}"
     end
   end
 
@@ -29,7 +30,7 @@ describe ImageOptim::BinResolver do
       symlink = double(:symlink)
 
       resolver = ImageOptim::BinResolver.new
-      resolver.should_receive(:accessible?).with(symlink).once.and_return(true)
+      resolver.should_receive(:accessible?).with(:image_optim).once.and_return(true)
       FSPath.should_receive(:temp_dir).once.and_return(tmpdir)
       tmpdir.should_receive(:/).with(:image_optim).once.and_return(symlink)
       symlink.should_receive(:make_symlink).with(File.expand_path(path)).once
@@ -42,6 +43,7 @@ describe ImageOptim::BinResolver do
       5.times do
         resolver.resolve!(:image_optim).should be_true
       end
+      resolver.env_path.should == "#{tmpdir.to_str}:#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}"
 
       FileUtils.should_receive(:remove_entry_secure).with(tmpdir)
       at_exit_blocks.each(&:call)
@@ -59,6 +61,7 @@ describe ImageOptim::BinResolver do
           resolver.resolve!(:should_not_exist)
         end.to raise_error ImageOptim::BinNotFoundError
       end
+      resolver.env_path.should == "#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}"
     end
   end
 
@@ -69,7 +72,7 @@ describe ImageOptim::BinResolver do
       symlink = double(:symlink)
 
       resolver = ImageOptim::BinResolver.new
-      resolver.should_receive(:accessible?).with(symlink).once.and_return(false)
+      resolver.should_receive(:accessible?).with(:should_not_exist).once.and_return(false)
       FSPath.should_receive(:temp_dir).once.and_return(tmpdir)
       tmpdir.should_receive(:/).with(:should_not_exist).once.and_return(symlink)
       symlink.should_receive(:make_symlink).with(File.expand_path(path)).once
@@ -84,6 +87,7 @@ describe ImageOptim::BinResolver do
           resolver.resolve!(:should_not_exist)
         end.to raise_error ImageOptim::BinNotFoundError
       end
+      resolver.env_path.should == "#{tmpdir.to_str}:#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}"
 
       FileUtils.should_receive(:remove_entry_secure).with(tmpdir)
       at_exit_blocks.each(&:call)
