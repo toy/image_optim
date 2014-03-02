@@ -1,8 +1,8 @@
-require 'image_optim/bin_not_found_error'
 require 'thread'
 require 'fspath'
 
 class ImageOptim
+  class BinNotFoundError < StandardError; end
   class BinResolver
     attr_reader :dir
     def initialize
