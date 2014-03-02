@@ -3,7 +3,20 @@ require 'fspath'
 
 class ImageOptim
   class BinNotFoundError < StandardError; end
+  class BadBinVersion < StandardError; end
+
   class BinResolver
+    class Bin
+      attr_reader :name, :version
+      def initialize(name, version)
+        @name, @version = name, version
+      end
+
+      def to_s
+        "#{@name} #{@version || '-'}"
+      end
+    end
+
     attr_reader :dir
     def initialize
       @bins = {}
@@ -12,10 +25,16 @@ class ImageOptim
 
     def resolve!(name)
       name = name.to_sym
+
       resolving(name) do
-        @bins[name] = resolve?(name)
+        @bins[name] = resolve?(name) && Bin.new(name, version(name))
       end
-      @bins[name] or raise BinNotFoundError, "`#{name}` not found"
+
+      if @bins[name]
+        check!(@bins[name])
+      else
+        raise BinNotFoundError, "`#{name}` not found"
+      end
     end
 
     VENDOR_PATH = File.expand_path('../../../vendor', __FILE__)
@@ -50,6 +69,34 @@ class ImageOptim
 
     def accessible?(name)
       capture_output("which #{name.to_s.shellescape}") != ''
+    end
+
+    def version(name)
+      case name.to_sym
+      when :advpng, :gifsicle, :jpegoptim, :optipng
+        capture_output("#{name} --version")[/\d+(\.\d+){1,}/]
+      when :svgo
+        capture_output("#{name} --version 2>&1")[/\d+(\.\d+){1,}/]
+      when :jhead
+        capture_output("#{name} -V")[/\d+(\.\d+){1,}/]
+      when :jpegtran
+        capture_output("#{name} -v - 2>&1")[/version (\d+\S*)/, 1]
+      when :pngcrush
+        capture_output("#{name} -version 2>&1")[/\d+(\.\d+){1,}/]
+      when :pngout
+        date_str = capture_output("#{name} 2>&1")[/[A-Z][a-z]{2} (?: |\d)\d \d{4}/]
+        Date.parse(date_str).strftime('%Y%m%d')
+      end
+    end
+
+    def check!(bin)
+      case bin.name
+      when :pngcrush
+        case bin.version
+        when '1.7.60'..'1.7.65'
+          raise BadBinVersion, "`#{bin}` is known to produce broken pngs"
+        end
+      end
     end
 
     def capture_output(command)

@@ -106,4 +106,20 @@ describe ImageOptim::BinResolver do
       end.each(&:join)
     end
   end
+
+  it "should raise on detection of problematic version" do
+    with_env 'PNGCRUSH_BIN', nil do
+      resolver = ImageOptim::BinResolver.new
+      resolver.should_receive(:accessible?).with(:pngcrush).once.and_return(true)
+      resolver.should_receive(:version).with(:pngcrush).once.and_return('1.7.60')
+      FSPath.should_not_receive(:temp_dir)
+
+      5.times do
+        expect do
+          resolver.resolve!(:pngcrush)
+        end.to raise_error ImageOptim::BadBinVersion
+      end
+      resolver.env_path.should == "#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}"
+    end
+  end
 end
