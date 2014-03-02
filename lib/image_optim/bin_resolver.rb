@@ -10,12 +10,12 @@ class ImageOptim
       @lock = Mutex.new
     end
 
-    def resolve!(bin)
-      bin = bin.to_sym
-      resolving(bin) do
-        @bins[bin] = resolve?(bin)
+    def resolve!(name)
+      name = name.to_sym
+      resolving(name) do
+        @bins[name] = resolve?(name)
       end
-      @bins[bin] or raise BinNotFoundError, "`#{bin}` not found"
+      @bins[name] or raise BinNotFoundError, "`#{name}` not found"
     end
 
     VENDOR_PATH = File.expand_path('../../../vendor', __FILE__)
@@ -26,30 +26,30 @@ class ImageOptim
 
   private
 
-    def resolving(bin)
-      unless @bins.include?(bin)
+    def resolving(name)
+      unless @bins.include?(name)
         @lock.synchronize do
-          unless @bins.include?(bin)
+          unless @bins.include?(name)
             yield
           end
         end
       end
     end
 
-    def resolve?(bin)
-      if path = ENV["#{bin}_bin".upcase]
+    def resolve?(name)
+      if path = ENV["#{name}_bin".upcase]
         unless @dir
           @dir = FSPath.temp_dir
           at_exit{ FileUtils.remove_entry_secure @dir }
         end
-        symlink = @dir / bin
+        symlink = @dir / name
         symlink.make_symlink(File.expand_path(path))
       end
-      accessible?(bin)
+      accessible?(name)
     end
 
-    def accessible?(bin)
-      capture_output("which #{bin.to_s.shellescape}") != ''
+    def accessible?(name)
+      capture_output("which #{name.to_s.shellescape}") != ''
     end
 
     def capture_output(command)
