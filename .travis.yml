@@ -5,8 +5,11 @@ rvm:
   - 1.9.2
   - 1.9.3
   - 2.0.0
+  - 2.1.0
+  - ruby-head
   - jruby-18mode
   - jruby-19mode
+  - jruby-head
   - ree
 script: bundle exec rspec
 before_install:
@@ -18,3 +21,7 @@ before_install:
   - npm install -g svgo
 env:
   - PATH=pngout-linux/x86_64:$PATH
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: jruby-head
