@@ -49,7 +49,11 @@ class ImageOptim
     end
 
     def accessible?(bin)
-      `env PATH=#{env_path.shellescape} which #{bin.to_s.shellescape}` != ''
+      capture_output("which #{bin.to_s.shellescape}") != ''
+    end
+
+    def capture_output(command)
+      `env PATH=#{env_path.shellescape} #{command}`
     end
   end
 end
