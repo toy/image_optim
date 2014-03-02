@@ -17,7 +17,7 @@ describe ImageOptim::BinResolver do
       FSPath.should_not_receive(:temp_dir)
 
       5.times do
-        resolver.resolve!(:ls).should be_true
+        resolver.resolve!(:ls)
       end
       resolver.env_path.should == "#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}"
     end
@@ -41,7 +41,7 @@ describe ImageOptim::BinResolver do
       end
 
       5.times do
-        resolver.resolve!(:image_optim).should be_true
+        resolver.resolve!(:image_optim)
       end
       resolver.env_path.should == "#{tmpdir.to_str}:#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}"
 
@@ -91,6 +91,35 @@ describe ImageOptim::BinResolver do
 
       FileUtils.should_receive(:remove_entry_secure).with(tmpdir)
       at_exit_blocks.each(&:call)
+    end
+  end
+
+  it "should resolve bin only once" do
+    with_env 'LS_BIN', nil do
+      resolver = ImageOptim::BinResolver.new
+      resolver.should_receive(:resolve?).once.with(:ls){ sleep 0.1; true }
+
+      10.times.map do
+        Thread.new do
+          resolver.resolve!(:ls)
+        end
+      end.each(&:join)
+    end
+  end
+
+  it "should raise on detection of problematic version" do
+    with_env 'PNGCRUSH_BIN', nil do
+      resolver = ImageOptim::BinResolver.new
+      resolver.should_receive(:accessible?).with(:pngcrush).once.and_return(true)
+      resolver.should_receive(:version).with(:pngcrush).once.and_return('1.7.60')
+      FSPath.should_not_receive(:temp_dir)
+
+      5.times do
+        expect do
+          resolver.resolve!(:pngcrush)
+        end.to raise_error ImageOptim::BadBinVersion
+      end
+      resolver.env_path.should == "#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}"
     end
   end
 end
