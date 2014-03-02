@@ -57,7 +57,11 @@ class ImageOptim
 
     config.assert_no_unused_options!
 
-    $stderr << config if verbose?
+    if verbose?
+      $stderr << config
+      $stderr << "Nice level: #{nice}\n"
+      $stderr << "Using threads: #{threads}\n"
+    end
   end
 
   # Get workers for image
