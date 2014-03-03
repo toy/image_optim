@@ -51,9 +51,9 @@ class ImageOptim
         config.threads.should == 1
       end
 
-      it "should convert value to number and limit to 1..16" do
+      it "should convert value to number" do
         config = Config.new({:threads => '616'})
-        config.threads.should == 16
+        config.threads.should == 616
       end
     end
 

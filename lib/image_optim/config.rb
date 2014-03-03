@@ -75,7 +75,7 @@ class ImageOptim
     def threads
       threads = get!(:threads)
 
-      threads = case threads
+      case threads
       when true, nil
         processor_count
       when false
@@ -83,8 +83,6 @@ class ImageOptim
       else
         threads.to_i
       end
-
-      OptionHelpers.limit_with_range(threads, 1..16)
     end
 
     def verbose

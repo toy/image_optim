@@ -36,12 +36,18 @@ class ImageOptim
   #
   #     ImageOptim.new(:nice => 20)
   def initialize(options = {})
-    @bin_resolver = BinResolver.new
-
     config = Config.new(options)
     @nice = config.nice
     @threads = config.threads
     @verbose = config.verbose
+
+    if verbose?
+      $stderr << config
+      $stderr << "Nice level: #{nice}\n"
+      $stderr << "Using threads: #{threads}\n"
+    end
+
+    @bin_resolver = BinResolver.new(self)
 
     @workers_by_format = {}
     Worker.klasses.each do |klass|
@@ -56,8 +62,6 @@ class ImageOptim
     @workers_by_format.values.each(&:sort!)
 
     config.assert_no_unused_options!
-
-    puts config if verbose?
   end
 
   # Get workers for image

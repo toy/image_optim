@@ -18,7 +18,8 @@ class ImageOptim
     end
 
     attr_reader :dir
-    def initialize
+    def initialize(image_optim)
+      @image_optim = image_optim
       @bins = {}
       @lock = Mutex.new
     end
@@ -27,7 +28,10 @@ class ImageOptim
       name = name.to_sym
 
       resolving(name) do
-        @bins[name] = resolve?(name) && Bin.new(name, version(name))
+        if bin = resolve?(name) && Bin.new(name, version(name))
+          $stderr << "Resolved #{bin}\n" if @image_optim.verbose?
+        end
+        @bins[name] = bin
       end
 
       if @bins[name]
