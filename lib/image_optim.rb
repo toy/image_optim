@@ -41,6 +41,12 @@ class ImageOptim
     @threads = config.threads
     @verbose = config.verbose
 
+    if verbose?
+      $stderr << config
+      $stderr << "Nice level: #{nice}\n"
+      $stderr << "Using threads: #{threads}\n"
+    end
+
     @bin_resolver = BinResolver.new(self)
 
     @workers_by_format = {}
@@ -56,12 +62,6 @@ class ImageOptim
     @workers_by_format.values.each(&:sort!)
 
     config.assert_no_unused_options!
-
-    if verbose?
-      $stderr << config
-      $stderr << "Nice level: #{nice}\n"
-      $stderr << "Using threads: #{threads}\n"
-    end
   end
 
   # Get workers for image
