@@ -10,9 +10,11 @@ ensure
 end
 
 describe ImageOptim::BinResolver do
+  let(:image_optim){ double(:image_optim, :verbose? => false) }
+  let(:resolver){ ImageOptim::BinResolver.new(image_optim) }
+
   it "should resolve bin in path" do
     with_env 'LS_BIN', nil do
-      resolver = ImageOptim::BinResolver.new
       resolver.should_receive(:accessible?).with(:ls).once.and_return(true)
       FSPath.should_not_receive(:temp_dir)
 
@@ -29,7 +31,6 @@ describe ImageOptim::BinResolver do
       tmpdir = double(:tmpdir)
       symlink = double(:symlink)
 
-      resolver = ImageOptim::BinResolver.new
       resolver.should_receive(:accessible?).with(:image_optim).once.and_return(true)
       FSPath.should_receive(:temp_dir).once.and_return(tmpdir)
       tmpdir.should_receive(:/).with(:image_optim).once.and_return(symlink)
@@ -52,7 +53,6 @@ describe ImageOptim::BinResolver do
 
   it "should raise on failure to resolve bin" do
     with_env 'SHOULD_NOT_EXIST_BIN', nil do
-      resolver = ImageOptim::BinResolver.new
       resolver.should_receive(:accessible?).with(:should_not_exist).once.and_return(false)
       FSPath.should_not_receive(:temp_dir)
 
@@ -71,7 +71,6 @@ describe ImageOptim::BinResolver do
       tmpdir = double(:tmpdir)
       symlink = double(:symlink)
 
-      resolver = ImageOptim::BinResolver.new
       resolver.should_receive(:accessible?).with(:should_not_exist).once.and_return(false)
       FSPath.should_receive(:temp_dir).once.and_return(tmpdir)
       tmpdir.should_receive(:/).with(:should_not_exist).once.and_return(symlink)
@@ -96,7 +95,6 @@ describe ImageOptim::BinResolver do
 
   it "should resolve bin only once" do
     with_env 'LS_BIN', nil do
-      resolver = ImageOptim::BinResolver.new
       resolver.should_receive(:resolve?).once.with(:ls){ sleep 0.1; true }
 
       10.times.map do
@@ -109,7 +107,6 @@ describe ImageOptim::BinResolver do
 
   it "should raise on detection of problematic version" do
     with_env 'PNGCRUSH_BIN', nil do
-      resolver = ImageOptim::BinResolver.new
       resolver.should_receive(:accessible?).with(:pngcrush).once.and_return(true)
       resolver.should_receive(:version).with(:pngcrush).once.and_return('1.7.60')
       FSPath.should_not_receive(:temp_dir)

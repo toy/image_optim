@@ -36,12 +36,12 @@ class ImageOptim
   #
   #     ImageOptim.new(:nice => 20)
   def initialize(options = {})
-    @bin_resolver = BinResolver.new
-
     config = Config.new(options)
     @nice = config.nice
     @threads = config.threads
     @verbose = config.verbose
+
+    @bin_resolver = BinResolver.new(self)
 
     @workers_by_format = {}
     Worker.klasses.each do |klass|
