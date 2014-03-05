@@ -215,7 +215,7 @@ optipng:
 * `:threads` — Number of threads or disable *(defaults to number of processors)*
 * `:verbose` — Verbose output *(defaults to false)*
 
-Worker can be disabled by passing false instead of options hash.
+Worker can be disabled by passing `false` instead of options hash.
 
 <!---<worker-options>-->
 
