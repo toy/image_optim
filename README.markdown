@@ -235,6 +235,9 @@ Worker can be disabled by passing false instead of options hash.
 ### :advpng =>
 * `:level` — Compression level: 0 - don't compress, 1 - fast, 2 - normal, 3 - extra, 4 - extreme *(defaults to 4)*
 
+### :jhead =>
+Worker has no options
+
 ### :jpegoptim =>
 * `:strip` — List of extra markers to strip: comments, exif, iptc, icc or all *(defaults to all)*
 * `:max_quality` — Maximum image quality factor 0..100 *(defaults to 100)*
@@ -246,6 +249,9 @@ Worker can be disabled by passing false instead of options hash.
 
 ### :gifsicle =>
 * `:interlace` — Turn interlacing on *(defaults to false)*
+
+### :svgo =>
+Worker has no options
 
 <!---</worker-options>-->
 
