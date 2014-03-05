@@ -13,13 +13,15 @@ def worker_options
   io = StringIO.new
 
   ImageOptim::Worker.klasses.each_with_index do |klass, i|
-    unless klass.option_definitions.empty?
-      io.puts "### #{klass.bin_sym}"
+    io.puts "### :#{klass.bin_sym} =>"
+    if klass.option_definitions.empty?
+      io.puts 'Worker has no options'
+    else
       klass.option_definitions.each do |option_definition|
-        io.puts "* `:#{option_definition.name}` — #{option_definition.description} *(defaults to #{option_definition.default})*"
+        io.puts "* `:#{option_definition.name}` — #{option_definition.description} *(defaults to `#{option_definition.default.inspect}`)*"
       end
-      io.puts
     end
+    io.puts
   end
 
   io.string
