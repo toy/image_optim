@@ -14,7 +14,7 @@ def worker_options
 
   ImageOptim::Worker.klasses.each_with_index do |klass, i|
     unless klass.option_definitions.empty?
-      io.puts "### #{klass.bin_sym}"
+      io.puts "### :#{klass.bin_sym} =>"
       klass.option_definitions.each do |option_definition|
         io.puts "* `:#{option_definition.name}` — #{option_definition.description} *(defaults to #{option_definition.default})*"
       end

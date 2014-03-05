@@ -219,32 +219,32 @@ Worker can be disabled by passing false instead of options hash.
 
 <!---<worker-options>-->
 
-### pngcrush
+### :pngcrush =>
 * `:chunks` — List of chunks to remove or 'alla' - all except tRNS/transparency or 'allb' - all except tRNS and gAMA/gamma *(defaults to alla)*
 * `:fix` — Fix otherwise fatal conditions such as bad CRCs *(defaults to false)*
 * `:brute` — Brute force try all methods, very time-consuming and generally not worthwhile *(defaults to false)*
 
-### pngout
+### :pngout =>
 * `:copy_chunks` — Copy optional chunks *(defaults to false)*
 * `:strategy` — Strategy: 0 - xtreme, 1 - intense, 2 - longest Match, 3 - huffman Only, 4 - uncompressed *(defaults to 0)*
 
-### optipng
+### :optipng =>
 * `:level` — Optimization level preset 0 is least, 7 is best *(defaults to 6)*
 * `:interlace` — Interlace, true - interlace on, false - interlace off, nil - as is in original image *(defaults to false)*
 
-### advpng
+### :advpng =>
 * `:level` — Compression level: 0 - don't compress, 1 - fast, 2 - normal, 3 - extra, 4 - extreme *(defaults to 4)*
 
-### jpegoptim
+### :jpegoptim =>
 * `:strip` — List of extra markers to strip: comments, exif, iptc, icc or all *(defaults to all)*
 * `:max_quality` — Maximum image quality factor 0..100 *(defaults to 100)*
 
-### jpegtran
+### :jpegtran =>
 * `:copy_chunks` — Copy all chunks *(defaults to false)*
 * `:progressive` — Create progressive JPEG file *(defaults to true)*
 * `:jpegrescan` — Use jpegtran through jpegrescan, ignore progressive option *(defaults to false)*
 
-### gifsicle
+### :gifsicle =>
 * `:interlace` — Turn interlacing on *(defaults to false)*
 
 <!---</worker-options>-->
