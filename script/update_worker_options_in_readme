@@ -18,7 +18,7 @@ def worker_options
       io.puts 'Worker has no options'
     else
       klass.option_definitions.each do |option_definition|
-        io.puts "* `:#{option_definition.name}` — #{option_definition.description} *(defaults to #{option_definition.default})*"
+        io.puts "* `:#{option_definition.name}` — #{option_definition.description} *(defaults to `#{option_definition.default.inspect}`)*"
       end
     end
     io.puts
