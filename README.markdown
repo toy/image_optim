@@ -11,6 +11,7 @@ Optimize (lossless compress) images (jpeg, png, gif, svg) using external utiliti
 * [pngcrush](http://pmt.sourceforge.net/pngcrush/)
 * [pngout](http://www.advsys.net/ken/util/pngout.htm)
 * [svgo](https://github.com/svg/svgo)
+* [pngquant](http://pngquant.org/)
 
 Based on [ImageOptim.app](http://imageoptim.com/).
 
@@ -107,7 +108,7 @@ make && cp -f pngcrush /usr/local/bin
 ### OS X: Macports
 
 ```bash
-sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
+sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush pngquant
 ```
 
 ### OS X: Brew
