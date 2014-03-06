@@ -127,7 +127,7 @@ make && cp -f pngcrush /usr/local/bin
 ### OS X: Macports
 
 ```bash
-sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
+sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush pngquant
 ```
 
 ### OS X: Brew
