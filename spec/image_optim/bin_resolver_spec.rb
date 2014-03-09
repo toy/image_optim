@@ -71,7 +71,7 @@ describe ImageOptim::BinResolver do
       5.times do
         expect do
           resolver.resolve!(:should_not_exist)
-        end.to raise_error ImageOptim::BinNotFound
+        end.to raise_error ImageOptim::BinResolver::BinNotFound
       end
       expect(resolver.env_path).to eq([
         ENV['PATH'],
@@ -103,7 +103,7 @@ describe ImageOptim::BinResolver do
       5.times do
         expect do
           resolver.resolve!(:should_not_exist)
-        end.to raise_error ImageOptim::BinNotFound
+        end.to raise_error ImageOptim::BinResolver::BinNotFound
       end
       expect(resolver.env_path).to eq([
         tmpdir,
@@ -139,7 +139,7 @@ describe ImageOptim::BinResolver do
       5.times do
         expect do
           resolver.resolve!(:pngcrush)
-        end.to raise_error ImageOptim::BadBinVersion
+        end.to raise_error ImageOptim::BinResolver::BadBinVersion
       end
       expect(resolver.env_path).to eq([
         ENV['PATH'],
