@@ -71,7 +71,7 @@ describe ImageOptim::BinResolver do
       5.times do
         expect do
           resolver.resolve!(:should_not_exist)
-        end.to raise_error ImageOptim::BinNotFoundError
+        end.to raise_error ImageOptim::BinNotFound
       end
       expect(resolver.env_path).to eq([
         ENV['PATH'],
@@ -103,7 +103,7 @@ describe ImageOptim::BinResolver do
       5.times do
         expect do
           resolver.resolve!(:should_not_exist)
-        end.to raise_error ImageOptim::BinNotFoundError
+        end.to raise_error ImageOptim::BinNotFound
       end
       expect(resolver.env_path).to eq([
         tmpdir,
