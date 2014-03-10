@@ -3,7 +3,7 @@ require 'image_optim'
 class ImageOptim
   class Railtie < Rails::Railtie
     initializer 'image_optim.initializer' do |app|
-      if app.config.assets.compress != false && app.config.assets.image_optim != false
+      if app.config.assets.compress != false && app.config.assets.image_optim != false && app.assets
         image_optim = if app.config.assets.image_optim == true
                         ImageOptim.new
                       else
