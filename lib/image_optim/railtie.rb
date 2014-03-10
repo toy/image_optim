@@ -4,6 +4,7 @@ class ImageOptim
   class Railtie < Rails::Railtie
     initializer 'image_optim.initializer' do |app|
       if app.config.assets.compress != false && app.config.assets.image_optim != false && app.assets
+
         image_optim = if app.config.assets.image_optim == true
                         ImageOptim.new
                       else
@@ -18,6 +19,7 @@ class ImageOptim
         app.assets.register_preprocessor 'image/jpeg', :image_optim, &processor
         app.assets.register_preprocessor 'image/png', :image_optim, &processor
         app.assets.register_preprocessor 'image/svg+xml', :image_optim, &processor
+
       end
     end
   end
