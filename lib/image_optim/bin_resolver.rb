@@ -102,6 +102,11 @@ class ImageOptim
         when bin.version.between?('1.7.60', '1.7.65')
           raise BadBinVersion, "`#{bin}` is known to produce broken pngs"
         end
+      when :advpng
+        case
+        when bin.version < '1.17'
+          warn "Note that `#{bin}` does not use zopfli"
+        end
       end
     end
 
