@@ -92,6 +92,7 @@ describe ImageOptim do
         it "should optimize #{original}" do
           image_optim = ImageOptim.new
           optimized_data = image_optim.optimize_image_data(original.read)
+          optimized_data.should_not be_nil
           optimized_data.should == image_optim.optimize_image(original.temp_copy).open('rb', &:read)
 
           image_optim.optimize_image_data(optimized_data).should be_nil
@@ -139,6 +140,7 @@ describe ImageOptim do
     it "should optimize datas" do
       optimized_images_datas = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
       TEST_IMAGES.zip(optimized_images_datas).each do |original, optimized_image_data|
+        optimized_image_data.should_not be_nil
         optimized_image_data.should == ImageOptim.optimize_image(original.temp_copy).open('rb', &:read)
       end
     end
@@ -208,6 +210,7 @@ describe ImageOptim do
       it "should rotate #{jpg}" do
         image_optim = ImageOptim.new
         oriented = image_optim.optimize_image(jpg)
+        oriented.should_not be_nil
         nrmse = `compare -metric RMSE #{original.to_s.shellescape} #{oriented.to_s.shellescape} /dev/null 2>&1`[/\((\d+(\.\d+)?)\)/, 1]
         nrmse.should_not be_nil
         nrmse.to_f.should be < 0.005
