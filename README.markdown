@@ -3,6 +3,7 @@
 Optimize (lossless compress) images (jpeg, png, gif, svg) using external utilities:
 
 * [advpng](http://advancemame.sourceforge.net/doc-advpng.html) from [AdvanceCOMP](http://advancemame.sourceforge.net/comp-readme.html)
+(will use [zopfli](https://code.google.com/p/zopfli/) on default/maximum level 4)
 * [gifsicle](http://www.lcdf.org/gifsicle/)
 * [jhead](http://www.sentex.net/~mwandel/jhead/)
 * [jpegoptim](http://www.kokkonen.net/tjko/projects.html)
