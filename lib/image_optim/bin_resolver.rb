@@ -1,5 +1,6 @@
 require 'thread'
 require 'fspath'
+require 'image_optim/bin_resolver/simple_version'
 
 class ImageOptim
   class BinNotFoundError < StandardError; end
@@ -9,7 +10,8 @@ class ImageOptim
     class Bin
       attr_reader :name, :version
       def initialize(name, version)
-        @name, @version = name, version
+        @name = name
+        @version = version && SimpleVersion.new(version)
       end
 
       def to_s
@@ -96,8 +98,8 @@ class ImageOptim
     def check!(bin)
       case bin.name
       when :pngcrush
-        case bin.version
-        when '1.7.60'..'1.7.65'
+        case
+        when bin.version.between?('1.7.60', '1.7.65')
           raise BadBinVersion, "`#{bin}` is known to produce broken pngs"
         end
       end
