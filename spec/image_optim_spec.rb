@@ -204,16 +204,38 @@ describe ImageOptim do
     end
   end
 
-  describe "auto orienting" do
-    original = ImageOptim::ImagePath.new(__FILE__).dirname / 'images/orient/original.jpg'
-    ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/orient/?.jpg').each do |jpg|
-      it "should rotate #{jpg}" do
-        image_optim = ImageOptim.new
-        oriented = image_optim.optimize_image(jpg)
-        oriented.should_not be_nil
-        nrmse = `compare -metric RMSE #{original.to_s.shellescape} #{oriented.to_s.shellescape} /dev/null 2>&1`[/\((\d+(\.\d+)?)\)/, 1]
-        nrmse.should_not be_nil
-        nrmse.to_f.should == 0
+  describe "losslessness" do
+    rotated = ImageOptim::ImagePath.new(__FILE__).dirname / 'images/orient/original.jpg'
+    rotate_images = ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/orient/?.jpg')
+
+    def flatten_animation(image)
+      if image.format == :gif
+        flattened = image.temp_path
+        system("convert #{image.to_s.shellescape} -coalesce -append #{flattened.to_s.shellescape}").should be_true
+        flattened
+      else
+        image
+      end
+    end
+
+    def check_lossless_optimization(original, optimized)
+      optimized.should_not be_nil
+      original = flatten_animation(original)
+      optimized = flatten_animation(optimized)
+      nrmse = `compare -metric RMSE #{original.to_s.shellescape} #{optimized.to_s.shellescape} /dev/null 2>&1`[/\((\d+(\.\d+)?)\)/, 1]
+      nrmse.should_not be_nil
+      nrmse.to_f.should == 0
+    end
+
+    rotate_images.each do |image|
+      it "should rotate and optimize #{image} losslessly" do
+        check_lossless_optimization(rotated, ImageOptim.optimize_image(image))
+      end
+    end
+
+    (TEST_IMAGES - rotate_images).each do |image|
+      it "should optimize #{image} losslessly" do
+        check_lossless_optimization(image, ImageOptim.optimize_image(image))
       end
     end
   end
