@@ -213,7 +213,7 @@ describe ImageOptim do
         oriented.should_not be_nil
         nrmse = `compare -metric RMSE #{original.to_s.shellescape} #{oriented.to_s.shellescape} /dev/null 2>&1`[/\((\d+(\.\d+)?)\)/, 1]
         nrmse.should_not be_nil
-        nrmse.to_f.should be < 0.005
+        nrmse.to_f.should == 0
       end
     end
   end
