@@ -1,6 +1,7 @@
 require 'thread'
 require 'fspath'
 require 'image_optim/bin_resolver/simple_version'
+require 'image_optim/bin_resolver/comparable_condition'
 
 class ImageOptim
   class BinNotFoundError < StandardError; end
@@ -96,15 +97,16 @@ class ImageOptim
     end
 
     def check!(bin)
+      is = ComparableCondition.is
       case bin.name
       when :pngcrush
-        case
-        when bin.version.between?('1.7.60', '1.7.65')
+        case bin.version
+        when is.between?('1.7.60', '1.7.65')
           raise BadBinVersion, "`#{bin}` is known to produce broken pngs"
         end
       when :advpng
-        case
-        when bin.version < '1.17'
+        case bin.version
+        when is < '1.17'
           warn "Note that `#{bin}` does not use zopfli"
         end
       end
