@@ -101,13 +101,13 @@ class ImageOptim
       case bin.name
       when :pngcrush
         case bin.version
-        when is.between?('1.7.60', '1.7.65')
-          raise BadBinVersion, "`#{bin}` is known to produce broken pngs"
+        when c = is.between?('1.7.60', '1.7.65')
+          raise BadBinVersion, "`#{bin}` (#{c}) is known to produce broken pngs"
         end
       when :advpng
         case bin.version
-        when is < '1.17'
-          warn "Note that `#{bin}` does not use zopfli"
+        when c = is < '1.17'
+          warn "Note that `#{bin}` (#{c}) does not use zopfli"
         end
       end
     end
