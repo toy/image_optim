@@ -44,6 +44,18 @@ describe ImageOptim do
     ImageOptim::Config.stub(:global => {}, :local => {})
   end
 
+  describe "worker" do
+    options = Hash[ImageOptim::Worker.klasses.map{ |klass| [klass.bin_sym, false] }]
+    ImageOptim::Worker.klasses.reject{ |k| k.new({}).image_formats.empty? }.each do |worker_klass|
+      describe worker_klass.bin_sym do
+        it "should optimize at least one test image" do
+          image_optim = ImageOptim.new(options.merge(worker_klass.bin_sym => true))
+          expect(TEST_IMAGES.any?{ |original| image_optim.optimize_image(original.temp_copy) }).to be_true
+        end
+      end
+    end
+  end
+
   describe "isolated" do
     describe "optimize" do
       TEST_IMAGES.each do |original|
