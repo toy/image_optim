@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd "$(dirname "$0")"
+
 convert -size 2x2 xc:black -fill '#f00' -draw 'point 0,1' -fill '#0f0' -draw 'point 1,0' -fill '#00f' -draw 'point 1,1' -scale 64x64 original.png
 
 convert original.png             0.jpg
