@@ -9,7 +9,7 @@ option_parser = OptionParser.new do |op|
   op.accept(ImageOptim::TrueFalseNil, OptionParser.top.atype[TrueClass][0].merge('nil' => nil)){ |arg, val| val }
 
   op.banner = <<-TEXT.gsub(/^\s*\|/, '')
-    |#{op.program_name} v#{ImageOptim.version}
+    |#{ImageOptim.full_version}
     |
     |Usege:
     |  #{op.program_name} [options] image_path …
@@ -103,6 +103,7 @@ begin
   end
 
   option_parser.parse!(args)
+  $stderr.puts ImageOptim.full_version if options[:verbose]
   ImageOptim::Runner.run!(args, options) or exit 1
 rescue OptionParser::ParseError => e
   abort "#{e.to_s}\n\n#{option_parser.help}"

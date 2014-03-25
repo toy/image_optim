@@ -144,6 +144,11 @@ class ImageOptim
     Gem.loaded_specs['image_optim'].version.to_s rescue 'DEV'
   end
 
+  # Full version of image_optim
+  def self.full_version
+    "image_optim v#{version}"
+  end
+
   # Are there workers for file at path?
   def optimizable?(path)
     !!workers_for_image(path)
