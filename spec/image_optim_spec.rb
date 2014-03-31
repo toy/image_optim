@@ -179,6 +179,15 @@ describe ImageOptim do
       Tempfile.init_count.should == 0
       copy.read.should == original.read
     end
+
+    {
+      :png => "\211PNG\r\n\032\n",
+      :jpeg => "\377\330",
+    }.each do |type, data|
+      it "should ignore broken #{type}" do
+        ImageOptim.optimize_image_data(data).should be_nil
+      end
+    end
   end
 
   describe "optimize multiple" do
