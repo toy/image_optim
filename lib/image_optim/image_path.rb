@@ -1,5 +1,5 @@
 require 'fspath'
-require 'image_size'
+require 'image_optim/image_meta'
 
 class ImageOptim
   class ImagePath < FSPath
@@ -49,7 +49,9 @@ class ImageOptim
 
     # Get format using ImageSize
     def format
-      open{ |f| ImageSize.new(f) }.format
+      if image_meta = ImageMeta.for_path(self)
+        image_meta.format
+      end
     end
 
     # Returns path if it is already an instance of this class otherwise new instance

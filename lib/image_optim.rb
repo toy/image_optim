@@ -1,6 +1,7 @@
 require 'image_optim/bin_resolver'
 require 'image_optim/config'
 require 'image_optim/handler'
+require 'image_optim/image_meta'
 require 'image_optim/image_path'
 require 'image_optim/worker'
 require 'in_threads'
@@ -97,9 +98,9 @@ class ImageOptim
 
   # Optimize image data, return new data or nil if optimization failed
   def optimize_image_data(original_data)
-    format = ImageSize.new(original_data).format
-    return unless format
-    ImagePath.temp_file %W[image_optim .#{format}] do |temp|
+    image_meta = ImageMeta.for_data(original_data)
+    return unless image_meta && image_meta.format
+    ImagePath.temp_file %W[image_optim .#{image_meta.format}] do |temp|
       temp.binmode
       temp.write(original_data)
       temp.close
