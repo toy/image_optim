@@ -185,6 +185,10 @@ describe ImageOptim do
       :jpeg => "\377\330",
     }.each do |type, data|
       describe "broken #{type}" do
+        before do
+          ImageOptim::ImageMeta.should_receive(:warn)
+        end
+
         it "should ignore path" do
           path = FSPath.temp_file_path
           path.write(data)
