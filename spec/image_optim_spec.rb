@@ -179,6 +179,27 @@ describe ImageOptim do
       Tempfile.init_count.should == 0
       copy.read.should == original.read
     end
+
+    {
+      :png => "\211PNG\r\n\032\n",
+      :jpeg => "\377\330",
+    }.each do |type, data|
+      describe "broken #{type}" do
+        before do
+          ImageOptim::ImageMeta.should_receive(:warn)
+        end
+
+        it "should ignore path" do
+          path = FSPath.temp_file_path
+          path.write(data)
+          ImageOptim.optimize_image(path).should be_nil
+        end
+
+        it "should ignore data" do
+          ImageOptim.optimize_image_data(data).should be_nil
+        end
+      end
+    end
   end
 
   describe "optimize multiple" do
