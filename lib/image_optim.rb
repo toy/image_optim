@@ -98,6 +98,7 @@ class ImageOptim
   # Optimize image data, return new data or nil if optimization failed
   def optimize_image_data(original_data)
     format = ImageSize.new(original_data).format
+    return unless format
     ImagePath.temp_file %W[image_optim .#{format}] do |temp|
       temp.binmode
       temp.write(original_data)
