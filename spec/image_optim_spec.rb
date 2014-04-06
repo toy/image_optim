@@ -184,8 +184,16 @@ describe ImageOptim do
       :png => "\211PNG\r\n\032\n",
       :jpeg => "\377\330",
     }.each do |type, data|
-      it "should ignore broken #{type}" do
-        ImageOptim.optimize_image_data(data).should be_nil
+      describe "broken #{type}" do
+        it "should ignore path" do
+          path = FSPath.temp_file_path
+          path.write(data)
+          ImageOptim.optimize_image(path).should be_nil
+        end
+
+        it "should ignore data" do
+          ImageOptim.optimize_image_data(data).should be_nil
+        end
       end
     end
   end
