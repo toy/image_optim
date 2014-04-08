@@ -5,14 +5,14 @@ class ImageOptim
     def self.for_path(path)
       is = ImageSize.path(path)
       new(is.format)
-    rescue => e
+    rescue ImageSize::FormatError => e
       warn "#{e} (detecting format of image at #{path})"
     end
 
     def self.for_data(data)
       is = ImageSize.new(data)
       new(is.format)
-    rescue => e
+    rescue ImageSize::FormatError => e
       warn "#{e} (detecting format of image data)"
     end
 
