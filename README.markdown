@@ -83,6 +83,12 @@ sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optip
 sudo yum install -y advancecomp gifsicle jhead libjpeg optipng
 ```
 
+You may also need to install `libjpeg-turbo-utils` instead of `libjpeg`:
+
+```bash
+sudo yum install -y libjpeg-turbo-utils
+```
+
 You will also need to install `jpegoptim` and `pngcrush` from source:
 
 #### jpegoptim
