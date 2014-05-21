@@ -89,9 +89,9 @@ You will also need to install `jpegoptim` and `pngcrush` from source:
 
 ```bash
 cd /tmp
-curl -O http://www.kokkonen.net/tjko/src/jpegoptim-1.3.1.tar.gz
-tar zxf jpegoptim-1.3.1.tar.gz
-cd jpegoptim-1.3.1
+curl -O http://www.kokkonen.net/tjko/src/jpegoptim-1.4.0.tar.gz
+tar zxf jpegoptim-1.4.0.tar.gz
+cd jpegoptim-1.4.0
 ./configure && make && make install
 ```
 
