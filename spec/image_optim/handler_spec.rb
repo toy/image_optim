@@ -11,35 +11,35 @@ describe ImageOptim::Handler do
 
     original.should_receive(:temp_path).once.and_return(temp_a = double(:temp_a))
     handler.process do |src, dst|
-      [src, dst].should == [original, temp_a]; false
+      [src, dst].should eq([original, temp_a]); false
     end
     handler.result.should be_nil
 
     handler.process do |src, dst|
-      [src, dst].should == [original, temp_a]; true
+      [src, dst].should eq([original, temp_a]); true
     end
-    handler.result.should == temp_a
+    handler.result.should eq(temp_a)
 
     original.should_receive(:temp_path).once.and_return(temp_b = double(:temp_b))
     handler.process do |src, dst|
-      [src, dst].should == [temp_a, temp_b]; false
+      [src, dst].should eq([temp_a, temp_b]); false
     end
-    handler.result.should == temp_a
+    handler.result.should eq(temp_a)
 
     handler.process do |src, dst|
-      [src, dst].should == [temp_a, temp_b]; true
+      [src, dst].should eq([temp_a, temp_b]); true
     end
-    handler.result.should == temp_b
+    handler.result.should eq(temp_b)
 
     handler.process do |src, dst|
-      [src, dst].should == [temp_b, temp_a]; true
+      [src, dst].should eq([temp_b, temp_a]); true
     end
-    handler.result.should == temp_a
+    handler.result.should eq(temp_a)
 
     handler.process do |src, dst|
-      [src, dst].should == [temp_a, temp_b]; true
+      [src, dst].should eq([temp_a, temp_b]); true
     end
-    handler.result.should == temp_b
+    handler.result.should eq(temp_b)
 
     temp_a.should_receive(:unlink).once
     handler.cleanup

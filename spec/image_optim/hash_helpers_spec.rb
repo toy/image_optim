@@ -12,13 +12,13 @@ describe ImageOptim::HashHelpers do
         :c => :a,
         :d => {},
       },
-    }).should == {
+    }).should eq({
       'a' => 1,
       'b' => {
         'c' => :a,
         'd' => {},
       },
-    }
+    })
   end
 
   it 'should deep symbolise hash keys' do
@@ -28,13 +28,13 @@ describe ImageOptim::HashHelpers do
         'c' => 'a',
         'd' => {},
       },
-    }).should == {
+    }).should eq({
       :a => 1,
       :b => {
         :c => 'a',
         :d => {},
       },
-    }
+    })
   end
 
   it 'should deep merge hashes' do
@@ -58,7 +58,7 @@ describe ImageOptim::HashHelpers do
         },
       },
       :z => 20,
-    }).should == {
+    }).should eq({
       :a => {
         :b => 2,
         :c => {
@@ -68,7 +68,7 @@ describe ImageOptim::HashHelpers do
       },
       :y => 10,
       :z => 20,
-    }
+    })
   end
 
 end

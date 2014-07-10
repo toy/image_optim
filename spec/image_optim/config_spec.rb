@@ -25,17 +25,17 @@ class ImageOptim
     describe 'nice' do
       it 'should be 10 by default' do
         config = Config.new({})
-        config.nice.should == 10
+        config.nice.should eq(10)
       end
 
       it 'should be 0 if disabled' do
         config = Config.new({:nice => false})
-        config.nice.should == 0
+        config.nice.should eq(0)
       end
 
       it 'should convert value to number' do
         config = Config.new({:nice => '13'})
-        config.nice.should == 13
+        config.nice.should eq(13)
       end
     end
 
@@ -43,17 +43,17 @@ class ImageOptim
       it 'should be processor_count by default' do
         config = Config.new({})
         config.stub(:processor_count).and_return(13)
-        config.threads.should == 13
+        config.threads.should eq(13)
       end
 
       it 'should be 1 if disabled' do
         config = Config.new({:threads => false})
-        config.threads.should == 1
+        config.threads.should eq(1)
       end
 
       it 'should convert value to number' do
         config = Config.new({:threads => '616'})
-        config.threads.should == 616
+        config.threads.should eq(616)
       end
     end
 
@@ -66,17 +66,17 @@ class ImageOptim
 
       it 'should return empty hash by default' do
         config = Config.new({})
-        config.for_worker(Abc).should == {}
+        config.for_worker(Abc).should eq({})
       end
 
       it 'should return passed hash' do
         config = Config.new({:abc => {:option => true}})
-        config.for_worker(Abc).should == {:option => true}
+        config.for_worker(Abc).should eq({:option => true})
       end
 
       it 'should return passed false' do
         config = Config.new({:abc => false})
-        config.for_worker(Abc).should == false
+        config.for_worker(Abc).should eq(false)
       end
 
       it 'should raise on unknown optino' do
@@ -98,14 +98,14 @@ class ImageOptim
           File.should_receive(:file?).with(Config::GLOBAL_CONFIG_PATH).and_return(false)
           Config.should_not_receive(:read)
 
-          Config.global.should == {}
+          Config.global.should eq({})
         end
 
         it 'should read global config if it exists' do
           File.should_receive(:file?).with(Config::GLOBAL_CONFIG_PATH).and_return(true)
           Config.should_receive(:read).with(Config::GLOBAL_CONFIG_PATH).and_return({:config => true})
 
-          Config.global.should == {:config => true}
+          Config.global.should eq({:config => true})
         end
       end
 
@@ -114,14 +114,14 @@ class ImageOptim
           File.should_receive(:file?).with(Config::LOCAL_CONFIG_PATH).and_return(false)
           Config.should_not_receive(:read)
 
-          Config.local.should == {}
+          Config.local.should eq({})
         end
 
         it 'should read local config if it exists' do
           File.should_receive(:file?).with(Config::LOCAL_CONFIG_PATH).and_return(true)
           Config.should_receive(:read).with(Config::LOCAL_CONFIG_PATH).and_return({:config => true})
 
-          Config.local.should == {:config => true}
+          Config.local.should eq({:config => true})
         end
       end
 
@@ -130,7 +130,7 @@ class ImageOptim
           path = double(:path)
           YAML.should_receive(:load_file).with(path).and_return({'config' => {'this' => true}})
 
-          Config.instance_eval{ read(path) }.should == {:config => {:this => true}}
+          Config.instance_eval{ read(path) }.should eq({:config => {:this => true}})
         end
 
         it 'should warn and return an empty hash if yaml file reader returns non hash' do
@@ -138,7 +138,7 @@ class ImageOptim
           YAML.should_receive(:load_file).with(path).and_return([:config])
           Config.should_receive(:warn)
 
-          Config.instance_eval{ read(path) }.should == {}
+          Config.instance_eval{ read(path) }.should eq({})
         end
 
         it 'should warn and return an empty hash if yaml file reader raises exception' do
@@ -146,7 +146,7 @@ class ImageOptim
           YAML.should_receive(:load_file).with(path).and_raise
           Config.should_receive(:warn)
 
-          Config.instance_eval{ read(path) }.should == {}
+          Config.instance_eval{ read(path) }.should eq({})
         end
       end
     end
