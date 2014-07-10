@@ -13,7 +13,7 @@ class ImageOptim
 
         image_optim = ImageOptim.new(options)
 
-        processor = proc do |context, data|
+        processor = proc do |_context, data|
           image_optim.optimize_image_data(data) || data
         end
 

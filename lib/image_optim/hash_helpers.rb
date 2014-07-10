@@ -22,7 +22,7 @@ class ImageOptim
       end
 
       def deep_merge(a, b)
-        a.merge(b) do |k, v_a, v_b|
+        a.merge(b) do |_k, v_a, v_b|
           if v_a.is_a?(Hash) && v_b.is_a?(Hash)
             deep_merge(v_a, v_b)
           else

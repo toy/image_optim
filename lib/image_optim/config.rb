@@ -53,7 +53,7 @@ class ImageOptim
     end
 
     def assert_no_unused_options!
-      unknown_options = @options.reject{ |key, value| @used.include?(key) }
+      unknown_options = @options.reject{ |key, _value| @used.include?(key) }
       unless unknown_options.empty?
         fail ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
       end
