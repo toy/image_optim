@@ -63,7 +63,7 @@ class ImageOptim
     end
 
     def resolve?(name)
-      if path = ENV["#{name}_bin".upcase]
+      if (path = ENV["#{name}_bin".upcase])
         unless @dir
           @dir = FSPath.temp_dir
           at_exit{ FileUtils.remove_entry_secure @dir }

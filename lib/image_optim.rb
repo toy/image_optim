@@ -50,7 +50,7 @@ class ImageOptim
 
     @workers_by_format = {}
     Worker.klasses.each do |klass|
-      next unless worker_options = config.for_worker(klass)
+      next unless (worker_options = config.for_worker(klass))
       worker = klass.new(self, worker_options)
       worker.image_formats.each do |format|
         @workers_by_format[format] ||= []
@@ -70,7 +70,7 @@ class ImageOptim
   # Optimize one file, return new path as OptimizedImagePath or nil if optimization failed
   def optimize_image(original)
     original = ImagePath.convert(original)
-    if workers = workers_for_image(original)
+    if (workers = workers_for_image(original))
       handler = Handler.new(original)
       workers.each do |worker|
         handler.process do |src, dst|
@@ -87,7 +87,7 @@ class ImageOptim
   # Optimize one file in place, return original as OptimizedImagePath or nil if optimization failed
   def optimize_image!(original)
     original = ImagePath.convert(original)
-    if result = optimize_image(original)
+    if (result = optimize_image(original))
       result.replace(original)
       ImagePath::Optimized.new(original, result.original_size)
     end
@@ -102,7 +102,7 @@ class ImageOptim
       temp.write(original_data)
       temp.close
 
-      if result = optimize_image(temp.path)
+      if (result = optimize_image(temp.path))
         result.open('rb', &:read)
       end
     end

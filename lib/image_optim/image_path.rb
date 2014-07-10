@@ -49,7 +49,7 @@ class ImageOptim
 
     # Get format using ImageSize
     def format
-      if image_meta = ImageMeta.for_path(self)
+      if (image_meta = ImageMeta.for_path(self))
         image_meta.format
       end
     end

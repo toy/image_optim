@@ -37,7 +37,7 @@ def update_worker_options(text)
 end
 
 readme = File.read(README_FILE)
-if readme = update_worker_options(readme)
+if (readme = update_worker_options(readme))
   File.open(README_FILE, 'w') do |f|
     f.write readme
   end
