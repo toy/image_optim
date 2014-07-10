@@ -13,7 +13,7 @@ describe ImageOptim::Handler do
     handler.process do |src, dst|
       [src, dst].should == [original, temp_a]; false
     end
-    handler.result.should == nil
+    handler.result.should be_nil
 
     handler.process do |src, dst|
       [src, dst].should == [original, temp_a]; true
