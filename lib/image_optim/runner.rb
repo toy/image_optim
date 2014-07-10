@@ -3,6 +3,7 @@
 require 'image_optim'
 require 'image_optim/hash_helpers'
 require 'image_optim/true_false_nil'
+require 'image_optim/space'
 require 'progress'
 require 'optparse'
 require 'find'
@@ -10,33 +11,6 @@ require 'yaml'
 
 class ImageOptim
   class Runner
-    module Space
-      SIZE_SYMBOLS = %w[B K M G T P E].freeze
-      PRECISION = 1
-      LENGTH = 4 + PRECISION + 1
-
-      EMPTY_SPACE = ' ' * LENGTH
-
-      class << self
-        attr_writer :base10
-        def denominator
-          @denominator ||= @base10 ? 1000.0 : 1024.0
-        end
-
-        def space(size)
-          case size
-          when 0, nil
-            EMPTY_SPACE
-          else
-            log_denominator = Math.log(size) / Math.log(denominator)
-            degree = [log_denominator.floor, SIZE_SYMBOLS.length - 1].min
-            number = size / (denominator ** degree)
-            "#{degree == 0 ? number.to_i : "%.#{PRECISION}f" % number}#{SIZE_SYMBOLS[degree]}".rjust(LENGTH)
-          end
-        end
-      end
-    end
-
     def initialize(args, options)
       fail 'specify paths to optimize' if args.empty?
       options = HashHelpers.deep_symbolise_keys(options)
