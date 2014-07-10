@@ -17,7 +17,7 @@ def update_worker_options(text)
       md.puts GENERATED_NOTE
       md.puts
 
-      ImageOptim::Worker.klasses.each_with_index do |klass, i|
+      ImageOptim::Worker.klasses.each do |klass|
         md.puts "### :#{klass.bin_sym} =>"
         if klass.option_definitions.empty?
           md.puts 'Worker has no options'
