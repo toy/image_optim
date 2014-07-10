@@ -26,7 +26,7 @@ class ImageOptim
       def read(path)
         config = YAML.load_file(path)
         unless config.is_a?(Hash)
-          raise "excpected hash, got #{config.inspect}"
+          fail "excpected hash, got #{config.inspect}"
         end
         HashHelpers.deep_symbolise_keys(config)
       rescue => e
@@ -55,7 +55,7 @@ class ImageOptim
     def assert_no_unused_options!
       unknown_options = @options.reject{ |key, value| @used.include?(key) }
       unless unknown_options.empty?
-        raise ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
+        fail ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
       end
     end
 
@@ -100,7 +100,7 @@ class ImageOptim
       when false
         false
       else
-        raise ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
+        fail ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
       end
     end
 

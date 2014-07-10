@@ -53,7 +53,7 @@ class ImageOptim
     # List of formats which worker can optimize
     def image_formats
       format_from_name = self.class.name.downcase[/gif|jpeg|png|svg/]
-      raise "#{self.class}: can't guess applicable format from worker name" unless format_from_name
+      fail "#{self.class}: can't guess applicable format from worker name" unless format_from_name
       [format_from_name.to_sym]
     end
 
@@ -77,7 +77,7 @@ class ImageOptim
       known_keys = self.class.option_definitions.map(&:name)
       unknown_options = options.reject{ |key, value| known_keys.include?(key) }
       unless unknown_options.empty?
-        raise ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
+        fail ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
       end
     end
 
@@ -112,7 +112,7 @@ class ImageOptim
 
       if $?.signaled?
         unless defined?(JRUBY_VERSION) && $?.exitstatus == $?.termsig # jruby does not differ non zero exit status and signal number
-          raise SignalException.new($?.termsig)
+          fail SignalException.new($?.termsig)
         end
       end
 

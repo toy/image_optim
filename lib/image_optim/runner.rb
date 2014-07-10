@@ -38,7 +38,7 @@ class ImageOptim
     end
 
     def initialize(args, options)
-      raise 'specify paths to optimize' if args.empty?
+      fail 'specify paths to optimize' if args.empty?
       options = HashHelpers.deep_symbolise_keys(options)
       @recursive = options.delete(:recursive)
       @image_optim = ImageOptim.new(options)

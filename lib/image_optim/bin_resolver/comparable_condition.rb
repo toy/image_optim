@@ -20,11 +20,11 @@ class ImageOptim
 
         case @method
         when :between?
-          raise ArgumentError, "`between?' expects 2 arguments" unless args.length == 2
+          fail ArgumentError, "`between?' expects 2 arguments" unless args.length == 2
         when :<, :<=, :==, :>, :>=
-          raise ArgumentError, "`#{method}' expects 1 argument" unless args.length == 1
+          fail ArgumentError, "`#{method}' expects 1 argument" unless args.length == 1
         else
-          raise ArgumentError, "Unknown method `#{method}'"
+          fail ArgumentError, "Unknown method `#{method}'"
         end
       end
 

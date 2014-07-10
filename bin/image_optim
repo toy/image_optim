@@ -64,7 +64,7 @@ option_parser = OptionParser.new do |op|
       when Array >= type
         [Array, 'a,b,c']
       else
-        raise "Unknown type #{type}"
+        fail "Unknown type #{type}"
       end
 
       description = "#{option_definition.description.gsub(' - ', ' - ')} (defaults to #{default})"

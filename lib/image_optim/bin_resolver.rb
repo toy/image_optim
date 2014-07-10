@@ -40,7 +40,7 @@ class ImageOptim
       if @bins[name]
         check!(@bins[name])
       else
-        raise BinNotFoundError, "`#{name}` not found"
+        fail BinNotFoundError, "`#{name}` not found"
       end
     end
 
@@ -102,7 +102,7 @@ class ImageOptim
       when :pngcrush
         case bin.version
         when c = is.between?('1.7.60', '1.7.65')
-          raise BadBinVersion, "`#{bin}` (#{c}) is known to produce broken pngs"
+          fail BadBinVersion, "`#{bin}` (#{c}) is known to produce broken pngs"
         end
       when :advpng
         case bin.version
