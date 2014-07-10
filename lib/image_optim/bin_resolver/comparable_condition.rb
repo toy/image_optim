@@ -28,8 +28,8 @@ class ImageOptim
         end
       end
 
-      def ===(to_compare)
-        to_compare.send(@method, *@args)
+      def ===(other)
+        other.send(@method, *@args)
       end
 
       def to_s
