@@ -13,7 +13,7 @@ describe ImageOptim::BinResolver do
   let(:image_optim){ double(:image_optim, :verbose? => false) }
   let(:resolver){ ImageOptim::BinResolver.new(image_optim) }
 
-  it "should resolve bin in path" do
+  it 'should resolve bin in path' do
     with_env 'LS_BIN', nil do
       resolver.should_receive(:accessible?).with(:ls).once.and_return(true)
       FSPath.should_not_receive(:temp_dir)
@@ -25,7 +25,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it "should resolve bin specified in ENV" do
+  it 'should resolve bin specified in ENV' do
     path = (FSPath(__FILE__).dirname / '../bin/image_optim').relative_path_from(Dir.pwd).to_s
     with_env 'IMAGE_OPTIM_BIN', path do
       tmpdir = double(:tmpdir)
@@ -51,7 +51,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it "should raise on failure to resolve bin" do
+  it 'should raise on failure to resolve bin' do
     with_env 'SHOULD_NOT_EXIST_BIN', nil do
       resolver.should_receive(:accessible?).with(:should_not_exist).once.and_return(false)
       FSPath.should_not_receive(:temp_dir)
@@ -65,7 +65,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it "should raise on failure to resolve bin specified in ENV" do
+  it 'should raise on failure to resolve bin specified in ENV' do
     path = (FSPath(__FILE__).dirname / '../bin/should_not_exist_bin').relative_path_from(Dir.pwd).to_s
     with_env 'SHOULD_NOT_EXIST_BIN', path do
       tmpdir = double(:tmpdir)
@@ -93,7 +93,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it "should resolve bin only once" do
+  it 'should resolve bin only once' do
     with_env 'LS_BIN', nil do
       resolver.should_receive(:resolve?).once.with(:ls){ sleep 0.1; true }
 
@@ -105,7 +105,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it "should raise on detection of problematic version" do
+  it 'should raise on detection of problematic version' do
     with_env 'PNGCRUSH_BIN', nil do
       resolver.should_receive(:accessible?).with(:pngcrush).once.and_return(true)
       resolver.should_receive(:version).with(:pngcrush).once.and_return('1.7.60')

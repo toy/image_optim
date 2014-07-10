@@ -42,5 +42,5 @@ if readme = update_worker_options(readme)
     f.write readme
   end
 else
-  abort "Did not update worker options"
+  abort 'Did not update worker options'
 end

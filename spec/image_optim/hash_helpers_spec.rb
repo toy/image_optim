@@ -5,7 +5,7 @@ require 'image_optim/hash_helpers'
 describe ImageOptim::HashHelpers do
   HH = ImageOptim::HashHelpers
 
-  it "should deep stringify hash keys" do
+  it 'should deep stringify hash keys' do
     HH.deep_stringify_keys({
       :a => 1,
       :b => {
@@ -21,7 +21,7 @@ describe ImageOptim::HashHelpers do
     }
   end
 
-  it "should deep symbolise hash keys" do
+  it 'should deep symbolise hash keys' do
     HH.deep_symbolise_keys({
       'a' => 1,
       'b' => {
@@ -37,7 +37,7 @@ describe ImageOptim::HashHelpers do
     }
   end
 
-  it "should deep merge hashes" do
+  it 'should deep merge hashes' do
     HH.deep_merge({
       :a => {
         :b => 1,

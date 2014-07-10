@@ -3,7 +3,7 @@ require 'rspec'
 require 'image_optim/handler'
 
 describe ImageOptim::Handler do
-  it "should use original as source for first conversion and two temp files for further conversions" do
+  it 'should use original as source for first conversion and two temp files for further conversions' do
     original = double(:original)
     original.stub(:temp_path){ raise 'temp_path called unexpectedly' }
 
