@@ -31,8 +31,9 @@ class ImageOptim
       name = name.to_sym
 
       resolving(name) do
-        if bin = resolve?(name) && Bin.new(name, version(name))
-          $stderr << "Resolved #{bin}\n" if @image_optim.verbose
+        bin = Bin.new(name, version(name)) if resolve?(name)
+        if bin && @image_optim.verbose
+          $stderr << "Resolved #{bin}\n"
         end
         @bins[name] = bin
       end
