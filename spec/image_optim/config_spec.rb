@@ -59,7 +59,9 @@ class ImageOptim
 
     describe 'for_worker' do
       class Abc < Worker
-        def image_formats; []; end
+        def image_formats
+          []
+        end
       end
 
       it 'should return empty hash by default' do
