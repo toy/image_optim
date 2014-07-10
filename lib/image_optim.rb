@@ -52,12 +52,11 @@ class ImageOptim
 
     @workers_by_format = {}
     Worker.klasses.each do |klass|
-      if worker_options = config.for_worker(klass)
-        worker = klass.new(self, worker_options)
-        worker.image_formats.each do |format|
-          @workers_by_format[format] ||= []
-          @workers_by_format[format] << worker
-        end
+      next unless worker_options = config.for_worker(klass)
+      worker = klass.new(self, worker_options)
+      worker.image_formats.each do |format|
+        @workers_by_format[format] ||= []
+        @workers_by_format[format] << worker
       end
     end
     @workers_by_format.values.each(&:sort!)
