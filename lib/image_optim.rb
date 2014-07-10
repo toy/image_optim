@@ -15,9 +15,7 @@ class ImageOptim
   attr_reader :threads
 
   # Verbose output?
-  def verbose?
-    @verbose
-  end
+  attr_reader :verbose
 
   # Initialize workers, specify options using worker underscored name:
   #
@@ -42,7 +40,7 @@ class ImageOptim
     @threads = config.threads
     @verbose = config.verbose
 
-    if verbose?
+    if verbose
       $stderr << config
       $stderr << "Nice level: #{nice}\n"
       $stderr << "Using threads: #{threads}\n"

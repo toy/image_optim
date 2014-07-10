@@ -32,7 +32,7 @@ class ImageOptim
 
       resolving(name) do
         if bin = resolve?(name) && Bin.new(name, version(name))
-          $stderr << "Resolved #{bin}\n" if @image_optim.verbose?
+          $stderr << "Resolved #{bin}\n" if @image_optim.verbose
         end
         @bins[name] = bin
       end

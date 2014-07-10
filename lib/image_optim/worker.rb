@@ -94,7 +94,7 @@ class ImageOptim
 
       success = run_command(command)
 
-      $stderr << "#{success ? '✓' : '✗'} #{Time.now - start}s #{command}\n" if @image_optim.verbose?
+      $stderr << "#{success ? '✓' : '✗'} #{Time.now - start}s #{command}\n" if @image_optim.verbose
 
       success
     end

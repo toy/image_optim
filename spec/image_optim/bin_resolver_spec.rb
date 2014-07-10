@@ -10,7 +10,7 @@ ensure
 end
 
 describe ImageOptim::BinResolver do
-  let(:image_optim){ double(:image_optim, :verbose? => false) }
+  let(:image_optim){ double(:image_optim, :verbose => false) }
   let(:resolver){ ImageOptim::BinResolver.new(image_optim) }
 
   it 'should resolve bin in path' do
