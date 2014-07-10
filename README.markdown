@@ -93,21 +93,27 @@ You will also need to install `jpegoptim` and `pngcrush` from source:
 
 #### jpegoptim
 
+Replace `X.Y.Z` with latest version number from http://www.kokkonen.net/tjko/projects.html#jpegoptim.
+
 ```bash
+JPEGOPTIM_VERSION=X.Y.Z
 cd /tmp
-curl -O http://www.kokkonen.net/tjko/src/jpegoptim-1.4.1.tar.gz
-tar zxf jpegoptim-1.4.1.tar.gz
-cd jpegoptim-1.4.1
+curl -O http://www.kokkonen.net/tjko/src/jpegoptim-$JPEGOPTIM_VERSION.tar.gz
+tar zxf jpegoptim-$JPEGOPTIM_VERSION.tar.gz
+cd jpegoptim-$JPEGOPTIM_VERSION
 ./configure && make && make install
 ```
 
 #### pngcrush
 
+Replace `X.Y.Z` with latest version number from http://sourceforge.net/projects/pmt/files/pngcrush/.
+
 ```bash
+PNGCRUSH_VERSION=X.Y.Z
 cd /tmp
-curl -O http://iweb.dl.sourceforge.net/project/pmt/pngcrush/1.7.70/pngcrush-1.7.73.tar.gz
-tar zxf pngcrush-1.7.73.tar.gz
-cd pngcrush-1.7.73
+curl -O http://iweb.dl.sourceforge.net/project/pmt/pngcrush/$PNGCRUSH_VERSION/pngcrush-$PNGCRUSH_VERSION.tar.gz
+tar zxf pngcrush-$PNGCRUSH_VERSION.tar.gz
+cd pngcrush-$PNGCRUSH_VERSION
 make && cp -f pngcrush /usr/local/bin
 ```
 
