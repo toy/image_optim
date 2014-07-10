@@ -106,10 +106,10 @@ begin
   $stderr.puts ImageOptim.full_version if options[:verbose]
   ImageOptim::Runner.run!(args, options) or exit 1
 rescue OptionParser::ParseError => e
-  abort "#{e.to_s}\n\n#{option_parser.help}"
+  abort "#{e}\n\n#{option_parser.help}"
 rescue => e
   if options[:verbose]
-    abort "#{e.to_s}\n#{e.backtrace.join("\n")}"
+    abort "#{e}\n#{e.backtrace.join("\n")}"
   else
     abort e.to_s
   end
