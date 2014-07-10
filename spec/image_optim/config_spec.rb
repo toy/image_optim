@@ -16,9 +16,9 @@ class ImageOptim
 
       it "should raise when there are unused options" do
         config = Config.new({:unused => true})
-        proc {
+        proc do
           config.assert_no_unused_options!
-        }.should raise_error(ConfigurationError)
+        end.should raise_error(ConfigurationError)
       end
     end
 
@@ -79,9 +79,9 @@ class ImageOptim
 
       it "should raise on unknown optino" do
         config = Config.new({:abc => 13})
-        proc {
+        proc do
           config.for_worker(Abc)
-        }.should raise_error(ConfigurationError)
+        end.should raise_error(ConfigurationError)
       end
     end
 
