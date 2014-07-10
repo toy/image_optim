@@ -112,7 +112,7 @@ class ImageOptim
 
       if $?.signaled?
         unless defined?(JRUBY_VERSION) && $?.exitstatus == $?.termsig # jruby does not differ non zero exit status and signal number
-          fail SignalException.new($?.termsig)
+          fail SignalException, $?.termsig
         end
       end
 
