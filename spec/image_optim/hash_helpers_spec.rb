@@ -44,7 +44,7 @@ describe ImageOptim::HashHelpers do
         :c => {
           :d => 2,
           :e => {
-            :f => true
+            :f => true,
           },
         },
       },
