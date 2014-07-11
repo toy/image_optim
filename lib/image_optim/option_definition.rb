@@ -1,5 +1,4 @@
 class OptionDefinition
-
   attr_reader :name, :default, :type, :description, :proc
 
   def initialize(name, default, type, description, &proc)

@@ -80,6 +80,5 @@ class ImageOptim
         '%5.2f%% %s' % [100 - 100.0 * size_b / size_a, Space.space(size_a - size_b)]
       end
     end
-
   end
 end
