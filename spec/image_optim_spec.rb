@@ -73,7 +73,7 @@ describe ImageOptim do
           if image_optim.workers_for_image(original).length > 1
             Tempfile.init_count.should be_in_range(1..2)
           else
-            Tempfile.init_count.should === 1
+            Tempfile.init_count.should eq(1)
           end
         end
       end
