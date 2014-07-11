@@ -31,6 +31,7 @@ class ImageOptim
       def ===(other)
         other.send(@method, *@args)
       end
+      alias_method :match, :===
 
       def to_s
         if @method == :between?
