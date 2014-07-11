@@ -77,7 +77,7 @@ class ImageOptim
       if size_a == size_b
         "------ #{Space::EMPTY_SPACE}"
       else
-        '%5.2f%% %s' % [100 - 100.0 * size_b / size_a, Space.space(size_a - size_b)]
+        format('%5.2f%% %s', 100 - 100.0 * size_b / size_a, Space.space(size_a - size_b))
       end
     end
   end

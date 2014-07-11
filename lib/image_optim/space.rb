@@ -17,7 +17,7 @@ class ImageOptim
         degree = [log_denominator.floor, SIZE_SYMBOLS.length - 1].min
         denominator = BASE**degree
         number = size / denominator
-        "#{degree == 0 ? number.to_i : "%.#{PRECISION}f" % number}#{SIZE_SYMBOLS[degree]}".rjust(LENGTH)
+        "#{degree == 0 ? number.to_i : format("%.#{PRECISION}f", number)}#{SIZE_SYMBOLS[degree]}".rjust(LENGTH)
       end
     end
   end
