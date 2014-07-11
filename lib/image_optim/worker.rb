@@ -36,7 +36,7 @@ class ImageOptim
     def initialize(image_optim, options = {})
       @image_optim = image_optim
       self.class.option_definitions.each do |option_definition|
-        value = if options.has_key?(option_definition.name)
+        value = if options.key?(option_definition.name)
           options[option_definition.name]
         else
           option_definition.default
