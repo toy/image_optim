@@ -40,7 +40,7 @@ class ImageOptim
         Config.global,
         Config.local,
         HashHelpers.deep_symbolise_keys(options),
-      ].inject do |memo, hash|
+      ].reduce do |memo, hash|
         HashHelpers.deep_merge(memo, hash)
       end
       @used = Set.new
