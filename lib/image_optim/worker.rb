@@ -3,6 +3,7 @@
 require 'image_optim/option_definition'
 require 'image_optim/option_helpers'
 require 'shellwords'
+require 'english'
 
 class ImageOptim
   class Worker
@@ -110,9 +111,10 @@ class ImageOptim
     def run_command(command)
       success = system "env PATH=#{@image_optim.env_path.shellescape} nice -n #{@image_optim.nice} #{command} > /dev/null 2>&1"
 
-      if $?.signaled?
-        unless defined?(JRUBY_VERSION) && $?.exitstatus == $?.termsig # jruby does not differ non zero exit status and signal number
-          fail SignalException, $?.termsig
+      status = $CHILD_STATUS
+      if status.signaled?
+        unless defined?(JRUBY_VERSION) && status.exitstatus == status.termsig # jruby does not differ non zero exit status and signal number
+          fail SignalException, status.termsig
         end
       end
 
