@@ -6,13 +6,13 @@ describe ImageOptim::HashHelpers do
   HH = ImageOptim::HashHelpers
 
   it 'should deep stringify hash keys' do
-    HH.deep_stringify_keys({
+    expect(HH.deep_stringify_keys({
       :a => 1,
       :b => {
         :c => :a,
         :d => {},
       },
-    }).should eq({
+    })).to eq({
       'a' => 1,
       'b' => {
         'c' => :a,
@@ -22,13 +22,13 @@ describe ImageOptim::HashHelpers do
   end
 
   it 'should deep symbolise hash keys' do
-    HH.deep_symbolise_keys({
+    expect(HH.deep_symbolise_keys({
       'a' => 1,
       'b' => {
         'c' => 'a',
         'd' => {},
       },
-    }).should eq({
+    })).to eq({
       :a => 1,
       :b => {
         :c => 'a',
@@ -38,7 +38,7 @@ describe ImageOptim::HashHelpers do
   end
 
   it 'should deep merge hashes' do
-    HH.deep_merge({
+    expect(HH.deep_merge({
       :a => {
         :b => 1,
         :c => {
@@ -58,7 +58,7 @@ describe ImageOptim::HashHelpers do
         },
       },
       :z => 20,
-    }).should eq({
+    })).to eq({
       :a => {
         :b => 2,
         :c => {
