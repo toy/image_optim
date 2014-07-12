@@ -50,7 +50,7 @@ describe ImageOptim do
       describe worker_klass.bin_sym do
         it 'should optimize at least one test image' do
           image_optim = ImageOptim.new(options.merge(worker_klass.bin_sym => true))
-          expect(TEST_IMAGES.any?{ |original| image_optim.optimize_image(original.temp_copy) }).to be_true
+          expect(TEST_IMAGES.any?{ |original| image_optim.optimize_image(original.temp_copy) }).to be true
         end
       end
     end
@@ -86,7 +86,7 @@ describe ImageOptim do
 
           Tempfile.reset_init_count
           image_optim = ImageOptim.new
-          image_optim.optimize_image!(copy).should be_true
+          image_optim.optimize_image!(copy).should be_truthy
           copy.size.should be_in_range(1...original.size)
           copy.read.should_not eq(original.read)
 
@@ -175,7 +175,7 @@ describe ImageOptim do
       copy = original.temp_copy
 
       Tempfile.reset_init_count
-      ImageOptim.optimize_image!(copy).should_not be_true
+      ImageOptim.optimize_image!(copy).should_not be_truthy
       Tempfile.init_count.should eq(0)
       copy.read.should eq(original.read)
     end
@@ -244,7 +244,7 @@ describe ImageOptim do
     def flatten_animation(image)
       if image.format == :gif
         flattened = image.temp_path
-        system("convert #{image.to_s.shellescape} -coalesce -append #{flattened.to_s.shellescape}").should be_true
+        system("convert #{image.to_s.shellescape} -coalesce -append #{flattened.to_s.shellescape}").should be_truthy
         flattened
       else
         image
