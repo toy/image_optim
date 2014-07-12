@@ -98,9 +98,8 @@ end
 begin
   args = ARGV.dup
 
-  if args == %w[-v]
-    args = %w[--version]
-  end
+  # assume -v to be request to print version if it is the only argument
+  args = %w[--version] if args == %w[-v]
 
   option_parser.parse!(args)
   if options[:verbose]
