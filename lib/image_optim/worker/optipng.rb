@@ -8,7 +8,7 @@ class ImageOptim
       option(:level, 6, 'Optimization level preset: `0` is least, `7` is best'){ |v| OptionHelpers.limit_with_range(v.to_i, 0..7) }
 
       option(:interlace, false, TrueFalseNil, 'Interlace, `true` - interlace on, `false` - interlace off, `nil` - as is in original image') do |v|
-        v && true
+        v && true # convert everything truthy to `true`, leave `false` and `nil` as is
       end
 
       def optimize(src, dst)
