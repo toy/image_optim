@@ -10,7 +10,7 @@ class ImageOptim
     include OptionHelpers
 
     GLOBAL_CONFIG_PATH = File.join(File.expand_path(ENV['XDG_CONFIG_HOME'] || '~/.config'), 'image_optim.yml')
-    LOCAL_CONFIG_PATH = '.image_optim.yml'
+    LOCAL_CONFIG_PATH = './.image_optim.yml'
 
     class << self
       def global

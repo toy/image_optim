@@ -16,7 +16,7 @@ option_parser = OptionParser.new do |op|
     |
     |Configuration will be read and prepanded to options from two paths:
     |  #{ImageOptim::Config::GLOBAL_CONFIG_PATH}
-    |  #{ImageOptim::Config::LOCAL_CONFIG_PATH} (in current working directory)
+    |  #{ImageOptim::Config::LOCAL_CONFIG_PATH}
     |
   TEXT
 
