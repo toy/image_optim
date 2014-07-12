@@ -41,7 +41,8 @@ end
 
 describe ImageOptim do
   before do
-    ImageOptim::Config.stub(:global => {}, :local => {})
+    allow(ImageOptim::Config).to receive(:global).and_return({})
+    allow(ImageOptim::Config).to receive(:local).and_return({})
   end
 
   describe 'worker' do
@@ -50,7 +51,7 @@ describe ImageOptim do
       describe worker_klass.bin_sym do
         it 'should optimize at least one test image' do
           image_optim = ImageOptim.new(options.merge(worker_klass.bin_sym => true))
-          expect(TEST_IMAGES.any?{ |original| image_optim.optimize_image(original.temp_copy) }).to be_true
+          expect(TEST_IMAGES.any?{ |original| image_optim.optimize_image(original.temp_copy) }).to be true
         end
       end
     end
@@ -66,14 +67,14 @@ describe ImageOptim do
           image_optim = ImageOptim.new
           optimized_image = image_optim.optimize_image(copy)
           expect(optimized_image).to be_a(ImageOptim::ImagePath::Optimized)
-          optimized_image.size.should be_in_range(1...original.size)
-          optimized_image.read.should_not eq(original.read)
-          copy.read.should eq(original.read)
+          expect(optimized_image.size).to be_in_range(1...original.size)
+          expect(optimized_image.read).not_to eq(original.read)
+          expect(copy.read).to eq(original.read)
 
           if image_optim.workers_for_image(original).length > 1
-            Tempfile.init_count.should be_in_range(1..2)
+            expect(Tempfile.init_count).to be_in_range(1..2)
           else
-            Tempfile.init_count.should eq(1)
+            expect(Tempfile.init_count).to eq(1)
           end
         end
       end
@@ -86,14 +87,14 @@ describe ImageOptim do
 
           Tempfile.reset_init_count
           image_optim = ImageOptim.new
-          image_optim.optimize_image!(copy).should be_true
-          copy.size.should be_in_range(1...original.size)
-          copy.read.should_not eq(original.read)
+          expect(image_optim.optimize_image!(copy)).to be_truthy
+          expect(copy.size).to be_in_range(1...original.size)
+          expect(copy.read).not_to eq(original.read)
 
           if image_optim.workers_for_image(original).length > 1
-            Tempfile.init_count.should be_in_range(2..3)
+            expect(Tempfile.init_count).to be_in_range(2..3)
           else
-            Tempfile.init_count.should eq(2)
+            expect(Tempfile.init_count).to eq(2)
           end
         end
       end
@@ -104,10 +105,10 @@ describe ImageOptim do
         it "should optimize #{original}" do
           image_optim = ImageOptim.new
           optimized_data = image_optim.optimize_image_data(original.read)
-          optimized_data.should_not be_nil
-          optimized_data.should eq(image_optim.optimize_image(original.temp_copy).open('rb', &:read))
+          expect(optimized_data).not_to be_nil
+          expect(optimized_data).to eq(image_optim.optimize_image(original.temp_copy).open('rb', &:read))
 
-          image_optim.optimize_image_data(optimized_data).should be_nil
+          expect(image_optim.optimize_image_data(optimized_data)).to be_nil
         end
       end
     end
@@ -122,7 +123,7 @@ describe ImageOptim do
             tries += 1
             break unless ImageOptim.optimize_image!(copy)
           end
-          tries.should be_in_range(2...3)
+          expect(tries).to be_in_range(2...3)
         end
       end
     end
@@ -134,9 +135,9 @@ describe ImageOptim do
       optimized_images = ImageOptim.optimize_images(copies)
       TEST_IMAGES.zip(copies, optimized_images).each do |original, copy, optimized_image|
         expect(optimized_image).to be_a(ImageOptim::ImagePath::Optimized)
-        optimized_image.size.should be_in_range(1...original.size)
-        optimized_image.read.should_not eq(original.read)
-        copy.read.should eq(original.read)
+        expect(optimized_image.size).to be_in_range(1...original.size)
+        expect(optimized_image.read).not_to eq(original.read)
+        expect(copy.read).to eq(original.read)
       end
     end
 
@@ -144,16 +145,16 @@ describe ImageOptim do
       copies = TEST_IMAGES.map(&:temp_copy)
       ImageOptim.optimize_images!(copies)
       TEST_IMAGES.zip(copies).each do |original, copy|
-        copy.size.should be_in_range(1...original.size)
-        copy.read.should_not eq(original.read)
+        expect(copy.size).to be_in_range(1...original.size)
+        expect(copy.read).not_to eq(original.read)
       end
     end
 
     it 'should optimize datas' do
       optimized_images_datas = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
       TEST_IMAGES.zip(optimized_images_datas).each do |original, optimized_image_data|
-        optimized_image_data.should_not be_nil
-        optimized_image_data.should eq(ImageOptim.optimize_image(original.temp_copy).open('rb', &:read))
+        expect(optimized_image_data).not_to be_nil
+        expect(optimized_image_data).to eq(ImageOptim.optimize_image(original.temp_copy).open('rb', &:read))
       end
     end
   end
@@ -166,18 +167,18 @@ describe ImageOptim do
 
       Tempfile.reset_init_count
       optimized_image = ImageOptim.optimize_image(copy)
-      Tempfile.init_count.should eq(0)
-      optimized_image.should be_nil
-      copy.read.should eq(original.read)
+      expect(Tempfile.init_count).to eq(0)
+      expect(optimized_image).to be_nil
+      expect(copy.read).to eq(original.read)
     end
 
     it 'should ignore in place' do
       copy = original.temp_copy
 
       Tempfile.reset_init_count
-      ImageOptim.optimize_image!(copy).should_not be_true
-      Tempfile.init_count.should eq(0)
-      copy.read.should eq(original.read)
+      expect(ImageOptim.optimize_image!(copy)).not_to be_truthy
+      expect(Tempfile.init_count).to eq(0)
+      expect(copy.read).to eq(original.read)
     end
 
     {
@@ -186,17 +187,17 @@ describe ImageOptim do
     }.each do |type, data|
       describe "broken #{type}" do
         before do
-          ImageOptim::ImageMeta.should_receive(:warn)
+          expect(ImageOptim::ImageMeta).to receive(:warn)
         end
 
         it 'should ignore path' do
           path = FSPath.temp_file_path
           path.write(data)
-          ImageOptim.optimize_image(path).should be_nil
+          expect(ImageOptim.optimize_image(path)).to be_nil
         end
 
         it 'should ignore data' do
-          ImageOptim.optimize_image_data(data).should be_nil
+          expect(ImageOptim.optimize_image_data(data)).to be_nil
         end
       end
     end
@@ -213,10 +214,10 @@ describe ImageOptim do
             image_optim = ImageOptim.new
             dsts = srcs.map do |src|
               dst = "#{src}_"
-              image_optim.should_receive(single_method).with(src).and_return(dst)
+              expect(image_optim).to receive(single_method).with(src).and_return(dst)
               dst
             end
-            image_optim.send(list_method, srcs).should eq(dsts)
+            expect(image_optim.send(list_method, srcs)).to eq(dsts)
           end
         end
 
@@ -225,12 +226,12 @@ describe ImageOptim do
             image_optim = ImageOptim.new
             results = srcs.map do |src|
               dst = "#{src}_"
-              image_optim.should_receive(single_method).with(src).and_return(dst)
+              expect(image_optim).to receive(single_method).with(src).and_return(dst)
               "#{src} #{dst}"
             end
-            image_optim.send(list_method, srcs) do |src, dst|
+            expect(image_optim.send(list_method, srcs) do |src, dst|
               "#{src} #{dst}"
-            end.should eq(results)
+            end).to eq(results)
           end
         end
       end
@@ -244,7 +245,7 @@ describe ImageOptim do
     def flatten_animation(image)
       if image.format == :gif
         flattened = image.temp_path
-        system("convert #{image.to_s.shellescape} -coalesce -append #{flattened.to_s.shellescape}").should be_true
+        expect(system("convert #{image.to_s.shellescape} -coalesce -append #{flattened.to_s.shellescape}")).to be_truthy
         flattened
       else
         image
@@ -252,12 +253,12 @@ describe ImageOptim do
     end
 
     def check_lossless_optimization(original, optimized)
-      optimized.should_not be_nil
+      expect(optimized).not_to be_nil
       original = flatten_animation(original)
       optimized = flatten_animation(optimized)
       nrmse = `compare -metric RMSE #{original.to_s.shellescape} #{optimized.to_s.shellescape} /dev/null 2>&1`[/\((\d+(\.\d+)?)\)/, 1]
-      nrmse.should_not be_nil
-      nrmse.to_f.should eq(0)
+      expect(nrmse).not_to be_nil
+      expect(nrmse.to_f).to eq(0)
     end
 
     rotate_images.each do |image|
