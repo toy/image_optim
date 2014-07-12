@@ -6,7 +6,8 @@ describe ImageOptim::Config do
   Config = ImageOptim::Config
 
   before do
-    Config.stub(:global => {}, :local => {})
+    allow(Config).to receive(:global).and_return({})
+    allow(Config).to receive(:local).and_return({})
   end
 
   describe 'assert_no_unused_options!' do

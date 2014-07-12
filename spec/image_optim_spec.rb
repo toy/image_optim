@@ -41,7 +41,8 @@ end
 
 describe ImageOptim do
   before do
-    ImageOptim::Config.stub(:global => {}, :local => {})
+    allow(ImageOptim::Config).to receive(:global).and_return({})
+    allow(ImageOptim::Config).to receive(:local).and_return({})
   end
 
   describe 'worker' do
