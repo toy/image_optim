@@ -77,9 +77,8 @@ class ImageOptim
     def assert_no_unknown_options!(options)
       known_keys = self.class.option_definitions.map(&:name)
       unknown_options = options.reject{ |key, _value| known_keys.include?(key) }
-      unless unknown_options.empty?
-        fail ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
-      end
+      return if unknown_options.empty?
+      fail ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
     end
 
     # Forward bin resolving to image_optim

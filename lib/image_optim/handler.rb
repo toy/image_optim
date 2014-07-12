@@ -14,22 +14,20 @@ class ImageOptim
       @src ||= @original
       @dst ||= @original.temp_path
 
-      if yield @src, @dst
-        @result = @dst
-        if @src == @original
-          @src, @dst = @dst, nil
-        else
-          @src, @dst = @dst, @src
-        end
+      return unless yield @src, @dst
+      @result = @dst
+      if @src == @original
+        @src, @dst = @dst, nil
+      else
+        @src, @dst = @dst, @src
       end
     end
 
     # Remove extra temp files
     def cleanup
-      if @dst
-        @dst.unlink
-        @dst = nil
-      end
+      return unless @dst
+      @dst.unlink
+      @dst = nil
     end
   end
 end

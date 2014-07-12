@@ -54,12 +54,9 @@ class ImageOptim
   private
 
     def resolving(name)
-      unless @bins.include?(name)
-        @lock.synchronize do
-          unless @bins.include?(name)
-            yield
-          end
-        end
+      return if @bins.include?(name)
+      @lock.synchronize do
+        yield unless @bins.include?(name)
       end
     end
 
