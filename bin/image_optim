@@ -6,7 +6,7 @@ require 'image_optim/runner'
 options = {}
 
 option_parser = OptionParser.new do |op|
-  op.accept(ImageOptim::TrueFalseNil, OptionParser.top.atype[TrueClass][0].merge('nil' => nil)){ |_arg, val| val }
+  ImageOptim::TrueFalseNil.add_to_option_parser(op)
 
   op.banner = <<-TEXT.gsub(/^\s*\|/, '')
     |#{ImageOptim.full_version}
