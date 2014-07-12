@@ -29,11 +29,7 @@ class ImageOptim
         puts lines, "Total: #{size_percent(original_sizes.inject(:+), optimized_sizes.inject(:+))}"
       end
 
-      !warnings?
-    end
-
-    def warnings?
-      !!@warnings
+      !@warnings
     end
 
     def self.run!(args, options)
