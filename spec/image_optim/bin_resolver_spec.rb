@@ -44,7 +44,7 @@ describe ImageOptim::BinResolver do
       5.times do
         resolver.resolve!(:image_optim)
       end
-      expect(resolver.env_path).to eq("#{tmpdir.to_str}:#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}")
+      expect(resolver.env_path).to eq("#{tmpdir}:#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}")
 
       expect(FileUtils).to receive(:remove_entry_secure).with(tmpdir)
       at_exit_blocks.each(&:call)
@@ -86,7 +86,7 @@ describe ImageOptim::BinResolver do
           resolver.resolve!(:should_not_exist)
         end.to raise_error ImageOptim::BinNotFoundError
       end
-      expect(resolver.env_path).to eq("#{tmpdir.to_str}:#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}")
+      expect(resolver.env_path).to eq("#{tmpdir}:#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}")
 
       expect(FileUtils).to receive(:remove_entry_secure).with(tmpdir)
       at_exit_blocks.each(&:call)
