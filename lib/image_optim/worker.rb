@@ -51,6 +51,12 @@ class ImageOptim
       assert_no_unknown_options!(options)
     end
 
+    # Optimize image at src, output at dst, must be overriden in subclass
+    # return true on success
+    def optimize(_src, _dst)
+      fail NotImplementedError, "implement method optimize in #{self.class}"
+    end
+
     # List of formats which worker can optimize
     def image_formats
       format_from_name = self.class.name.downcase[/gif|jpeg|png|svg/]
