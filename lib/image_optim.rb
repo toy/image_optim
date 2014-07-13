@@ -27,11 +27,13 @@ class ImageOptim
   #
   #     ImageOptim.new(:advpng => {:level => 3}, :optipng => {:level => 2})
   #
-  # use :threads to set number of parallel optimizers to run (passing true or nil determines number of processors, false disables parallel processing)
+  # use :threads to set number of parallel optimizers to run (passing true or
+  # nil determines number of processors, false disables parallel processing)
   #
   #     ImageOptim.new(:threads => 8)
   #
-  # use :nice to specify optimizers nice level (true or nil makes it 10, false makes it 0)
+  # use :nice to specify optimizers nice level (true or nil makes it 10, false
+  # makes it 0)
   #
   #     ImageOptim.new(:nice => 20)
   def initialize(options = {})
@@ -67,7 +69,8 @@ class ImageOptim
     @workers_by_format[ImagePath.convert(path).format]
   end
 
-  # Optimize one file, return new path as OptimizedImagePath or nil if optimization failed
+  # Optimize one file, return new path as OptimizedImagePath or nil if
+  # optimization failed
   def optimize_image(original)
     original = ImagePath.convert(original)
     return unless (workers = workers_for_image(original))
@@ -82,7 +85,8 @@ class ImageOptim
     ImagePath::Optimized.new(handler.result, original)
   end
 
-  # Optimize one file in place, return original as OptimizedImagePath or nil if optimization failed
+  # Optimize one file in place, return original as OptimizedImagePath or nil if
+  # optimization failed
   def optimize_image!(original)
     original = ImagePath.convert(original)
     return unless (result = optimize_image(original))
@@ -106,21 +110,24 @@ class ImageOptim
   end
 
   # Optimize multiple images
-  # if block given yields path and result for each image and returns array of yield results
+  # if block given yields path and result for each image and returns array of
+  # yield results
   # else return array of results
   def optimize_images(paths, &block)
     run_method_for(paths, :optimize_image, &block)
   end
 
   # Optimize multiple images in place
-  # if block given yields path and result for each image and returns array of yield results
+  # if block given yields path and result for each image and returns array of
+  # yield results
   # else return array of results
   def optimize_images!(paths, &block)
     run_method_for(paths, :optimize_image!, &block)
   end
 
   # Optimize multiple image datas
-  # if block given yields original and result for each image data and returns array of yield results
+  # if block given yields original and result for each image data and returns
+  # array of yield results
   # else return array of results
   def optimize_images_data(datas, &block)
     run_method_for(datas, :optimize_image_data, &block)
@@ -150,7 +157,8 @@ class ImageOptim
     !!workers_for_image(path)
   end
 
-  # Check existance of binary, create symlink if ENV contains path for key XXX_BIN where XXX is upper case bin name
+  # Check existance of binary, create symlink if ENV contains path for key
+  # XXX_BIN where XXX is upper case bin name
   def resolve_bin!(bin)
     @bin_resolver.resolve!(bin)
   end

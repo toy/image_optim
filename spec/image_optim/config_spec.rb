@@ -97,15 +97,18 @@ describe ImageOptim::Config do
 
     describe 'global' do
       it 'should return empty hash for global config if it does not exists' do
-        expect(File).to receive(:file?).with(Config::GLOBAL_CONFIG_PATH).and_return(false)
+        expect(File).to receive(:file?).
+          with(Config::GLOBAL_CONFIG_PATH).and_return(false)
         expect(Config).not_to receive(:read)
 
         expect(Config.global).to eq({})
       end
 
       it 'should read global config if it exists' do
-        expect(File).to receive(:file?).with(Config::GLOBAL_CONFIG_PATH).and_return(true)
-        expect(Config).to receive(:read).with(Config::GLOBAL_CONFIG_PATH).and_return(:config => true)
+        expect(File).to receive(:file?).
+          with(Config::GLOBAL_CONFIG_PATH).and_return(true)
+        expect(Config).to receive(:read).
+          with(Config::GLOBAL_CONFIG_PATH).and_return(:config => true)
 
         expect(Config.global).to eq(:config => true)
       end
@@ -113,29 +116,35 @@ describe ImageOptim::Config do
 
     describe 'local' do
       it 'should return empty hash for local config if it does not exists' do
-        expect(File).to receive(:file?).with(Config::LOCAL_CONFIG_PATH).and_return(false)
+        expect(File).to receive(:file?).
+          with(Config::LOCAL_CONFIG_PATH).and_return(false)
         expect(Config).not_to receive(:read)
 
         expect(Config.local).to eq({})
       end
 
       it 'should read local config if it exists' do
-        expect(File).to receive(:file?).with(Config::LOCAL_CONFIG_PATH).and_return(true)
-        expect(Config).to receive(:read).with(Config::LOCAL_CONFIG_PATH).and_return(:config => true)
+        expect(File).to receive(:file?).
+          with(Config::LOCAL_CONFIG_PATH).and_return(true)
+        expect(Config).to receive(:read).
+          with(Config::LOCAL_CONFIG_PATH).and_return(:config => true)
 
         expect(Config.local).to eq(:config => true)
       end
     end
 
     describe 'read' do
-      it 'should return hash with deep symbolised keys from yaml file reader' do
-        path = double(:path)
-        expect(YAML).to receive(:load_file).with(path).and_return('config' => {'this' => true})
+      it 'should return hash with deep symbolised keys from reader' do
+        stringified = {'config' => {'this' => true}}
+        symbolized = {:config => {:this => true}}
 
-        expect(Config.instance_eval{ read(path) }).to eq(:config => {:this => true})
+        path = double(:path)
+        expect(YAML).to receive(:load_file).with(path).and_return(stringified)
+
+        expect(Config.instance_eval{ read(path) }).to eq(symbolized)
       end
 
-      it 'should warn and return an empty hash if yaml file reader returns non hash' do
+      it 'should warn and return an empty hash if reader returns non hash' do
         path = double(:path)
         expect(YAML).to receive(:load_file).with(path).and_return([:config])
         expect(Config).to receive(:warn)
@@ -143,7 +152,7 @@ describe ImageOptim::Config do
         expect(Config.instance_eval{ read(path) }).to eq({})
       end
 
-      it 'should warn and return an empty hash if yaml file reader raises exception' do
+      it 'should warn and return an empty hash if reader raises exception' do
         path = double(:path)
         expect(YAML).to receive(:load_file).with(path).and_raise
         expect(Config).to receive(:warn)

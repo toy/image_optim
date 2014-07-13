@@ -21,7 +21,10 @@ describe ImageOptim::BinResolver do
       5.times do
         resolver.resolve!(:ls)
       end
-      expect(resolver.env_path).to eq("#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}")
+      expect(resolver.env_path).to eq([
+        ENV['PATH'],
+        ImageOptim::BinResolver::VENDOR_PATH,
+      ].join(':'))
     end
   end
 
@@ -31,10 +34,14 @@ describe ImageOptim::BinResolver do
       tmpdir = double(:tmpdir)
       symlink = double(:symlink)
 
-      expect(resolver).to receive(:accessible?).with(:image_optim).once.and_return(true)
-      expect(FSPath).to receive(:temp_dir).once.and_return(tmpdir)
-      expect(tmpdir).to receive(:/).with(:image_optim).once.and_return(symlink)
-      expect(symlink).to receive(:make_symlink).with(File.expand_path(path)).once
+      expect(resolver).to receive(:accessible?).
+        with(:image_optim).once.and_return(true)
+      expect(FSPath).to receive(:temp_dir).
+        once.and_return(tmpdir)
+      expect(tmpdir).to receive(:/).
+        with(:image_optim).once.and_return(symlink)
+      expect(symlink).to receive(:make_symlink).
+        with(File.expand_path(path)).once
 
       at_exit_blocks = []
       expect(resolver).to receive(:at_exit).once do |&block|
@@ -44,7 +51,11 @@ describe ImageOptim::BinResolver do
       5.times do
         resolver.resolve!(:image_optim)
       end
-      expect(resolver.env_path).to eq("#{tmpdir}:#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}")
+      expect(resolver.env_path).to eq([
+        tmpdir,
+        ENV['PATH'],
+        ImageOptim::BinResolver::VENDOR_PATH,
+      ].join(':'))
 
       expect(FileUtils).to receive(:remove_entry_secure).with(tmpdir)
       at_exit_blocks.each(&:call)
@@ -53,7 +64,8 @@ describe ImageOptim::BinResolver do
 
   it 'should raise on failure to resolve bin' do
     with_env 'SHOULD_NOT_EXIST_BIN', nil do
-      expect(resolver).to receive(:accessible?).with(:should_not_exist).once.and_return(false)
+      expect(resolver).to receive(:accessible?).
+        with(:should_not_exist).once.and_return(false)
       expect(FSPath).not_to receive(:temp_dir)
 
       5.times do
@@ -61,7 +73,10 @@ describe ImageOptim::BinResolver do
           resolver.resolve!(:should_not_exist)
         end.to raise_error ImageOptim::BinNotFoundError
       end
-      expect(resolver.env_path).to eq("#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}")
+      expect(resolver.env_path).to eq([
+        ENV['PATH'],
+        ImageOptim::BinResolver::VENDOR_PATH,
+      ].join(':'))
     end
   end
 
@@ -71,10 +86,14 @@ describe ImageOptim::BinResolver do
       tmpdir = double(:tmpdir)
       symlink = double(:symlink)
 
-      expect(resolver).to receive(:accessible?).with(:should_not_exist).once.and_return(false)
-      expect(FSPath).to receive(:temp_dir).once.and_return(tmpdir)
-      expect(tmpdir).to receive(:/).with(:should_not_exist).once.and_return(symlink)
-      expect(symlink).to receive(:make_symlink).with(File.expand_path(path)).once
+      expect(resolver).to receive(:accessible?).
+        with(:should_not_exist).once.and_return(false)
+      expect(FSPath).to receive(:temp_dir).
+        once.and_return(tmpdir)
+      expect(tmpdir).to receive(:/).
+        with(:should_not_exist).once.and_return(symlink)
+      expect(symlink).to receive(:make_symlink).
+        with(File.expand_path(path)).once
 
       at_exit_blocks = []
       expect(resolver).to receive(:at_exit).once do |&block|
@@ -86,7 +105,11 @@ describe ImageOptim::BinResolver do
           resolver.resolve!(:should_not_exist)
         end.to raise_error ImageOptim::BinNotFoundError
       end
-      expect(resolver.env_path).to eq("#{tmpdir}:#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}")
+      expect(resolver.env_path).to eq([
+        tmpdir,
+        ENV['PATH'],
+        ImageOptim::BinResolver::VENDOR_PATH,
+      ].join(':'))
 
       expect(FileUtils).to receive(:remove_entry_secure).with(tmpdir)
       at_exit_blocks.each(&:call)
@@ -107,8 +130,10 @@ describe ImageOptim::BinResolver do
 
   it 'should raise on detection of problematic version' do
     with_env 'PNGCRUSH_BIN', nil do
-      expect(resolver).to receive(:accessible?).with(:pngcrush).once.and_return(true)
-      expect(resolver).to receive(:version).with(:pngcrush).once.and_return('1.7.60')
+      expect(resolver).to receive(:accessible?).
+        with(:pngcrush).once.and_return(true)
+      expect(resolver).to receive(:version).
+        with(:pngcrush).once.and_return('1.7.60')
       expect(FSPath).not_to receive(:temp_dir)
 
       5.times do
@@ -116,7 +141,10 @@ describe ImageOptim::BinResolver do
           resolver.resolve!(:pngcrush)
         end.to raise_error ImageOptim::BadBinVersion
       end
-      expect(resolver.env_path).to eq("#{ENV['PATH']}:#{ImageOptim::BinResolver::VENDOR_PATH}")
+      expect(resolver.env_path).to eq([
+        ENV['PATH'],
+        ImageOptim::BinResolver::VENDOR_PATH,
+      ].join(':'))
     end
   end
 end

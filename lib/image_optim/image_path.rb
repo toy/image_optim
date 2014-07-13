@@ -16,7 +16,8 @@ class ImageOptim
         end
       end
 
-      # Original path, use original_size to get its size as original can be overwritten
+      # Original path, use original_size to get its size as original can be
+      # overwritten
       attr_reader :original
 
       # Stored size of original
@@ -51,7 +52,8 @@ class ImageOptim
       image_meta && image_meta.format
     end
 
-    # Returns path if it is already an instance of this class otherwise new instance
+    # Returns path if it is already an instance of this class otherwise new
+    # instance
     def self.convert(path)
       path.is_a?(self) ? path : new(path)
     end

@@ -15,9 +15,14 @@ class ImageOptim
       else
         log_denominator = Math.log(size) / Math.log(BASE)
         degree = [log_denominator.floor, SIZE_SYMBOLS.length - 1].min
-        denominator = BASE**degree
-        number = size / denominator
-        "#{degree == 0 ? number.to_i : format("%.#{PRECISION}f", number)}#{SIZE_SYMBOLS[degree]}".rjust(LENGTH)
+        number_string = if degree == 0
+          size.to_s
+        else
+          denominator = BASE**degree
+          number = size / denominator
+          format("%.#{PRECISION}f", number)
+        end
+        "#{number_string}#{SIZE_SYMBOLS[degree]}".rjust(LENGTH)
       end
     end
   end

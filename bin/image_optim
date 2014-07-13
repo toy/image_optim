@@ -20,13 +20,15 @@ option_parser = OptionParser.new do |op|
     |
   TEXT
 
-  op.on('-r', '-R', '--recursive', 'Recurively scan directories for images') do |recursive|
+  op.on('-r', '-R', '--recursive', 'Recurively scan directories '\
+      'for images') do |recursive|
     options[:recursive] = recursive
   end
 
   op.separator nil
 
-  op.on('--[no-]threads N', Integer, 'Number of threads or disable (defaults to number of processors)') do |threads|
+  op.on('--[no-]threads N', Integer, 'Number of threads or disable '\
+      '(defaults to number of processors)') do |threads|
     options[:threads] = threads
   end
 
@@ -67,10 +69,15 @@ option_parser = OptionParser.new do |op|
         fail "Unknown type #{type}"
       end
 
-      description = "#{option_definition.description.gsub(' - ', ' - ')} (defaults to #{default})"
-      description = description.scan(/(.*?.{1,60})(?:\s|\z)/).flatten.join("\n  ").split("\n")
+      description_lines = %W[
+        #{option_definition.description.gsub(' - ', ' - ')}
+        (defaults to #{default})
+      ].join(' ').
+        scan(/.*?.{1,60}(?:\s|\z)/).
+        join("\n  ").
+        split("\n")
 
-      op.on("--#{bin}-#{name} #{marking}", type, *description) do |value|
+      op.on("--#{bin}-#{name} #{marking}", type, *description_lines) do |value|
         options[bin] = {} unless options[bin].is_a?(Hash)
         options[bin][option_definition.name.to_sym] = value
       end

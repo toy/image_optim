@@ -89,7 +89,8 @@ class ImageOptim
       when :pngcrush
         capture_output("#{name} -version 2>&1")[/\d+(\.\d+){1,}/]
       when :pngout
-        date_str = capture_output("#{name} 2>&1")[/[A-Z][a-z]{2} (?: |\d)\d \d{4}/]
+        date_regexp = /[A-Z][a-z]{2} (?: |\d)\d \d{4}/
+        date_str = capture_output("#{name} 2>&1")[date_regexp]
         Date.parse(date_str).strftime('%Y%m%d')
       end
     end

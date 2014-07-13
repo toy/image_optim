@@ -9,7 +9,8 @@ class ImageOptim
   class Config
     include OptionHelpers
 
-    GLOBAL_CONFIG_PATH = File.join(File.expand_path(ENV['XDG_CONFIG_HOME'] || '~/.config'), 'image_optim.yml')
+    config_home = File.expand_path(ENV['XDG_CONFIG_HOME'] || '~/.config')
+    GLOBAL_CONFIG_PATH = File.join(config_home, 'image_optim.yml')
     LOCAL_CONFIG_PATH = '.image_optim.yml'
 
     class << self
@@ -55,7 +56,8 @@ class ImageOptim
     def assert_no_unused_options!
       unknown_options = @options.reject{ |key, _value| @used.include?(key) }
       return if unknown_options.empty?
-      fail ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
+      fail ConfigurationError, "unknown options #{unknown_options.inspect} "\
+          "for #{self}"
     end
 
     def nice
@@ -99,7 +101,8 @@ class ImageOptim
       when false
         false
       else
-        fail ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
+        fail ConfigurationError, "Got #{worker_options.inspect} for "\
+            "#{klass.name} options"
       end
     end
 
@@ -109,7 +112,7 @@ class ImageOptim
 
   private
 
-    # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
+    # http://stackoverflow.com/a/6420817
     def processor_count
       @processor_count ||= case host_os = RbConfig::CONFIG['host_os']
       when /darwin9/
@@ -122,9 +125,10 @@ class ImageOptim
         `sysctl -n hw.ncpu`
       when /mswin|mingw/
         require 'win32ole'
-        wmi = WIN32OLE.connect('winmgmts://')
-        cpu = wmi.ExecQuery('select NumberOfLogicalProcessors from Win32_Processor')
-        cpu.to_enum.first.NumberOfLogicalProcessors
+        WIN32OLE.
+          connect('winmgmts://').
+          ExecQuery('select NumberOfLogicalProcessors from Win32_Processor').
+          to_enum.first.NumberOfLogicalProcessors
       else
         warn "Unknown architecture (#{host_os}) assuming one processor."
         1

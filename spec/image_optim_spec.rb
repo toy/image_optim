@@ -46,12 +46,22 @@ describe ImageOptim do
   end
 
   describe 'worker' do
-    options = Hash[ImageOptim::Worker.klasses.map{ |klass| [klass.bin_sym, false] }]
-    ImageOptim::Worker.klasses.reject{ |k| k.new({}).image_formats.empty? }.each do |worker_klass|
+    base_options = Hash[ImageOptim::Worker.klasses.map do |klass|
+      [klass.bin_sym, false]
+    end]
+
+    real_workers = ImageOptim::Worker.klasses.reject do |klass|
+      klass.new({}).image_formats.empty?
+    end
+
+    real_workers.each do |worker_klass|
       describe worker_klass.bin_sym do
         it 'should optimize at least one test image' do
-          image_optim = ImageOptim.new(options.merge(worker_klass.bin_sym => true))
-          expect(TEST_IMAGES.any?{ |original| image_optim.optimize_image(original.temp_copy) }).to be true
+          options = base_options.merge(worker_klass.bin_sym => true)
+          image_optim = ImageOptim.new(options)
+          expect(TEST_IMAGES.any? do |original|
+            image_optim.optimize_image(original.temp_copy)
+          end).to be true
         end
       end
     end
@@ -106,7 +116,9 @@ describe ImageOptim do
           image_optim = ImageOptim.new
           optimized_data = image_optim.optimize_image_data(original.read)
           expect(optimized_data).not_to be_nil
-          expect(optimized_data).to eq(image_optim.optimize_image(original.temp_copy).open('rb', &:read))
+
+          expected_path = image_optim.optimize_image(original.temp_copy)
+          expect(optimized_data).to eq(expected_path.open('rb', &:read))
 
           expect(image_optim.optimize_image_data(optimized_data)).to be_nil
         end
@@ -133,7 +145,8 @@ describe ImageOptim do
     it 'should optimize' do
       copies = TEST_IMAGES.map(&:temp_copy)
       optimized_images = ImageOptim.optimize_images(copies)
-      TEST_IMAGES.zip(copies, optimized_images).each do |original, copy, optimized_image|
+      zipped = TEST_IMAGES.zip(copies, optimized_images)
+      zipped.each do |original, copy, optimized_image|
         expect(optimized_image).to be_a(ImageOptim::ImagePath::Optimized)
         expect(optimized_image.size).to be_in_range(1...original.size)
         expect(optimized_image.read).not_to eq(original.read)
@@ -151,10 +164,12 @@ describe ImageOptim do
     end
 
     it 'should optimize datas' do
-      optimized_images_datas = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
-      TEST_IMAGES.zip(optimized_images_datas).each do |original, optimized_image_data|
-        expect(optimized_image_data).not_to be_nil
-        expect(optimized_image_data).to eq(ImageOptim.optimize_image(original.temp_copy).open('rb', &:read))
+      optimized_datas = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
+      TEST_IMAGES.zip(optimized_datas).each do |original, optimized_data|
+        expect(optimized_data).not_to be_nil
+
+        expected_path = ImageOptim.optimize_image(original.temp_copy)
+        expect(optimized_data).to eq(expected_path.open('rb', &:read))
       end
     end
   end
@@ -208,13 +223,13 @@ describe ImageOptim do
 
     %w[optimize_images optimize_images!].each do |list_method|
       describe list_method do
-        single_method = list_method.sub('images', 'image')
+        method = list_method.sub('images', 'image')
         describe 'without block' do
           it 'should optimize images and return array of results' do
             image_optim = ImageOptim.new
             dsts = srcs.map do |src|
               dst = "#{src}_"
-              expect(image_optim).to receive(single_method).with(src).and_return(dst)
+              expect(image_optim).to receive(method).with(src).and_return(dst)
               dst
             end
             expect(image_optim.send(list_method, srcs)).to eq(dsts)
@@ -222,11 +237,12 @@ describe ImageOptim do
         end
 
         describe 'given block' do
-          it 'should optimize images, yield path and result for each and return array of yield results' do
+          it 'should optimize images, yield path and result for each and '\
+              'return array of yield results' do
             image_optim = ImageOptim.new
             results = srcs.map do |src|
               dst = "#{src}_"
-              expect(image_optim).to receive(single_method).with(src).and_return(dst)
+              expect(image_optim).to receive(method).with(src).and_return(dst)
               "#{src} #{dst}"
             end
             expect(image_optim.send(list_method, srcs) do |src, dst|
@@ -239,13 +255,21 @@ describe ImageOptim do
   end
 
   describe 'losslessness' do
-    rotated = ImageOptim::ImagePath.new(__FILE__).dirname / 'images/orient/original.jpg'
-    rotate_images = ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/orient/?.jpg')
+    images_dir = ImageOptim::ImagePath.new(__FILE__).dirname / 'images'
+    rotated = images_dir / 'orient/original.jpg'
+    rotate_images = images_dir.glob('orient/?.jpg')
 
     def flatten_animation(image)
       if image.format == :gif
         flattened = image.temp_path
-        expect(system("convert #{image.to_s.shellescape} -coalesce -append #{flattened.to_s.shellescape}")).to be_truthy
+        flatten_command = %W[
+          convert
+          #{image.to_s.shellescape}
+          -coalesce
+          -append
+          #{flattened.to_s.shellescape}
+        ].join(' ')
+        expect(system(flatten_command)).to be_truthy
         flattened
       else
         image
@@ -256,7 +280,15 @@ describe ImageOptim do
       expect(optimized).not_to be_nil
       original = flatten_animation(original)
       optimized = flatten_animation(optimized)
-      nrmse = `compare -metric RMSE #{original.to_s.shellescape} #{optimized.to_s.shellescape} /dev/null 2>&1`[/\((\d+(\.\d+)?)\)/, 1]
+      nrmse_command = %W[
+        compare
+        -metric RMSE
+        #{original.to_s.shellescape}
+        #{optimized.to_s.shellescape}
+        /dev/null
+        2>&1
+      ].join(' ')
+      nrmse = `#{nrmse_command}`[/\((\d+(\.\d+)?)\)/, 1]
       expect(nrmse).not_to be_nil
       expect(nrmse.to_f).to eq(0)
     end

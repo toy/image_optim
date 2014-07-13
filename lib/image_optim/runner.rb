@@ -19,14 +19,20 @@ class ImageOptim
 
     def run!
       unless @files.empty?
-        lines, original_sizes, optimized_sizes =
-        @image_optim.optimize_images!(@files.with_progress('optimizing')) do |original, optimized|
+        lines = []
+        original_size_sum = 0
+        optimized_size_sum = 0
+
+        optimize_images! do |original, optimized|
           original_size = optimized ? optimized.original_size : original.size
           optimized_size = optimized ? optimized.size : original.size
-          ["#{size_percent(original_size, optimized_size)}  #{original}", original_size, optimized_size]
-        end.transpose
+          lines << "#{size_percent(original_size, optimized_size)}  #{original}"
+          original_size_sum += original_size
+          optimized_size_sum += optimized_size
+        end
 
-        puts lines, "Total: #{size_percent(original_sizes.inject(:+), optimized_sizes.inject(:+))}"
+        puts lines
+        puts "Total: #{size_percent(original_size_sum, optimized_size_sum)}"
       end
 
       !@warnings
@@ -37,6 +43,10 @@ class ImageOptim
     end
 
   private
+
+    def optimize_images!(&block)
+      @image_optim.optimize_images!(@files.with_progress('optimizing'), &block)
+    end
 
     def find_files(args)
       files = []
@@ -50,7 +60,9 @@ class ImageOptim
         elsif @recursive
           if File.directory?(arg)
             Find.find(arg) do |path|
-              files << path if File.file?(path) && @image_optim.optimizable?(path)
+              next unless File.file?(path)
+              next unless @image_optim.optimizable?(path)
+              files << path
             end
           else
             warning "#{arg} is not a file or a directory or does not exist"
@@ -71,7 +83,9 @@ class ImageOptim
       if size_a == size_b
         "------ #{Space::EMPTY_SPACE}"
       else
-        format('%5.2f%% %s', 100 - 100.0 * size_b / size_a, Space.space(size_a - size_b))
+        percent = 100 - 100.0 * size_b / size_a
+        space = Space.space(size_a - size_b)
+        format('%5.2f%% %s', percent, space)
       end
     end
   end

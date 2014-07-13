@@ -32,7 +32,8 @@ class ImageOptim
 
       def option(name, default, type, description = nil, &proc)
         attr_reader name
-        option_definitions << OptionDefinition.new(name, default, type, description, &proc)
+        option_definitions <<
+            OptionDefinition.new(name, default, type, description, &proc)
       end
     end
 
@@ -63,7 +64,9 @@ class ImageOptim
     # List of formats which worker can optimize
     def image_formats
       format_from_name = self.class.name.downcase[/gif|jpeg|png|svg/]
-      fail "#{self.class}: can't guess applicable format from worker name" unless format_from_name
+      unless format_from_name
+        fail "#{self.class}: can't guess applicable format from worker name"
+      end
       [format_from_name.to_sym]
     end
 
@@ -87,7 +90,8 @@ class ImageOptim
       known_keys = self.class.option_definitions.map(&:name)
       unknown_options = options.reject{ |key, _value| known_keys.include?(key) }
       return if unknown_options.empty?
-      fail ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
+      fail ConfigurationError, "unknown options #{unknown_options.inspect} "\
+          "for #{self}"
     end
 
     # Forward bin resolving to image_optim
@@ -103,7 +107,9 @@ class ImageOptim
 
       success = run_command(command)
 
-      $stderr << "#{success ? '✓' : '✗'} #{Time.now - start}s #{command}\n" if @image_optim.verbose
+      if @image_optim.verbose
+        $stderr << "#{success ? '✓' : '✗'} #{Time.now - start}s #{command}\n"
+      end
 
       success
     end
@@ -115,13 +121,20 @@ class ImageOptim
       [bin, *arguments].map(&:to_s).shelljoin
     end
 
-    # Run command defining environment, setting nice level, removing output and reraising signal exception
+    # Run command defining environment, setting nice level, removing output and
+    # reraising signal exception
     def run_command(command)
-      success = system "env PATH=#{@image_optim.env_path.shellescape} nice -n #{@image_optim.nice} #{command} > /dev/null 2>&1"
+      full_command = %W[
+        env PATH=#{@image_optim.env_path.shellescape}
+        nice -n #{@image_optim.nice}
+        #{command} > /dev/null 2>&1
+      ].join(' ')
+      success = system full_command
 
       status = $CHILD_STATUS
       if status.signaled?
-        unless defined?(JRUBY_VERSION) && status.exitstatus == status.termsig # jruby does not differ non zero exit status and signal number
+        # jruby does not differ non zero exit status and signal number
+        unless defined?(JRUBY_VERSION) && status.exitstatus == status.termsig
           fail SignalException, status.termsig
         end
       end
