@@ -3,12 +3,17 @@ require 'image_optim/worker'
 class ImageOptim
   class Worker
     class Pngcrush < Worker
-      option(:chunks, :alla, Array, 'List of chunks to remove or `:alla` - all except tRNS/transparency or '\
-                                '`:allb` - all except tRNS and gAMA/gamma'){ |v| Array(v).map(&:to_s) }
+      option(:chunks, :alla, Array, 'List of chunks to remove or '\
+          '`:alla` - all except tRNS/transparency or '\
+          '`:allb` - all except tRNS and gAMA/gamma') do |v|
+        Array(v).map(&:to_s)
+      end
 
-      option(:fix, false, 'Fix otherwise fatal conditions such as bad CRCs'){ |v| !!v }
+      option(:fix, false, 'Fix otherwise fatal conditions '\
+          'such as bad CRCs'){ |v| !!v }
 
-      option(:brute, false, 'Brute force try all methods, very time-consuming and generally not worthwhile'){ |v| !!v }
+      option(:brute, false, 'Brute force try all methods, '\
+          'very time-consuming and generally not worthwhile'){ |v| !!v }
 
       # Always run first
       def run_order

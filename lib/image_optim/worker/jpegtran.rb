@@ -7,7 +7,8 @@ class ImageOptim
 
       option(:progressive, true, 'Create progressive JPEG file'){ |v| !!v }
 
-      option(:jpegrescan, false, 'Use jpegtran through jpegrescan, ignore progressive option'){ |v| !!v }
+      option(:jpegrescan, false, 'Use jpegtran through jpegrescan, '\
+          'ignore progressive option'){ |v| !!v }
 
       def optimize(src, dst)
         if jpegrescan
