@@ -45,6 +45,33 @@ describe ImageOptim do
     allow(ImageOptim::Config).to receive(:local).and_return({})
   end
 
+  describe 'workers' do
+    it 'should be ordered by run_order' do
+      original_klasses = Worker.klasses
+      formats = original_klasses.map do |klass|
+        klass.new({}).image_formats
+      end.flatten.uniq
+
+      [
+        original_klasses,
+        original_klasses.reverse,
+        original_klasses.shuffle,
+      ].each do |klasses|
+        expect(Worker).to receive(:klasses).and_return(klasses)
+
+        image_optim = ImageOptim.new
+
+        formats.each do |format|
+          path = ImagePath.new("test.#{format}")
+          expect(path).to receive(:format).and_return(format)
+
+          workers = image_optim.workers_for_image(path)
+          expect(workers).to eq(workers.sort)
+        end
+      end
+    end
+  end
+
   describe 'worker' do
     base_options = Hash[ImageOptim::Worker.klasses.map do |klass|
       [klass.bin_sym, false]
