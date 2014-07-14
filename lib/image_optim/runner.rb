@@ -48,11 +48,11 @@ class ImageOptim
       options = HashHelpers.deep_symbolise_keys(options)
       @recursive = options.delete(:recursive)
       @image_optim = ImageOptim.new(options)
-      @files = find_files(args)
+      @to_optimize = find_to_optimize(args)
     end
 
     def run!
-      unless @files.empty?
+      unless @to_optimize.empty?
         results = Results.new
 
         optimize_images! do |original, optimized|
@@ -72,10 +72,11 @@ class ImageOptim
   private
 
     def optimize_images!(&block)
-      @image_optim.optimize_images!(@files.with_progress('optimizing'), &block)
+      @image_optim.
+        optimize_images!(@to_optimize.with_progress('optimizing'), &block)
     end
 
-    def find_files(args)
+    def find_to_optimize(args)
       files = []
       args.each do |arg|
         if File.file?(arg)
