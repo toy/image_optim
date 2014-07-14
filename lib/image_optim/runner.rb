@@ -9,6 +9,40 @@ require 'yaml'
 
 class ImageOptim
   class Runner
+    # Collect and output results of optimization
+    class Results
+      def initialize
+        @lines = []
+        @original_size_sum = 0
+        @optimized_size_sum = 0
+      end
+
+      def add(original, optimized)
+        original_size = optimized ? optimized.original_size : original.size
+        optimized_size = optimized ? optimized.size : original.size
+        @lines << "#{size_percent(original_size, optimized_size)}  #{original}"
+        @original_size_sum += original_size
+        @optimized_size_sum += optimized_size
+      end
+
+      def print
+        puts @lines
+        puts "Total: #{size_percent(@original_size_sum, @optimized_size_sum)}"
+      end
+
+    private
+
+      def size_percent(size_a, size_b)
+        if size_a == size_b
+          "------ #{Space::EMPTY_SPACE}"
+        else
+          percent = 100 - 100.0 * size_b / size_a
+          space = Space.space(size_a - size_b)
+          format('%5.2f%% %s', percent, space)
+        end
+      end
+    end
+
     def initialize(args, options)
       fail 'specify paths to optimize' if args.empty?
       options = HashHelpers.deep_symbolise_keys(options)
@@ -19,20 +53,13 @@ class ImageOptim
 
     def run!
       unless @files.empty?
-        lines = []
-        original_size_sum = 0
-        optimized_size_sum = 0
+        results = Results.new
 
         optimize_images! do |original, optimized|
-          original_size = optimized ? optimized.original_size : original.size
-          optimized_size = optimized ? optimized.size : original.size
-          lines << "#{size_percent(original_size, optimized_size)}  #{original}"
-          original_size_sum += original_size
-          optimized_size_sum += optimized_size
+          results.add(original, optimized)
         end
 
-        puts lines
-        puts "Total: #{size_percent(original_size_sum, optimized_size_sum)}"
+        results.print
       end
 
       !@warnings
@@ -77,16 +104,6 @@ class ImageOptim
     def warning(message)
       @warnings = true
       warn message
-    end
-
-    def size_percent(size_a, size_b)
-      if size_a == size_b
-        "------ #{Space::EMPTY_SPACE}"
-      else
-        percent = 100 - 100.0 * size_b / size_a
-        space = Space.space(size_a - size_b)
-        format('%5.2f%% %s', percent, space)
-      end
     end
   end
 end
