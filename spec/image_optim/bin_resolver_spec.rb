@@ -26,7 +26,7 @@ describe ImageOptim::BinResolver do
   end
 
   it 'should resolve bin specified in ENV' do
-    path = (FSPath(__FILE__).dirname / '../bin/image_optim').relative_path_from(Dir.pwd).to_s
+    path = 'some/path/image_optim2.3.4'
     with_env 'IMAGE_OPTIM_BIN', path do
       tmpdir = double(:tmpdir)
       symlink = double(:symlink)
@@ -66,7 +66,7 @@ describe ImageOptim::BinResolver do
   end
 
   it 'should raise on failure to resolve bin specified in ENV' do
-    path = (FSPath(__FILE__).dirname / '../bin/should_not_exist_bin').relative_path_from(Dir.pwd).to_s
+    path = 'some/path/should_not_exist_bin'
     with_env 'SHOULD_NOT_EXIST_BIN', path do
       tmpdir = double(:tmpdir)
       symlink = double(:symlink)
