@@ -50,16 +50,9 @@ class ImageOptim
 
     @bin_resolver = BinResolver.new(self)
 
-    @workers_by_format = {}
-    Worker.klasses.each do |klass|
-      next unless (worker_options = config.for_worker(klass))
-      worker = klass.new(self, worker_options)
-      worker.image_formats.each do |format|
-        @workers_by_format[format] ||= []
-        @workers_by_format[format] << worker
-      end
+    @workers_by_format = create_workers_by_format do |klass|
+      config.for_worker(klass)
     end
-    @workers_by_format.values.each(&:sort!)
 
     config.assert_no_unused_options!
   end
@@ -169,6 +162,20 @@ class ImageOptim
   end
 
 private
+
+  # Create hash with format mapped to list of workers sorted by run order
+  def create_workers_by_format(&options_proc)
+    by_format = {}
+    Worker.klasses.each do |klass|
+      next unless (options = options_proc[klass])
+      worker = klass.new(self, options)
+      worker.image_formats.each do |format|
+        by_format[format] ||= []
+        by_format[format] << worker
+      end
+    end
+    by_format.each{ |_format, workers| workers.sort! }
+  end
 
   # Run method for each path and yield each path and result if block given
   def run_method_for(paths, method_name, &block)
