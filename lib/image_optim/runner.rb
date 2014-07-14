@@ -76,30 +76,36 @@ class ImageOptim
         optimize_images!(@to_optimize.with_progress('optimizing'), &block)
     end
 
-    def find_to_optimize(args)
-      files = []
-      args.each do |arg|
-        if File.file?(arg)
-          if @image_optim.optimizable?(arg)
-            files << arg
+    def find_to_optimize(paths)
+      to_optimize = []
+      paths.each do |path|
+        if File.file?(path)
+          if @image_optim.optimizable?(path)
+            to_optimize << path
           else
-            warning "#{arg} is not an image or there is no optimizer for it"
+            warning "#{path} is not an image or there is no optimizer for it"
           end
         elsif @recursive
-          if File.directory?(arg)
-            Find.find(arg) do |path|
-              next unless File.file?(path)
-              next unless @image_optim.optimizable?(path)
-              files << path
-            end
+          if File.directory?(path)
+            to_optimize += find_to_optimize_recursive(path)
           else
-            warning "#{arg} is not a file or a directory or does not exist"
+            warning "#{path} is not a file or a directory or does not exist"
           end
         else
-          warning "#{arg} is not a file or does not exist"
+          warning "#{path} is not a file or does not exist"
         end
       end
-      files
+      to_optimize
+    end
+
+    def find_to_optimize_recursive(dir)
+      to_optimize = []
+      Find.find(dir) do |path|
+        next unless File.file?(path)
+        next unless @image_optim.optimizable?(path)
+        to_optimize << path
+      end
+      to_optimize
     end
 
     def warning(message)
