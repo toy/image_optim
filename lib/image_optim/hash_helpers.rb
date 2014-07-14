@@ -1,18 +1,6 @@
 class ImageOptim
   module HashHelpers
     class << self
-      def deep_transform_keys(hash, &block)
-        new_hash = {}
-        hash.each do |k, v|
-          new_hash[block.call(k)] = if v.is_a?(Hash)
-            deep_transform_keys(v, &block)
-          else
-            v
-          end
-        end
-        new_hash
-      end
-
       def deep_stringify_keys(hash)
         deep_transform_keys(hash, &:to_s)
       end
@@ -29,6 +17,20 @@ class ImageOptim
             v_b
           end
         end
+      end
+
+    private
+
+      def deep_transform_keys(hash, &block)
+        new_hash = {}
+        hash.each do |k, v|
+          new_hash[block.call(k)] = if v.is_a?(Hash)
+            deep_transform_keys(v, &block)
+          else
+            v
+          end
+        end
+        new_hash
       end
     end
   end
