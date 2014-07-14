@@ -15,20 +15,15 @@ class ImageOptim
 
       attr_reader :method, :args
       def initialize(method, *args)
-        @method = method.to_sym
-        @args = args
+        @method, @args = method.to_sym, args
 
         case @method
         when :between?
-          unless args.length == 2
-            fail ArgumentError, "`between?' expects 2 arguments"
-          end
+          @args.length == 2 || argument_error!("`between?' expects 2 arguments")
         when :<, :<=, :==, :>, :>=
-          unless args.length == 1
-            fail ArgumentError, "`#{method}' expects 1 argument"
-          end
+          @args.length == 1 || argument_error!("`#{method}' expects 1 argument")
         else
-          fail ArgumentError, "Unknown method `#{method}'"
+          argument_error! "Unknown method `#{method}'"
         end
       end
 
@@ -43,6 +38,12 @@ class ImageOptim
         else
           "#{@method} #{@args.first}"
         end
+      end
+
+    private
+
+      def argument_error!(message)
+        fail ArgumentError, message
       end
     end
   end
