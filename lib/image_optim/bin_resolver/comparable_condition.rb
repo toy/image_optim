@@ -1,6 +1,16 @@
 class ImageOptim
   class BinResolver
+    # Allows to externalize conditions for an instance of Comparable to use in
+    # case statemens
+    #
+    #     is = ComparableCondition.is
+    #     case rand(100)
+    #     when is < 10 then # ...
+    #     when is.between?(13, 23) then # ...
+    #     when is >= 90 then # ...
+    #     end
     class ComparableCondition
+      # Helper class for creating conditions using ComparableCondition.is
       class Builder
         Comparable.instance_methods.each do |method|
           define_method method do |*args|

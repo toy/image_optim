@@ -6,6 +6,7 @@ require 'set'
 require 'yaml'
 
 class ImageOptim
+  # Read, merge and parse configuration
   class Config
     include OptionHelpers
 
@@ -14,10 +15,14 @@ class ImageOptim
     LOCAL_CONFIG_PATH = '.image_optim.yml'
 
     class << self
+      # Read config at GLOBAL_CONFIG_PATH if it exists, warn if anything is
+      # wrong
       def global
         File.file?(GLOBAL_CONFIG_PATH) ? read(GLOBAL_CONFIG_PATH) : {}
       end
 
+      # Read config at LOCAL_CONFIG_PATH if it exists, warn if anything is
+      # wrong
       def local
         File.file?(LOCAL_CONFIG_PATH) ? read(LOCAL_CONFIG_PATH) : {}
       end

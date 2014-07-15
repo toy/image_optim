@@ -3,11 +3,16 @@ require 'exifr'
 
 class ImageOptim
   class Worker
+    # http://www.sentex.net/~mwandel/jhead/
+    #
+    # Jhead internally uses jpegtran which should be on path
     class Jhead < Worker
+      # Works on jpegs
       def image_formats
         [:jpeg]
       end
 
+      # Run first [-10]
       def run_order
         -10
       end

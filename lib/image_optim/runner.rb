@@ -8,6 +8,7 @@ require 'find'
 require 'yaml'
 
 class ImageOptim
+  # Handling optimization using image_optim binary
   class Runner
     # Collect and output results of optimization
     class Results

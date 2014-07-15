@@ -7,7 +7,13 @@ class ImageOptim
   class BinNotFoundError < StandardError; end
   class BadBinVersion < StandardError; end
 
+  # Handles resolving binaries and checking versions
+  #
+  # If there is an environment variable XXX_BIN when resolbing xxx, then a
+  # symlink to binary will be created in a temporary directory which will be
+  # added to PATH
   class BinResolver
+    # Holds name and version of an executable
     class Bin
       attr_reader :name, :version
       def initialize(name, version)

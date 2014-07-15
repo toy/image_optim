@@ -3,6 +3,7 @@ require 'image_optim/option_helpers'
 
 class ImageOptim
   class Worker
+    # http://www.kokkonen.net/tjko/projects.html
     class Jpegoptim < Worker
       STRIP_OPTION =
       option(:strip, :all, Array, 'List of extra markers to strip: '\
@@ -26,7 +27,7 @@ class ImageOptim
         OptionHelpers.limit_with_range(v.to_i, 0..100)
       end
 
-      # Run first if max_quality < 100
+      # Run first [-1] if max_quality < 100 otherwise with normal priority
       def run_order
         max_quality < 100 ? -1 : 0
       end

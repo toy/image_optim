@@ -1,4 +1,5 @@
 class ImageOptim
+  # Hold information about an option
   class OptionDefinition
     attr_reader :name, :default, :type, :description, :proc
 

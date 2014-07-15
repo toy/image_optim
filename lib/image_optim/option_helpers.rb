@@ -1,4 +1,5 @@
 class ImageOptim
+  # Helper methods for options
   module OptionHelpers
     # Ensure number is in range
     def self.limit_with_range(number, range)

@@ -7,6 +7,7 @@ require 'image_optim/worker'
 require 'in_threads'
 require 'shellwords'
 
+# Main interface
 class ImageOptim
   # Nice level
   attr_reader :nice

@@ -1,6 +1,7 @@
 require 'image_size'
 
 class ImageOptim
+  # Getting format of image at path or as data
   class ImageMeta
     def self.for_path(path)
       is = ImageSize.path(path)

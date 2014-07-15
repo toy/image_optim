@@ -4,6 +4,7 @@ require 'image_optim/true_false_nil'
 
 class ImageOptim
   class Worker
+    # http://optipng.sourceforge.net/
     class Optipng < Worker
       LEVEL_OPTION =
       option(:level, 6, 'Optimization level preset: '\

@@ -2,7 +2,9 @@ require 'fspath'
 require 'image_optim/image_meta'
 
 class ImageOptim
+  # FSPath with additional helpful methods
   class ImagePath < FSPath
+    # Holds optimized image with reference to original and its size
     class Optimized < DelegateClass(self)
       def initialize(path, original_or_size = nil)
         path = ImagePath.convert(path)

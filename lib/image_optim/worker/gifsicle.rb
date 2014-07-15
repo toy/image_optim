@@ -2,6 +2,7 @@ require 'image_optim/worker'
 
 class ImageOptim
   class Worker
+    # http://www.lcdf.org/gifsicle/
     class Gifsicle < Worker
       INTERLACE_OPTION =
       option(:interlace, false, 'Turn interlacing on'){ |v| !!v }

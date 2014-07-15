@@ -2,6 +2,10 @@ require 'image_optim/worker'
 
 class ImageOptim
   class Worker
+    # http://www.ijg.org/
+    #
+    # Uses jpegtran through jpegrescan if enabled, jpegrescan is vendored with
+    # this gem
     class Jpegtran < Worker
       COPY_CHUNKS_OPTION =
       option(:copy_chunks, false, 'Copy all chunks'){ |v| !!v }

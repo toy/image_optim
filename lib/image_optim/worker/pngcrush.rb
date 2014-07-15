@@ -2,6 +2,7 @@ require 'image_optim/worker'
 
 class ImageOptim
   class Worker
+    # http://pmt.sourceforge.net/pngcrush/
     class Pngcrush < Worker
       CHUNKS_OPTION =
       option(:chunks, :alla, Array, 'List of chunks to remove or '\
@@ -18,7 +19,7 @@ class ImageOptim
       option(:brute, false, 'Brute force try all methods, '\
           'very time-consuming and generally not worthwhile'){ |v| !!v }
 
-      # Always run first
+      # Always run first [-1]
       def run_order
         -1
       end

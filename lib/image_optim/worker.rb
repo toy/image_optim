@@ -6,6 +6,7 @@ require 'shellwords'
 require 'english'
 
 class ImageOptim
+  # Base class for all workers
   class Worker
     class << self
       # List of available workers
@@ -70,7 +71,7 @@ class ImageOptim
       [format_from_name.to_sym]
     end
 
-    # Ordering in list of workers
+    # Ordering in list of workers, 0 by default
     def run_order
       0
     end
