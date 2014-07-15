@@ -60,7 +60,7 @@ describe ImageOptim::Config do
   end
 
   describe 'for_worker' do
-    class Abc < ImageOptim::Worker
+    Abc = Class.new(ImageOptim::Worker) do
       def image_formats
         []
       end
