@@ -3,7 +3,7 @@
 require 'image_optim/option_definition'
 require 'image_optim/option_helpers'
 require 'shellwords'
-require 'english'
+require 'English'
 
 class ImageOptim
   # Base class for all workers
