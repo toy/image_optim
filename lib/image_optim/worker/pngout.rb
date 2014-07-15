@@ -4,8 +4,10 @@ require 'image_optim/option_helpers'
 class ImageOptim
   class Worker
     class Pngout < Worker
+      COPY_CHUNKS_OPTION =
       option(:copy_chunks, false, 'Copy optional chunks'){ |v| !!v }
 
+      STRATEGY_OPTION =
       option(:strategy, 0, 'Strategy: '\
           '`0` - xtreme, '\
           '`1` - intense, '\

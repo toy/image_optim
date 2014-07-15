@@ -3,6 +3,7 @@ require 'image_optim/worker'
 class ImageOptim
   class Worker
     class Gifsicle < Worker
+      INTERLACE_OPTION =
       option(:interlace, false, 'Turn interlacing on'){ |v| !!v }
 
       def optimize(src, dst)

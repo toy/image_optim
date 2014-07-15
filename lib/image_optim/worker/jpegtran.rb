@@ -3,10 +3,13 @@ require 'image_optim/worker'
 class ImageOptim
   class Worker
     class Jpegtran < Worker
+      COPY_CHUNKS_OPTION =
       option(:copy_chunks, false, 'Copy all chunks'){ |v| !!v }
 
+      PROGRESSIVE_OPTION =
       option(:progressive, true, 'Create progressive JPEG file'){ |v| !!v }
 
+      JPEGRESCAN_OPTION =
       option(:jpegrescan, false, 'Use jpegtran through jpegrescan, '\
           'ignore progressive option'){ |v| !!v }
 

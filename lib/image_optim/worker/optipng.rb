@@ -5,12 +5,14 @@ require 'image_optim/true_false_nil'
 class ImageOptim
   class Worker
     class Optipng < Worker
+      LEVEL_OPTION =
       option(:level, 6, 'Optimization level preset: '\
           '`0` is least, '\
           '`7` is best') do |v|
         OptionHelpers.limit_with_range(v.to_i, 0..7)
       end
 
+      INTERLACE_OPTION =
       option(:interlace, false, TrueFalseNil, 'Interlace, '\
           '`true` - interlace on, '\
           '`false` - interlace off, '\

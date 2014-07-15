@@ -4,6 +4,7 @@ require 'image_optim/option_helpers'
 class ImageOptim
   class Worker
     class Jpegoptim < Worker
+      STRIP_OPTION =
       option(:strip, :all, Array, 'List of extra markers to strip: '\
           '`:comments`, '\
           '`:exif`, '\
@@ -19,6 +20,7 @@ class ImageOptim
         values & known_values
       end
 
+      MAX_QUALITY_OPTION =
       option(:max_quality, 100, 'Maximum image quality factor '\
           '`0`..`100`') do |v|
         OptionHelpers.limit_with_range(v.to_i, 0..100)

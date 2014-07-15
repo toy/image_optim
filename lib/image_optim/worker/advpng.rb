@@ -4,6 +4,7 @@ require 'image_optim/option_helpers'
 class ImageOptim
   class Worker
     class Advpng < Worker
+      LEVEL_OPTION =
       option(:level, 4, 'Compression level: '\
           '`0` - don\'t compress, '\
           '`1` - fast, '\
