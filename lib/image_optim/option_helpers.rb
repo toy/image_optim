@@ -1,5 +1,3 @@
-require 'image_optim/configuration_error'
-
 class ImageOptim
   module OptionHelpers
     # Ensure number is in range
