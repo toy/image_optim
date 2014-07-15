@@ -1,0 +1,56 @@
+AllCops:
+  Exclude:
+    - '*.gemspec'
+
+Lint/EndAlignment:
+  AlignWith: variable
+
+Style/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Style/CaseIndentation:
+  IndentWhenRelativeTo: end
+
+Style/ClassLength:
+  Max: 120
+
+Style/CyclomaticComplexity:
+  Max: 8
+
+Style/DotPosition:
+  EnforcedStyle: trailing
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/Encoding:
+  EnforcedStyle: when_needed
+
+Style/HashSyntax:
+  EnforcedStyle: hash_rockets
+
+Style/IfUnlessModifier:
+  MaxLineLength: 40
+
+Style/IndentHash:
+  EnforcedStyle: consistent
+
+Style/MethodLength:
+  Max: 20
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%w': '[]'
+    '%W': '[]'
+
+Style/Semicolon:
+  AllowAsExpressionSeparator: true
+
+Style/SpaceBeforeBlockBraces:
+  EnforcedStyle: no_space
+
+Style/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Style/TrailingComma:
+  EnforcedStyleForMultiline: comma
