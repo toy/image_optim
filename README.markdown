@@ -21,6 +21,8 @@ Based on [ImageOptim.app](http://imageoptim.com/).
 [![Dependency Status](https://img.shields.io/gemnasium/toy/image_optim.svg)](https://gemnasium.com/toy/image_optim)
 [![Inch CI](http://inch-ci.org/github/toy/image_optim.svg?branch=master)](http://inch-ci.org/github/toy/image_optim)
 
+Documentation for [latest version](http://rubydoc.info/gems/image_optim/frames) and [master](http://rubydoc.info/github/toy/image_optim/master/frames).
+
 ## Gem installation
 
 ```sh
