@@ -15,7 +15,7 @@ Optimize (lossless compress) images (jpeg, png, gif, svg) using external utiliti
 
 Based on [ImageOptim.app](http://imageoptim.com/).
 
-[![Gem Version](https://badge.fury.io/rb/image_optim.png)](http://badge.fury.io/rb/image_optim)
+[![Gem Version](https://badge.fury.io/rb/image_optim.png)](https://rubygems.org/gems/image_optim)
 [![Build Status](https://travis-ci.org/toy/image_optim.png?branch=master)](https://travis-ci.org/toy/image_optim)
 [![Code Climate](https://codeclimate.com/github/toy/image_optim.png)](https://codeclimate.com/github/toy/image_optim)
 [![Dependency Status](https://gemnasium.com/toy/image_optim.png)](https://gemnasium.com/toy/image_optim)
