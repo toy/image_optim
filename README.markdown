@@ -1,3 +1,9 @@
+[![Gem Version](https://img.shields.io/gem/v/image_optim.svg)](https://rubygems.org/gems/image_optim)
+[![Build Status](https://img.shields.io/travis/toy/image_optim/master.svg)](https://travis-ci.org/toy/image_optim)
+[![Code Climate](https://img.shields.io/codeclimate/github/toy/image_optim.svg)](https://codeclimate.com/github/toy/image_optim)
+[![Dependency Status](https://img.shields.io/gemnasium/toy/image_optim.svg)](https://gemnasium.com/toy/image_optim)
+[![Inch CI](http://inch-ci.org/github/toy/image_optim.svg?branch=master)](http://inch-ci.org/github/toy/image_optim)
+
 # image_optim
 
 Optimize (lossless compress) images (jpeg, png, gif, svg) using external utilities:
@@ -14,12 +20,6 @@ Optimize (lossless compress) images (jpeg, png, gif, svg) using external utiliti
 * [svgo](https://github.com/svg/svgo)
 
 Based on [ImageOptim.app](http://imageoptim.com/).
-
-[![Gem Version](https://img.shields.io/gem/v/image_optim.svg)](https://rubygems.org/gems/image_optim)
-[![Build Status](https://img.shields.io/travis/toy/image_optim/master.svg)](https://travis-ci.org/toy/image_optim)
-[![Code Climate](https://img.shields.io/codeclimate/github/toy/image_optim.svg)](https://codeclimate.com/github/toy/image_optim)
-[![Dependency Status](https://img.shields.io/gemnasium/toy/image_optim.svg)](https://gemnasium.com/toy/image_optim)
-[![Inch CI](http://inch-ci.org/github/toy/image_optim.svg?branch=master)](http://inch-ci.org/github/toy/image_optim)
 
 Documentation for [latest version](http://rubydoc.info/gems/image_optim/frames) and [master](http://rubydoc.info/github/toy/image_optim/master/frames).
 
