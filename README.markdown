@@ -1,3 +1,10 @@
+[![Gem Version](https://img.shields.io/gem/v/image_optim.svg)](https://rubygems.org/gems/image_optim)
+[![Build Status](https://img.shields.io/travis/toy/image_optim/master.svg)](https://travis-ci.org/toy/image_optim)
+[![Code Climate](https://img.shields.io/codeclimate/github/toy/image_optim.svg)](https://codeclimate.com/github/toy/image_optim)
+[![Dependency Status](https://img.shields.io/gemnasium/toy/image_optim.svg)](https://gemnasium.com/toy/image_optim)
+[![Inch CI](http://inch-ci.org/github/toy/image_optim.svg?branch=master)](http://inch-ci.org/github/toy/image_optim)
+[![Gittip](https://img.shields.io/gittip/toy.svg)](https://www.gittip.com/toy/)
+
 # image_optim
 
 Optimize (lossless compress) images (jpeg, png, gif, svg) using external utilities:
@@ -15,10 +22,7 @@ Optimize (lossless compress) images (jpeg, png, gif, svg) using external utiliti
 
 Based on [ImageOptim.app](http://imageoptim.com/).
 
-[![Gem Version](https://badge.fury.io/rb/image_optim.png)](http://badge.fury.io/rb/image_optim)
-[![Build Status](https://travis-ci.org/toy/image_optim.png?branch=master)](https://travis-ci.org/toy/image_optim)
-[![Code Climate](https://codeclimate.com/github/toy/image_optim.png)](https://codeclimate.com/github/toy/image_optim)
-[![Dependency Status](https://gemnasium.com/toy/image_optim.png)](https://gemnasium.com/toy/image_optim)
+Documentation for [latest version](http://rubydoc.info/gems/image_optim/frames) and [master](http://rubydoc.info/github/toy/image_optim/master/frames).
 
 ## Gem installation
 
@@ -29,16 +33,19 @@ gem install image_optim
 ### Bundler
 
 Add to your `Gemfile`:
+
 ```ruby
 gem 'image_optim'
 ```
 
 With version:
+
 ```ruby
 gem 'image_optim', '~> 0.11'
 ```
 
 If you want to check latest changes:
+
 ```ruby
 gem 'image_optim', :git => 'git://github.com/toy/image_optim.git'
 ```
