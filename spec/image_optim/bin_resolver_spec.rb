@@ -31,7 +31,7 @@ describe ImageOptim::BinResolver do
   it 'should resolve bin specified in ENV' do
     path = 'some/path/image_optim2.3.4'
     with_env 'IMAGE_OPTIM_BIN', path do
-      tmpdir = double(:tmpdir)
+      tmpdir = double(:tmpdir, :to_str => 'tmpdir')
       symlink = double(:symlink)
 
       expect(resolver).to receive(:accessible?).
@@ -83,7 +83,7 @@ describe ImageOptim::BinResolver do
   it 'should raise on failure to resolve bin specified in ENV' do
     path = 'some/path/should_not_exist_bin'
     with_env 'SHOULD_NOT_EXIST_BIN', path do
-      tmpdir = double(:tmpdir)
+      tmpdir = double(:tmpdir, :to_str => 'tmpdir')
       symlink = double(:symlink)
 
       expect(resolver).to receive(:accessible?).
