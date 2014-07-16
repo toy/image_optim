@@ -13,7 +13,7 @@ rvm:
   - ree
 script:
   - bundle exec rspec
-  - bundle exec rubocop
+  - ! bundle show rubocop || bundle exec rubocop
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
