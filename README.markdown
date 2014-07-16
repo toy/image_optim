@@ -19,6 +19,7 @@ Based on [ImageOptim.app](http://imageoptim.com/).
 [![Build Status](https://img.shields.io/travis/toy/image_optim/master.svg)](https://travis-ci.org/toy/image_optim)
 [![Code Climate](https://img.shields.io/codeclimate/github/toy/image_optim.svg)](https://codeclimate.com/github/toy/image_optim)
 [![Dependency Status](https://img.shields.io/gemnasium/toy/image_optim.svg)](https://gemnasium.com/toy/image_optim)
+[![Inch CI](http://inch-ci.org/github/toy/image_optim.svg?branch=master)](http://inch-ci.org/github/toy/image_optim)
 
 ## Gem installation
 
