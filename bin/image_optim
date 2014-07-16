@@ -6,7 +6,7 @@ require 'image_optim/runner'
 options = {}
 
 option_parser = OptionParser.new do |op|
-  op.accept(ImageOptim::TrueFalseNil, OptionParser.top.atype[TrueClass][0].merge('nil' => nil)){ |arg, val| val }
+  ImageOptim::TrueFalseNil.add_to_option_parser(op)
 
   op.banner = <<-TEXT.gsub(/^\s*\|/, '')
     |#{ImageOptim.full_version}
@@ -20,13 +20,15 @@ option_parser = OptionParser.new do |op|
     |
   TEXT
 
-  op.on('-r', '-R', '--recursive', 'Recurively scan directories for images') do |recursive|
+  op.on('-r', '-R', '--recursive', 'Recurively scan directories '\
+      'for images') do |recursive|
     options[:recursive] = recursive
   end
 
   op.separator nil
 
-  op.on('--[no-]threads N', Integer, 'Number of threads or disable (defaults to number of processors)') do |threads|
+  op.on('--[no-]threads N', Integer, 'Number of threads or disable '\
+      '(defaults to number of processors)') do |threads|
     options[:threads] = threads
   end
 
@@ -64,13 +66,18 @@ option_parser = OptionParser.new do |op|
       when Array >= type
         [Array, 'a,b,c']
       else
-        raise "Unknown type #{type}"
+        fail "Unknown type #{type}"
       end
 
-      description = "#{option_definition.description.gsub(' - ', ' - ')} (defaults to #{default})"
-      description = description.scan(/(.*?.{1,60})(?:\s|\z)/).flatten.join("\n  ").split("\n")
+      description_lines = %W[
+        #{option_definition.description.gsub(' - ', ' - ')}
+        (defaults to #{default})
+      ].join(' ').
+        scan(/.*?.{1,60}(?:\s|\z)/).
+        join("\n  ").
+        split("\n")
 
-      op.on("--#{bin}-#{name} #{marking}", type, *description) do |value|
+      op.on("--#{bin}-#{name} #{marking}", type, *description_lines) do |value|
         options[bin] = {} unless options[bin].is_a?(Hash)
         options[bin][option_definition.name.to_sym] = value
       end
@@ -98,18 +105,21 @@ end
 begin
   args = ARGV.dup
 
-  if args == %w[-v]
-    args = %w[--version]
-  end
+  # assume -v to be request to print version if it is the only argument
+  args = %w[--version] if args == %w[-v]
 
   option_parser.parse!(args)
-  $stderr.puts ImageOptim.full_version if options[:verbose]
-  ImageOptim::Runner.run!(args, options) or exit 1
+  if options[:verbose]
+    $stderr.puts ImageOptim.full_version
+  end
+  unless ImageOptim::Runner.run!(args, options)
+    abort
+  end
 rescue OptionParser::ParseError => e
-  abort "#{e.to_s}\n\n#{option_parser.help}"
+  abort "#{e}\n\n#{option_parser.help}"
 rescue => e
   if options[:verbose]
-    abort "#{e.to_s}\n#{e.backtrace.join("\n")}"
+    abort "#{e}\n#{e.backtrace.join("\n")}"
   else
     abort e.to_s
   end

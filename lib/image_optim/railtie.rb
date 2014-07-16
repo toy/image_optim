@@ -1,28 +1,31 @@
 require 'image_optim'
 
 class ImageOptim
+  # Adds image_optim as preprocessor for gif, jpeg, png and svg images
   class Railtie < Rails::Railtie
     initializer 'image_optim.initializer' do |app|
-      if app.config.assets.compress != false && app.config.assets.image_optim != false && app.assets
 
-        options = if app.config.assets.image_optim == true
-          {}
-        else
-          app.config.assets.image_optim || {}
-        end
+      break if app.config.assets.compress == false
+      break if app.config.assets.image_optim == false
+      break unless app.assets
 
-        image_optim = ImageOptim.new(options)
-
-        processor = proc do |context, data|
-          image_optim.optimize_image_data(data) || data
-        end
-
-        app.assets.register_preprocessor 'image/gif', :image_optim, &processor
-        app.assets.register_preprocessor 'image/jpeg', :image_optim, &processor
-        app.assets.register_preprocessor 'image/png', :image_optim, &processor
-        app.assets.register_preprocessor 'image/svg+xml', :image_optim, &processor
-
+      options = if app.config.assets.image_optim == true
+        {}
+      else
+        app.config.assets.image_optim || {}
       end
+
+      image_optim = ImageOptim.new(options)
+
+      processor = proc do |_context, data|
+        image_optim.optimize_image_data(data) || data
+      end
+
+      app.assets.register_preprocessor 'image/gif', :image_optim, &processor
+      app.assets.register_preprocessor 'image/jpeg', :image_optim, &processor
+      app.assets.register_preprocessor 'image/png', :image_optim, &processor
+      app.assets.register_preprocessor 'image/svg+xml', :image_optim, &processor
+
     end
   end
 end

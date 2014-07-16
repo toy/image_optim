@@ -7,7 +7,13 @@ class ImageOptim
   class BinNotFoundError < StandardError; end
   class BadBinVersion < StandardError; end
 
+  # Handles resolving binaries and checking versions
+  #
+  # If there is an environment variable XXX_BIN when resolbing xxx, then a
+  # symlink to binary will be created in a temporary directory which will be
+  # added to PATH
   class BinResolver
+    # Holds name and version of an executable
     class Bin
       attr_reader :name, :version
       def initialize(name, version)
@@ -31,8 +37,9 @@ class ImageOptim
       name = name.to_sym
 
       resolving(name) do
-        if bin = resolve?(name) && Bin.new(name, version(name))
-          $stderr << "Resolved #{bin}\n" if @image_optim.verbose?
+        bin = Bin.new(name, version(name)) if resolve?(name)
+        if bin && @image_optim.verbose
+          $stderr << "Resolved #{bin}\n"
         end
         @bins[name] = bin
       end
@@ -40,7 +47,7 @@ class ImageOptim
       if @bins[name]
         check!(@bins[name])
       else
-        raise BinNotFoundError, "`#{name}` not found"
+        fail BinNotFoundError, "`#{name}` not found"
       end
     end
 
@@ -53,17 +60,14 @@ class ImageOptim
   private
 
     def resolving(name)
-      unless @bins.include?(name)
-        @lock.synchronize do
-          unless @bins.include?(name)
-            yield
-          end
-        end
+      return if @bins.include?(name)
+      @lock.synchronize do
+        yield unless @bins.include?(name)
       end
     end
 
     def resolve?(name)
-      if path = ENV["#{name}_bin".upcase]
+      if (path = ENV["#{name}_bin".upcase])
         unless @dir
           @dir = FSPath.temp_dir
           at_exit{ FileUtils.remove_entry_secure @dir }
@@ -91,7 +95,8 @@ class ImageOptim
       when :pngcrush
         capture_output("#{name} -version 2>&1")[/\d+(\.\d+){1,}/]
       when :pngout
-        date_str = capture_output("#{name} 2>&1")[/[A-Z][a-z]{2} (?: |\d)\d \d{4}/]
+        date_regexp = /[A-Z][a-z]{2} (?: |\d)\d \d{4}/
+        date_str = capture_output("#{name} 2>&1")[date_regexp]
         Date.parse(date_str).strftime('%Y%m%d')
       end
     end
@@ -102,7 +107,7 @@ class ImageOptim
       when :pngcrush
         case bin.version
         when c = is.between?('1.7.60', '1.7.65')
-          raise BadBinVersion, "`#{bin}` (#{c}) is known to produce broken pngs"
+          fail BadBinVersion, "`#{bin}` (#{c}) is known to produce broken pngs"
         end
       when :advpng
         case bin.version

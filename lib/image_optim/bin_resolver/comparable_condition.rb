@@ -1,6 +1,16 @@
 class ImageOptim
   class BinResolver
+    # Allows to externalize conditions for an instance of Comparable to use in
+    # case statemens
+    #
+    #     is = ComparableCondition.is
+    #     case rand(100)
+    #     when is < 10 then # ...
+    #     when is.between?(13, 23) then # ...
+    #     when is >= 90 then # ...
+    #     end
     class ComparableCondition
+      # Helper class for creating conditions using ComparableCondition.is
       class Builder
         Comparable.instance_methods.each do |method|
           define_method method do |*args|
@@ -15,22 +25,22 @@ class ImageOptim
 
       attr_reader :method, :args
       def initialize(method, *args)
-        @method = method.to_sym
-        @args = args
+        @method, @args = method.to_sym, args
 
         case @method
         when :between?
-          raise ArgumentError, "`between?' expects 2 arguments" unless args.length == 2
+          @args.length == 2 || argument_error!("`between?' expects 2 arguments")
         when :<, :<=, :==, :>, :>=
-          raise ArgumentError, "`#{method}' expects 1 argument" unless args.length == 1
+          @args.length == 1 || argument_error!("`#{method}' expects 1 argument")
         else
-          raise ArgumentError, "Unknown method `#{method}'"
+          argument_error! "Unknown method `#{method}'"
         end
       end
 
-      def ===(to_compare)
-        to_compare.send(@method, *@args)
+      def ===(other)
+        other.send(@method, *@args)
       end
+      alias_method :match, :===
 
       def to_s
         if @method == :between?
@@ -38,6 +48,12 @@ class ImageOptim
         else
           "#{@method} #{@args.first}"
         end
+      end
+
+    private
+
+      def argument_error!(message)
+        fail ArgumentError, message
       end
     end
   end

@@ -1,47 +1,58 @@
-$:.unshift File.expand_path('../../../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
 require 'rspec'
 require 'image_optim/handler'
 
 describe ImageOptim::Handler do
-  it "should use original as source for first conversion and two temp files for further conversions" do
+  it 'should use original as source for first conversion '\
+      'and two temp files for further conversions' do
     original = double(:original)
-    original.stub(:temp_path){ raise 'temp_path called unexpectedly' }
+    allow(original).to receive(:temp_path) do
+      fail 'temp_path called unexpectedly'
+    end
 
     handler = ImageOptim::Handler.new(original)
+    temp_a = double(:temp_a)
+    temp_b = double(:temp_b)
+    expect(original).to receive(:temp_path).once.and_return(temp_a)
+    expect(original).to receive(:temp_path).once.and_return(temp_b)
 
-    original.should_receive(:temp_path).once.and_return(temp_a = double(:temp_a))
+    # first unsuccessful run
     handler.process do |src, dst|
-      [src, dst].should == [original, temp_a]; false
+      expect([src, dst]).to eq([original, temp_a]); false
     end
-    handler.result.should == nil
+    expect(handler.result).to be_nil
 
+    # first successful run
     handler.process do |src, dst|
-      [src, dst].should == [original, temp_a]; true
+      expect([src, dst]).to eq([original, temp_a]); true
     end
-    handler.result.should == temp_a
+    expect(handler.result).to eq(temp_a)
 
-    original.should_receive(:temp_path).once.and_return(temp_b = double(:temp_b))
+    # second unsuccessful run
     handler.process do |src, dst|
-      [src, dst].should == [temp_a, temp_b]; false
+      expect([src, dst]).to eq([temp_a, temp_b]); false
     end
-    handler.result.should == temp_a
+    expect(handler.result).to eq(temp_a)
 
+    # second successful run
     handler.process do |src, dst|
-      [src, dst].should == [temp_a, temp_b]; true
+      expect([src, dst]).to eq([temp_a, temp_b]); true
     end
-    handler.result.should == temp_b
+    expect(handler.result).to eq(temp_b)
 
+    # third successful run
     handler.process do |src, dst|
-      [src, dst].should == [temp_b, temp_a]; true
+      expect([src, dst]).to eq([temp_b, temp_a]); true
     end
-    handler.result.should == temp_a
+    expect(handler.result).to eq(temp_a)
 
+    # forth successful run
     handler.process do |src, dst|
-      [src, dst].should == [temp_a, temp_b]; true
+      expect([src, dst]).to eq([temp_a, temp_b]); true
     end
-    handler.result.should == temp_b
+    expect(handler.result).to eq(temp_b)
 
-    temp_a.should_receive(:unlink).once
+    expect(temp_a).to receive(:unlink).once
     handler.cleanup
     handler.cleanup
   end

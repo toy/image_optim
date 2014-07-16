@@ -7,6 +7,7 @@ require 'image_optim/worker'
 require 'in_threads'
 require 'shellwords'
 
+# Main interface
 class ImageOptim
   # Nice level
   attr_reader :nice
@@ -15,9 +16,7 @@ class ImageOptim
   attr_reader :threads
 
   # Verbose output?
-  def verbose?
-    @verbose
-  end
+  attr_reader :verbose
 
   # Initialize workers, specify options using worker underscored name:
   #
@@ -29,11 +28,13 @@ class ImageOptim
   #
   #     ImageOptim.new(:advpng => {:level => 3}, :optipng => {:level => 2})
   #
-  # use :threads to set number of parallel optimizers to run (passing true or nil determines number of processors, false disables parallel processing)
+  # use :threads to set number of parallel optimizers to run (passing true or
+  # nil determines number of processors, false disables parallel processing)
   #
   #     ImageOptim.new(:threads => 8)
   #
-  # use :nice to specify optimizers nice level (true or nil makes it 10, false makes it 0)
+  # use :nice to specify optimizers nice level (true or nil makes it 10, false
+  # makes it 0)
   #
   #     ImageOptim.new(:nice => 20)
   def initialize(options = {})
@@ -42,7 +43,7 @@ class ImageOptim
     @threads = config.threads
     @verbose = config.verbose
 
-    if verbose?
+    if verbose
       $stderr << config
       $stderr << "Nice level: #{nice}\n"
       $stderr << "Using threads: #{threads}\n"
@@ -50,17 +51,9 @@ class ImageOptim
 
     @bin_resolver = BinResolver.new(self)
 
-    @workers_by_format = {}
-    Worker.klasses.each do |klass|
-      if worker_options = config.for_worker(klass)
-        worker = klass.new(self, worker_options)
-        worker.image_formats.each do |format|
-          @workers_by_format[format] ||= []
-          @workers_by_format[format] << worker
-        end
-      end
+    @workers_by_format = create_workers_by_format do |klass|
+      config.for_worker(klass)
     end
-    @workers_by_format.values.each(&:sort!)
 
     config.assert_no_unused_options!
   end
@@ -70,30 +63,29 @@ class ImageOptim
     @workers_by_format[ImagePath.convert(path).format]
   end
 
-  # Optimize one file, return new path as OptimizedImagePath or nil if optimization failed
+  # Optimize one file, return new path as OptimizedImagePath or nil if
+  # optimization failed
   def optimize_image(original)
     original = ImagePath.convert(original)
-    if workers = workers_for_image(original)
-      handler = Handler.new(original)
-      workers.each do |worker|
-        handler.process do |src, dst|
-          worker.optimize(src, dst)
-        end
-      end
-      handler.cleanup
-      if handler.result
-        ImagePath::Optimized.new(handler.result, original)
+    return unless (workers = workers_for_image(original))
+    handler = Handler.new(original)
+    workers.each do |worker|
+      handler.process do |src, dst|
+        worker.optimize(src, dst)
       end
     end
+    handler.cleanup
+    return unless handler.result
+    ImagePath::Optimized.new(handler.result, original)
   end
 
-  # Optimize one file in place, return original as OptimizedImagePath or nil if optimization failed
+  # Optimize one file in place, return original as OptimizedImagePath or nil if
+  # optimization failed
   def optimize_image!(original)
     original = ImagePath.convert(original)
-    if result = optimize_image(original)
-      result.replace(original)
-      ImagePath::Optimized.new(original, result.original_size)
-    end
+    return unless (result = optimize_image(original))
+    result.replace(original)
+    ImagePath::Optimized.new(original, result.original_size)
   end
 
   # Optimize image data, return new data or nil if optimization failed
@@ -105,28 +97,31 @@ class ImageOptim
       temp.write(original_data)
       temp.close
 
-      if result = optimize_image(temp.path)
+      if (result = optimize_image(temp.path))
         result.open('rb', &:read)
       end
     end
   end
 
   # Optimize multiple images
-  # if block given yields path and result for each image and returns array of yield results
+  # if block given yields path and result for each image and returns array of
+  # yield results
   # else return array of results
   def optimize_images(paths, &block)
     run_method_for(paths, :optimize_image, &block)
   end
 
   # Optimize multiple images in place
-  # if block given yields path and result for each image and returns array of yield results
+  # if block given yields path and result for each image and returns array of
+  # yield results
   # else return array of results
   def optimize_images!(paths, &block)
     run_method_for(paths, :optimize_image!, &block)
   end
 
   # Optimize multiple image datas
-  # if block given yields original and result for each image data and returns array of yield results
+  # if block given yields original and result for each image data and returns
+  # array of yield results
   # else return array of results
   def optimize_images_data(datas, &block)
     run_method_for(datas, :optimize_image_data, &block)
@@ -156,7 +151,8 @@ class ImageOptim
     !!workers_for_image(path)
   end
 
-  # Check existance of binary, create symlink if ENV contains path for key XXX_BIN where XXX is upper case bin name
+  # Check existance of binary, create symlink if ENV contains path for key
+  # XXX_BIN where XXX is upper case bin name
   def resolve_bin!(bin)
     @bin_resolver.resolve!(bin)
   end
@@ -167,6 +163,20 @@ class ImageOptim
   end
 
 private
+
+  # Create hash with format mapped to list of workers sorted by run order
+  def create_workers_by_format(&options_proc)
+    by_format = {}
+    Worker.klasses.each do |klass|
+      next unless (options = options_proc[klass])
+      worker = klass.new(self, options)
+      worker.image_formats.each do |format|
+        by_format[format] ||= []
+        by_format[format] << worker
+      end
+    end
+    by_format.each{ |_format, workers| workers.sort! }
+  end
 
   # Run method for each path and yield each path and result if block given
   def run_method_for(paths, method_name, &block)

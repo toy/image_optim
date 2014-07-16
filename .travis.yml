@@ -11,7 +11,9 @@ rvm:
   - jruby-19mode
   - jruby-head
   - ree
-script: bundle exec rspec
+script:
+  - bundle exec rspec
+  - '! bundle show rubocop || bundle exec rubocop' # run rubocop only if it is bundled
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush

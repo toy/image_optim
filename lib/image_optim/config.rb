@@ -6,17 +6,23 @@ require 'set'
 require 'yaml'
 
 class ImageOptim
+  # Read, merge and parse configuration
   class Config
     include OptionHelpers
 
-    GLOBAL_CONFIG_PATH = File.join(File.expand_path(ENV['XDG_CONFIG_HOME'] || '~/.config'), 'image_optim.yml')
+    CONFIG_HOME = File.expand_path(ENV['XDG_CONFIG_HOME'] || '~/.config')
+    GLOBAL_CONFIG_PATH = File.join(CONFIG_HOME, 'image_optim.yml')
     LOCAL_CONFIG_PATH = './.image_optim.yml'
 
     class << self
+      # Read config at GLOBAL_CONFIG_PATH if it exists, warn if anything is
+      # wrong
       def global
         File.file?(GLOBAL_CONFIG_PATH) ? read(GLOBAL_CONFIG_PATH) : {}
       end
 
+      # Read config at LOCAL_CONFIG_PATH if it exists, warn if anything is
+      # wrong
       def local
         File.file?(LOCAL_CONFIG_PATH) ? read(LOCAL_CONFIG_PATH) : {}
       end
@@ -26,7 +32,7 @@ class ImageOptim
       def read(path)
         config = YAML.load_file(path)
         unless config.is_a?(Hash)
-          raise "excpected hash, got #{config.inspect}"
+          fail "excpected hash, got #{config.inspect}"
         end
         HashHelpers.deep_symbolise_keys(config)
       rescue => e
@@ -40,7 +46,7 @@ class ImageOptim
         Config.global,
         Config.local,
         HashHelpers.deep_symbolise_keys(options),
-      ].inject do |memo, hash|
+      ].reduce do |memo, hash|
         HashHelpers.deep_merge(memo, hash)
       end
       @used = Set.new
@@ -53,10 +59,10 @@ class ImageOptim
     end
 
     def assert_no_unused_options!
-      unknown_options = @options.reject{ |key, value| @used.include?(key) }
-      unless unknown_options.empty?
-        raise ConfigurationError, "unknown options #{unknown_options.inspect} for #{self}"
-      end
+      unknown_options = @options.reject{ |key, _value| @used.include?(key) }
+      return if unknown_options.empty?
+      fail ConfigurationError, "unknown options #{unknown_options.inspect} "\
+          "for #{self}"
     end
 
     def nice
@@ -100,7 +106,8 @@ class ImageOptim
       when false
         false
       else
-        raise ConfigurationError, "Got #{worker_options.inspect} for #{klass.name} options"
+        fail ConfigurationError, "Got #{worker_options.inspect} for "\
+            "#{klass.name} options"
       end
     end
 
@@ -110,7 +117,7 @@ class ImageOptim
 
   private
 
-    # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
+    # http://stackoverflow.com/a/6420817
     def processor_count
       @processor_count ||= case host_os = RbConfig::CONFIG['host_os']
       when /darwin9/
@@ -123,9 +130,10 @@ class ImageOptim
         `sysctl -n hw.ncpu`
       when /mswin|mingw/
         require 'win32ole'
-        wmi = WIN32OLE.connect('winmgmts://')
-        cpu = wmi.ExecQuery('select NumberOfLogicalProcessors from Win32_Processor')
-        cpu.to_enum.first.NumberOfLogicalProcessors
+        WIN32OLE.
+          connect('winmgmts://').
+          ExecQuery('select NumberOfLogicalProcessors from Win32_Processor').
+          to_enum.first.NumberOfLogicalProcessors
       else
         warn "Unknown architecture (#{host_os}) assuming one processor."
         1

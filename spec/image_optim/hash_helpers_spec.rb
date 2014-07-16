@@ -1,55 +1,53 @@
-$:.unshift File.expand_path('../../../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
 require 'rspec'
 require 'image_optim/hash_helpers'
 
 describe ImageOptim::HashHelpers do
   HH = ImageOptim::HashHelpers
 
-  it "should deep stringify hash keys" do
-    HH.deep_stringify_keys({
+  context 'stringify/simbolyze' do
+    WITH_SYMBOL_KEYS = {
       :a => 1,
       :b => {
-        :c => :a,
-        :d => {},
-      },
-    }).should == {
-      'a' => 1,
-      'b' => {
-        'c' => :a,
-        'd' => {},
-      },
-    }
-  end
-
-  it "should deep symbolise hash keys" do
-    HH.deep_symbolise_keys({
-      'a' => 1,
-      'b' => {
-        'c' => 'a',
-        'd' => {},
-      },
-    }).should == {
-      :a => 1,
-      :b => {
-        :c => 'a',
+        :c => [:a, 'a'],
         :d => {},
       },
     }
+
+    WITH_STRING_KEYS = {
+      'a' => 1,
+      'b' => {
+        'c' => [:a, 'a'],
+        'd' => {},
+      },
+    }
+
+    it 'should deep stringify hash keys' do
+      expect(HH.deep_stringify_keys(WITH_SYMBOL_KEYS)).to eq(WITH_STRING_KEYS)
+      expect(HH.deep_stringify_keys(WITH_STRING_KEYS)).to eq(WITH_STRING_KEYS)
+    end
+
+    it 'should deep symbolise hash keys' do
+      expect(HH.deep_symbolise_keys(WITH_STRING_KEYS)).to eq(WITH_SYMBOL_KEYS)
+      expect(HH.deep_symbolise_keys(WITH_SYMBOL_KEYS)).to eq(WITH_SYMBOL_KEYS)
+    end
   end
 
-  it "should deep merge hashes" do
-    HH.deep_merge({
+  it 'should deep merge hashes' do
+    merge_a = {
       :a => {
         :b => 1,
         :c => {
           :d => 2,
           :e => {
-            :f => true
+            :f => true,
           },
         },
       },
       :y => 10,
-    }, {
+    }
+
+    merge_b = {
       :a => {
         :b => 2,
         :c => {
@@ -57,8 +55,10 @@ describe ImageOptim::HashHelpers do
           :e => false,
         },
       },
-      :z => 20,
-    }).should == {
+      'z' => 20,
+    }
+
+    merge_result = {
       :a => {
         :b => 2,
         :c => {
@@ -67,8 +67,10 @@ describe ImageOptim::HashHelpers do
         },
       },
       :y => 10,
-      :z => 20,
+      'z' => 20,
     }
+
+    expect(HH.deep_merge(merge_a, merge_b)).to eq(merge_result)
   end
 
 end
