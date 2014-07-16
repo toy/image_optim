@@ -29,16 +29,19 @@ gem install image_optim
 ### Bundler
 
 Add to your `Gemfile`:
+
 ```ruby
 gem 'image_optim'
 ```
 
 With version:
+
 ```ruby
 gem 'image_optim', '~> 0.11'
 ```
 
 If you want to check latest changes:
+
 ```ruby
 gem 'image_optim', :git => 'git://github.com/toy/image_optim.git'
 ```
