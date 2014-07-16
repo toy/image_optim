@@ -47,7 +47,7 @@ describe ImageOptim do
 
   describe 'workers' do
     it 'should be ordered by run_order' do
-      original_klasses = Worker.klasses
+      original_klasses = ImageOptim::Worker.klasses
       formats = original_klasses.map do |klass|
         klass.new({}).image_formats
       end.flatten.uniq
@@ -57,7 +57,7 @@ describe ImageOptim do
         original_klasses.reverse,
         original_klasses.shuffle,
       ].each do |klasses|
-        expect(Worker).to receive(:klasses).and_return(klasses)
+        expect(ImageOptim::Worker).to receive(:klasses).and_return(klasses)
 
         image_optim = ImageOptim.new
 
