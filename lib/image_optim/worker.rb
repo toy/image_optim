@@ -40,6 +40,9 @@ class ImageOptim
 
     # Configure (raises on extra options)
     def initialize(image_optim, options = {})
+      unless image_optim.is_a?(ImageOptim)
+        fail ArgumentError, 'first parameter should be an ImageOptim instance'
+      end
       @image_optim = image_optim
       self.class.option_definitions.each do |option_definition|
         value = if options.key?(option_definition.name)

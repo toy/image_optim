@@ -47,9 +47,10 @@ describe ImageOptim do
 
   describe 'workers' do
     it 'should be ordered by run_order' do
+      image_optim = ImageOptim.new
       original_klasses = ImageOptim::Worker.klasses
       formats = original_klasses.map do |klass|
-        klass.new({}).image_formats
+        klass.new(image_optim, {}).image_formats
       end.flatten.uniq
 
       [
@@ -73,12 +74,14 @@ describe ImageOptim do
   end
 
   describe 'worker' do
+    image_optim = ImageOptim.new
+
     base_options = Hash[ImageOptim::Worker.klasses.map do |klass|
       [klass.bin_sym, false]
     end]
 
     real_workers = ImageOptim::Worker.klasses.reject do |klass|
-      klass.new({}).image_formats.empty?
+      klass.new(image_optim, {}).image_formats.empty?
     end
 
     real_workers.each do |worker_klass|
