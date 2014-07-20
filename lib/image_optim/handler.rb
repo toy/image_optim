@@ -16,6 +16,22 @@ class ImageOptim
       @result = nil
     end
 
+    # with no associated block, works as new. Otherwise creates instance and
+    # passes it to block, runs cleanup and returns result of handler
+    def self.for(original)
+      handler = new(original)
+      if block_given?
+        begin
+          yield handler
+          handler.result
+        ensure
+          handler.cleanup
+        end
+      else
+        handler
+      end
+    end
+
     # Yields two paths, one to latest successful result or original, second to
     # temp path
     def process

@@ -56,4 +56,37 @@ describe ImageOptim::Handler do
     handler.cleanup
     handler.cleanup
   end
+
+  describe :open do
+    it 'should yield instance, run cleanup and return result' do
+      original = double
+      handler = double
+      result = double
+
+      expect(ImageOptim::Handler).to receive(:new).
+          with(original).and_return(handler)
+      expect(handler).to receive(:process)
+      expect(handler).to receive(:cleanup)
+      expect(handler).to receive(:result).and_return(result)
+
+      expect(ImageOptim::Handler.for(original) do |h|
+        h.process
+      end).to eq(result)
+    end
+
+    it 'should cleanup if exception is raised' do
+      original = double
+      handler = double
+
+      expect(ImageOptim::Handler).to receive(:new).
+          with(original).and_return(handler)
+      expect(handler).to receive(:cleanup)
+
+      expect do
+        ImageOptim::Handler.for(original) do
+          fail 'hello'
+        end
+      end.to raise_error 'hello'
+    end
+  end
 end

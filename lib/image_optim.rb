@@ -68,15 +68,15 @@ class ImageOptim
   def optimize_image(original)
     original = ImagePath.convert(original)
     return unless (workers = workers_for_image(original))
-    handler = Handler.new(original)
-    workers.each do |worker|
-      handler.process do |src, dst|
-        worker.optimize(src, dst)
+    result = Handler.for(original) do |handler|
+      workers.each do |worker|
+        handler.process do |src, dst|
+          worker.optimize(src, dst)
+        end
       end
     end
-    handler.cleanup
-    return unless handler.result
-    ImagePath::Optimized.new(handler.result, original)
+    return unless result
+    ImagePath::Optimized.new(result, original)
   end
 
   # Optimize one file in place, return original as OptimizedImagePath or nil if
