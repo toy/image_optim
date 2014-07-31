@@ -9,7 +9,7 @@ class ImageOptim
 
       LEVEL_OPTION =
       option(:level, 3, 'Compression level: '\
-          '`0` - Does nothing, '\
+          '`0` - Set unoptimazation flag, '\
           '`1` - stores only the changed portion of each image, '\
           '`2` - slso uses transparency to shrink the file further., '\
           '`3` - try several optimization methods (usually slower, sometimes better results)') do |v|
@@ -30,6 +30,7 @@ class ImageOptim
         ]
         args.unshift('-i') if interlace
         args.unshift("-O#{level}") unless level == 0
+        args.unshift("--unoptimize") if level == 0
         execute(:gifsicle, *args) && optimized?(src, dst)
       end
     end
