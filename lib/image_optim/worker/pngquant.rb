@@ -5,6 +5,7 @@ class ImageOptim
   class Worker
     # http://pngquant.org/
     class Pngquant < Worker
+      SPEED_OPTION =
       option(
         :speed, 3,
         'Speed/quality trade-off from 1 (brute-force) to 10 (fastest)'
@@ -25,8 +26,13 @@ class ImageOptim
         # filename So we use the ext option and move the optimized image to the
         # correct location.
         execute(:pngquant, *args) &&
-          execute(:mv, "#{src}#{ext}", dst) &&
+          execute(:mv, output_path(src, ext), dst) &&
           optimized?(src, dst)
+      end
+
+      private
+      def output_path(src, ext)
+        src.dirname.join("#{File.basename(src, File.extname(src))}#{ext}")
       end
     end
   end

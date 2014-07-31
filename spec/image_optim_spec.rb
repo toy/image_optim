@@ -45,6 +45,11 @@ describe ImageOptim do
     allow(ImageOptim::Config).to receive(:local).and_return({})
   end
 
+  after do
+    FileUtils.rm ImageOptim::ImagePath.new(__FILE__).
+      dirname.glob('images/**/*-optimized.png')
+  end
+
   describe 'workers' do
     it 'should be ordered by run_order' do
       original_klasses = ImageOptim::Worker.klasses
