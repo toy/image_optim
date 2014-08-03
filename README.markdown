@@ -276,6 +276,10 @@ Worker has no options
 
 <!---</worker-options>-->
 
+## Contributing
+
+If you would like to contribute - that is great and you are very welcome. Please check few notes about [CONTRIBUTING](CONTRIBUTING.markdown).
+
 ## Copyright
 
 Copyright (c) 2012-2014 Ivan Kuchin. See LICENSE.txt for details.
