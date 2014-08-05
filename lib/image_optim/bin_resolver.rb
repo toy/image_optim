@@ -84,7 +84,7 @@ class ImageOptim
 
     def version(name)
       case name.to_sym
-      when :advpng, :gifsicle, :jpegoptim, :optipng
+      when :advpng, :gifsicle, :jpegoptim, :optipng, :pngquant
         capture_output("#{name} --version")[/\d+(\.\d+){1,}/]
       when :svgo
         capture_output("#{name} --version 2>&1")[/\d+(\.\d+){1,}/]
