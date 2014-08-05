@@ -17,6 +17,10 @@ class ImageOptim
         -10
       end
 
+      def used_bins
+        [:jhead, :jpegtran]
+      end
+
       def optimize(src, dst)
         if (2..8).include?(EXIFR::JPEG.new(src.to_s).orientation.to_i)
           src.copy(dst)

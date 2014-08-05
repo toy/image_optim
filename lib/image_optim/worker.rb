@@ -80,6 +80,11 @@ class ImageOptim
       0
     end
 
+    # List of bins used by worker
+    def used_bins
+      [self.class.bin_sym]
+    end
+
     # Check if operation resulted in optimized file
     def optimized?(src, dst)
       dst.size? && dst.size < src.size
