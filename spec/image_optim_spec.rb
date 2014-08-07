@@ -63,7 +63,7 @@ describe ImageOptim do
         image_optim = ImageOptim.new
 
         formats.each do |format|
-          path = ImagePath.new("test.#{format}")
+          path = ImageOptim::ImagePath.new("test.#{format}")
           expect(path).to receive(:format).and_return(format)
 
           workers = image_optim.workers_for_image(path)
