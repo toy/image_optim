@@ -256,6 +256,10 @@ Worker can be disabled by passing `false` instead of options hash.
 ### :advpng =>
 * `:level` — Compression level: `0` - don't compress, `1` - fast, `2` - normal, `3` - extra, `4` - extreme *(defaults to `4`)*
 
+### :pngquant =>
+* `:quality` — min..max - don't save below min, use less colors below max (both in range `0..100`; in yaml - `!ruby/range 0..100`) *(defaults to `100..100`)*
+* `:speed` — speed/quality trade-off: `1` - slow, `3` - default, `11` - fast & rough *(defaults to `3`)*
+
 ### :jhead =>
 Worker has no options
 
