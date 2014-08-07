@@ -18,6 +18,7 @@ Optimize (lossless compress) images (jpeg, png, gif, svg) using external utiliti
 * [optipng](http://optipng.sourceforge.net/)
 * [pngcrush](http://pmt.sourceforge.net/pngcrush/)
 * [pngout](http://www.advsys.net/ken/util/pngout.htm)
+* [pngquant](http://pngquant.org/)
 * [svgo](https://github.com/svg/svgo)
 
 Based on [ImageOptim.app](http://imageoptim.com/).
