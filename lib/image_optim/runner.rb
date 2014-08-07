@@ -1,6 +1,5 @@
 require 'image_optim'
 require 'image_optim/hash_helpers'
-require 'image_optim/true_false_nil'
 require 'image_optim/space'
 require 'progress'
 require 'optparse'

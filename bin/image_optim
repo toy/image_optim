@@ -2,6 +2,7 @@
 # encoding: UTF-8
 
 require 'image_optim/runner'
+require 'image_optim/true_false_nil'
 
 options = {}
 
