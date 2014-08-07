@@ -17,12 +17,14 @@ script:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush pngquant
+  - npm install -g svgo
+  - mkdir ~/bin
+  # pngout:
   - wget http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz
   - tar -xzf pngout-*-linux.tar.gz
-  - mv pngout-*-linux pngout-linux
-  - npm install -g svgo
+  - mv pngout-*-linux/x86_64/pngout ~/bin
 env:
-  - PATH=pngout-linux/x86_64:$PATH
+  - PATH=~/bin:$PATH
 matrix:
   allow_failures:
     - rvm: ruby-head
