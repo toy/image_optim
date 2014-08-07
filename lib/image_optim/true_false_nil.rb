@@ -7,5 +7,10 @@ class ImageOptim
       completing = OptionParser.top.atype[TrueClass][0].merge('nil' => nil)
       option_parser.accept(self, completing){ |_arg, val| val }
     end
+
+    # Convert everything truthy to `true`, leave `false` and `nil` as is
+    def self.convert(v)
+      v && true
+    end
   end
 end
