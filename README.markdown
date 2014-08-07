@@ -84,6 +84,8 @@ Besides permanently setting environment variables in `~/.profile`, `~/.bash_prof
 sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush pngquant
 ```
 
+If you get an old version of `pngquant`, please check how to install up-to-date version or compile from source at [http://pngquant.org/](http://pngquant.org/).
+
 ### Linux - RHEL/Fedora/Centos
 
 ```bash
@@ -133,7 +135,7 @@ sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush png
 ### OS X: Brew
 
 ```bash
-brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
+brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush pngquant
 ```
 
 ### pngout installation (optional)
