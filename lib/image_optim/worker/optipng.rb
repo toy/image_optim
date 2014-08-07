@@ -18,8 +18,7 @@ class ImageOptim
           '`true` - interlace on, '\
           '`false` - interlace off, '\
           '`nil` - as is in original image') do |v|
-        # convert everything truthy to `true`, leave `false` and `nil` as is
-        v && true
+        TrueFalseNil.convert(v)
       end
 
       def optimize(src, dst)
