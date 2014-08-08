@@ -102,6 +102,10 @@ class ImageOptim
     # Forward bin resolving to image_optim
     def resolve_bin!(bin)
       @image_optim.resolve_bin!(bin)
+    rescue BinResolver::Error => e
+      name = self.class.bin_sym
+      raise e, "#{name} worker: #{e.message}; please provide proper binary or "\
+          "disable this worker (`:#{name} => false`)", e.backtrace
     end
 
     # Run command setting priority and hiding output

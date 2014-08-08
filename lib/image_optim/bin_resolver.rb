@@ -4,7 +4,7 @@ require 'image_optim/bin_resolver/simple_version'
 require 'image_optim/bin_resolver/comparable_condition'
 
 class ImageOptim
-  class BinNotFoundError < StandardError; end
+  class BinNotFound < StandardError; end
   class BadBinVersion < StandardError; end
 
   # Handles resolving binaries and checking versions
@@ -13,6 +13,10 @@ class ImageOptim
   # symlink to binary will be created in a temporary directory which will be
   # added to PATH
   class BinResolver
+    class Error < StandardError; end
+    class BinNotFound < Error; end
+    class BadBinVersion < Error; end
+
     # Holds name and version of an executable
     class Bin
       attr_reader :name, :version
@@ -47,7 +51,7 @@ class ImageOptim
       if @bins[name]
         check!(@bins[name])
       else
-        fail BinNotFoundError, "`#{name}` not found"
+        fail BinNotFound, "`#{name}` not found"
       end
     end
 
