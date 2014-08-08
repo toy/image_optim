@@ -11,3 +11,4 @@ Makefile
 *.o
 *.bundle
 /tmp/
+/spec/images/*-optimized.png

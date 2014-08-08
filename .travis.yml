@@ -16,7 +16,7 @@ script:
   - '! bundle show rubocop || bundle exec rubocop' # run rubocop only if it is bundled
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
+  - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush pngquant
   - wget http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz
   - tar -xzf pngout-*-linux.tar.gz
   - mv pngout-*-linux pngout-linux
