@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'image_size', '~> 1.3.0'
   s.add_dependency 'exifr', '~> 1.1.3'
   s.add_dependency 'progress', '~> 3.0.0'
-  s.add_dependency 'in_threads', '~> 1.2.0'
+  s.add_dependency 'in_threads', '~> 1.2.2'
   s.add_development_dependency 'rspec', '~> 3.0'
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9.2')
     s.add_development_dependency 'rubocop', '~> 0.24.1'
