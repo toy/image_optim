@@ -1,0 +1,493 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+
+require 'image_optim'
+require 'image_optim/cmd'
+require 'progress'
+require 'shellwords'
+require 'gdbm'
+require 'digest'
+require 'haml'
+
+DIR = 'tmp'
+Pathname(DIR).mkpath
+
+Array.class_eval do
+  # For an array of arrays with possible values yields arrays with all
+  # combinations of values
+  #
+  #     [[1, 2], 3, [4, 5]].variants{ |v| p v }
+  #     # [1, 3, 4]
+  #     # [1, 3, 5]
+  #     # [2, 3, 4]
+  #     # [2, 3, 5]
+  def variants(&block)
+    if block
+      if empty?
+        yield([])
+      else
+        head, *tail = map(&method(:Array))
+        head.product(*tail, &block)
+      end
+      self
+    else
+      enum_for(:variants)
+    end
+  end
+
+  # Sum elements or results of running block on elements
+  def sum(initial = 0, &block)
+    if block
+      reduce(initial){ |memo, item| memo + block[item] }
+    else
+      reduce(initial, :+)
+    end
+  end
+end
+
+Hash.class_eval do
+  # For a hash with arrays of possible values yields hashes with all
+  # combinations of keys mapped to value
+  #
+  #     {:a => [1, 2], :b => 3, :c => [4, 5]}.variants{ |v| p v }
+  #     # {:a=>1, :b=>3, :c=>4}
+  #     # {:a=>1, :b=>3, :c=>5}
+  #     # {:a=>2, :b=>3, :c=>4}
+  #     # {:a=>2, :b=>3, :c=>5}
+  def variants
+    if block_given?
+      if empty?
+        yield({})
+      else
+        keys, values = to_a.transpose
+        values.variants do |variant|
+          yield Hash[keys.zip(variant)]
+        end
+      end
+      self
+    else
+      enum_for(:variants)
+    end
+  end
+end
+
+Process.times.class.class_eval do
+  def sum
+    utime + stime + cutime + cstime
+  end
+end
+
+ImageOptim::ImagePath.class_eval do
+  def shellescape
+    to_s.shellescape
+  end
+
+  def digest
+    @digest ||= Digest::SHA256.file(to_s).hexdigest
+  end
+end
+
+# Analyse efficency of workers
+class Analyser
+  Cmd = ImageOptim::Cmd
+  HashHelpers = ImageOptim::HashHelpers
+
+  # Caching entries using GDBM
+  class Cache
+    PATH = "#{DIR}/worker-analysis.db"
+
+    class << self
+      def get(key, etag, &block)
+        if block
+          get!(key, etag) || set!(key, etag, &block)
+        else
+          get!(key, etag)
+        end
+      end
+
+      def set(key, etag, &block)
+        set!(key, etag, &block)
+      end
+
+    private
+
+      def open
+        GDBM.open(PATH) do |db|
+          yield db
+        end
+      end
+
+      def get!(key, etag)
+        raw = open{ |db| db[Marshal.dump(key)] }
+        return unless raw
+        entry = Marshal.load(raw)
+        return unless entry[1] == etag
+        entry[0]
+      end
+
+      def set!(key, etag, &block)
+        value = block.call
+        open{ |db| db[Marshal.dump(key)] = Marshal.dump([value, etag]) }
+        value
+      end
+    end
+  end
+
+  # Delegate to worker with short id
+  class WorkerVariant < DelegateClass(ImageOptim::Worker)
+    attr_reader :id, :klass
+    def initialize(klass, image_optim, options)
+      @klass = klass
+      @id = "#{klass.bin_sym}#{options unless options.empty?}"
+      __setobj__(klass.new(image_optim, options))
+    end
+
+    def source_digest
+      @digest ||= begin
+        source_path = __getobj__.method(:optimize).source_location[0]
+        Digest::SHA256.file(source_path).hexdigest
+      end
+    end
+  end
+
+  # One worker result
+  StepResult = Struct.new(*[
+    :worker_id,
+    :success,
+    :time,
+    :src_size,
+    :dst_size,
+  ]) do
+    def self.run(src, dst, worker)
+      start = Process.times.sum
+      success = worker.optimize(src, dst)
+      time = Process.times.sum - start
+
+      new(worker.id, success, time, src.size, success ? dst.size : nil)
+    end
+
+    def size
+      success ? dst_size : src_size
+    end
+
+    def inspect
+      "<S:#{worker_id} #{success ? '✓' : '✗'} #{time}s #{src_size}→#{dst_size}>"
+    end
+  end
+
+  # Chain of workers result
+  ChainResult = Struct.new(*[
+    :format,
+    :steps,
+    :difference,
+  ]) do
+    def worker_ids
+      steps.map(&:worker_id)
+    end
+
+    def time
+      steps.sum(&:time)
+    end
+
+    def src_size
+      steps.first.src_size
+    end
+
+    def dst_size
+      steps.last.size
+    end
+
+    def ratio
+      dst_size.to_f / src_size
+    end
+
+    def inspect
+      "<C #{src_size}→#{dst_size} %:#{difference} #{steps.inspect}>"
+    end
+  end
+
+  # Run all possible worker chains
+  class WorkerRunner
+    def initialize(path, workers)
+      @path = ImageOptim::ImagePath.convert(path)
+      @workers = workers
+    end
+
+    def results
+      cache_etag = [
+        @path.mtime,
+        @path.digest,
+        @workers.map(&:id).sort,
+        @workers.map(&:source_digest).sort,
+      ]
+
+      Cache.get(@path.to_s, cache_etag) do
+        results = []
+        run_workers(@path, @workers){ |result| results << result }
+        run_cache.clear
+        results
+      end
+    end
+
+  private
+
+    def run_cache
+      @run_cache ||= Hash.new{ |h, k| h[k] = {} }
+    end
+
+    def run_workers(src, workers, last_result = nil, &block)
+      workers.with_progress do |worker|
+        worker_result, result_image = run_worker(src, worker)
+
+        steps = (last_result ? last_result.steps : []) + [worker_result]
+        chain_result = ChainResult.new(src.format, steps)
+        chain_result.difference = difference_with(result_image)
+
+        block.call(chain_result)
+
+        workers_left = workers.reject{ |w| w.klass == worker.klass }
+        run_workers(result_image, workers_left, chain_result, &block)
+      end
+    end
+
+    def run_worker(src, worker)
+      run_cache[:run][[src.digest, worker.id]] ||= begin
+        dst = src.temp_path
+        worker_result = StepResult.run(src, dst, worker)
+        [worker_result, worker_result.success ? dst : src]
+      end
+    end
+
+    def difference_with(other)
+      run_cache[:difference][other.digest] ||= begin
+        images = [flatten_animation(@path), flatten_animation(other)]
+
+        alpha_presence = images.map do |image|
+          Cmd.capture("identify -format '%A' #{image.shellescape}")
+        end
+        if alpha_presence.uniq.length == 2
+          images.map!{ |image| underlay_noise(image) }
+        end
+
+        nrmse_command = %W[
+          convert
+          #{images[0]} -auto-orient
+          #{images[1]} -auto-orient
+          -metric RMSE
+          -compare
+          -format %[distortion]
+          info:
+        ].shelljoin
+        nrmse = Cmd.capture(nrmse_command).to_f
+        unless $CHILD_STATUS.success?
+          fail "failed comparison of #{@path} with #{other}"
+        end
+        nrmse
+      end
+    end
+
+    def flatten_animation(image)
+      run_cache[:flatten][image.digest] ||= begin
+        if image.format == :gif
+          flattened = image.temp_path
+          Cmd.run(*%W[
+            convert
+            #{image.shellescape}
+            -coalesce
+            -append
+            #{flattened.shellescape}
+          ])
+          unless $CHILD_STATUS.success?
+            fail "failed flattening of #{image}"
+          end
+          flattened
+        else
+          image
+        end
+      end
+    end
+
+    def underlay_noise(image)
+      run_cache[:noise][image.digest] ||= begin
+        with_noise = image.temp_path
+        Cmd.run(*%W[
+          convert
+          #{image.shellescape}
+          +noise Random
+          #{image.shellescape}
+          -flatten
+          -alpha off
+          #{with_noise.shellescape}
+        ])
+        unless $CHILD_STATUS.success?
+          fail "failed underlaying noise to #{image}"
+        end
+        with_noise
+      end
+    end
+  end
+
+  # Helper for producing statistics
+  class Stats
+    # Calculate statistics for chain
+    class Chain
+      attr_reader :worker_stats
+      attr_reader :unused_workers
+      attr_reader :entry_count
+      attr_reader :original_size, :optimized_size, :ratio, :avg_ratio
+      attr_reader :avg_difference, :max_difference, :warn_level
+      attr_reader :time, :speed
+
+      def initialize(worker_ids, results)
+        steps_by_worker_id = results.flat_map(&:steps).group_by(&:worker_id)
+        @worker_stats = worker_ids.map do |worker_id|
+          Worker.new(worker_id, steps_by_worker_id[worker_id])
+        end
+        @unused_workers = worker_stats.any?(&:unused?)
+
+        @entry_count = results.count
+        @original_size = results.sum(&:src_size)
+        @optimized_size = results.sum(&:dst_size)
+        @ratio = optimized_size.to_f / original_size
+        @avg_ratio = results.sum(&:ratio) / results.length
+        @avg_difference = results.sum(&:difference) / results.length
+        @max_difference = results.map(&:difference).max
+        @warn_level = case
+        when max_difference >= 0.1 then 'high'
+        when max_difference >= 0.01 then 'medium'
+        when max_difference >= 0.001 then 'low'
+        end
+        @time = results.sum(&:time)
+        @speed = case
+        when time > 0 then (original_size - optimized_size) / time
+        when original_size == optimized_size then 0
+        else 1.0 / 0.0
+        end
+      end
+    end
+
+    # Worker usage
+    class Worker
+      attr_reader :name
+      attr_reader :success_count
+      def initialize(name, steps)
+        @name = name
+        @success_count = steps.count(&:success)
+      end
+
+      def unused?
+        success_count.zero?
+      end
+    end
+
+    attr_reader :name, :results
+    def initialize(name, results)
+      @name = name.to_s
+      @results = results
+    end
+
+    def each_chain(&block)
+      chains = results.group_by(&:worker_ids).map do |worker_ids, results|
+        Chain.new(worker_ids, results)
+      end
+      chains.sort_by!{ |chain| [chain.optimized_size, chain.time] }
+      chains.each(&block)
+    end
+  end
+
+  def initialize(option_variants)
+    option_variants = HashHelpers.deep_symbolise_keys(option_variants)
+    image_optim = ImageOptim.new
+
+    @workers_by_format = Hash.new{ |h, k| h[k] = [] }
+    ImageOptim::Worker.klasses.each do |klass|
+      worker_options_config = option_variants.delete(klass.bin_sym) || {}
+      worker_option_variants = case worker_options_config
+      when Array
+        worker_options_config
+      when Hash
+        worker_options_config.variants
+      else
+        fail "Array or Hash expected, got #{worker_options_config}"
+      end
+      worker_option_variants.each do |options|
+        options = HashHelpers.deep_symbolise_keys(options)
+        worker = WorkerVariant.new(klass, image_optim, options)
+        worker.image_formats.each do |format|
+          @workers_by_format[format] << worker
+        end
+      end
+    end
+
+    fail "unknown variants: #{option_variants}" unless option_variants.empty?
+  end
+
+  def analyse(paths)
+    results = process_paths(paths).shuffle.with_progress.flat_map do |path|
+      WorkerRunner.new(path, workers_for_image(path)).results
+    end
+
+    template = Haml::Engine.new(File.read("#{__FILE__}.haml"))
+    by_format = results.group_by(&:format)
+    formats = by_format.keys.sort
+    basenames = Hash[formats.map do |format|
+      [format, "worker-analysis-#{format}.html"]
+    end]
+    formats.each do |format|
+      stats = Stats.new('all', by_format[format])
+      model = {
+        :stats_format => format,
+        :stats => stats,
+        :format_links => basenames,
+      }
+      html = template.render(nil, model)
+      path = FSPath("#{DIR}/#{basenames[format]}")
+      path.write(html)
+      puts "Created #{path}"
+    end
+  end
+
+private
+
+  def process_paths(paths)
+    paths = paths.map{ |path| ImageOptim::ImagePath.convert(path) }
+    paths.select!{ |path| path.exist? || warn("#{path} doesn't exits") }
+    paths.select!{ |path| path.file? || warn("#{path} is not a file") }
+    paths.select!{ |path| path.format || warn("#{path} is not an image") }
+    paths.select! do |path|
+      workers_for_image(path) || warn("#{path} can't be handled by any worker")
+    end
+    paths
+  end
+
+  def workers_for_image(path)
+    @workers_by_format[ImageOptim::ImagePath.convert(path).format]
+  end
+end
+
+option_variants = begin
+  YAML.load_file('.analysis_variants.yml')
+rescue Errno::ENOENT => e
+  warn e
+  {}
+end
+analyser = Analyser.new(option_variants)
+
+if ARGV.empty?
+  abort <<-HELP
+Specify paths for analysis.
+
+Example of `.analysis_variants.yml`:
+  jpegtran: # 3 worker variants
+    - jpegrescan: true
+    - progressive: true
+    - progressive: false
+  optipng: # 6 worker variants by combining options
+    level: [6, 7]
+    interlace: [true, false, nil]
+  # other workers will be used with default options
+  HELP
+end
+analyser.analyse(ARGV)
