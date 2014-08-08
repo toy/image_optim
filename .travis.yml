@@ -16,9 +16,13 @@ script:
   - '! bundle show rubocop || bundle exec rubocop' # run rubocop only if it is bundled
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush pngquant
+  - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
   - npm install -g svgo
   - mkdir ~/bin
+  # pngquant:
+  - git clone git://github.com/pornel/pngquant.git
+  - pushd pngquant && git checkout $(git describe --tags --abbrev=0) && make && popd
+  - mv pngquant/pngquant ~/bin
   # pngout:
   - wget http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz
   - tar -xzf pngout-*-linux.tar.gz
