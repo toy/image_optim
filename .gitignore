@@ -11,3 +11,5 @@ Makefile
 *.o
 *.bundle
 /tmp/
+
+/analysis/
