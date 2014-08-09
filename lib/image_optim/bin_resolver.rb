@@ -4,9 +4,6 @@ require 'image_optim/bin_resolver/simple_version'
 require 'image_optim/bin_resolver/comparable_condition'
 
 class ImageOptim
-  class BinNotFound < StandardError; end
-  class BadBinVersion < StandardError; end
-
   # Handles resolving binaries and checking versions
   #
   # If there is an environment variable XXX_BIN when resolbing xxx, then a
