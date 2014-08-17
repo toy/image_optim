@@ -13,7 +13,7 @@ class ImageOptim
       when 0, nil
         EMPTY_SPACE
       else
-        log_denominator = Math.log(size) / Math.log(BASE)
+        log_denominator = Math.log(size.abs) / Math.log(BASE)
         degree = [log_denominator.floor, SIZE_SYMBOLS.length - 1].min
         number_string = if degree == 0
           size.to_s
