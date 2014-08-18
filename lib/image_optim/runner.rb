@@ -55,7 +55,7 @@ class ImageOptim
       unless @to_optimize.empty?
         results = Results.new
 
-        optimize_images! do |original, optimized|
+        optimize_images!.each do |original, optimized|
           results.add(original, optimized)
         end
 
