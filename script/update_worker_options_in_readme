@@ -33,7 +33,7 @@ def write_marked(io)
   io.puts GENERATED_NOTE
   io.puts
 
-  ImageOptim::Worker.klasses.each do |klass|
+  ImageOptim::Worker.klasses.sort_by(&:name).each do |klass|
     write_worker_options(io, klass)
   end
 

@@ -174,32 +174,37 @@ describe ImageOptim do
   describe 'bunch' do
     it 'should optimize' do
       copies = TEST_IMAGES.map(&:temp_copy)
-      optimized_images = ImageOptim.optimize_images(copies)
-      zipped = TEST_IMAGES.zip(copies, optimized_images)
-      zipped.each do |original, copy, optimized_image|
-        expect(optimized_image).to be_a(ImageOptim::ImagePath::Optimized)
-        expect(optimized_image.size).to be_in_range(1...original.size)
-        expect(optimized_image.read).not_to eq(original.read)
+      results = ImageOptim.optimize_images(copies)
+      zipped = TEST_IMAGES.zip(copies, results)
+      zipped.each do |original, copy, result|
+        expect(result[0]).to eq(copy)
+        expect(result[1]).to be_a(ImageOptim::ImagePath::Optimized)
+        expect(result[1].size).to be_in_range(1...original.size)
         expect(copy.read).to eq(original.read)
       end
     end
 
     it 'should optimize in place' do
       copies = TEST_IMAGES.map(&:temp_copy)
-      ImageOptim.optimize_images!(copies)
-      TEST_IMAGES.zip(copies).each do |original, copy|
+      results = ImageOptim.optimize_images!(copies)
+      zipped = TEST_IMAGES.zip(copies, results)
+      zipped.each do |original, copy, result|
+        expect(result[0]).to eq(copy)
+        expect(result[1]).to be_a(ImageOptim::ImagePath::Optimized)
         expect(copy.size).to be_in_range(1...original.size)
-        expect(copy.read).not_to eq(original.read)
       end
     end
 
     it 'should optimize datas' do
-      optimized_datas = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
-      TEST_IMAGES.zip(optimized_datas).each do |original, optimized_data|
-        expect(optimized_data).not_to be_nil
+      results = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
+      zipped = TEST_IMAGES.zip(results)
+      zipped.each do |original, result|
+        expect(result[0]).to eq(original.read)
+        expect(result[1]).to be_a(String)
+        expect(result[1].size).to be_in_range(1...original.size)
 
         expected_path = ImageOptim.optimize_image(original.temp_copy)
-        expect(optimized_data).to eq(expected_path.open('rb', &:read))
+        expect(result[1]).to eq(expected_path.open('rb', &:read))
       end
     end
   end
@@ -262,7 +267,7 @@ describe ImageOptim do
               expect(image_optim).to receive(method).with(src).and_return(dst)
               dst
             end
-            expect(image_optim.send(list_method, srcs)).to eq(dsts)
+            expect(image_optim.send(list_method, srcs)).to eq(srcs.zip(dsts))
           end
         end
 
