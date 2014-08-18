@@ -106,7 +106,7 @@ class ImageOptim
   # Optimize multiple images
   # if block given yields path and result for each image and returns array of
   # yield results
-  # else return array of results
+  # else return array of path and result pairs
   def optimize_images(paths, &block)
     run_method_for(paths, :optimize_image, &block)
   end
@@ -114,7 +114,7 @@ class ImageOptim
   # Optimize multiple images in place
   # if block given yields path and result for each image and returns array of
   # yield results
-  # else return array of results
+  # else return array of path and result pairs
   def optimize_images!(paths, &block)
     run_method_for(paths, :optimize_image!, &block)
   end
@@ -122,7 +122,7 @@ class ImageOptim
   # Optimize multiple image datas
   # if block given yields original and result for each image data and returns
   # array of yield results
-  # else return array of results
+  # else return array of path and result pairs
   def optimize_images_data(datas, &block)
     run_method_for(datas, :optimize_image_data, &block)
   end
@@ -178,14 +178,17 @@ private
     by_format.each{ |_format, workers| workers.sort! }
   end
 
-  # Run method for each path and yield each path and result if block given
-  def run_method_for(paths, method_name, &block)
-    apply_threading(paths).map do |path|
-      result = send(method_name, path)
+  # Run method for each item in list
+  # if block given yields item and result for item and returns array of yield
+  # results
+  # else return array of item and result pairs
+  def run_method_for(list, method_name, &block)
+    apply_threading(list).map do |item|
+      result = send(method_name, item)
       if block
-        block.call(path, result)
+        block.call(item, result)
       else
-        result
+        [item, result]
       end
     end
   end
