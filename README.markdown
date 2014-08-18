@@ -18,6 +18,7 @@ Optimize (lossless compress) images (jpeg, png, gif, svg) using external utiliti
 * [optipng](http://optipng.sourceforge.net/)
 * [pngcrush](http://pmt.sourceforge.net/pngcrush/)
 * [pngout](http://www.advsys.net/ken/util/pngout.htm)
+* [pngquant](http://pngquant.org/)
 * [svgo](https://github.com/svg/svgo)
 
 Based on [ImageOptim.app](http://imageoptim.com/).
@@ -81,13 +82,15 @@ Besides permanently setting environment variables in `~/.profile`, `~/.bash_prof
 ### Linux - Debian/Ubuntu
 
 ```bash
-sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
+sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush pngquant
 ```
+
+If you get an old version of `pngquant`, please check how to install up-to-date version or compile from source at [http://pngquant.org/](http://pngquant.org/).
 
 ### Linux - RHEL/Fedora/Centos
 
 ```bash
-sudo yum install -y advancecomp gifsicle jhead libjpeg optipng
+sudo yum install -y advancecomp gifsicle jhead libjpeg optipng pngquant
 ```
 
 You may also need to install `libjpeg-turbo-utils` instead of `libjpeg`:
@@ -127,13 +130,13 @@ make && cp -f pngcrush /usr/local/bin
 ### OS X: Macports
 
 ```bash
-sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
+sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush pngquant
 ```
 
 ### OS X: Brew
 
 ```bash
-brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush
+brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush pngquant
 ```
 
 ### pngout installation (optional)
@@ -255,6 +258,10 @@ Worker can be disabled by passing `false` instead of options hash.
 
 ### :advpng =>
 * `:level` — Compression level: `0` - don't compress, `1` - fast, `2` - normal, `3` - extra, `4` - extreme *(defaults to `4`)*
+
+### :pngquant =>
+* `:quality` — min..max - don't save below min, use less colors below max (both in range `0..100`; in yaml - `!ruby/range 0..100`) *(defaults to `100..100`)*
+* `:speed` — speed/quality trade-off: `1` - slow, `3` - default, `11` - fast & rough *(defaults to `3`)*
 
 ### :jhead =>
 Worker has no options

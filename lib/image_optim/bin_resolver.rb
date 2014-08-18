@@ -85,7 +85,7 @@ class ImageOptim
 
     def version(name)
       case name.to_sym
-      when :advpng, :gifsicle, :jpegoptim, :optipng
+      when :advpng, :gifsicle, :jpegoptim, :optipng, :pngquant
         capture_output("#{name} --version")[/\d+(\.\d+){1,}/]
       when :svgo
         capture_output("#{name} --version 2>&1")[/\d+(\.\d+){1,}/]
@@ -114,6 +114,13 @@ class ImageOptim
         case bin.version
         when c = is < '1.17'
           warn "Note that `#{bin}` (#{c}) does not use zopfli"
+        end
+      when :pngquant
+        case bin.version
+        when c = is < '2.0'
+          fail BadBinVersion, "`#{bin}` (#{c}) is not supported"
+        when c = is < '2.1'
+          warn "Note that `#{bin}` (#{c}) may be lossy even with quality `100-`"
         end
       end
     end

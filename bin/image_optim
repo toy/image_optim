@@ -3,11 +3,13 @@
 
 require 'image_optim/runner'
 require 'image_optim/true_false_nil'
+require 'image_optim/non_negative_integer_range'
 
 options = {}
 
 option_parser = OptionParser.new do |op|
   ImageOptim::TrueFalseNil.add_to_option_parser(op)
+  ImageOptim::NonNegativeIntegerRange.add_to_option_parser(op)
 
   op.banner = <<-TEXT.gsub(/^\s*\|/, '')
     |#{ImageOptim.full_version}
@@ -66,6 +68,8 @@ option_parser = OptionParser.new do |op|
         [Integer, 'N']
       when Array >= type
         [Array, 'a,b,c']
+      when ImageOptim::NonNegativeIntegerRange == type
+        [type, 'M-N']
       else
         fail "Unknown type #{type}"
       end
