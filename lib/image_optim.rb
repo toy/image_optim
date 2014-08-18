@@ -204,7 +204,7 @@ private
 end
 
 %w[
-  pngcrush pngout optipng advpng pngquant
+  pngcrush pngout advpng optipng pngquant
   jhead jpegoptim jpegtran
   gifsicle
   svgo
