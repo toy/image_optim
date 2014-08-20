@@ -85,14 +85,14 @@ class ImageOptim
           else
             warning "#{path} is not an image or there is no optimizer for it"
           end
-        elsif @recursive
-          if File.directory?(path)
+        elsif File.directory?(path)
+          if @recursive
             to_optimize += find_to_optimize_recursive(path)
           else
-            warning "#{path} is not a file or a directory or does not exist"
+            warning "#{path} is a directory, use --recursive option"
           end
         else
-          warning "#{path} is not a file or does not exist"
+          warning "#{path} is not a file or a directory or does not exist"
         end
       end
       to_optimize
