@@ -80,7 +80,7 @@ class ImageOptim
     end
 
     def accessible?(name)
-      version(name) != ''
+      !!version(name)
     end
 
     def version(name)
