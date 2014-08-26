@@ -63,20 +63,15 @@ describe ImageOptim::BinResolver do
   end
 
   it 'should raise on failure to resolve bin' do
-    with_env 'SHOULD_NOT_EXIST_BIN', nil do
-      expect(resolver).to receive(:accessible?).
-        with(:should_not_exist).once.and_return(false)
+    with_env 'PATH', nil do
       expect(FSPath).not_to receive(:temp_dir)
 
       5.times do
         expect do
-          resolver.resolve!(:should_not_exist)
+          resolver.resolve!(:jpegtran)
         end.to raise_error ImageOptim::BinResolver::BinNotFound
       end
-      expect(resolver.env_path).to eq([
-        ENV['PATH'],
-        ImageOptim::BinResolver::VENDOR_PATH,
-      ].join(':'))
+      expect(resolver.env_path).to eq(ImageOptim::BinResolver::VENDOR_PATH)
     end
   end
 
