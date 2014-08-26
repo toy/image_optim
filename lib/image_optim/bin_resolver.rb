@@ -102,6 +102,8 @@ class ImageOptim
       when :jpegrescan
         # jpegrescan has no version so just check presence
         capture_output("command -v #{name}")['jpegrescan']
+      else
+        fail "getting `#{name}` version is not defined"
       end
     end
 
