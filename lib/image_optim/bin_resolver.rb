@@ -80,7 +80,7 @@ class ImageOptim
     end
 
     def accessible?(name)
-      capture_output("which #{name.to_s.shellescape}") != ''
+      version(name) != ''
     end
 
     def version(name)
