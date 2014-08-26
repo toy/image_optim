@@ -86,11 +86,11 @@ class ImageOptim
     def version(name)
       case name.to_sym
       when :advpng, :gifsicle, :jpegoptim, :optipng, :pngquant
-        capture_output("#{name} --version")[/\d+(\.\d+){1,}/]
+        capture_output("#{name} --version 2> /dev/null")[/\d+(\.\d+){1,}/]
       when :svgo
         capture_output("#{name} --version 2>&1")[/\d+(\.\d+){1,}/]
       when :jhead
-        capture_output("#{name} -V")[/\d+(\.\d+){1,}/]
+        capture_output("#{name} -V 2> /dev/null")[/\d+(\.\d+){1,}/]
       when :jpegtran
         capture_output("#{name} -v - 2>&1")[/version (\d+\S*)/, 1]
       when :pngcrush
