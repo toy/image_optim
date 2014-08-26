@@ -80,17 +80,17 @@ class ImageOptim
     end
 
     def accessible?(name)
-      capture_output("which #{name.to_s.shellescape}") != ''
+      !!version(name)
     end
 
     def version(name)
       case name.to_sym
       when :advpng, :gifsicle, :jpegoptim, :optipng, :pngquant
-        capture_output("#{name} --version")[/\d+(\.\d+){1,}/]
+        capture_output("#{name} --version 2> /dev/null")[/\d+(\.\d+){1,}/]
       when :svgo
         capture_output("#{name} --version 2>&1")[/\d+(\.\d+){1,}/]
       when :jhead
-        capture_output("#{name} -V")[/\d+(\.\d+){1,}/]
+        capture_output("#{name} -V 2> /dev/null")[/\d+(\.\d+){1,}/]
       when :jpegtran
         capture_output("#{name} -v - 2>&1")[/version (\d+\S*)/, 1]
       when :pngcrush
@@ -98,7 +98,12 @@ class ImageOptim
       when :pngout
         date_regexp = /[A-Z][a-z]{2} (?: |\d)\d \d{4}/
         date_str = capture_output("#{name} 2>&1")[date_regexp]
-        Date.parse(date_str).strftime('%Y%m%d')
+        Date.parse(date_str).strftime('%Y%m%d') if date_str
+      when :jpegrescan
+        # jpegrescan has no version so just check presence
+        capture_output("command -v #{name}")['jpegrescan']
+      else
+        fail "getting `#{name}` version is not defined"
       end
     end
 

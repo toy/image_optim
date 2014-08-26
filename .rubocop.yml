@@ -15,7 +15,7 @@ Style/ClassLength:
   Max: 120
 
 Style/CyclomaticComplexity:
-  Max: 8
+  Max: 10
 
 Style/DotPosition:
   EnforcedStyle: trailing

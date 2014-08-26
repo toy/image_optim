@@ -15,11 +15,28 @@ describe ImageOptim::BinResolver do
 
   it 'should resolve bin in path' do
     with_env 'LS_BIN', nil do
+      allow(resolver).to receive(:version).with(:ls).and_return('xxx')
       expect(resolver).to receive(:accessible?).with(:ls).once.and_return(true)
       expect(FSPath).not_to receive(:temp_dir)
 
       5.times do
         resolver.resolve!(:ls)
+      end
+      expect(resolver.env_path).to eq([
+        ENV['PATH'],
+        ImageOptim::BinResolver::VENDOR_PATH,
+      ].join(':'))
+    end
+  end
+
+  it 'should fail to resolve unknown bin' do
+    with_env 'LS_BIN', nil do
+      expect(FSPath).not_to receive(:temp_dir)
+
+      5.times do
+        expect do
+          resolver.resolve!(:ls)
+        end.to raise_error RuntimeError
       end
       expect(resolver.env_path).to eq([
         ENV['PATH'],
@@ -34,6 +51,7 @@ describe ImageOptim::BinResolver do
       tmpdir = double(:tmpdir, :to_str => 'tmpdir')
       symlink = double(:symlink)
 
+      allow(resolver).to receive(:version).with(:image_optim).and_return('xxx')
       expect(resolver).to receive(:accessible?).
         with(:image_optim).once.and_return(true)
       expect(FSPath).to receive(:temp_dir).
@@ -63,20 +81,15 @@ describe ImageOptim::BinResolver do
   end
 
   it 'should raise on failure to resolve bin' do
-    with_env 'SHOULD_NOT_EXIST_BIN', nil do
-      expect(resolver).to receive(:accessible?).
-        with(:should_not_exist).once.and_return(false)
+    with_env 'PATH', nil do
       expect(FSPath).not_to receive(:temp_dir)
 
       5.times do
         expect do
-          resolver.resolve!(:should_not_exist)
+          resolver.resolve!(:jpegtran)
         end.to raise_error ImageOptim::BinResolver::BinNotFound
       end
-      expect(resolver.env_path).to eq([
-        ENV['PATH'],
-        ImageOptim::BinResolver::VENDOR_PATH,
-      ].join(':'))
+      expect(resolver.env_path).to eq(ImageOptim::BinResolver::VENDOR_PATH)
     end
   end
 
@@ -118,6 +131,7 @@ describe ImageOptim::BinResolver do
 
   it 'should resolve bin only once' do
     with_env 'LS_BIN', nil do
+      allow(resolver).to receive(:version).with(:ls).and_return('xxx')
       expect(resolver).to receive(:resolve?).once.with(:ls){ sleep 0.1; true }
 
       10.times.map do
