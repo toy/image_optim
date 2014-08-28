@@ -106,7 +106,8 @@ class ImageOptim
     rescue BinResolver::Error => e
       name = self.class.bin_sym
       raise e, "#{name} worker: #{e.message}; please provide proper binary or "\
-          "disable this worker (`:#{name} => false`)", e.backtrace
+          "disable this worker (--no-#{name} argument or "\
+          "`:#{name} => false` through options)", e.backtrace
     end
 
     # Run command setting priority and hiding output
