@@ -67,7 +67,9 @@ describe ImageOptim do
           expect(path).to receive(:format).and_return(format)
 
           workers = image_optim.workers_for_image(path)
-          expect(workers).to eq(workers.sort)
+          expect(workers).to eq(workers.sort_by.with_index do |worker, i|
+            [worker.run_order, i]
+          end)
         end
       end
     end
