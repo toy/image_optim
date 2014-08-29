@@ -175,7 +175,9 @@ private
         by_format[format] << worker
       end
     end
-    by_format.each{ |_format, workers| workers.sort! }
+    by_format.each do |_format, workers|
+      workers.sort_by!.with_index{ |worker, i| [worker.run_order, i] }
+    end
   end
 
   # Run method for each item in list

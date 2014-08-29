@@ -80,10 +80,6 @@ class ImageOptim
       0
     end
 
-    def <=>(other)
-      run_order <=> other.run_order
-    end
-
     # Check if operation resulted in optimized file
     def optimized?(src, dst)
       dst.size? && dst.size < src.size
