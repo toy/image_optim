@@ -45,8 +45,8 @@ class ImageOptim
 
     if verbose
       $stderr << config
-      $stderr << "Nice level: #{nice}\n"
-      $stderr << "Using threads: #{threads}\n"
+      $stderr << "nice: #{nice}\n"
+      $stderr << "threads: #{threads}\n"
     end
 
     @bin_resolver = BinResolver.new(self)
