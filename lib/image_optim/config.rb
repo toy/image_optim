@@ -18,18 +18,19 @@ class ImageOptim
       # Read config at GLOBAL_CONFIG_PATH if it exists, warn if anything is
       # wrong
       def global
-        File.file?(GLOBAL_CONFIG_PATH) ? read(GLOBAL_CONFIG_PATH) : {}
+        read(GLOBAL_CONFIG_PATH)
       end
 
       # Read config at LOCAL_CONFIG_PATH if it exists, warn if anything is
       # wrong
       def local
-        File.file?(LOCAL_CONFIG_PATH) ? read(LOCAL_CONFIG_PATH) : {}
+        read(LOCAL_CONFIG_PATH)
       end
 
     private
 
       def read(path)
+        return {} unless File.file?(path)
         config = YAML.load_file(path)
         unless config.is_a?(Hash)
           fail "excpected hash, got #{config.inspect}"
