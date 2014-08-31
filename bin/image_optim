@@ -28,6 +28,21 @@ option_parser = OptionParser.new do |op|
     options[:recursive] = recursive
   end
 
+  op.on("--exclude-dir='GLOB'", 'Glob for excluding directories '\
+      '(defaults to .*)') do |glob|
+    options[:exclude_dir_glob] = glob
+  end
+
+  op.on("--exclude-file='GLOB'", 'Glob for excluding files '\
+      '(defaults to .*)') do |glob|
+    options[:exclude_file_glob] = glob
+  end
+
+  op.on("--exclude='GLOB'", 'Set glob for excluding both directories and '\
+      'files') do |glob|
+    options[:exclude_file_glob] = options[:exclude_dir_glob] = glob
+  end
+
   op.separator nil
 
   op.on('--[no-]threads N', Integer, 'Number of threads or disable '\
