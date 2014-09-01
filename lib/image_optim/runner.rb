@@ -1,5 +1,6 @@
 require 'image_optim'
 require 'image_optim/hash_helpers'
+require 'image_optim/runner/glob_helpers'
 require 'image_optim/space'
 require 'progress'
 require 'optparse'
@@ -47,6 +48,10 @@ class ImageOptim
       fail 'specify paths to optimize' if args.empty?
       options = HashHelpers.deep_symbolise_keys(options)
       @recursive = options.delete(:recursive)
+      @exclude_dir_globs, @exclude_file_globs = %w[dir file].map do |type|
+        glob = options.delete(:"exclude_#{type}_glob") || '.*'
+        GlobHelpers.expand_braces(glob)
+      end
       @image_optim = ImageOptim.new(options)
       @to_optimize = find_to_optimize(args)
     end
@@ -85,14 +90,14 @@ class ImageOptim
           else
             warning "#{path} is not an image or there is no optimizer for it"
           end
-        elsif @recursive
-          if File.directory?(path)
+        elsif File.directory?(path)
+          if @recursive
             to_optimize += find_to_optimize_recursive(path)
           else
-            warning "#{path} is not a file or a directory or does not exist"
+            warning "#{path} is a directory, use --recursive option"
           end
         else
-          warning "#{path} is not a file or does not exist"
+          warning "#{path} is not a file or a directory or does not exist"
         end
       end
       to_optimize
@@ -101,11 +106,34 @@ class ImageOptim
     def find_to_optimize_recursive(dir)
       to_optimize = []
       Find.find(dir) do |path|
-        next unless File.file?(path)
-        next unless @image_optim.optimizable?(path)
-        to_optimize << path
+        if File.file?(path)
+          next if exclude_file?(dir, path)
+          next unless @image_optim.optimizable?(path)
+          to_optimize << path
+        elsif File.directory?(path)
+          Find.prune if dir != path && exclude_dir?(dir, path)
+        end
       end
       to_optimize
+    end
+
+    def exclude_dir?(dir, path)
+      exclude?(dir, path, @exclude_dir_globs)
+    end
+
+    def exclude_file?(dir, path)
+      exclude?(dir, path, @exclude_file_globs)
+    end
+
+    # Check if any of globs matches either part of path relative from dir or
+    # just basename
+    def exclude?(dir, path, globs)
+      relative_path = Pathname(path).relative_path_from(Pathname(dir)).to_s
+      basename = File.basename(path)
+      globs.any? do |glob|
+        File.fnmatch(glob, relative_path, File::FNM_PATHNAME) ||
+        File.fnmatch(glob, basename, File::FNM_PATHNAME)
+      end
     end
 
     def warning(message)
