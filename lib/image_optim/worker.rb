@@ -85,6 +85,20 @@ class ImageOptim
       [self.class.bin_sym]
     end
 
+    # Resolve used bins, raise exception mergin all messages
+    def resolve_used_bins!
+      errors = []
+      used_bins.each do |bin|
+        begin
+          @image_optim.resolve_bin!(bin)
+        rescue BinResolver::Error => e
+          errors << e
+        end
+      end
+      return if errors.empty?
+      fail BinResolver::Error, wrap_resolver_error_message(errors.join(', '))
+    end
+
     # Check if operation resulted in optimized file
     def optimized?(src, dst)
       dst.size? && dst.size < src.size
