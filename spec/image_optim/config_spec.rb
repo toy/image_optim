@@ -60,7 +60,11 @@ describe ImageOptim::Config do
   end
 
   describe 'for_worker' do
-    Abc = Class.new(ImageOptim::Worker) do
+    Abc = Class.new do
+      def self.bin_sym
+        :abc
+      end
+
       def image_formats
         []
       end
