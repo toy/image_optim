@@ -37,6 +37,15 @@ class ImageOptim
         option_definitions <<
             OptionDefinition.new(name, default, type, description, &proc)
       end
+
+      # Initialize all workers using options from calling options_proc with
+      # klass
+      def create_all(image_optim, &options_proc)
+        Worker.klasses.map do |klass|
+          next unless (options = options_proc[klass])
+          klass.new(image_optim, options)
+        end.compact
+      end
     end
 
     # Configure (raises on extra options)

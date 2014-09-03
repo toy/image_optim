@@ -167,17 +167,15 @@ private
   # Create hash with format mapped to list of workers sorted by run order
   def create_workers_by_format(&options_proc)
     by_format = {}
-    Worker.klasses.each do |klass|
-      next unless (options = options_proc[klass])
-      worker = klass.new(self, options)
+    workers = Worker.create_all(self, &options_proc)
+    sorted = workers.sort_by.with_index{ |worker, i| [worker.run_order, i] }
+    sorted.each do |worker|
       worker.image_formats.each do |format|
         by_format[format] ||= []
         by_format[format] << worker
       end
     end
-    by_format.each do |_format, workers|
-      workers.sort_by!.with_index{ |worker, i| [worker.run_order, i] }
-    end
+    by_format
   end
 
   # Run method for each item in list
