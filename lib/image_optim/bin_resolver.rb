@@ -58,6 +58,19 @@ class ImageOptim
       [dir, ENV['PATH'], VENDOR_PATH].compact.join(':')
     end
 
+    # Collect resolving errors when running block over items of enumerable
+    def self.collect_errors(enumerable)
+      errors = []
+      enumerable.each do |item|
+        begin
+          yield item
+        rescue Error => e
+          errors << e
+        end
+      end
+      errors
+    end
+
   private
 
     def resolving(name)
