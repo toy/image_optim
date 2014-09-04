@@ -55,6 +55,8 @@ class ImageOptim
       config.for_worker(klass)
     end
 
+    log_workers_by_format if verbose
+
     config.assert_no_unused_options!
   end
 
@@ -163,6 +165,19 @@ class ImageOptim
   end
 
 private
+
+  def log_workers_by_format
+    $stderr << "Workers by format:\n"
+    @workers_by_format.each do |format, workers|
+      $stderr << "#{format}:\n"
+      workers.each do |worker|
+        $stderr << "  #{worker.class.bin_sym}:\n"
+        worker.options.each do |name, value|
+          $stderr << "    #{name}: #{value.inspect}\n"
+        end
+      end
+    end
+  end
 
   # Create hash with format mapped to list of workers sorted by run order
   def create_workers_by_format(&options_proc)
