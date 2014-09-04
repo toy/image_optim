@@ -37,6 +37,24 @@ class ImageOptim
         option_definitions <<
             OptionDefinition.new(name, default, type, description, &proc)
       end
+
+      # Initialize all workers using options from calling options_proc with
+      # klass
+      def create_all(image_optim, &options_proc)
+        Worker.klasses.map do |klass|
+          next unless (options = options_proc[klass])
+          klass.new(image_optim, options)
+        end.compact
+      end
+
+      # Resolve all bins of all workers failing with one joint exception
+      def resolve_all!(workers)
+        errors = BinResolver.collect_errors(workers) do |worker|
+          worker.resolve_used_bins!
+        end
+        return if errors.empty?
+        fail BinResolver::Error, ['Bin resolving errors:', *errors].join("\n")
+      end
     end
 
     # Configure (raises on extra options)
@@ -80,6 +98,20 @@ class ImageOptim
       0
     end
 
+    # List of bins used by worker
+    def used_bins
+      [self.class.bin_sym]
+    end
+
+    # Resolve used bins, raise exception mergin all messages
+    def resolve_used_bins!
+      errors = BinResolver.collect_errors(used_bins) do |bin|
+        @image_optim.resolve_bin!(bin)
+      end
+      return if errors.empty?
+      fail BinResolver::Error, wrap_resolver_error_message(errors.join(', '))
+    end
+
     # Check if operation resulted in optimized file
     def optimized?(src, dst)
       dst.size? && dst.size < src.size
@@ -99,9 +131,14 @@ class ImageOptim
     def resolve_bin!(bin)
       @image_optim.resolve_bin!(bin)
     rescue BinResolver::Error => e
+      raise e, wrap_resolver_error_message(e.message), e.backtrace
+    end
+
+    def wrap_resolver_error_message(message)
       name = self.class.bin_sym
-      raise e, "#{name} worker: #{e.message}; please provide proper binary or "\
-          "disable this worker (`:#{name} => false`)", e.backtrace
+      "#{name} worker: #{message}; please provide proper binary or "\
+          "disable this worker (--no-#{name} argument or "\
+          "`:#{name} => false` through options)"
     end
 
     # Run command setting priority and hiding output

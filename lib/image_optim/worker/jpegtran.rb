@@ -17,6 +17,10 @@ class ImageOptim
       option(:jpegrescan, false, 'Use jpegtran through jpegrescan, '\
           'ignore progressive option'){ |v| !!v }
 
+      def used_bins
+        jpegrescan ? [:jpegtran, :jpegrescan] : [:jpegtran]
+      end
+
       def optimize(src, dst)
         if jpegrescan
           args = %W[#{src} #{dst}]

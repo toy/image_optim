@@ -6,13 +6,12 @@ describe ImageOptim::Worker do
   Worker = ImageOptim::Worker
 
   describe 'optimize' do
-    it 'should raise NotImplementedError unless overriden' do
-      class Abc < ImageOptim::Worker; end
-
+    it 'should raise NotImplementedError' do
       image_optim = ImageOptim.new
+      worker = Worker.new(image_optim, {})
 
       expect do
-        Abc.new(image_optim, {}).optimize(double, double)
+        worker.optimize(double, double)
       end.to raise_error NotImplementedError
     end
   end
