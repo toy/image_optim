@@ -12,7 +12,7 @@ Style/CaseIndentation:
   IndentWhenRelativeTo: end
 
 Style/ClassLength:
-  Max: 120
+  Max: 150
 
 Style/CyclomaticComplexity:
   Max: 10
