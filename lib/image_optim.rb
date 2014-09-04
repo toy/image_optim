@@ -168,6 +168,7 @@ private
   def create_workers_by_format(&options_proc)
     by_format = {}
     workers = Worker.create_all(self, &options_proc)
+    Worker.resolve_all!(workers)
     sorted = workers.sort_by.with_index{ |worker, i| [worker.run_order, i] }
     sorted.each do |worker|
       worker.image_formats.each do |format|

@@ -46,6 +46,15 @@ class ImageOptim
           klass.new(image_optim, options)
         end.compact
       end
+
+      # Resolve all bins of all workers failing with one joint exception
+      def resolve_all!(workers)
+        errors = BinResolver.collect_errors(workers) do |worker|
+          worker.resolve_used_bins!
+        end
+        return if errors.empty?
+        fail BinResolver::Error, ['Bin resolving errors:', *errors].join("\n")
+      end
     end
 
     # Configure (raises on extra options)
