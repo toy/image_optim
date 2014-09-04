@@ -176,7 +176,8 @@ private
       end
     end
     by_format.each do |_format, workers|
-      workers.sort_by!.with_index{ |worker, i| [worker.run_order, i] }
+      sorted = workers.sort_by.with_index{ |worker, i| [worker.run_order, i] }
+      workers.replace(sorted)
     end
   end
 
