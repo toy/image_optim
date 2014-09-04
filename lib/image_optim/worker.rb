@@ -78,6 +78,13 @@ class ImageOptim
       assert_no_unknown_options!(options)
     end
 
+    # Return hash with worker options
+    def options
+      self.class.option_definitions.each_with_object({}) do |option, h|
+        h[option.name] = send(option.name)
+      end
+    end
+
     # Optimize image at src, output at dst, must be overriden in subclass
     # return true on success
     def optimize(_src, _dst)
