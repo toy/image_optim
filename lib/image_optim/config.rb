@@ -10,7 +10,7 @@ class ImageOptim
   class Config
     include OptionHelpers
 
-    CONFIG_HOME = File.expand_path(ENV['XDG_CONFIG_HOME'] || '~/.config')
+    CONFIG_HOME = ENV['XDG_CONFIG_HOME'] || '~/.config'
     GLOBAL_CONFIG_PATH = File.join(CONFIG_HOME, 'image_optim.yml')
     LOCAL_CONFIG_PATH = './.image_optim.yml'
 
@@ -30,6 +30,12 @@ class ImageOptim
     private
 
       def read(path)
+        begin
+          path = File.expand_path(path)
+        rescue ArgumentError => e
+          warn "Can't expand path #{path}: #{e}"
+          return {}
+        end
         return {} unless File.file?(path)
         config = YAML.load_file(path)
         unless config.is_a?(Hash)
