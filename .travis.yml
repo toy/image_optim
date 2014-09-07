@@ -16,9 +16,15 @@ script:
   - '! bundle show rubocop || bundle exec rubocop' # run rubocop only if it is bundled
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
+  - sudo apt-get install -qq gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
   - npm install -g svgo
   - mkdir ~/bin
+  # advancecomp(advpng):
+  - ADVANCECOMP_VERSION=1.19
+  - wget http://downloads.sourceforge.net/project/advancemame/advancecomp/$ADVANCECOMP_VERSION/advancecomp-$ADVANCECOMP_VERSION.tar.gz
+  - tar -xzf advancecomp-$ADVANCECOMP_VERSION.tar.gz
+  - (cd advancecomp-$ADVANCECOMP_VERSION && ./configure && make)
+  - mv advancecomp-$ADVANCECOMP_VERSION/advpng ~/bin
   # pngquant:
   - git clone git://github.com/pornel/pngquant.git
   - pushd pngquant && git checkout $(git describe --tags --abbrev=0) && make && popd
