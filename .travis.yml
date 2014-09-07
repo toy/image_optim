@@ -30,9 +30,10 @@ before_install:
   - (cd pngquant && git checkout $(git describe --tags --abbrev=0) && make)
   - mv pngquant/pngquant ~/bin
   # pngout:
-  - wget http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz
-  - tar -xzf pngout-*-linux.tar.gz
-  - mv pngout-*-linux/x86_64/pngout ~/bin
+  - PNGOUT_VERSION=20130221
+  - wget http://static.jonof.id.au/dl/kenutils/pngout-$PNGOUT_VERSION-linux.tar.gz
+  - tar -xzf pngout-$PNGOUT_VERSION-linux.tar.gz
+  - mv pngout-$PNGOUT_VERSION-linux/x86_64/pngout ~/bin
 env:
   - PATH=~/bin:$PATH
 matrix:
