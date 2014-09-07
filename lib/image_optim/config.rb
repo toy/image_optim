@@ -31,19 +31,19 @@ class ImageOptim
 
       def read(path)
         begin
-          path = File.expand_path(path)
+          full_path = File.expand_path(path)
         rescue ArgumentError => e
           warn "Can't expand path #{path}: #{e}"
           return {}
         end
-        return {} unless File.file?(path)
-        config = YAML.load_file(path)
+        return {} unless File.file?(full_path)
+        config = YAML.load_file(full_path)
         unless config.is_a?(Hash)
           fail "excpected hash, got #{config.inspect}"
         end
         HashHelpers.deep_symbolise_keys(config)
       rescue => e
-        warn "exception when reading #{path}: #{e}"
+        warn "exception when reading #{full_path}: #{e}"
         {}
       end
     end
