@@ -10,21 +10,21 @@ class ImageOptim
   class Config
     include OptionHelpers
 
-    CONFIG_HOME = ENV['XDG_CONFIG_HOME'] || '~/.config'
-    GLOBAL_CONFIG_PATH = File.join(CONFIG_HOME, 'image_optim.yml')
-    LOCAL_CONFIG_PATH = './.image_optim.yml'
+    HOME = ENV['XDG_CONFIG_HOME'] || '~/.config'
+    GLOBAL_PATH = File.join(HOME, 'image_optim.yml')
+    LOCAL_PATH = './.image_optim.yml'
 
     class << self
-      # Read config at GLOBAL_CONFIG_PATH if it exists, warn if anything is
+      # Read config at GLOBAL_PATH if it exists, warn if anything is
       # wrong
       def global
-        read(GLOBAL_CONFIG_PATH)
+        read(GLOBAL_PATH)
       end
 
-      # Read config at LOCAL_CONFIG_PATH if it exists, warn if anything is
+      # Read config at LOCAL_PATH if it exists, warn if anything is
       # wrong
       def local
-        read(LOCAL_CONFIG_PATH)
+        read(LOCAL_PATH)
       end
 
     private

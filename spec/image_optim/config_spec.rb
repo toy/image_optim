@@ -100,18 +100,18 @@ describe ImageOptim::Config do
     end
 
     describe 'global' do
-      it 'should call read with GLOBAL_CONFIG_PATH' do
+      it 'should call read with GLOBAL_PATH' do
         expect(Config).to receive(:read).
-          with(Config::GLOBAL_CONFIG_PATH).and_return(:config => true)
+          with(Config::GLOBAL_PATH).and_return(:config => true)
 
         expect(Config.global).to eq(:config => true)
       end
     end
 
     describe 'local' do
-      it 'should call read with LOCAL_CONFIG_PATH' do
+      it 'should call read with LOCAL_PATH' do
         expect(Config).to receive(:read).
-          with(Config::LOCAL_CONFIG_PATH).and_return(:config => true)
+          with(Config::LOCAL_PATH).and_return(:config => true)
 
         expect(Config.local).to eq(:config => true)
       end
