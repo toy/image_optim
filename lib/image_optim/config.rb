@@ -10,7 +10,7 @@ class ImageOptim
   class Config
     include OptionHelpers
 
-    CONFIG_HOME = File.expand_path(ENV['XDG_CONFIG_HOME'] || '~/.config')
+    CONFIG_HOME = ENV['XDG_CONFIG_HOME'] || '~/.config'
     GLOBAL_CONFIG_PATH = File.join(CONFIG_HOME, 'image_optim.yml')
     LOCAL_CONFIG_PATH = './.image_optim.yml'
 
@@ -18,25 +18,32 @@ class ImageOptim
       # Read config at GLOBAL_CONFIG_PATH if it exists, warn if anything is
       # wrong
       def global
-        File.file?(GLOBAL_CONFIG_PATH) ? read(GLOBAL_CONFIG_PATH) : {}
+        read(GLOBAL_CONFIG_PATH)
       end
 
       # Read config at LOCAL_CONFIG_PATH if it exists, warn if anything is
       # wrong
       def local
-        File.file?(LOCAL_CONFIG_PATH) ? read(LOCAL_CONFIG_PATH) : {}
+        read(LOCAL_CONFIG_PATH)
       end
 
     private
 
       def read(path)
-        config = YAML.load_file(path)
+        begin
+          full_path = File.expand_path(path)
+        rescue ArgumentError => e
+          warn "Can't expand path #{path}: #{e}"
+          return {}
+        end
+        return {} unless File.file?(full_path)
+        config = YAML.load_file(full_path)
         unless config.is_a?(Hash)
           fail "excpected hash, got #{config.inspect}"
         end
         HashHelpers.deep_symbolise_keys(config)
       rescue => e
-        warn "exception when reading #{path}: #{e}"
+        warn "exception when reading #{full_path}: #{e}"
         {}
       end
     end
