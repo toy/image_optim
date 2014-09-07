@@ -100,17 +100,7 @@ describe ImageOptim::Config do
     end
 
     describe 'global' do
-      it 'should return empty hash for global config if it does not exists' do
-        expect(File).to receive(:file?).
-          with(Config::GLOBAL_CONFIG_PATH).and_return(false)
-        expect(Config).not_to receive(:read)
-
-        expect(Config.global).to eq({})
-      end
-
-      it 'should read global config if it exists' do
-        expect(File).to receive(:file?).
-          with(Config::GLOBAL_CONFIG_PATH).and_return(true)
+      it 'should call read with GLOBAL_CONFIG_PATH' do
         expect(Config).to receive(:read).
           with(Config::GLOBAL_CONFIG_PATH).and_return(:config => true)
 
@@ -119,17 +109,7 @@ describe ImageOptim::Config do
     end
 
     describe 'local' do
-      it 'should return empty hash for local config if it does not exists' do
-        expect(File).to receive(:file?).
-          with(Config::LOCAL_CONFIG_PATH).and_return(false)
-        expect(Config).not_to receive(:read)
-
-        expect(Config.local).to eq({})
-      end
-
-      it 'should read local config if it exists' do
-        expect(File).to receive(:file?).
-          with(Config::LOCAL_CONFIG_PATH).and_return(true)
+      it 'should call read with LOCAL_CONFIG_PATH' do
         expect(Config).to receive(:read).
           with(Config::LOCAL_CONFIG_PATH).and_return(:config => true)
 
@@ -138,30 +118,65 @@ describe ImageOptim::Config do
     end
 
     describe 'read' do
+      let(:path){ double(:path) }
+      let(:full_path){ double(:full_path) }
+
+      it 'should warn if expand path fails' do
+        expect(Config).to receive(:warn)
+        expect(File).to receive(:expand_path).
+          with(path).and_raise(ArgumentError)
+        expect(File).not_to receive(:file?)
+
+        expect(Config.send(:read, path)).to eq({})
+      end
+
+      it 'should return empty hash if path is not a file' do
+        expect(Config).not_to receive(:warn)
+        expect(File).to receive(:expand_path).
+          with(path).and_return(full_path)
+        expect(File).to receive(:file?).
+          with(full_path).and_return(false)
+
+        expect(Config.send(:read, path)).to eq({})
+      end
+
       it 'should return hash with deep symbolised keys from reader' do
         stringified = {'config' => {'this' => true}}
         symbolized = {:config => {:this => true}}
 
-        path = double(:path)
-        expect(YAML).to receive(:load_file).with(path).and_return(stringified)
+        expect(Config).not_to receive(:warn)
+        expect(File).to receive(:expand_path).
+          with(path).and_return(full_path)
+        expect(File).to receive(:file?).
+          with(full_path).and_return(true)
+        expect(YAML).to receive(:load_file).
+          with(full_path).and_return(stringified)
 
-        expect(Config.instance_eval{ read(path) }).to eq(symbolized)
+        expect(Config.send(:read, path)).to eq(symbolized)
       end
 
       it 'should warn and return an empty hash if reader returns non hash' do
-        path = double(:path)
-        expect(YAML).to receive(:load_file).with(path).and_return([:config])
         expect(Config).to receive(:warn)
+        expect(File).to receive(:expand_path).
+          with(path).and_return(full_path)
+        expect(File).to receive(:file?).
+          with(full_path).and_return(true)
+        expect(YAML).to receive(:load_file).
+          with(full_path).and_return([:config])
 
-        expect(Config.instance_eval{ read(path) }).to eq({})
+        expect(Config.send(:read, path)).to eq({})
       end
 
       it 'should warn and return an empty hash if reader raises exception' do
-        path = double(:path)
-        expect(YAML).to receive(:load_file).with(path).and_raise
         expect(Config).to receive(:warn)
+        expect(File).to receive(:expand_path).
+          with(path).and_return(full_path)
+        expect(File).to receive(:file?).
+          with(full_path).and_return(true)
+        expect(YAML).to receive(:load_file).
+          with(full_path).and_raise
 
-        expect(Config.instance_eval{ read(path) }).to eq({})
+        expect(Config.send(:read, path)).to eq({})
       end
     end
   end
