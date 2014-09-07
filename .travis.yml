@@ -16,17 +16,27 @@ script:
   - '! bundle show rubocop || bundle exec rubocop' # run rubocop only if it is bundled
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
+  - sudo apt-get install -qq gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
   - npm install -g svgo
   - mkdir ~/bin
-  # pngquant:
+
+  - echo 'Installing advancecomp(advpng):'
+  - ADVANCECOMP_VERSION=1.19
+  - wget http://downloads.sourceforge.net/project/advancemame/advancecomp/$ADVANCECOMP_VERSION/advancecomp-$ADVANCECOMP_VERSION.tar.gz
+  - tar -xzf advancecomp-$ADVANCECOMP_VERSION.tar.gz
+  - (cd advancecomp-$ADVANCECOMP_VERSION && ./configure && make)
+  - mv advancecomp-$ADVANCECOMP_VERSION/advpng ~/bin
+
+  - echo 'Installing pngquant:'
   - git clone git://github.com/pornel/pngquant.git
-  - pushd pngquant && git checkout $(git describe --tags --abbrev=0) && make && popd
+  - (cd pngquant && git checkout $(git describe --tags --abbrev=0) && make)
   - mv pngquant/pngquant ~/bin
-  # pngout:
-  - wget http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz
-  - tar -xzf pngout-*-linux.tar.gz
-  - mv pngout-*-linux/x86_64/pngout ~/bin
+
+  - echo 'Installing pngout:'
+  - PNGOUT_VERSION=20130221
+  - wget http://static.jonof.id.au/dl/kenutils/pngout-$PNGOUT_VERSION-linux.tar.gz
+  - tar -xzf pngout-$PNGOUT_VERSION-linux.tar.gz
+  - mv pngout-$PNGOUT_VERSION-linux/x86_64/pngout ~/bin
 env:
   - PATH=~/bin:$PATH
 matrix:
