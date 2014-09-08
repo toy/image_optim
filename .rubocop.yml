@@ -5,17 +5,20 @@ AllCops:
 Lint/EndAlignment:
   AlignWith: variable
 
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/MethodLength:
+  Max: 20
+
 Style/AccessModifierIndentation:
   EnforcedStyle: outdent
 
 Style/CaseIndentation:
   IndentWhenRelativeTo: end
-
-Style/ClassLength:
-  Max: 150
-
-Style/CyclomaticComplexity:
-  Max: 10
 
 Style/DotPosition:
   EnforcedStyle: trailing
@@ -34,9 +37,6 @@ Style/IfUnlessModifier:
 
 Style/IndentHash:
   EnforcedStyle: consistent
-
-Style/MethodLength:
-  Max: 20
 
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
