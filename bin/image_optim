@@ -23,7 +23,7 @@ option_parser = OptionParser.new do |op|
     |
   TEXT
 
-  op.on('-r', '-R', '--recursive', 'Recurively scan directories '\
+  op.on('-r', '-R', '--recursive', 'Recursively scan directories '\
       'for images') do |recursive|
     options[:recursive] = recursive
   end
