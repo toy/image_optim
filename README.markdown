@@ -287,7 +287,11 @@ Worker has no options
 
 ## Contributing
 
-If you would like to contribute - that is great and you are very welcome. Please check few notes about [CONTRIBUTING](CONTRIBUTING.markdown).
+If you would like to contribute - that is great and you are very welcome. Please check few notes in file [CONTRIBUTING.markdown](CONTRIBUTING.markdown).
+
+## ChangeLog
+
+In separate file [CHANGELOG.markdown](CHANGELOG.markdown).
 
 ## Copyright
 

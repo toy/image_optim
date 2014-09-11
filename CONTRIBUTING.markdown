@@ -2,6 +2,7 @@
 
 * Create topic/feature branch: `git checkout -b awesome-changes`
 * Commit…
+* Add entry to [ChangeLog](CHANGELOG.markdown)
 * Run tests: `bundle exec rspec`
 * Check code style: `bundle exec rubocop`
 * Push your branch: `git push origin awesome-changes`
