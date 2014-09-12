@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.16.0 (2014-09-12)
+
 * Wrote this ChangeLog [#62](https://github.com/toy/image_optim/issues/62) [@toy](https://github.com/toy)
 * Use rubocop ~> 0.26.0 [@toy](https://github.com/toy)
 * Install advancecomp from source in travis script [#61](https://github.com/toy/image_optim/issues/61) [@toy](https://github.com/toy)
