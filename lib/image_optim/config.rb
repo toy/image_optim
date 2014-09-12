@@ -39,6 +39,7 @@ class ImageOptim
 
     def initialize(options)
       config_paths = options.delete(:config_paths) || [GLOBAL_PATH, LOCAL_PATH]
+      config_paths = Array(config_paths)
 
       to_merge = config_paths.map{ |path| self.class.read_options(path) }
       to_merge << HashHelpers.deep_symbolise_keys(options)

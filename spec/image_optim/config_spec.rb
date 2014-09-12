@@ -140,6 +140,14 @@ describe ImageOptim::Config do
       expect(config.get!(:c)).to eq(3)
       config.assert_no_unused_options!
     end
+
+    it 'should convert config_paths to array' do
+      expect(Config).to receive(:read_options).
+        with('config/image_optim.yml').and_return({})
+
+      config = Config.new(:config_paths => 'config/image_optim.yml')
+      config.assert_no_unused_options!
+    end
   end
 
   describe 'class methods' do
