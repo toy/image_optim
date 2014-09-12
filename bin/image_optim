@@ -23,6 +23,13 @@ option_parser = OptionParser.new do |op|
     |
   TEXT
 
+  op.on('--config-paths PATH1,PATH2', Array, 'Config paths to use instead of '\
+      'default ones') do |paths|
+    options[:config_paths] = paths
+  end
+
+  op.separator nil
+
   op.on('-r', '-R', '--recursive', 'Recursively scan directories '\
       'for images') do |recursive|
     options[:recursive] = recursive

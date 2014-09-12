@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Changeable config paths [@toy](https://github.com/toy)
+
 ## v0.16.0 (2014-09-12)
 
 * Wrote this ChangeLog [#62](https://github.com/toy/image_optim/issues/62) [@toy](https://github.com/toy)
