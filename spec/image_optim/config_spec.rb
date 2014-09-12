@@ -85,7 +85,7 @@ describe ImageOptim::Config do
       expect(config.for_worker(Abc)).to eq(false)
     end
 
-    it 'should raise on unknown optino' do
+    it 'should raise on unknown option' do
       config = Config.new(:abc => 13)
       expect do
         config.for_worker(Abc)
