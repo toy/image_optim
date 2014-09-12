@@ -39,7 +39,7 @@ class ImageOptim
         return {} unless File.file?(full_path)
         config = YAML.load_file(full_path)
         unless config.is_a?(Hash)
-          fail "excpected hash, got #{config.inspect}"
+          fail "expected hash, got #{config.inspect}"
         end
         HashHelpers.deep_symbolise_keys(config)
       rescue => e
