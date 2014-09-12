@@ -225,6 +225,8 @@ Configuration in YAML format will be read and prepended to options from two path
 * `$XDG_CONFIG_HOME/image_optim.yml` (by default `~/.config/image_optim.yml`)
 * `.image_optim.yml` in current working directory
 
+Paths can be changed using `:config_paths` option and `--config-paths` argument.
+
 Example configuration:
 
 ```yaml
