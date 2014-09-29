@@ -6,7 +6,7 @@ require 'image_optim/bin_resolver/comparable_condition'
 class ImageOptim
   # Handles resolving binaries and checking versions
   #
-  # If there is an environment variable XXX_BIN when resolbing xxx, then a
+  # If there is an environment variable XXX_BIN when resolving xxx, then a
   # symlink to binary will be created in a temporary directory which will be
   # added to PATH
   class BinResolver
