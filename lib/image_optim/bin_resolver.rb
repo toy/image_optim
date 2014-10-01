@@ -27,7 +27,9 @@ class ImageOptim
       end
     end
 
+    # Directory for symlinks to bins if XXX_BIN was used
     attr_reader :dir
+
     def initialize(image_optim)
       @image_optim = image_optim
       @bins = {}
@@ -52,8 +54,10 @@ class ImageOptim
       end
     end
 
+    # Path to vendor at root of image_optim
     VENDOR_PATH = File.expand_path('../../../vendor', __FILE__)
 
+    # Prepand `dir` and append `VENDOR_PATH` to `PATH` from environment
     def env_path
       [dir, ENV['PATH'], VENDOR_PATH].compact.join(':')
     end
@@ -73,6 +77,7 @@ class ImageOptim
 
   private
 
+    # Double-checked locking
     def resolving(name)
       return if @bins.include?(name)
       @lock.synchronize do
@@ -143,6 +148,7 @@ class ImageOptim
       end
     end
 
+    # Get output of command with path set to `env_path`
     def capture_output(command)
       `env PATH=#{env_path.shellescape} #{command}`
     end
