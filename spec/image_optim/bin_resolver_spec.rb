@@ -10,6 +10,8 @@ ensure
 end
 
 describe ImageOptim::BinResolver do
+  Bin = ImageOptim::BinResolver::Bin
+
   let(:image_optim){ double(:image_optim, :verbose => false) }
   let(:resolver){ ImageOptim::BinResolver.new(image_optim) }
 
@@ -153,7 +155,7 @@ describe ImageOptim::BinResolver do
       5.times do
         expect do
           resolver.resolve!(:pngcrush)
-        end.to raise_error ImageOptim::BinResolver::BadBinVersion
+        end.to raise_error Bin::BadVersion
       end
       expect(resolver.env_path).to eq([
         ENV['PATH'],

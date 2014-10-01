@@ -12,10 +12,11 @@ class ImageOptim
   # added to PATH
   class BinResolver
     class BinNotFound < Error; end
-    class BadBinVersion < Error; end
 
     # Holds name and version of an executable
     class Bin
+      class BadVersion < Error; end
+
       attr_reader :name, :version
       def initialize(name, version)
         @name = name
@@ -32,7 +33,7 @@ class ImageOptim
         when :pngcrush
           case version
           when c = is.between?('1.7.60', '1.7.65')
-            fail BadBinVersion, "`#{self}` (#{c}) is known to produce broken pngs"
+            fail BadVersion, "`#{self}` (#{c}) is known to produce broken pngs"
           end
         when :advpng
           case version
@@ -42,7 +43,7 @@ class ImageOptim
         when :pngquant
           case version
           when c = is < '2.0'
-            fail BadBinVersion, "`#{self}` (#{c}) is not supported"
+            fail BadVersion, "`#{self}` (#{c}) is not supported"
           when c = is < '2.1'
             warn "Note that `#{self}` (#{c}) may be lossy even with quality `100-`"
           end
