@@ -1,5 +1,6 @@
 require 'thread'
 require 'fspath'
+require 'image_optim/bin_resolver/error'
 require 'image_optim/bin_resolver/simple_version'
 require 'image_optim/bin_resolver/comparable_condition'
 
@@ -10,7 +11,6 @@ class ImageOptim
   # symlink to binary will be created in a temporary directory which will be
   # added to PATH
   class BinResolver
-    class Error < StandardError; end
     class BinNotFound < Error; end
     class BadBinVersion < Error; end
 
