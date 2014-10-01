@@ -25,6 +25,29 @@ class ImageOptim
       def to_s
         "#{@name} #{@version || '?'}"
       end
+
+      def check!
+        is = ComparableCondition.is
+        case name
+        when :pngcrush
+          case version
+          when c = is.between?('1.7.60', '1.7.65')
+            fail BadBinVersion, "`#{self}` (#{c}) is known to produce broken pngs"
+          end
+        when :advpng
+          case version
+          when c = is < '1.17'
+            warn "Note that `#{self}` (#{c}) does not use zopfli"
+          end
+        when :pngquant
+          case version
+          when c = is < '2.0'
+            fail BadBinVersion, "`#{self}` (#{c}) is not supported"
+          when c = is < '2.1'
+            warn "Note that `#{self}` (#{c}) may be lossy even with quality `100-`"
+          end
+        end
+      end
     end
 
     # Directory for symlinks to bins if XXX_BIN was used
@@ -48,7 +71,7 @@ class ImageOptim
       end
 
       if @bins[name]
-        check!(@bins[name])
+        @bins[name].check!
       else
         fail BinNotFound, "`#{name}` not found"
       end
@@ -122,29 +145,6 @@ class ImageOptim
         capture_output("command -v #{name}")['jpegrescan']
       else
         fail "getting `#{name}` version is not defined"
-      end
-    end
-
-    def check!(bin)
-      is = ComparableCondition.is
-      case bin.name
-      when :pngcrush
-        case bin.version
-        when c = is.between?('1.7.60', '1.7.65')
-          fail BadBinVersion, "`#{bin}` (#{c}) is known to produce broken pngs"
-        end
-      when :advpng
-        case bin.version
-        when c = is < '1.17'
-          warn "Note that `#{bin}` (#{c}) does not use zopfli"
-        end
-      when :pngquant
-        case bin.version
-        when c = is < '2.0'
-          fail BadBinVersion, "`#{bin}` (#{c}) is not supported"
-        when c = is < '2.1'
-          warn "Note that `#{bin}` (#{c}) may be lossy even with quality `100-`"
-        end
       end
     end
 
