@@ -10,10 +10,11 @@ ensure
 end
 
 describe ImageOptim::BinResolver do
-  Bin = ImageOptim::BinResolver::Bin
+  BinResolver = ImageOptim::BinResolver
+  Bin = BinResolver::Bin
 
   let(:image_optim){ double(:image_optim, :verbose => false) }
-  let(:resolver){ ImageOptim::BinResolver.new(image_optim) }
+  let(:resolver){ BinResolver.new(image_optim) }
 
   it 'should resolve bin in path' do
     with_env 'LS_BIN', nil do
@@ -26,7 +27,7 @@ describe ImageOptim::BinResolver do
       end
       expect(resolver.env_path).to eq([
         ENV['PATH'],
-        ImageOptim::BinResolver::VENDOR_PATH,
+        BinResolver::VENDOR_PATH,
       ].join(':'))
     end
   end
@@ -42,7 +43,7 @@ describe ImageOptim::BinResolver do
       end
       expect(resolver.env_path).to eq([
         ENV['PATH'],
-        ImageOptim::BinResolver::VENDOR_PATH,
+        BinResolver::VENDOR_PATH,
       ].join(':'))
     end
   end
@@ -74,7 +75,7 @@ describe ImageOptim::BinResolver do
       expect(resolver.env_path).to eq([
         tmpdir,
         ENV['PATH'],
-        ImageOptim::BinResolver::VENDOR_PATH,
+        BinResolver::VENDOR_PATH,
       ].join(':'))
 
       expect(FileUtils).to receive(:remove_entry_secure).with(tmpdir)
@@ -89,9 +90,9 @@ describe ImageOptim::BinResolver do
       5.times do
         expect do
           resolver.resolve!(:jpegtran)
-        end.to raise_error ImageOptim::BinResolver::BinNotFound
+        end.to raise_error BinResolver::BinNotFound
       end
-      expect(resolver.env_path).to eq(ImageOptim::BinResolver::VENDOR_PATH)
+      expect(resolver.env_path).to eq(BinResolver::VENDOR_PATH)
     end
   end
 
@@ -118,12 +119,12 @@ describe ImageOptim::BinResolver do
       5.times do
         expect do
           resolver.resolve!(:should_not_exist)
-        end.to raise_error ImageOptim::BinResolver::BinNotFound
+        end.to raise_error BinResolver::BinNotFound
       end
       expect(resolver.env_path).to eq([
         tmpdir,
         ENV['PATH'],
-        ImageOptim::BinResolver::VENDOR_PATH,
+        BinResolver::VENDOR_PATH,
       ].join(':'))
 
       expect(FileUtils).to receive(:remove_entry_secure).with(tmpdir)
@@ -159,7 +160,7 @@ describe ImageOptim::BinResolver do
       end
       expect(resolver.env_path).to eq([
         ENV['PATH'],
-        ImageOptim::BinResolver::VENDOR_PATH,
+        BinResolver::VENDOR_PATH,
       ].join(':'))
     end
   end
