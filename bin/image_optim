@@ -111,12 +111,12 @@ option_parser = OptionParser.new do |op|
     options[:verbose] = true
   end
 
-  op.on_tail('-h', '--help', 'Show full help') do
+  op.on_tail('-h', '--help', 'Show help and exit') do
     puts op.help
     exit
   end
 
-  op.on_tail('--version', 'Show version') do
+  op.on_tail('--version', 'Show version and exit') do
     puts ImageOptim.version
     exit
   end
