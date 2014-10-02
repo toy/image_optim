@@ -101,7 +101,7 @@ class ImageOptim
 
     # Return full path to bin or null
     def full_path(name)
-      path = capture_output("command -v #{name} 2> /dev/null").strip
+      path = capture_output("sh -c 'command -v #{name}' 2> /dev/null").strip
       path unless path.empty?
     end
 
