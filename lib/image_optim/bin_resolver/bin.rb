@@ -16,7 +16,7 @@ class ImageOptim
       end
 
       def to_s
-        "#{@name} #{@version || '?'} at #{@path}"
+        "#{name} #{version || '?'} at #{path}"
       end
 
       # Fail or warn if version is known to misbehave depending on severity
