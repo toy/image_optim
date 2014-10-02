@@ -13,7 +13,7 @@ class ImageOptim
   class BinResolver
     class BinNotFound < Error; end
 
-    # Holds name and version of an executable
+    # Holds bin name and path, gets version
     class Bin
       class BadVersion < Error; end
 
