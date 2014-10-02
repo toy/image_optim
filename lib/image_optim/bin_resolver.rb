@@ -96,7 +96,10 @@ class ImageOptim
       name = name.to_sym
 
       resolving(name) do
-        bin = resolve_bin(name)
+        symlink_custom_bin!(name)
+
+        path = full_path(name)
+        bin = Bin.new(name, path) if path
 
         if bin && @image_optim.verbose
           $stderr << "Resolved #{bin}\n"
@@ -143,7 +146,7 @@ class ImageOptim
       end
     end
 
-    def resolve_bin(name)
+    def symlink_custom_bin!(name)
       if (path = ENV["#{name}_bin".upcase])
         unless @dir
           @dir = FSPath.temp_dir
@@ -152,8 +155,6 @@ class ImageOptim
         symlink = @dir / name
         symlink.make_symlink(File.expand_path(path))
       end
-      path = full_path(name)
-      Bin.new(name, path) if path
     end
 
     # Return full path to bin or null
