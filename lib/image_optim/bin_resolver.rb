@@ -148,19 +148,19 @@ class ImageOptim
 
     def symlink_custom_bin!(name)
       env_name = "#{name}_bin".upcase
-      if (path = ENV[env_name])
-        path = File.expand_path(path)
-        desc = "`#{path}` specified in #{env_name}"
-        fail "#{desc} doesn\'t exist" unless File.exist?(path)
-        fail "#{desc} is not a file" unless File.file?(path)
-        fail "#{desc} is not executable" unless File.executable?(path)
-        unless @dir
-          @dir = FSPath.temp_dir
-          at_exit{ FileUtils.remove_entry_secure @dir }
-        end
-        symlink = @dir / name
-        symlink.make_symlink(path)
+      path = ENV[env_name]
+      return unless path
+      path = File.expand_path(path)
+      desc = "`#{path}` specified in #{env_name}"
+      fail "#{desc} doesn\'t exist" unless File.exist?(path)
+      fail "#{desc} is not a file" unless File.file?(path)
+      fail "#{desc} is not executable" unless File.executable?(path)
+      unless @dir
+        @dir = FSPath.temp_dir
+        at_exit{ FileUtils.remove_entry_secure @dir }
       end
+      symlink = @dir / name
+      symlink.make_symlink(path)
     end
 
     # Return full path to bin or null
