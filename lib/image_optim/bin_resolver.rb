@@ -28,6 +28,7 @@ class ImageOptim
         "#{@name} #{@version || '?'} at #{@path}"
       end
 
+      # Fail or warn if version is known to misbehave depending on severity
       def check!
         fail BadVersion, "didn't get version of `#{self}`" unless version
 
@@ -55,11 +56,13 @@ class ImageOptim
 
     private
 
+      # Wrap version_string with SimpleVersion
       def detect_version
         str = version_string
         str && SimpleVersion.new(str)
       end
 
+      # Getting version of bin, will fail for an unknown name
       def version_string
         case name
         when :advpng, :gifsicle, :jpegoptim, :optipng, :pngquant
@@ -94,6 +97,9 @@ class ImageOptim
       @lock = Mutex.new
     end
 
+    # Binary resolving: create symlink if there is XXX_BIN environment variable,
+    # build Bin with full path using `command -v`, check binary version
+    # http://pubs.opengroup.org/onlinepubs/9699919799/utilities/command.html
     def resolve!(name)
       name = name.to_sym
 
@@ -148,6 +154,8 @@ class ImageOptim
       end
     end
 
+    # Check path in XXX_BIN to exist, be a file and be executable and symlink to
+    # dir as name
     def symlink_custom_bin!(name)
       env_name = "#{name}_bin".upcase
       path = ENV[env_name]
