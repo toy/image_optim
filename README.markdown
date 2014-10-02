@@ -220,10 +220,12 @@ Image optimization can be time consuming, so depending on your deployment proces
 
 ## Configuration
 
-Configuration in YAML format will be read and prepanded to options from two paths:
+Configuration in YAML format will be read and prepended to options from two paths:
 
 * `$XDG_CONFIG_HOME/image_optim.yml` (by default `~/.config/image_optim.yml`)
 * `.image_optim.yml` in current working directory
+
+Paths can be changed using `:config_paths` option and `--config-paths` argument.
 
 Example configuration:
 

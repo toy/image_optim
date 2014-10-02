@@ -18,10 +18,17 @@ option_parser = OptionParser.new do |op|
     |  #{op.program_name} [options] image_path …
     |
     |Configuration will be read and prepanded to options from two paths:
-    |  #{ImageOptim::Config::GLOBAL_CONFIG_PATH}
-    |  #{ImageOptim::Config::LOCAL_CONFIG_PATH}
+    |  #{ImageOptim::Config::GLOBAL_PATH}
+    |  #{ImageOptim::Config::LOCAL_PATH}
     |
   TEXT
+
+  op.on('--config-paths PATH1,PATH2', Array, 'Config paths to use instead of '\
+      'default ones') do |paths|
+    options[:config_paths] = paths
+  end
+
+  op.separator nil
 
   op.on('-r', '-R', '--recursive', 'Recursively scan directories '\
       'for images') do |recursive|

@@ -10,26 +10,15 @@ class ImageOptim
   class Config
     include OptionHelpers
 
-    CONFIG_HOME = ENV['XDG_CONFIG_HOME'] || '~/.config'
-    GLOBAL_CONFIG_PATH = File.join(CONFIG_HOME, 'image_optim.yml')
-    LOCAL_CONFIG_PATH = './.image_optim.yml'
+    GLOBAL_PATH = begin
+      File.join(ENV['XDG_CONFIG_HOME'] || '~/.config', 'image_optim.yml')
+    end
+    LOCAL_PATH = './.image_optim.yml'
 
     class << self
-      # Read config at GLOBAL_CONFIG_PATH if it exists, warn if anything is
-      # wrong
-      def global
-        read(GLOBAL_CONFIG_PATH)
-      end
-
-      # Read config at LOCAL_CONFIG_PATH if it exists, warn if anything is
-      # wrong
-      def local
-        read(LOCAL_CONFIG_PATH)
-      end
-
-    private
-
-      def read(path)
+      # Read options at path: expand path (warn on failure), return {} if file
+      # does not exist, read yaml, check if it is a Hash, deep symbolise keys
+      def read_options(path)
         begin
           full_path = File.expand_path(path)
         rescue ArgumentError => e
@@ -49,11 +38,13 @@ class ImageOptim
     end
 
     def initialize(options)
-      @options = [
-        Config.global,
-        Config.local,
-        HashHelpers.deep_symbolise_keys(options),
-      ].reduce do |memo, hash|
+      config_paths = options.delete(:config_paths) || [GLOBAL_PATH, LOCAL_PATH]
+      config_paths = Array(config_paths)
+
+      to_merge = config_paths.map{ |path| self.class.read_options(path) }
+      to_merge << HashHelpers.deep_symbolise_keys(options)
+
+      @options = to_merge.reduce do |memo, hash|
         HashHelpers.deep_merge(memo, hash)
       end
       @used = Set.new
