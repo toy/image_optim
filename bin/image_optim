@@ -120,6 +120,11 @@ option_parser = OptionParser.new do |op|
     puts ImageOptim.version
     exit
   end
+
+  op.on_tail('--info', 'Show environment info and exit') do
+    options[:verbose] = true
+    options[:only_info] = true
+  end
 end
 
 begin
@@ -132,9 +137,12 @@ begin
   if options[:verbose]
     $stderr.puts ImageOptim.full_version
   end
-  abort 'specify paths to optimize' if args.empty?
-  unless ImageOptim::Runner.run!(args, options)
-    abort
+
+  only_info = options.delete(:only_info)
+  runner = ImageOptim::Runner.new(options)
+  unless only_info
+    abort 'specify paths to optimize' if args.empty?
+    abort unless runner.run!(args)
   end
 rescue OptionParser::ParseError => e
   abort "#{e}\n\n#{option_parser.help}"

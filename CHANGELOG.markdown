@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* `image_optim --info` to perform initialization with verbose output without running optimizations [@toy](https://github.com/toy)
+
 ## v0.16.0 (2014-09-12)
 
 * Wrote this ChangeLog [#62](https://github.com/toy/image_optim/issues/62) [@toy](https://github.com/toy)
