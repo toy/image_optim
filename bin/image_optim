@@ -125,7 +125,7 @@ end
 begin
   args = ARGV.dup
 
-  # assume -v to be request to print version if it is the only argument
+  # assume -v to be a request to print version if it is the only argument
   args = %w[--version] if args == %w[-v]
 
   option_parser.parse!(args)
