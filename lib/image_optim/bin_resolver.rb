@@ -17,9 +17,10 @@ class ImageOptim
     class Bin
       class BadVersion < Error; end
 
-      attr_reader :name, :version
-      def initialize(name, version)
+      attr_reader :name, :path, :version
+      def initialize(name, path, version)
         @name = name
+        @path = path
         @version = version && SimpleVersion.new(version)
       end
 
@@ -120,11 +121,14 @@ class ImageOptim
         symlink = @dir / name
         symlink.make_symlink(File.expand_path(path))
       end
-      Bin.new(name, version(name)) if accessible?(name)
+      path = full_path(name)
+      Bin.new(name, path, version(name)) if path
     end
 
-    def accessible?(name)
-      !capture_output("command -v #{name} 2> /dev/null").strip.empty?
+    # Return full path to bin or null
+    def full_path(name)
+      path = capture_output("command -v #{name} 2> /dev/null").strip
+      path unless path.empty?
     end
 
     def version(name)
