@@ -44,8 +44,7 @@ class ImageOptim
       end
     end
 
-    def initialize(args, options)
-      fail 'specify paths to optimize' if args.empty?
+    def initialize(options)
       options = HashHelpers.deep_symbolise_keys(options)
       @recursive = options.delete(:recursive)
       @exclude_dir_globs, @exclude_file_globs = %w[dir file].map do |type|
@@ -53,14 +52,14 @@ class ImageOptim
         GlobHelpers.expand_braces(glob)
       end
       @image_optim = ImageOptim.new(options)
-      @to_optimize = find_to_optimize(args)
     end
 
-    def run!
-      unless @to_optimize.empty?
+    def run!(args)
+      to_optimize = find_to_optimize(args)
+      unless to_optimize.empty?
         results = Results.new
 
-        optimize_images!.each do |original, optimized|
+        optimize_images!(to_optimize).each do |original, optimized|
           results.add(original, optimized)
         end
 
@@ -70,15 +69,11 @@ class ImageOptim
       !@warnings
     end
 
-    def self.run!(args, options)
-      new(args, options).run!
-    end
-
   private
 
-    def optimize_images!(&block)
+    def optimize_images!(to_optimize, &block)
       @image_optim.
-        optimize_images!(@to_optimize.with_progress('optimizing'), &block)
+        optimize_images!(to_optimize.with_progress('optimizing'), &block)
     end
 
     def find_to_optimize(paths)
