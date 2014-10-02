@@ -87,6 +87,9 @@ class ImageOptim
       fail "#{desc} doesn\'t exist" unless File.exist?(path)
       fail "#{desc} is not a file" unless File.file?(path)
       fail "#{desc} is not executable" unless File.executable?(path)
+      if @image_optim.verbose
+        $stderr << "Custom path for #{name} specified in #{env_name}: #{path}\n"
+      end
       unless @dir
         @dir = FSPath.temp_dir
         at_exit{ FileUtils.remove_entry_secure @dir }
