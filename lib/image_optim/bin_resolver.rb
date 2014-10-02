@@ -28,9 +28,7 @@ class ImageOptim
       name = name.to_sym
 
       resolving(name) do
-        symlink_custom_bin!(name)
-
-        path = full_path(name)
+        path = symlink_custom_bin!(name) || full_path(name)
         bin = Bin.new(name, path) if path
 
         if bin && @image_optim.verbose
@@ -95,6 +93,7 @@ class ImageOptim
       end
       symlink = @dir / name
       symlink.make_symlink(path)
+      path
     end
 
     # Return full path to bin or null
