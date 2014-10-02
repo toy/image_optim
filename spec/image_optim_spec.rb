@@ -76,17 +76,11 @@ describe ImageOptim do
   end
 
   describe 'worker' do
-    image_optim = ImageOptim.new
-
     base_options = Hash[ImageOptim::Worker.klasses.map do |klass|
       [klass.bin_sym, false]
     end]
 
-    real_workers = ImageOptim::Worker.klasses.reject do |klass|
-      klass.new(image_optim, {}).image_formats.empty?
-    end
-
-    real_workers.each do |worker_klass|
+    ImageOptim::Worker.klasses.each do |worker_klass|
       describe worker_klass.bin_sym do
         it 'should optimize at least one test image' do
           options = base_options.merge(worker_klass.bin_sym => true)
