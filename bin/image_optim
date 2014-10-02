@@ -132,6 +132,7 @@ begin
   if options[:verbose]
     $stderr.puts ImageOptim.full_version
   end
+  abort 'specify paths to optimize' if args.empty?
   unless ImageOptim::Runner.run!(args, options)
     abort
   end

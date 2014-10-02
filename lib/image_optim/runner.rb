@@ -45,7 +45,6 @@ class ImageOptim
     end
 
     def initialize(args, options)
-      fail 'specify paths to optimize' if args.empty?
       options = HashHelpers.deep_symbolise_keys(options)
       @recursive = options.delete(:recursive)
       @exclude_dir_globs, @exclude_file_globs = %w[dir file].map do |type|
