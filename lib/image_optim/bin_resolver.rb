@@ -25,7 +25,7 @@ class ImageOptim
       end
 
       def to_s
-        "#{@name} #{@version || '?'}"
+        "#{@name} #{@version || '?'} at #{@path}"
       end
 
       def check!
