@@ -18,10 +18,10 @@ class ImageOptim
       class BadVersion < Error; end
 
       attr_reader :name, :path, :version
-      def initialize(name, path, version)
+      def initialize(name, path)
         @name = name.to_sym
         @path = path
-        @version = version && SimpleVersion.new(version)
+        @version = detect_version
       end
 
       def to_s
@@ -48,6 +48,37 @@ class ImageOptim
           when c = is < '2.1'
             warn "Note that `#{self}` (#{c}) may be lossy even with quality `100-`"
           end
+        end
+      end
+
+    private
+
+      def detect_version
+        str = version_string
+        str && SimpleVersion.new(str)
+      end
+
+      def version_string
+        case name
+        when :advpng, :gifsicle, :jpegoptim, :optipng, :pngquant
+          `#{path.shellescape} --version 2> /dev/null`[/\d+(\.\d+){1,}/]
+        when :svgo
+          `#{path.shellescape} --version 2>&1`[/\d+(\.\d+){1,}/]
+        when :jhead
+          `#{path.shellescape} -V 2> /dev/null`[/\d+(\.\d+){1,}/]
+        when :jpegtran
+          `#{path.shellescape} -v - 2>&1`[/version (\d+\S*)/, 1]
+        when :pngcrush
+          `#{path.shellescape} -version 2>&1`[/\d+(\.\d+){1,}/]
+        when :pngout
+          date_regexp = /[A-Z][a-z]{2} (?: |\d)\d \d{4}/
+          date_str = `#{path.shellescape} 2>&1`[date_regexp]
+          Date.parse(date_str).strftime('%Y%m%d') if date_str
+        when :jpegrescan
+          # jpegrescan has no version so just check presence
+          path && '-'
+        else
+          fail "getting `#{name}` version is not defined"
         end
       end
     end
@@ -122,37 +153,13 @@ class ImageOptim
         symlink.make_symlink(File.expand_path(path))
       end
       path = full_path(name)
-      Bin.new(name, path, version(name)) if path
+      Bin.new(name, path) if path
     end
 
     # Return full path to bin or null
     def full_path(name)
       path = capture_output("command -v #{name} 2> /dev/null").strip
       path unless path.empty?
-    end
-
-    def version(name)
-      case name.to_sym
-      when :advpng, :gifsicle, :jpegoptim, :optipng, :pngquant
-        capture_output("#{name} --version 2> /dev/null")[/\d+(\.\d+){1,}/]
-      when :svgo
-        capture_output("#{name} --version 2>&1")[/\d+(\.\d+){1,}/]
-      when :jhead
-        capture_output("#{name} -V 2> /dev/null")[/\d+(\.\d+){1,}/]
-      when :jpegtran
-        capture_output("#{name} -v - 2>&1")[/version (\d+\S*)/, 1]
-      when :pngcrush
-        capture_output("#{name} -version 2>&1")[/\d+(\.\d+){1,}/]
-      when :pngout
-        date_regexp = /[A-Z][a-z]{2} (?: |\d)\d \d{4}/
-        date_str = capture_output("#{name} 2>&1")[date_regexp]
-        Date.parse(date_str).strftime('%Y%m%d') if date_str
-      when :jpegrescan
-        # jpegrescan has no version so just check presence
-        capture_output("command -v #{name}")['jpegrescan']
-      else
-        fail "getting `#{name}` version is not defined"
-      end
     end
 
     # Get output of command with path set to `env_path`
