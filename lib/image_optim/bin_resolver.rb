@@ -1,8 +1,7 @@
 require 'thread'
 require 'fspath'
 require 'image_optim/bin_resolver/error'
-require 'image_optim/bin_resolver/simple_version'
-require 'image_optim/bin_resolver/comparable_condition'
+require 'image_optim/bin_resolver/bin'
 
 class ImageOptim
   # Handles resolving binaries and checking versions
@@ -13,44 +12,6 @@ class ImageOptim
   class BinResolver
     class BinNotFound < Error; end
 
-    # Holds name and version of an executable
-    class Bin
-      class BadVersion < Error; end
-
-      attr_reader :name, :version
-      def initialize(name, version)
-        @name = name
-        @version = version && SimpleVersion.new(version)
-      end
-
-      def to_s
-        "#{@name} #{@version || '?'}"
-      end
-
-      def check!
-        is = ComparableCondition.is
-        case name
-        when :pngcrush
-          case version
-          when c = is.between?('1.7.60', '1.7.65')
-            fail BadVersion, "`#{self}` (#{c}) is known to produce broken pngs"
-          end
-        when :advpng
-          case version
-          when c = is < '1.17'
-            warn "Note that `#{self}` (#{c}) does not use zopfli"
-          end
-        when :pngquant
-          case version
-          when c = is < '2.0'
-            fail BadVersion, "`#{self}` (#{c}) is not supported"
-          when c = is < '2.1'
-            warn "Note that `#{self}` (#{c}) may be lossy even with quality `100-`"
-          end
-        end
-      end
-    end
-
     # Directory for symlinks to bins if XXX_BIN was used
     attr_reader :dir
 
@@ -60,14 +21,20 @@ class ImageOptim
       @lock = Mutex.new
     end
 
+    # Binary resolving: create symlink if there is XXX_BIN environment variable,
+    # build Bin with full path using `command -v`, check binary version
+    # http://pubs.opengroup.org/onlinepubs/9699919799/utilities/command.html
     def resolve!(name)
       name = name.to_sym
 
       resolving(name) do
-        bin = Bin.new(name, version(name)) if resolve?(name)
+        path = symlink_custom_bin!(name) || full_path(name)
+        bin = Bin.new(name, path) if path
+
         if bin && @image_optim.verbose
           $stderr << "Resolved #{bin}\n"
         end
+
         @bins[name] = bin
       end
 
@@ -109,44 +76,30 @@ class ImageOptim
       end
     end
 
-    def resolve?(name)
-      if (path = ENV["#{name}_bin".upcase])
-        unless @dir
-          @dir = FSPath.temp_dir
-          at_exit{ FileUtils.remove_entry_secure @dir }
-        end
-        symlink = @dir / name
-        symlink.make_symlink(File.expand_path(path))
+    # Check path in XXX_BIN to exist, be a file and be executable and symlink to
+    # dir as name
+    def symlink_custom_bin!(name)
+      env_name = "#{name}_bin".upcase
+      path = ENV[env_name]
+      return unless path
+      path = File.expand_path(path)
+      desc = "`#{path}` specified in #{env_name}"
+      fail "#{desc} doesn\'t exist" unless File.exist?(path)
+      fail "#{desc} is not a file" unless File.file?(path)
+      fail "#{desc} is not executable" unless File.executable?(path)
+      unless @dir
+        @dir = FSPath.temp_dir
+        at_exit{ FileUtils.remove_entry_secure @dir }
       end
-      accessible?(name)
+      symlink = @dir / name
+      symlink.make_symlink(path)
+      path
     end
 
-    def accessible?(name)
-      !capture_output("command -v #{name} 2> /dev/null").strip.empty?
-    end
-
-    def version(name)
-      case name.to_sym
-      when :advpng, :gifsicle, :jpegoptim, :optipng, :pngquant
-        capture_output("#{name} --version 2> /dev/null")[/\d+(\.\d+){1,}/]
-      when :svgo
-        capture_output("#{name} --version 2>&1")[/\d+(\.\d+){1,}/]
-      when :jhead
-        capture_output("#{name} -V 2> /dev/null")[/\d+(\.\d+){1,}/]
-      when :jpegtran
-        capture_output("#{name} -v - 2>&1")[/version (\d+\S*)/, 1]
-      when :pngcrush
-        capture_output("#{name} -version 2>&1")[/\d+(\.\d+){1,}/]
-      when :pngout
-        date_regexp = /[A-Z][a-z]{2} (?: |\d)\d \d{4}/
-        date_str = capture_output("#{name} 2>&1")[date_regexp]
-        Date.parse(date_str).strftime('%Y%m%d') if date_str
-      when :jpegrescan
-        # jpegrescan has no version so just check presence
-        capture_output("command -v #{name}")['jpegrescan']
-      else
-        fail "getting `#{name}` version is not defined"
-      end
+    # Return full path to bin or null
+    def full_path(name)
+      path = capture_output("command -v #{name} 2> /dev/null").strip
+      path unless path.empty?
     end
 
     # Get output of command with path set to `env_path`
