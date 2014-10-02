@@ -23,7 +23,7 @@ class ImageOptim
       end
 
       def to_s
-        "#{@name} #{@version || '-'}"
+        "#{@name} #{@version || '?'}"
       end
     end
 
