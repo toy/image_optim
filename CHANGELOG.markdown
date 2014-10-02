@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Fail if version of bin can't be detected [#39](https://github.com/toy/image_optim/issues/39) [@toy](https://github.com/toy)
 * Check path in `XXX_BIN` to exist, be a file and be executable [@toy](https://github.com/toy)
 
 ## v0.16.0 (2014-09-12)

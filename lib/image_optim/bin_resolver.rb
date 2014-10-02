@@ -29,6 +29,8 @@ class ImageOptim
       end
 
       def check!
+        fail BadVersion, "didn't get version of `#{self}`" unless version
+
         is = ComparableCondition.is
         case name
         when :pngcrush
