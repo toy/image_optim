@@ -69,10 +69,6 @@ class ImageOptim
       !@warnings
     end
 
-    def self.run!(args, options)
-      new(options).run!(args)
-    end
-
   private
 
     def optimize_images!(to_optimize, &block)
