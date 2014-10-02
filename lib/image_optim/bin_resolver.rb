@@ -122,7 +122,7 @@ class ImageOptim
     end
 
     def accessible?(name)
-      !!version(name)
+      !capture_output("command -v #{name} 2> /dev/null").strip.empty?
     end
 
     def version(name)
