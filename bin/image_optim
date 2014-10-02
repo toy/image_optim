@@ -107,8 +107,8 @@ option_parser = OptionParser.new do |op|
   op.separator nil
   op.separator '  Common options:'
 
-  op.on('-v', '--verbose', 'Verbose output') do |verbose|
-    options[:verbose] = verbose
+  op.on('-v', '--verbose', 'Verbose output') do
+    options[:verbose] = true
   end
 
   op.on_tail('-h', '--help', 'Show full help') do
