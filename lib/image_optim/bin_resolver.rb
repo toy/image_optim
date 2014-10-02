@@ -42,14 +42,14 @@ class ImageOptim
         when :advpng
           case version
           when c = is < '1.17'
-            warn "Note that `#{self}` (#{c}) does not use zopfli"
+            warn "WARN: `#{self}` (#{c}) does not use zopfli"
           end
         when :pngquant
           case version
           when c = is < '2.0'
             fail BadVersion, "`#{self}` (#{c}) is not supported"
           when c = is < '2.1'
-            warn "Note that `#{self}` (#{c}) may be lossy even with quality `100-`"
+            warn "WARN: `#{self}` (#{c}) may be lossy even with quality `100-`"
           end
         end
       end
