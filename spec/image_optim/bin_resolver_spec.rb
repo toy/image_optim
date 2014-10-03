@@ -152,13 +152,18 @@ describe ImageOptim::BinResolver do
       end
       bin = double
       expect(Bin).to receive(:new).once.with(:ls, '/bin/ls').and_return(bin)
-      expect(bin).to receive(:check!).exactly(10).times
+
+      check_count = 0
+      mutex = Mutex.new
+      allow(bin).to receive(:check!){ mutex.synchronize{ check_count += 1 } }
 
       10.times.map do
         Thread.new do
           resolver.resolve!(:ls)
         end
       end.each(&:join)
+
+      expect(check_count).to eq(10)
     end
   end
 
