@@ -1,5 +1,6 @@
 # encoding: UTF-8
 
+require 'image_optim/bin_resolver/error'
 require 'image_optim/configuration_error'
 require 'image_optim/option_definition'
 require 'image_optim/option_helpers'

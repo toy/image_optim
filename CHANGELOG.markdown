@@ -2,6 +2,9 @@
 
 ## unreleased
 
+* Use pure ruby detection of bin path [@toy](https://github.com/toy)
+* Fail if version of bin can't be detected [#39](https://github.com/toy/image_optim/issues/39) [@toy](https://github.com/toy)
+* Check path in `XXX_BIN` to exist, be a file and be executable [@toy](https://github.com/toy)
 * `image_optim --info` to perform initialization with verbose output without running optimizations [@toy](https://github.com/toy)
 * Changeable config paths [@toy](https://github.com/toy)
 
