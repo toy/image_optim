@@ -17,6 +17,36 @@ describe ImageOptim::BinResolver do
   let(:image_optim){ double(:image_optim, :verbose => false) }
   let(:resolver){ BinResolver.new(image_optim) }
 
+  describe :full_path do
+    def full_path(name)
+      resolver.instance_eval{ full_path(name) }
+    end
+
+    def command_v(name)
+      path = `sh -c 'command -v #{name}' 2> /dev/null`.strip
+      path unless path.empty?
+    end
+
+    it 'should find binary in path' do
+      with_env 'PATH', 'bin' do
+        expect(full_path('image_optim')).
+          to eq(File.expand_path('bin/image_optim'))
+      end
+    end
+
+    it 'should return nil on failure' do
+      with_env 'PATH', 'lib' do
+        expect(full_path('image_optim')).to be_nil
+      end
+    end
+
+    %w[ls sh which bash image_optim should_not_exist].each do |name|
+      it "should return same path as `command -v` for #{name}" do
+        expect(full_path(name)).to eq(command_v(name))
+      end
+    end
+  end
+
   it 'should resolve bin in path' do
     with_env 'LS_BIN', nil do
       expect(FSPath).not_to receive(:temp_dir)

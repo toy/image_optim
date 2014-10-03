@@ -22,8 +22,7 @@ class ImageOptim
     end
 
     # Binary resolving: create symlink if there is XXX_BIN environment variable,
-    # build Bin with full path using `command -v`, check binary version
-    # http://pubs.opengroup.org/onlinepubs/9699919799/utilities/command.html
+    # build Bin with full path, check binary version
     def resolve!(name)
       name = name.to_sym
 
@@ -100,14 +99,17 @@ class ImageOptim
     end
 
     # Return full path to bin or null
+    # based on http://stackoverflow.com/a/5471032/96823
     def full_path(name)
-      path = capture_output("sh -c 'command -v #{name}' 2> /dev/null").strip
-      path unless path.empty?
-    end
-
-    # Get output of command with path set to `env_path`
-    def capture_output(command)
-      `env PATH=#{env_path.shellescape} #{command}`
+      # PATHEXT is needed only for windows
+      exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+      ENV['PATH'].to_s.split(File::PATH_SEPARATOR).each do |dir|
+        exts.each do |ext|
+          path = File.expand_path("#{name}#{ext}", dir)
+          return path if File.file?(path) && File.executable?(path)
+        end
+      end
+      nil
     end
   end
 end
