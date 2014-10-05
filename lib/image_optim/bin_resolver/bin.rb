@@ -62,7 +62,7 @@ class ImageOptim
           `#{path.shellescape} --version 2> /dev/null`[/\d+(\.\d+){1,}/]
         when :svgo
           `#{path.shellescape} --version 2>&1`[/\d+(\.\d+){1,}/]
-        when :jhead
+        when :jhead, :'jpeg-recompress'
           `#{path.shellescape} -V 2> /dev/null`[/\d+(\.\d+){1,}/]
         when :jpegtran
           `#{path.shellescape} -v - 2>&1`[/version (\d+\S*)/, 1]

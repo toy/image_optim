@@ -153,6 +153,11 @@ _Note: pngout is free to use even in commercial soft, but you can not redistribu
 npm install -g svgo
 ```
 
+### jpeg-recompress installation (optional)
+
+Download and install the `jpeg-recompress` binary from the [JPEG-Archive Releases](https://github.com/danielgtaylor/jpeg-archive/releases) page,
+or follow the instructions to [build from source](https://github.com/danielgtaylor/jpeg-archive#building).
+
 ## Usage
 
 ### From shell
@@ -259,6 +264,9 @@ Worker has no options
 ### :jpegoptim =>
 * `:strip` — List of extra markers to strip: `:comments`, `:exif`, `:iptc`, `:icc` or `:all` *(defaults to `:all`)*
 * `:max_quality` — Maximum image quality factor `0`..`100` *(defaults to `100`)*
+
+### :jpegrecompress =>
+* `:quality` - JPEG quality preset: `0` - low, `1` - medium, `2` - high, `3` - veryhigh, `4` - lossless *(defaults to `4`)*
 
 ### :jpegtran =>
 * `:copy_chunks` — Copy all chunks *(defaults to `false`)*
