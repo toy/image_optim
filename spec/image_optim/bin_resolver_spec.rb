@@ -41,6 +41,14 @@ describe ImageOptim::BinResolver do
       end
     end
 
+    it 'should work with different path separator' do
+      stub_const('File::PATH_SEPARATOR', 'O_o')
+      with_env 'PATH', 'bin' do
+        expect(full_path('image_optim')).
+          to eq(File.expand_path('bin/image_optim'))
+      end
+    end
+
     it 'should return nil on failure' do
       with_env 'PATH', 'lib' do
         expect(full_path('image_optim')).to be_nil

@@ -49,7 +49,7 @@ class ImageOptim
 
     # Prepand `dir` and append `VENDOR_PATH` to `PATH` from environment
     def env_path
-      [dir, ENV['PATH'], VENDOR_PATH].compact.join(':')
+      [dir, ENV['PATH'], VENDOR_PATH].compact.join(File::PATH_SEPARATOR)
     end
 
     # Collect resolving errors when running block over items of enumerable
