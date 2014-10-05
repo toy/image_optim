@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Fix bin path resolving method missing vendor directory [@toy](https://github.com/toy)
+
 ## v0.17.0 (2014-10-04)
 
 * Use pure ruby detection of bin path [@toy](https://github.com/toy)

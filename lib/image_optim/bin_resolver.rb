@@ -103,7 +103,7 @@ class ImageOptim
     def full_path(name)
       # PATHEXT is needed only for windows
       exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
-      ENV['PATH'].to_s.split(File::PATH_SEPARATOR).each do |dir|
+      env_path.split(File::PATH_SEPARATOR).each do |dir|
         exts.each do |ext|
           path = File.expand_path("#{name}#{ext}", dir)
           return path if File.file?(path) && File.executable?(path)

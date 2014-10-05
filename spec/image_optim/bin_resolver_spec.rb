@@ -34,6 +34,13 @@ describe ImageOptim::BinResolver do
       end
     end
 
+    it 'should find bin in vendor' do
+      with_env 'PATH', nil do
+        expect(full_path('jpegrescan')).
+          to eq(File.expand_path('vendor/jpegrescan'))
+      end
+    end
+
     it 'should return nil on failure' do
       with_env 'PATH', 'lib' do
         expect(full_path('image_optim')).to be_nil
