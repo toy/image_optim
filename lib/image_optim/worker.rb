@@ -125,6 +125,14 @@ class ImageOptim
       dst.size? && dst.size < src.size
     end
 
+    # Short inspect
+    def inspect
+      options_string = options.map do |name, value|
+        " @#{name}=#{value.inspect}"
+      end.join(',')
+      "#<#{self.class}#{options_string}>"
+    end
+
   private
 
     def assert_no_unknown_options!(options)
