@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.17.1 (2014-10-06)
+
 * Fix bin path resolving method missing vendor directory [@toy](https://github.com/toy)
 
 ## v0.17.0 (2014-10-04)
