@@ -111,7 +111,7 @@ class ImageOptim
       [self.class.bin_sym]
     end
 
-    # Resolve used bins, raise exception mergin all messages
+    # Resolve used bins, raise exception concatenating all messages
     def resolve_used_bins!
       errors = BinResolver.collect_errors(used_bins) do |bin|
         @image_optim.resolve_bin!(bin)
