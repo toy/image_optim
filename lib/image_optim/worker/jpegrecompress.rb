@@ -3,7 +3,7 @@ require 'image_optim/option_helpers'
 
 class ImageOptim
   class Worker
-    # http://www.kokkonen.net/tjko/projects.html
+    # https://github.com/danielgtaylor/jpeg-archive#jpeg-recompress
     class Jpegrecompress < Worker
       QUALITY_OPTION =
           option(:quality, 4, 'JPEG quality preset: '\
@@ -15,13 +15,13 @@ class ImageOptim
             OptionHelpers.limit_with_range(v.to_i, 0..4)
           end
 
-      QUALITY_OPTIONS = %i(low medium high veryhigh lossless)
+      QUALITY_OPTIONS = [:low, :medium, :high, :veryhigh, :lossless]
 
       def used_bins
         QUALITY_OPTIONS[quality] == :lossless ? [] : [:'jpeg-recompress']
       end
 
-      # Run first [-1] if max_quality < 100 otherwise with normal priority
+      # Run first [-1]
       def run_order
         -1
       end
