@@ -2,6 +2,7 @@ require 'image_optim/option_helpers'
 require 'image_optim/configuration_error'
 require 'image_optim/hash_helpers'
 require 'image_optim/worker'
+require 'image_optim/cmd'
 require 'set'
 require 'yaml'
 
@@ -118,13 +119,17 @@ class ImageOptim
     def processor_count
       @processor_count ||= case host_os = RbConfig::CONFIG['host_os']
       when /darwin9/
-        `hwprefs cpu_count`
+        Cmd.capture 'hwprefs cpu_count'
       when /darwin/
-        (`which hwprefs` != '') ? `hwprefs thread_count` : `sysctl -n hw.ncpu`
+        if (Cmd.capture 'which hwprefs') != ''
+          Cmd.capture 'hwprefs thread_count'
+        else
+          Cmd.capture 'sysctl -n hw.ncpu'
+        end
       when /linux/
-        `grep -c processor /proc/cpuinfo`
+        Cmd.capture 'grep -c processor /proc/cpuinfo'
       when /freebsd/
-        `sysctl -n hw.ncpu`
+        Cmd.capture 'sysctl -n hw.ncpu'
       when /mswin|mingw/
         require 'win32ole'
         WIN32OLE.
