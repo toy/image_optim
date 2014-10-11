@@ -13,3 +13,4 @@ Makefile
 /tmp/
 
 /analysis/
+/.analysis_variants.yml
