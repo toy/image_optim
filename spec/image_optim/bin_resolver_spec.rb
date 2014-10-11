@@ -28,21 +28,21 @@ describe ImageOptim::BinResolver do
       path unless path.empty?
     end
 
-    it 'should find binary in path' do
+    it 'finds binary in path' do
       with_env 'PATH', 'bin' do
         expect(full_path('image_optim')).
           to eq(File.expand_path('bin/image_optim'))
       end
     end
 
-    it 'should find bin in vendor' do
+    it 'finds bin in vendor' do
       with_env 'PATH', nil do
         expect(full_path('jpegrescan')).
           to eq(File.expand_path('vendor/jpegrescan'))
       end
     end
 
-    it 'should work with different path separator' do
+    it 'works with different path separator' do
       stub_const('File::PATH_SEPARATOR', 'O_o')
       with_env 'PATH', 'bin' do
         expect(full_path('image_optim')).
@@ -50,20 +50,20 @@ describe ImageOptim::BinResolver do
       end
     end
 
-    it 'should return nil on failure' do
+    it 'returns nil on failure' do
       with_env 'PATH', 'lib' do
         expect(full_path('image_optim')).to be_nil
       end
     end
 
-    %w[ls sh which bash image_optim should_not_exist].each do |name|
-      it "should return same path as `command -v` for #{name}" do
+    %w[ls sh which bash image_optim does_not_exist].each do |name|
+      it "returns same path as `command -v` for #{name}" do
         expect(full_path(name)).to eq(command_v(name))
       end
     end
   end
 
-  it 'should resolve bin in path' do
+  it 'resolves bin in path' do
     with_env 'LS_BIN', nil do
       expect(FSPath).not_to receive(:temp_dir)
       expect(resolver).to receive(:full_path).with(:ls).and_return('/bin/ls')
@@ -81,7 +81,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it 'should raise on failure to resolve bin' do
+  it 'raises on failure to resolve bin' do
     with_env 'LS_BIN', nil do
       expect(FSPath).not_to receive(:temp_dir)
       expect(resolver).to receive(:full_path).with(:ls).and_return(nil)
@@ -99,7 +99,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it 'should resolve bin specified in ENV' do
+  it 'resolves bin specified in ENV' do
     path = 'bin/image_optim'
     with_env 'IMAGE_OPTIM_BIN', path do
       tmpdir = double(:tmpdir, :to_str => 'tmpdir')
@@ -138,11 +138,11 @@ describe ImageOptim::BinResolver do
   end
 
   {
-    'some/path/should_not_exist_bin' => 'doesn\'t exist',
+    'some/path/does/not/exist' => 'doesn\'t exist',
     '.' => 'is not a file',
     __FILE__ => 'is not executable',
   }.each do |path, error_message|
-    it "should raise when bin specified in ENV #{error_message}" do
+    it "raises when bin specified in ENV #{error_message}" do
       with_env 'IMAGE_OPTIM_BIN', path do
         expect(FSPath).not_to receive(:temp_dir)
         expect(resolver).not_to receive(:at_exit)
@@ -160,7 +160,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it 'should resolve bin only once, but check every time' do
+  it 'resolves bin only once, but checks every time' do
     with_env 'LS_BIN', nil do
       expect(resolver).to receive(:full_path).once.with(:ls) do
         sleep 0.1
@@ -183,7 +183,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it 'should raise if did not got bin version' do
+  it 'raises if did not got bin version' do
     bin = Bin.new(:pngcrush, '/bin/pngcrush')
     allow(bin).to receive(:version).and_return(nil)
 
@@ -194,7 +194,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it 'should raise on detection of problematic version' do
+  it 'raises on detection of problematic version' do
     bin = Bin.new(:pngcrush, '/bin/pngcrush')
     allow(bin).to receive(:version).and_return(SimpleVersion.new('1.7.60'))
 

@@ -6,7 +6,7 @@ describe ImageOptim::ImagePath do
   ImagePath = ImageOptim::ImagePath
 
   describe 'convert' do
-    it 'should return ImagePath for string' do
+    it 'returns ImagePath for string' do
       path = 'a'
 
       expect(ImagePath.convert(path)).to be_a(ImagePath)
@@ -16,7 +16,7 @@ describe ImageOptim::ImagePath do
       expect(ImagePath.convert(path)).not_to be(path)
     end
 
-    it 'should return ImagePath for Pathname' do
+    it 'returns ImagePath for Pathname' do
       pathname = Pathname.new('a')
 
       expect(ImagePath.convert(pathname)).to be_a(ImagePath)
@@ -26,7 +26,7 @@ describe ImageOptim::ImagePath do
       expect(ImagePath.convert(pathname)).not_to be(pathname)
     end
 
-    it 'should return same instance for ImagePath' do
+    it 'returns same instance for ImagePath' do
       image_path = ImagePath.new('a')
 
       expect(ImagePath.convert(image_path)).to be_a(ImagePath)

@@ -22,18 +22,18 @@ describe ImageOptim::HashHelpers do
       },
     }
 
-    it 'should deep stringify hash keys' do
+    it 'deep stringifies hash keys' do
       expect(HH.deep_stringify_keys(WITH_SYMBOL_KEYS)).to eq(WITH_STRING_KEYS)
       expect(HH.deep_stringify_keys(WITH_STRING_KEYS)).to eq(WITH_STRING_KEYS)
     end
 
-    it 'should deep symbolise hash keys' do
+    it 'deep symbolises hash keys' do
       expect(HH.deep_symbolise_keys(WITH_STRING_KEYS)).to eq(WITH_SYMBOL_KEYS)
       expect(HH.deep_symbolise_keys(WITH_SYMBOL_KEYS)).to eq(WITH_SYMBOL_KEYS)
     end
   end
 
-  it 'should deep merge hashes' do
+  it 'deep merges hashes' do
     merge_a = {
       :a => {
         :b => 1,

@@ -16,7 +16,7 @@ describe ImageOptim::Runner::GlobHelpers do
       '{\{a,b\},\{c,d\}}' => %w[\\{a b\\} \\{c d\\}],
       'test{ing,}' => %w[testing test],
     }.each do |glob, expected|
-      it "should expand #{glob}" do
+      it "expands #{glob}" do
         expect(GH.expand_braces(glob)).to match_array(expected)
       end
     end

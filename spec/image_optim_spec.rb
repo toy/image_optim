@@ -47,7 +47,7 @@ describe ImageOptim do
   end
 
   describe 'workers' do
-    it 'should be ordered by run_order' do
+    it 'is ordered by run_order' do
       image_optim = ImageOptim.new
       original_klasses = ImageOptim::Worker.klasses
       formats = original_klasses.map do |klass|
@@ -83,7 +83,7 @@ describe ImageOptim do
 
     ImageOptim::Worker.klasses.each do |worker_klass|
       describe worker_klass.bin_sym do
-        it 'should optimize at least one test image' do
+        it 'optimizes at least one test image' do
           options = base_options.merge(worker_klass.bin_sym => true)
           image_optim = ImageOptim.new(options)
           expect(TEST_IMAGES.any? do |original|
@@ -97,7 +97,7 @@ describe ImageOptim do
   describe 'isolated' do
     describe 'optimize' do
       TEST_IMAGES.each do |original|
-        it "should optimize #{original}" do
+        it "optimizes #{original}" do
           copy = original.temp_copy
 
           Tempfile.reset_init_count
@@ -119,7 +119,7 @@ describe ImageOptim do
 
     describe 'optimize in place' do
       TEST_IMAGES.each do |original|
-        it "should optimize #{original}" do
+        it "optimizes #{original}" do
           copy = original.temp_copy
 
           Tempfile.reset_init_count
@@ -139,7 +139,7 @@ describe ImageOptim do
 
     describe 'optimize image data' do
       TEST_IMAGES.each do |original|
-        it "should optimize #{original}" do
+        it "optimizes #{original}" do
           image_optim = ImageOptim.new
           optimized_data = image_optim.optimize_image_data(original.read)
           expect(optimized_data).not_to be_nil
@@ -154,7 +154,7 @@ describe ImageOptim do
 
     describe 'stop optimizing' do
       TEST_IMAGES.each do |original|
-        it "should stop optimizing #{original}" do
+        it "stops optimizing #{original}" do
           copy = original.temp_copy
 
           tries = 0
@@ -169,7 +169,7 @@ describe ImageOptim do
   end
 
   describe 'bunch' do
-    it 'should optimize' do
+    it 'optimizes' do
       copies = TEST_IMAGES.map(&:temp_copy)
       results = ImageOptim.optimize_images(copies)
       zipped = TEST_IMAGES.zip(copies, results)
@@ -181,7 +181,7 @@ describe ImageOptim do
       end
     end
 
-    it 'should optimize in place' do
+    it 'optimizes in place' do
       copies = TEST_IMAGES.map(&:temp_copy)
       results = ImageOptim.optimize_images!(copies)
       zipped = TEST_IMAGES.zip(copies, results)
@@ -192,7 +192,7 @@ describe ImageOptim do
       end
     end
 
-    it 'should optimize datas' do
+    it 'optimizes datas' do
       results = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
       zipped = TEST_IMAGES.zip(results)
       zipped.each do |original, result|
@@ -209,7 +209,7 @@ describe ImageOptim do
   describe 'unsupported' do
     let(:original){ ImageOptim::ImagePath.new(__FILE__) }
 
-    it 'should ignore' do
+    it 'ignores' do
       copy = original.temp_copy
 
       Tempfile.reset_init_count
@@ -219,7 +219,7 @@ describe ImageOptim do
       expect(copy.read).to eq(original.read)
     end
 
-    it 'should ignore in place' do
+    it 'ignores in place' do
       copy = original.temp_copy
 
       Tempfile.reset_init_count
@@ -237,13 +237,13 @@ describe ImageOptim do
           expect(ImageOptim::ImageMeta).to receive(:warn)
         end
 
-        it 'should ignore path' do
+        it 'ignores path' do
           path = FSPath.temp_file_path
           path.write(data)
           expect(ImageOptim.optimize_image(path)).to be_nil
         end
 
-        it 'should ignore data' do
+        it 'ignores data' do
           expect(ImageOptim.optimize_image_data(data)).to be_nil
         end
       end
@@ -257,7 +257,7 @@ describe ImageOptim do
       describe list_method do
         method = list_method.sub('images', 'image')
         describe 'without block' do
-          it 'should optimize images and return array of results' do
+          it 'optimizes images and returns array of results' do
             image_optim = ImageOptim.new
             dsts = srcs.map do |src|
               dst = "#{src}_"
@@ -269,8 +269,8 @@ describe ImageOptim do
         end
 
         describe 'given block' do
-          it 'should optimize images, yield path and result for each and '\
-              'return array of yield results' do
+          it 'optimizes images, yields path and result for each and '\
+              'returns array of yield results' do
             image_optim = ImageOptim.new
             results = srcs.map do |src|
               dst = "#{src}_"
@@ -326,13 +326,13 @@ describe ImageOptim do
     end
 
     rotate_images.each do |image|
-      it "should rotate and optimize #{image} losslessly" do
+      it "rotates and optimizes #{image} losslessly" do
         check_lossless_optimization(rotated, ImageOptim.optimize_image(image))
       end
     end
 
     (TEST_IMAGES - rotate_images).each do |image|
-      it "should optimize #{image} losslessly" do
+      it "optimizes #{image} losslessly" do
         check_lossless_optimization(image, ImageOptim.optimize_image(image))
       end
     end

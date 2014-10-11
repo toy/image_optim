@@ -6,7 +6,7 @@ describe ImageOptim::Worker do
   Worker = ImageOptim::Worker
 
   describe 'optimize' do
-    it 'should raise NotImplementedError' do
+    it 'raises NotImplementedError' do
       image_optim = ImageOptim.new
       worker = Worker.new(image_optim, {})
 

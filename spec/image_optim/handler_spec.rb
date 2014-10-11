@@ -3,7 +3,7 @@ require 'rspec'
 require 'image_optim/handler'
 
 describe ImageOptim::Handler do
-  it 'should use original as source for first conversion '\
+  it 'uses original as source for first conversion '\
       'and two temp files for further conversions' do
     original = double(:original)
     allow(original).to receive(:temp_path) do
@@ -58,7 +58,7 @@ describe ImageOptim::Handler do
   end
 
   describe :open do
-    it 'should yield instance, run cleanup and return result' do
+    it 'yields instance, runs cleanup and returns result' do
       original = double
       handler = double
       result = double
@@ -74,7 +74,7 @@ describe ImageOptim::Handler do
       end).to eq(result)
     end
 
-    it 'should cleanup if exception is raised' do
+    it 'cleans up if exception is raised' do
       original = double
       handler = double
 
