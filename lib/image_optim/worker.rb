@@ -4,6 +4,7 @@ require 'image_optim/bin_resolver/error'
 require 'image_optim/configuration_error'
 require 'image_optim/option_definition'
 require 'image_optim/option_helpers'
+require 'image_optim/cmd'
 require 'shellwords'
 require 'English'
 
@@ -187,17 +188,7 @@ class ImageOptim
         nice -n #{@image_optim.nice}
         #{command} > /dev/null 2>&1
       ].join(' ')
-      success = system full_command
-
-      status = $CHILD_STATUS
-      if status.signaled?
-        # jruby does not differ non zero exit status and signal number
-        unless defined?(JRUBY_VERSION) && status.exitstatus == status.termsig
-          fail SignalException, status.termsig
-        end
-      end
-
-      success
+      Cmd.run full_command
     end
   end
 end

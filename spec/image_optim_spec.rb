@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'rspec'
 require 'image_optim'
+require 'image_optim/cmd'
 require 'tempfile'
 
 TEST_IMAGES = ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/**/*.*')
@@ -300,7 +301,7 @@ describe ImageOptim do
           -append
           #{flattened.to_s.shellescape}
         ].join(' ')
-        expect(system(flatten_command)).to be_truthy
+        expect(Cmd.run(flatten_command)).to be_truthy
         flattened
       else
         image
@@ -319,7 +320,7 @@ describe ImageOptim do
         /dev/null
         2>&1
       ].join(' ')
-      nrmse = `#{nrmse_command}`[/\((\d+(\.\d+)?)\)/, 1]
+      nrmse = Cmd.capture(nrmse_command)[/\((\d+(\.\d+)?)\)/, 1]
       expect(nrmse).not_to be_nil
       expect(nrmse.to_f).to eq(0)
     end

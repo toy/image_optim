@@ -1,6 +1,7 @@
 require 'image_optim/bin_resolver/error'
 require 'image_optim/bin_resolver/simple_version'
 require 'image_optim/bin_resolver/comparable_condition'
+require 'image_optim/cmd'
 
 class ImageOptim
   class BinResolver
@@ -59,18 +60,18 @@ class ImageOptim
       def version_string
         case name
         when :advpng, :gifsicle, :jpegoptim, :optipng, :pngquant
-          `#{path.shellescape} --version 2> /dev/null`[/\d+(\.\d+){1,}/]
+          capture("#{escaped_path} --version 2> /dev/null")[/\d+(\.\d+){1,}/]
         when :svgo
-          `#{path.shellescape} --version 2>&1`[/\d+(\.\d+){1,}/]
+          capture("#{escaped_path} --version 2>&1")[/\d+(\.\d+){1,}/]
         when :jhead
-          `#{path.shellescape} -V 2> /dev/null`[/\d+(\.\d+){1,}/]
+          capture("#{escaped_path} -V 2> /dev/null")[/\d+(\.\d+){1,}/]
         when :jpegtran
-          `#{path.shellescape} -v - 2>&1`[/version (\d+\S*)/, 1]
+          capture("#{escaped_path} -v - 2>&1")[/version (\d+\S*)/, 1]
         when :pngcrush
-          `#{path.shellescape} -version 2>&1`[/\d+(\.\d+){1,}/]
+          capture("#{escaped_path} -version 2>&1")[/\d+(\.\d+){1,}/]
         when :pngout
           date_regexp = /[A-Z][a-z]{2} (?: |\d)\d \d{4}/
-          date_str = `#{path.shellescape} 2>&1`[date_regexp]
+          date_str = capture("#{escaped_path} 2>&1")[date_regexp]
           Date.parse(date_str).strftime('%Y%m%d') if date_str
         when :jpegrescan
           # jpegrescan has no version so just check presence
@@ -78,6 +79,14 @@ class ImageOptim
         else
           fail "getting `#{name}` version is not defined"
         end
+      end
+
+      def capture(cmd)
+        Cmd.capture(cmd)
+      end
+
+      def escaped_path
+        path.shellescape
       end
     end
   end

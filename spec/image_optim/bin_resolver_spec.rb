@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
 require 'rspec'
 require 'image_optim/bin_resolver'
+require 'image_optim/cmd'
 
 def with_env(key, value)
   saved, ENV[key] = ENV[key], value
@@ -23,7 +24,7 @@ describe ImageOptim::BinResolver do
     end
 
     def command_v(name)
-      path = `sh -c 'command -v #{name}' 2> /dev/null`.strip
+      path = Cmd.capture("sh -c 'command -v #{name}' 2> /dev/null").strip
       path unless path.empty?
     end
 
