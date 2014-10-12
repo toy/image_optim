@@ -14,6 +14,7 @@ describe ImageOptim::BinResolver do
   BinResolver = ImageOptim::BinResolver
   Bin = BinResolver::Bin
   SimpleVersion = BinResolver::SimpleVersion
+  Cmd = ImageOptim::Cmd
 
   let(:image_optim){ double(:image_optim, :verbose => false) }
   let(:resolver){ BinResolver.new(image_optim) }
