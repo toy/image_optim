@@ -27,7 +27,9 @@ describe ImageOptim::Cmd do
     it 'raises SignalException if process terminates after signal' do
       expect do
         Cmd.run('kill -s INT $$')
-      end.to raise_error(SignalException, /INT|#{Signal.list['INT']}/)
+      end.to raise_error(SignalException) do |error|
+        expect(error.message.to_s).to match(/INT|#{Signal.list['INT']}/)
+      end
     end
   end
 
@@ -53,7 +55,9 @@ describe ImageOptim::Cmd do
     it 'raises SignalException if process terminates after signal' do
       expect do
         Cmd.capture('kill -s INT $$')
-      end.to raise_error(SignalException, /INT|#{Signal.list['INT']}/)
+      end.to raise_error(SignalException) do |error|
+        expect(error.message.to_s).to match(/INT|#{Signal.list['INT']}/)
+      end
     end
   end
 end
