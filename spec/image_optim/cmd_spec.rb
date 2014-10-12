@@ -5,6 +5,12 @@ require 'image_optim/cmd'
 describe ImageOptim::Cmd do
   Cmd = ImageOptim::Cmd
 
+  def expect_int_exception(&block)
+    expect(&block).to raise_error(SignalException) do |error|
+      expect(error.message.to_s).to match(/INT|#{Signal.list['INT']}/)
+    end
+  end
+
   describe :run do
     it 'calls system and returns result' do
       status = double
@@ -25,10 +31,8 @@ describe ImageOptim::Cmd do
     end
 
     it 'raises SignalException if process terminates after signal' do
-      expect do
+      expect_int_exception do
         Cmd.run('kill -s INT $$')
-      end.to raise_error(SignalException) do |error|
-        expect(error.message.to_s).to match(/INT|#{Signal.list['INT']}/)
       end
     end
   end
@@ -53,10 +57,8 @@ describe ImageOptim::Cmd do
     end
 
     it 'raises SignalException if process terminates after signal' do
-      expect do
+      expect_int_exception do
         Cmd.capture('kill -s INT $$')
-      end.to raise_error(SignalException) do |error|
-        expect(error.message.to_s).to match(/INT|#{Signal.list['INT']}/)
       end
     end
   end
