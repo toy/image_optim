@@ -87,6 +87,10 @@ ImageOptim::ImagePath.class_eval do
   def digest
     @digest ||= Digest::SHA256.file(to_s).hexdigest
   end
+
+  def cache_etag
+    [mtime, digest]
+  end
 end
 
 # Analyse efficency of workers
@@ -137,11 +141,28 @@ class Analyser
 
   # Delegate to worker with short id
   class WorkerVariant < DelegateClass(ImageOptim::Worker)
-    attr_reader :id, :klass
+    attr_reader :klass, :id
     def initialize(klass, image_optim, options)
       @klass = klass
+      @image_optim = image_optim
       @id = "#{klass.bin_sym}#{options unless options.empty?}"
       __setobj__(klass.new(image_optim, options))
+    end
+
+    def cache_etag
+      [
+        id,
+        bin_versions,
+        source_digest,
+      ]
+    end
+
+  private
+
+    def bin_versions
+      @bin_versions ||= used_bins.map do |name|
+        @image_optim.resolve_bin!(name).to_s
+      end
     end
 
     def source_digest
@@ -216,13 +237,7 @@ class Analyser
     end
 
     def results
-      cache_etag = [
-        @path.mtime,
-        @path.digest,
-        @workers.map(&:id).sort,
-        @workers.map(&:source_digest).sort,
-      ]
-
+      cache_etag = [@path.cache_etag, @workers.map(&:cache_etag).sort]
       Cache.get(@path.to_s, cache_etag) do
         results = []
         run_workers(@path, @workers){ |result| results << result }
