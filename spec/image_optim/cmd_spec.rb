@@ -1,5 +1,4 @@
-$LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
-require 'rspec'
+require 'spec_helper'
 require 'image_optim/cmd'
 
 describe ImageOptim::Cmd do
