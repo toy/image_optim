@@ -196,22 +196,13 @@ describe ImageOptim do
   end
 
   describe 'unsupported' do
-    let(:original){ ImageOptim::ImagePath.new(__FILE__) }
-
     it 'ignores' do
+      original = ImageOptim::ImagePath.new(__FILE__)
       copy = temp_copy(original)
 
       expect(Tempfile).not_to receive(:new)
       optimized_image = ImageOptim.optimize_image(copy)
       expect(optimized_image).to be_nil
-      expect(copy.read).to eq(original.read)
-    end
-
-    it 'ignores in place' do
-      copy = temp_copy(original)
-
-      expect(Tempfile).not_to receive(:new)
-      expect(ImageOptim.optimize_image!(copy)).not_to be_truthy
       expect(copy.read).to eq(original.read)
     end
 
