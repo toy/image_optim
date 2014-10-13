@@ -25,15 +25,13 @@ Tempfile.class_eval do
   end
 end
 
-ImageOptim::ImagePath.class_eval do
-  def temp_copy
-    temp_path.tap{ |path| copy(path) }
-  end
-end
-
 describe ImageOptim do
   test_images = ImageOptim::ImagePath.new(__FILE__).dirname.
     glob('images/**/*.*').freeze
+
+  def temp_copy(image)
+    image.temp_path.tap{ |path| image.copy(path) }
+  end
 
   matcher :be_in_range do |expected|
     match{ |actual| expected.include?(actual) }
@@ -87,7 +85,7 @@ describe ImageOptim do
           options = base_options.merge(worker_klass.bin_sym => true)
           image_optim = ImageOptim.new(options)
           expect(test_images.any? do |original|
-            image_optim.optimize_image(original.temp_copy)
+            image_optim.optimize_image(temp_copy(original))
           end).to be true
         end
       end
@@ -98,7 +96,7 @@ describe ImageOptim do
     describe 'optimize' do
       test_images.each do |original|
         it "optimizes #{original}" do
-          copy = original.temp_copy
+          copy = temp_copy(original)
 
           Tempfile.reset_init_count
           image_optim = ImageOptim.new
@@ -120,7 +118,7 @@ describe ImageOptim do
     describe 'optimize in place' do
       test_images.each do |original|
         it "optimizes #{original}" do
-          copy = original.temp_copy
+          copy = temp_copy(original)
 
           Tempfile.reset_init_count
           image_optim = ImageOptim.new
@@ -144,7 +142,7 @@ describe ImageOptim do
           optimized_data = image_optim.optimize_image_data(original.read)
           expect(optimized_data).not_to be_nil
 
-          expected_path = image_optim.optimize_image(original.temp_copy)
+          expected_path = image_optim.optimize_image(temp_copy(original))
           expect(optimized_data).to eq(expected_path.open('rb', &:read))
 
           expect(image_optim.optimize_image_data(optimized_data)).to be_nil
@@ -155,7 +153,7 @@ describe ImageOptim do
     describe 'stop optimizing' do
       test_images.each do |original|
         it "stops optimizing #{original}" do
-          copy = original.temp_copy
+          copy = temp_copy(original)
 
           tries = 0
           10.times do
@@ -170,7 +168,7 @@ describe ImageOptim do
 
   describe 'bunch' do
     it 'optimizes' do
-      copies = test_images.map(&:temp_copy)
+      copies = test_images.map{ |image| temp_copy(image) }
       results = ImageOptim.optimize_images(copies)
       zipped = test_images.zip(copies, results)
       zipped.each do |original, copy, result|
@@ -182,7 +180,7 @@ describe ImageOptim do
     end
 
     it 'optimizes in place' do
-      copies = test_images.map(&:temp_copy)
+      copies = test_images.map{ |image| temp_copy(image) }
       results = ImageOptim.optimize_images!(copies)
       zipped = test_images.zip(copies, results)
       zipped.each do |original, copy, result|
@@ -200,7 +198,7 @@ describe ImageOptim do
         expect(result[1]).to be_a(String)
         expect(result[1].size).to be_in_range(1...original.size)
 
-        expected_path = ImageOptim.optimize_image(original.temp_copy)
+        expected_path = ImageOptim.optimize_image(temp_copy(original))
         expect(result[1]).to eq(expected_path.open('rb', &:read))
       end
     end
@@ -210,7 +208,7 @@ describe ImageOptim do
     let(:original){ ImageOptim::ImagePath.new(__FILE__) }
 
     it 'ignores' do
-      copy = original.temp_copy
+      copy = temp_copy(original)
 
       Tempfile.reset_init_count
       optimized_image = ImageOptim.optimize_image(copy)
@@ -220,7 +218,7 @@ describe ImageOptim do
     end
 
     it 'ignores in place' do
-      copy = original.temp_copy
+      copy = temp_copy(original)
 
       Tempfile.reset_init_count
       expect(ImageOptim.optimize_image!(copy)).not_to be_truthy
