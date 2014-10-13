@@ -155,44 +155,6 @@ describe ImageOptim do
     end
   end
 
-  describe 'bunch' do
-    it 'optimizes' do
-      copies = test_images.map{ |image| temp_copy(image) }
-      results = ImageOptim.optimize_images(copies)
-      zipped = test_images.zip(copies, results)
-      zipped.each do |original, copy, result|
-        expect(result[0]).to eq(copy)
-        expect(result[1]).to be_a(ImageOptim::ImagePath::Optimized)
-        expect(result[1].size).to be_in_range(1...original.size)
-        expect(copy.read).to eq(original.read)
-      end
-    end
-
-    it 'optimizes in place' do
-      copies = test_images.map{ |image| temp_copy(image) }
-      results = ImageOptim.optimize_images!(copies)
-      zipped = test_images.zip(copies, results)
-      zipped.each do |original, copy, result|
-        expect(result[0]).to eq(copy)
-        expect(result[1]).to be_a(ImageOptim::ImagePath::Optimized)
-        expect(copy.size).to be_in_range(1...original.size)
-      end
-    end
-
-    it 'optimizes datas' do
-      results = ImageOptim.optimize_images_data(test_images.map(&:read))
-      zipped = test_images.zip(results)
-      zipped.each do |original, result|
-        expect(result[0]).to eq(original.read)
-        expect(result[1]).to be_a(String)
-        expect(result[1].size).to be_in_range(1...original.size)
-
-        expected_path = ImageOptim.optimize_image(temp_copy(original))
-        expect(result[1]).to eq(expected_path.open('rb', &:read))
-      end
-    end
-  end
-
   describe 'unsupported' do
     let(:original){ ImageOptim::ImagePath.new(__FILE__) }
 
