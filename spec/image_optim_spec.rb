@@ -232,18 +232,11 @@ describe ImageOptim do
       :jpeg => "\377\330",
     }.each do |type, data|
       describe "broken #{type}" do
-        before do
-          expect(ImageOptim::ImageMeta).to receive(:warn)
-        end
-
         it 'ignores path' do
           path = FSPath.temp_file_path
           path.write(data)
+          expect(ImageOptim::ImageMeta).to receive(:warn)
           expect(ImageOptim.optimize_image(path)).to be_nil
-        end
-
-        it 'ignores data' do
-          expect(ImageOptim.optimize_image_data(data)).to be_nil
         end
       end
     end
