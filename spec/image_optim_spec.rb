@@ -105,23 +105,6 @@ describe ImageOptim do
       end
     end
 
-    describe 'optimize in place' do
-      test_images.each do |original|
-        it "optimizes #{original}" do
-          copy = temp_copy(original)
-
-          image_optim = ImageOptim.new
-
-          multiple_workers = image_optim.workers_for_image(original).length > 1
-          expect_tempfile(multiple_workers ? 2..3 : 2) do
-            expect(image_optim.optimize_image!(copy)).to be_truthy
-            expect(copy.size).to be_in_range(1...original.size)
-            expect(copy.read).not_to eq(original.read)
-          end
-        end
-      end
-    end
-
     describe 'optimize image data' do
       test_images.each do |original|
         it "optimizes #{original}" do
@@ -135,6 +118,40 @@ describe ImageOptim do
           expect(image_optim.optimize_image_data(optimized_data)).to be_nil
         end
       end
+    end
+  end
+
+  describe :optimize_image! do
+    it 'optimizes image and replaces original' do
+      original = double
+      optimized = double(:original_size => 12_345)
+      optimized_wrap = double
+      image_optim = ImageOptim.new
+
+      allow(ImageOptim::ImagePath).to receive(:convert).
+        with(original).and_return(original)
+
+      expect(image_optim).to receive(:optimize_image).
+        with(original).and_return(optimized)
+      expect(optimized).to receive(:replace).with(original)
+      expect(ImageOptim::ImagePath::Optimized).to receive(:new).
+        with(original, 12_345).and_return(optimized_wrap)
+
+      expect(image_optim.optimize_image!(original)).to eq(optimized_wrap)
+    end
+
+    it 'returns nil if optimization fails' do
+      original = double
+      image_optim = ImageOptim.new
+
+      allow(ImageOptim::ImagePath).to receive(:convert).
+        with(original).and_return(original)
+
+      expect(image_optim).to receive(:optimize_image).
+        with(original).and_return(nil)
+      expect(ImageOptim::ImagePath::Optimized).not_to receive(:new)
+
+      expect(image_optim.optimize_image!(original)).to eq(nil)
     end
   end
 
