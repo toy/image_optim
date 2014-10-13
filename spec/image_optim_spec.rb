@@ -52,20 +52,18 @@ describe ImageOptim do
     end
   end
 
-  describe 'worker' do
-    base_options = Hash[ImageOptim::Worker.klasses.map do |klass|
-      [klass.bin_sym, false]
-    end]
+  disable_all_workers = Hash[ImageOptim::Worker.klasses.map do |klass|
+    [klass.bin_sym, false]
+  end]
 
-    ImageOptim::Worker.klasses.each do |worker_klass|
-      describe worker_klass.bin_sym do
-        it 'optimizes at least one test image' do
-          options = base_options.merge(worker_klass.bin_sym => true)
-          image_optim = ImageOptim.new(options)
-          expect(test_images.any? do |original|
-            image_optim.optimize_image(temp_copy(original))
-          end).to be true
-        end
+  ImageOptim::Worker.klasses.each do |worker_klass|
+    describe "#{worker_klass.bin_sym} worker" do
+      it 'optimizes at least one test image' do
+        options = disable_all_workers.merge(worker_klass.bin_sym => true)
+        image_optim = ImageOptim.new(options)
+        expect(test_images.any? do |original|
+          image_optim.optimize_image(temp_copy(original))
+        end).to be true
       end
     end
   end
