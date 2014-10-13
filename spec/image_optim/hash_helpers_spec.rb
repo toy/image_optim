@@ -2,10 +2,12 @@ require 'spec_helper'
 require 'image_optim/hash_helpers'
 
 describe ImageOptim::HashHelpers do
-  HH = ImageOptim::HashHelpers
+  before do
+    stub_const('HashHelpers', ImageOptim::HashHelpers)
+  end
 
   context 'stringify/simbolyze' do
-    WITH_SYMBOL_KEYS = {
+    symbol_keys = {
       :a => 1,
       :b => {
         :c => [:a, 'a'],
@@ -13,7 +15,7 @@ describe ImageOptim::HashHelpers do
       },
     }
 
-    WITH_STRING_KEYS = {
+    string_keys = {
       'a' => 1,
       'b' => {
         'c' => [:a, 'a'],
@@ -22,13 +24,13 @@ describe ImageOptim::HashHelpers do
     }
 
     it 'deep stringifies hash keys' do
-      expect(HH.deep_stringify_keys(WITH_SYMBOL_KEYS)).to eq(WITH_STRING_KEYS)
-      expect(HH.deep_stringify_keys(WITH_STRING_KEYS)).to eq(WITH_STRING_KEYS)
+      expect(HashHelpers.deep_stringify_keys(symbol_keys)).to eq(string_keys)
+      expect(HashHelpers.deep_stringify_keys(string_keys)).to eq(string_keys)
     end
 
     it 'deep symbolises hash keys' do
-      expect(HH.deep_symbolise_keys(WITH_STRING_KEYS)).to eq(WITH_SYMBOL_KEYS)
-      expect(HH.deep_symbolise_keys(WITH_SYMBOL_KEYS)).to eq(WITH_SYMBOL_KEYS)
+      expect(HashHelpers.deep_symbolise_keys(string_keys)).to eq(symbol_keys)
+      expect(HashHelpers.deep_symbolise_keys(symbol_keys)).to eq(symbol_keys)
     end
   end
 
@@ -69,7 +71,7 @@ describe ImageOptim::HashHelpers do
       'z' => 20,
     }
 
-    expect(HH.deep_merge(merge_a, merge_b)).to eq(merge_result)
+    expect(HashHelpers.deep_merge(merge_a, merge_b)).to eq(merge_result)
   end
 
 end

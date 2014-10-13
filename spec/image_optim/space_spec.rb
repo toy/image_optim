@@ -2,7 +2,9 @@ require 'spec_helper'
 require 'image_optim/space'
 
 describe ImageOptim::Space do
-  Space = ImageOptim::Space
+  before do
+    stub_const('Space', ImageOptim::Space)
+  end
 
   {
     0           => '      ',

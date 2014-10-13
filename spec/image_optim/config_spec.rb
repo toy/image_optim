@@ -2,7 +2,9 @@ require 'spec_helper'
 require 'image_optim/config'
 
 describe ImageOptim::Config do
-  IOConfig = ImageOptim::Config
+  before do
+    stub_const('IOConfig', ImageOptim::Config)
+  end
 
   describe 'assert_no_unused_options!' do
     before do
@@ -68,16 +70,15 @@ describe ImageOptim::Config do
   describe 'for_worker' do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
-    end
+      stub_const('Abc', Class.new do
+        def self.bin_sym
+          :abc
+        end
 
-    Abc = Class.new do
-      def self.bin_sym
-        :abc
-      end
-
-      def image_formats
-        []
-      end
+        def image_formats
+          []
+        end
+      end)
     end
 
     it 'returns empty hash by default' do

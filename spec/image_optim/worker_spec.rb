@@ -2,7 +2,9 @@ require 'spec_helper'
 require 'image_optim/worker'
 
 describe ImageOptim::Worker do
-  Worker = ImageOptim::Worker
+  before do
+    stub_const('Worker', ImageOptim::Worker)
+  end
 
   describe 'optimize' do
     it 'raises NotImplementedError' do

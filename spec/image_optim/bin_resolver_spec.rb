@@ -10,10 +10,12 @@ ensure
 end
 
 describe ImageOptim::BinResolver do
-  BinResolver = ImageOptim::BinResolver
-  Bin = BinResolver::Bin
-  SimpleVersion = BinResolver::SimpleVersion
-  Cmd = ImageOptim::Cmd
+  before do
+    stub_const('BinResolver', ImageOptim::BinResolver)
+    stub_const('Bin', BinResolver::Bin)
+    stub_const('SimpleVersion', BinResolver::SimpleVersion)
+    stub_const('Cmd', ImageOptim::Cmd)
+  end
 
   let(:image_optim){ double(:image_optim, :verbose => false) }
   let(:resolver){ BinResolver.new(image_optim) }

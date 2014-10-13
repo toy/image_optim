@@ -2,7 +2,9 @@ require 'spec_helper'
 require 'image_optim/image_path'
 
 describe ImageOptim::ImagePath do
-  ImagePath = ImageOptim::ImagePath
+  before do
+    stub_const('ImagePath', ImageOptim::ImagePath)
+  end
 
   describe 'convert' do
     it 'returns ImagePath for string' do

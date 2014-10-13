@@ -40,9 +40,9 @@ ImageOptim::ImagePath.class_eval do
 end
 
 describe ImageOptim do
-  Cmd = ImageOptim::Cmd
-
   before do
+    stub_const('Cmd', ImageOptim::Cmd)
+
     allow(ImageOptim::Config).to receive(:global).and_return({})
     allow(ImageOptim::Config).to receive(:local).and_return({})
   end
