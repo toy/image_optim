@@ -259,15 +259,15 @@ describe ImageOptim do
       expect(nrmse.to_f).to eq(0)
     end
 
-    rotate_images.each do |image|
-      it "rotates and optimizes #{image} losslessly" do
-        check_lossless_optimization(rotated, ImageOptim.optimize_image(image))
+    it "rotates and optimizes images losslessly" do
+      ImageOptim.optimize_images(rotate_images) do |_, dst|
+        check_lossless_optimization(rotated, dst)
       end
     end
 
-    (test_images - rotate_images).each do |image|
-      it "optimizes #{image} losslessly" do
-        check_lossless_optimization(image, ImageOptim.optimize_image(image))
+    it "optimizes images losslessly" do
+      ImageOptim.optimize_images(test_images - rotate_images) do |src, dst|
+        check_lossless_optimization(src, dst)
       end
     end
   end
