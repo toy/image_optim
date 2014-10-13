@@ -3,28 +3,6 @@ require 'image_optim'
 require 'image_optim/cmd'
 require 'tempfile'
 
-Tempfile.class_eval do
-  def self.init_count
-    class_variable_get(:@@init_count)
-  end
-
-  def self.init_count=(value)
-    class_variable_set(:@@init_count, value)
-  end
-
-  def self.reset_init_count
-    self.init_count = 0
-  end
-
-  reset_init_count
-
-  alias_method :initialize_orig, :initialize
-  def initialize(*args, &block)
-    self.class.init_count += 1
-    initialize_orig(*args, &block)
-  end
-end
-
 describe ImageOptim do
   test_images = ImageOptim::ImagePath.new(__FILE__).dirname.
     glob('images/**/*.*').freeze
@@ -93,23 +71,37 @@ describe ImageOptim do
   end
 
   describe 'isolated' do
+    def expect_tempfile(expected)
+      count = 0
+      original_new = FSPath::Tempfile.method(:new)
+      allow(FSPath::Tempfile).to receive(:new) do |*args|
+        count += 1
+        original_new.call(*args)
+      end
+
+      yield
+
+      if expected.is_a?(Range)
+        expect(count).to be_in_range(expected)
+      else
+        expect(count).to eq(expected)
+      end
+    end
+
     describe 'optimize' do
       test_images.each do |original|
         it "optimizes #{original}" do
           copy = temp_copy(original)
 
-          Tempfile.reset_init_count
           image_optim = ImageOptim.new
-          optimized_image = image_optim.optimize_image(copy)
-          expect(optimized_image).to be_a(ImageOptim::ImagePath::Optimized)
-          expect(optimized_image.size).to be_in_range(1...original.size)
-          expect(optimized_image.read).not_to eq(original.read)
-          expect(copy.read).to eq(original.read)
 
-          if image_optim.workers_for_image(original).length > 1
-            expect(Tempfile.init_count).to be_in_range(1..2)
-          else
-            expect(Tempfile.init_count).to eq(1)
+          multiple_workers = image_optim.workers_for_image(original).length > 1
+          expect_tempfile(multiple_workers ? 1..2 : 1) do
+            optimized_image = image_optim.optimize_image(copy)
+            expect(optimized_image).to be_a(ImageOptim::ImagePath::Optimized)
+            expect(optimized_image.size).to be_in_range(1...original.size)
+            expect(optimized_image.read).not_to eq(original.read)
+            expect(copy.read).to eq(original.read)
           end
         end
       end
@@ -120,16 +112,13 @@ describe ImageOptim do
         it "optimizes #{original}" do
           copy = temp_copy(original)
 
-          Tempfile.reset_init_count
           image_optim = ImageOptim.new
-          expect(image_optim.optimize_image!(copy)).to be_truthy
-          expect(copy.size).to be_in_range(1...original.size)
-          expect(copy.read).not_to eq(original.read)
 
-          if image_optim.workers_for_image(original).length > 1
-            expect(Tempfile.init_count).to be_in_range(2..3)
-          else
-            expect(Tempfile.init_count).to eq(2)
+          multiple_workers = image_optim.workers_for_image(original).length > 1
+          expect_tempfile(multiple_workers ? 2..3 : 2) do
+            expect(image_optim.optimize_image!(copy)).to be_truthy
+            expect(copy.size).to be_in_range(1...original.size)
+            expect(copy.read).not_to eq(original.read)
           end
         end
       end
@@ -210,9 +199,8 @@ describe ImageOptim do
     it 'ignores' do
       copy = temp_copy(original)
 
-      Tempfile.reset_init_count
+      expect(Tempfile).not_to receive(:new)
       optimized_image = ImageOptim.optimize_image(copy)
-      expect(Tempfile.init_count).to eq(0)
       expect(optimized_image).to be_nil
       expect(copy.read).to eq(original.read)
     end
@@ -220,9 +208,8 @@ describe ImageOptim do
     it 'ignores in place' do
       copy = temp_copy(original)
 
-      Tempfile.reset_init_count
+      expect(Tempfile).not_to receive(:new)
       expect(ImageOptim.optimize_image!(copy)).not_to be_truthy
-      expect(Tempfile.init_count).to eq(0)
       expect(copy.read).to eq(original.read)
     end
 
