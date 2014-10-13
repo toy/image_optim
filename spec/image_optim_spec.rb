@@ -236,7 +236,11 @@ describe ImageOptim do
   end
 
   describe 'optimize multiple' do
-    %w[optimize_images optimize_images!].each do |list_method|
+    %w[
+      optimize_images
+      optimize_images!
+      optimize_images_data
+    ].each do |list_method|
       describe list_method do
         method = list_method.sub('images', 'image')
         describe 'without block' do
