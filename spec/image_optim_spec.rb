@@ -125,6 +125,28 @@ describe ImageOptim do
         expect(nrmse(compare_to, optimized)).to eq(0)
       end
     end
+
+    it 'ignores text file' do
+      original = ImageOptim::ImagePath.new(__FILE__)
+      copy = temp_copy(original)
+
+      expect(Tempfile).not_to receive(:new)
+      optimized_image = ImageOptim.optimize_image(copy)
+      expect(optimized_image).to be_nil
+      expect(copy.read).to eq(original.read)
+    end
+
+    {
+      :png => "\211PNG\r\n\032\n",
+      :jpeg => "\377\330",
+    }.each do |type, data|
+      it "ingores broken #{type}" do
+        path = FSPath.temp_file_path
+        path.write(data)
+        expect(ImageOptim::ImageMeta).to receive(:warn)
+        expect(ImageOptim.optimize_image(path)).to be_nil
+      end
+    end
   end
 
   describe :optimize_image! do
@@ -213,32 +235,6 @@ describe ImageOptim do
       expect(image_optim).not_to receive(:optimize_image)
 
       expect(image_optim.optimize_image_data(data)).to eq(nil)
-    end
-  end
-
-  describe 'unsupported' do
-    it 'ignores' do
-      original = ImageOptim::ImagePath.new(__FILE__)
-      copy = temp_copy(original)
-
-      expect(Tempfile).not_to receive(:new)
-      optimized_image = ImageOptim.optimize_image(copy)
-      expect(optimized_image).to be_nil
-      expect(copy.read).to eq(original.read)
-    end
-
-    {
-      :png => "\211PNG\r\n\032\n",
-      :jpeg => "\377\330",
-    }.each do |type, data|
-      describe "broken #{type}" do
-        it 'ignores path' do
-          path = FSPath.temp_file_path
-          path.write(data)
-          expect(ImageOptim::ImageMeta).to receive(:warn)
-          expect(ImageOptim.optimize_image(path)).to be_nil
-        end
-      end
     end
   end
 
