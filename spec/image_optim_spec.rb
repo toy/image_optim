@@ -4,8 +4,8 @@ require 'image_optim/cmd'
 require 'tempfile'
 
 describe ImageOptim do
-  test_images = ImageOptim::ImagePath.new(__FILE__).dirname.
-    glob('images/**/*.*').freeze
+  images_dir = ImageOptim::ImagePath.new(__FILE__).dirname / 'images'
+  test_images = images_dir.glob('**/*.*').freeze
 
   def temp_copy(image)
     image.temp_path.tap{ |path| image.copy(path) }
@@ -68,40 +68,61 @@ describe ImageOptim do
     end
   end
 
-  describe 'isolated' do
-    def expect_tempfile(expected)
-      count = 0
-      original_new = FSPath::Tempfile.method(:new)
-      allow(FSPath::Tempfile).to receive(:new) do |*args|
-        count += 1
-        original_new.call(*args)
-      end
-
-      yield
-
-      if expected.is_a?(Range)
-        expect(count).to be_in_range(expected)
+  describe :optimize_image do
+    def flatten_animation(image)
+      if image.format == :gif
+        flattened = image.temp_path
+        flatten_command = %W[
+          convert
+          #{image.to_s.shellescape}
+          -coalesce
+          -append
+          #{flattened.to_s.shellescape}
+        ].join(' ')
+        expect(Cmd.run(flatten_command)).to be_truthy
+        flattened
       else
-        expect(count).to eq(expected)
+        image
       end
     end
 
-    describe 'optimize' do
-      test_images.each do |original|
-        it "optimizes #{original}" do
-          copy = temp_copy(original)
+    def nrmse(image_a, image_b)
+      image_a = flatten_animation(image_a)
+      image_b = flatten_animation(image_b)
+      nrmse_command = %W[
+        compare
+        -metric RMSE
+        #{image_a.to_s.shellescape}
+        #{image_b.to_s.shellescape}
+        /dev/null
+        2>&1
+      ].join(' ')
+      nrmse = Cmd.capture(nrmse_command)[/\((\d+(\.\d+)?)\)/, 1]
+      nrmse.to_f if nrmse
+    end
 
-          image_optim = ImageOptim.new
+    it 'optimizes images' do
+      rotated = images_dir / 'orient/original.jpg'
+      rotate_images = images_dir.glob('orient/?.jpg')
 
-          multiple_workers = image_optim.workers_for_image(original).length > 1
-          expect_tempfile(multiple_workers ? 1..2 : 1) do
-            optimized_image = image_optim.optimize_image(copy)
-            expect(optimized_image).to be_a(ImageOptim::ImagePath::Optimized)
-            expect(optimized_image.size).to be_in_range(1...original.size)
-            expect(optimized_image.read).not_to eq(original.read)
-            expect(copy.read).to eq(original.read)
-          end
-        end
+      original_by_copy = Hash[test_images.map do |image|
+        [temp_copy(image), image]
+      end]
+      copies = original_by_copy.keys
+
+      ImageOptim.optimize_images(copies) do |copy, optimized|
+        original = original_by_copy[copy]
+
+        expect(copy).not_to be_nil
+        expect(copy.read).to eq(original.read)
+
+        expect(optimized).not_to be_nil
+        expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
+        expect(optimized.size).to be_in_range(1...original.size)
+        expect(optimized.read).not_to eq(original.read)
+
+        compare_to = rotate_images.include?(original) ? rotated : original
+        expect(nrmse(compare_to, optimized)).to eq(0)
       end
     end
   end
@@ -262,58 +283,6 @@ describe ImageOptim do
             end).to eq(results)
           end
         end
-      end
-    end
-  end
-
-  describe 'losslessness' do
-    images_dir = ImageOptim::ImagePath.new(__FILE__).dirname / 'images'
-    rotated = images_dir / 'orient/original.jpg'
-    rotate_images = images_dir.glob('orient/?.jpg')
-
-    def flatten_animation(image)
-      if image.format == :gif
-        flattened = image.temp_path
-        flatten_command = %W[
-          convert
-          #{image.to_s.shellescape}
-          -coalesce
-          -append
-          #{flattened.to_s.shellescape}
-        ].join(' ')
-        expect(Cmd.run(flatten_command)).to be_truthy
-        flattened
-      else
-        image
-      end
-    end
-
-    def check_lossless_optimization(original, optimized)
-      expect(optimized).not_to be_nil
-      original = flatten_animation(original)
-      optimized = flatten_animation(optimized)
-      nrmse_command = %W[
-        compare
-        -metric RMSE
-        #{original.to_s.shellescape}
-        #{optimized.to_s.shellescape}
-        /dev/null
-        2>&1
-      ].join(' ')
-      nrmse = Cmd.capture(nrmse_command)[/\((\d+(\.\d+)?)\)/, 1]
-      expect(nrmse).not_to be_nil
-      expect(nrmse.to_f).to eq(0)
-    end
-
-    it "rotates and optimizes images losslessly" do
-      ImageOptim.optimize_images(rotate_images) do |_, dst|
-        check_lossless_optimization(rotated, dst)
-      end
-    end
-
-    it "optimizes images losslessly" do
-      ImageOptim.optimize_images(test_images - rotate_images) do |src, dst|
-        check_lossless_optimization(src, dst)
       end
     end
   end
