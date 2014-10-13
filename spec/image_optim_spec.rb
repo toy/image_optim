@@ -3,8 +3,6 @@ require 'image_optim'
 require 'image_optim/cmd'
 require 'tempfile'
 
-TEST_IMAGES = ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/**/*.*')
-
 Tempfile.class_eval do
   def self.init_count
     class_variable_get(:@@init_count)
@@ -34,6 +32,9 @@ ImageOptim::ImagePath.class_eval do
 end
 
 describe ImageOptim do
+  test_images = ImageOptim::ImagePath.new(__FILE__).dirname.
+    glob('images/**/*.*').freeze
+
   matcher :be_in_range do |expected|
     match{ |actual| expected.include?(actual) }
   end
@@ -85,7 +86,7 @@ describe ImageOptim do
         it 'optimizes at least one test image' do
           options = base_options.merge(worker_klass.bin_sym => true)
           image_optim = ImageOptim.new(options)
-          expect(TEST_IMAGES.any? do |original|
+          expect(test_images.any? do |original|
             image_optim.optimize_image(original.temp_copy)
           end).to be true
         end
@@ -95,7 +96,7 @@ describe ImageOptim do
 
   describe 'isolated' do
     describe 'optimize' do
-      TEST_IMAGES.each do |original|
+      test_images.each do |original|
         it "optimizes #{original}" do
           copy = original.temp_copy
 
@@ -117,7 +118,7 @@ describe ImageOptim do
     end
 
     describe 'optimize in place' do
-      TEST_IMAGES.each do |original|
+      test_images.each do |original|
         it "optimizes #{original}" do
           copy = original.temp_copy
 
@@ -137,7 +138,7 @@ describe ImageOptim do
     end
 
     describe 'optimize image data' do
-      TEST_IMAGES.each do |original|
+      test_images.each do |original|
         it "optimizes #{original}" do
           image_optim = ImageOptim.new
           optimized_data = image_optim.optimize_image_data(original.read)
@@ -152,7 +153,7 @@ describe ImageOptim do
     end
 
     describe 'stop optimizing' do
-      TEST_IMAGES.each do |original|
+      test_images.each do |original|
         it "stops optimizing #{original}" do
           copy = original.temp_copy
 
@@ -169,9 +170,9 @@ describe ImageOptim do
 
   describe 'bunch' do
     it 'optimizes' do
-      copies = TEST_IMAGES.map(&:temp_copy)
+      copies = test_images.map(&:temp_copy)
       results = ImageOptim.optimize_images(copies)
-      zipped = TEST_IMAGES.zip(copies, results)
+      zipped = test_images.zip(copies, results)
       zipped.each do |original, copy, result|
         expect(result[0]).to eq(copy)
         expect(result[1]).to be_a(ImageOptim::ImagePath::Optimized)
@@ -181,9 +182,9 @@ describe ImageOptim do
     end
 
     it 'optimizes in place' do
-      copies = TEST_IMAGES.map(&:temp_copy)
+      copies = test_images.map(&:temp_copy)
       results = ImageOptim.optimize_images!(copies)
-      zipped = TEST_IMAGES.zip(copies, results)
+      zipped = test_images.zip(copies, results)
       zipped.each do |original, copy, result|
         expect(result[0]).to eq(copy)
         expect(result[1]).to be_a(ImageOptim::ImagePath::Optimized)
@@ -192,8 +193,8 @@ describe ImageOptim do
     end
 
     it 'optimizes datas' do
-      results = ImageOptim.optimize_images_data(TEST_IMAGES.map(&:read))
-      zipped = TEST_IMAGES.zip(results)
+      results = ImageOptim.optimize_images_data(test_images.map(&:read))
+      zipped = test_images.zip(results)
       zipped.each do |original, result|
         expect(result[0]).to eq(original.read)
         expect(result[1]).to be_a(String)
@@ -330,7 +331,7 @@ describe ImageOptim do
       end
     end
 
-    (TEST_IMAGES - rotate_images).each do |image|
+    (test_images - rotate_images).each do |image|
       it "optimizes #{image} losslessly" do
         check_lossless_optimization(image, ImageOptim.optimize_image(image))
       end
