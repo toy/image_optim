@@ -5,12 +5,6 @@ require 'tempfile'
 
 TEST_IMAGES = ImageOptim::ImagePath.new(__FILE__).dirname.glob('images/**/*.*')
 
-Fixnum.class_eval do
-  def in_range?(range)
-    range.include?(self)
-  end
-end
-
 Tempfile.class_eval do
   def self.init_count
     class_variable_get(:@@init_count)
@@ -40,6 +34,10 @@ ImageOptim::ImagePath.class_eval do
 end
 
 describe ImageOptim do
+  matcher :be_in_range do |expected|
+    match{ |actual| expected.include?(actual) }
+  end
+
   before do
     stub_const('Cmd', ImageOptim::Cmd)
 
