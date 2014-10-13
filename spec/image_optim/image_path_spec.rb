@@ -37,4 +37,18 @@ describe ImageOptim::ImagePath do
       expect(ImagePath.convert(image_path)).to be(image_path)
     end
   end
+
+  describe :binread do
+    it 'should read binary data' do
+      data = (0..255).to_a.pack('c*')
+
+      path = ImagePath.temp_file_path
+      path.write(data)
+
+      expect(path.binread).to eq(data)
+      if ''.respond_to?(:encoding)
+        expect(path.binread.encoding).to eq(Encoding.find('ASCII-8BIT'))
+      end
+    end
+  end
 end

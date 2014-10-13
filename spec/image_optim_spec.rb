@@ -200,8 +200,7 @@ describe ImageOptim do
       expect(temp).to receive(:close)
       expect(image_optim).to receive(:optimize_image).
         with(temp.path).and_return(optimized)
-      expect(optimized).to receive(:open).
-        with('rb').and_yield(double(:read => optimized_data))
+      expect(optimized).to receive(:binread).and_return(optimized_data)
 
       expect(image_optim.optimize_image_data(data)).to eq(optimized_data)
     end
