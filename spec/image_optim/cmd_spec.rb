@@ -1,9 +1,10 @@
-$LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
-require 'rspec'
+require 'spec_helper'
 require 'image_optim/cmd'
 
 describe ImageOptim::Cmd do
-  Cmd = ImageOptim::Cmd
+  before do
+    stub_const('Cmd', ImageOptim::Cmd)
+  end
 
   def expect_int_exception(&block)
     expect(&block).to raise_error(SignalException) do |error|

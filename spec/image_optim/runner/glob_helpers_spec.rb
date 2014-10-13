@@ -1,9 +1,10 @@
-$LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
-require 'rspec'
+require 'spec_helper'
 require 'image_optim/runner/glob_helpers'
 
 describe ImageOptim::Runner::GlobHelpers do
-  GH = ImageOptim::Runner::GlobHelpers
+  before do
+    stub_const('GlobHelpers', ImageOptim::Runner::GlobHelpers)
+  end
 
   describe :expand_braces do
     {
@@ -17,7 +18,7 @@ describe ImageOptim::Runner::GlobHelpers do
       'test{ing,}' => %w[testing test],
     }.each do |glob, expected|
       it "expands #{glob}" do
-        expect(GH.expand_braces(glob)).to match_array(expected)
+        expect(GlobHelpers.expand_braces(glob)).to match_array(expected)
       end
     end
   end

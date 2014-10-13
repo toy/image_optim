@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Speedup specs (~8x) [#60](https://github.com/toy/image_optim/issues/60) [@toy](https://github.com/toy)
 * `Cmd` module to ensure interrupted commands can't go unnoticed [@toy](https://github.com/toy)
 
 ## v0.17.1 (2014-10-06)

@@ -1,8 +1,11 @@
-$LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
-require 'rspec'
+require 'spec_helper'
 require 'image_optim/handler'
 
 describe ImageOptim::Handler do
+  before do
+    stub_const('Handler', ImageOptim::Handler)
+  end
+
   it 'uses original as source for first conversion '\
       'and two temp files for further conversions' do
     original = double(:original)
@@ -10,7 +13,7 @@ describe ImageOptim::Handler do
       fail 'temp_path called unexpectedly'
     end
 
-    handler = ImageOptim::Handler.new(original)
+    handler = Handler.new(original)
     temp_a = double(:temp_a)
     temp_b = double(:temp_b)
     expect(original).to receive(:temp_path).once.and_return(temp_a)
@@ -63,13 +66,13 @@ describe ImageOptim::Handler do
       handler = double
       result = double
 
-      expect(ImageOptim::Handler).to receive(:new).
+      expect(Handler).to receive(:new).
           with(original).and_return(handler)
       expect(handler).to receive(:process)
       expect(handler).to receive(:cleanup)
       expect(handler).to receive(:result).and_return(result)
 
-      expect(ImageOptim::Handler.for(original) do |h|
+      expect(Handler.for(original) do |h|
         h.process
       end).to eq(result)
     end
@@ -78,12 +81,12 @@ describe ImageOptim::Handler do
       original = double
       handler = double
 
-      expect(ImageOptim::Handler).to receive(:new).
+      expect(Handler).to receive(:new).
           with(original).and_return(handler)
       expect(handler).to receive(:cleanup)
 
       expect do
-        ImageOptim::Handler.for(original) do
+        Handler.for(original) do
           fail 'hello'
         end
       end.to raise_error 'hello'

@@ -1,19 +1,21 @@
-$LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
-require 'rspec'
+require 'spec_helper'
 require 'image_optim/bin_resolver'
 require 'image_optim/cmd'
 
-def with_env(key, value)
-  saved, ENV[key] = ENV[key], value
-  yield
-ensure
-  ENV[key] = saved
-end
-
 describe ImageOptim::BinResolver do
-  BinResolver = ImageOptim::BinResolver
-  Bin = BinResolver::Bin
-  SimpleVersion = BinResolver::SimpleVersion
+  def with_env(key, value)
+    saved, ENV[key] = ENV[key], value
+    yield
+  ensure
+    ENV[key] = saved
+  end
+
+  before do
+    stub_const('BinResolver', ImageOptim::BinResolver)
+    stub_const('Bin', BinResolver::Bin)
+    stub_const('SimpleVersion', BinResolver::SimpleVersion)
+    stub_const('Cmd', ImageOptim::Cmd)
+  end
 
   let(:image_optim){ double(:image_optim, :verbose => false) }
   let(:resolver){ BinResolver.new(image_optim) }

@@ -1,11 +1,12 @@
-$LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
-require 'rspec'
+require 'spec_helper'
 require 'image_optim/config'
 
 describe ImageOptim::Config do
-  IOConfig = ImageOptim::Config
+  before do
+    stub_const('IOConfig', ImageOptim::Config)
+  end
 
-  describe 'assert_no_unused_options!' do
+  describe :assert_no_unused_options! do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
     end
@@ -23,7 +24,7 @@ describe ImageOptim::Config do
     end
   end
 
-  describe 'nice' do
+  describe :nice do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
     end
@@ -44,7 +45,7 @@ describe ImageOptim::Config do
     end
   end
 
-  describe 'threads' do
+  describe :threads do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
     end
@@ -66,19 +67,18 @@ describe ImageOptim::Config do
     end
   end
 
-  describe 'for_worker' do
+  describe :for_worker do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
-    end
+      stub_const('Abc', Class.new do
+        def self.bin_sym
+          :abc
+        end
 
-    Abc = Class.new do
-      def self.bin_sym
-        :abc
-      end
-
-      def image_formats
-        []
-      end
+        def image_formats
+          []
+        end
+      end)
     end
 
     it 'returns empty hash by default' do
@@ -151,7 +151,7 @@ describe ImageOptim::Config do
   end
 
   describe 'class methods' do
-    describe 'read_options' do
+    describe :read_options do
       let(:path){ double(:path) }
       let(:full_path){ double(:full_path) }
 
