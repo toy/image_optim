@@ -6,7 +6,7 @@ describe ImageOptim::ImagePath do
     stub_const('ImagePath', ImageOptim::ImagePath)
   end
 
-  describe 'convert' do
+  describe :convert do
     it 'returns ImagePath for string' do
       path = 'a'
 

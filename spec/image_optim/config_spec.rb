@@ -6,7 +6,7 @@ describe ImageOptim::Config do
     stub_const('IOConfig', ImageOptim::Config)
   end
 
-  describe 'assert_no_unused_options!' do
+  describe :assert_no_unused_options! do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
     end
@@ -24,7 +24,7 @@ describe ImageOptim::Config do
     end
   end
 
-  describe 'nice' do
+  describe :nice do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
     end
@@ -45,7 +45,7 @@ describe ImageOptim::Config do
     end
   end
 
-  describe 'threads' do
+  describe :threads do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
     end
@@ -67,7 +67,7 @@ describe ImageOptim::Config do
     end
   end
 
-  describe 'for_worker' do
+  describe :for_worker do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
       stub_const('Abc', Class.new do
@@ -151,7 +151,7 @@ describe ImageOptim::Config do
   end
 
   describe 'class methods' do
-    describe 'read_options' do
+    describe :read_options do
       let(:path){ double(:path) }
       let(:full_path){ double(:full_path) }
 
