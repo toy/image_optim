@@ -236,20 +236,18 @@ describe ImageOptim do
   end
 
   describe 'optimize multiple' do
-    let(:srcs){ ('a'..'z').to_a }
-
     %w[optimize_images optimize_images!].each do |list_method|
       describe list_method do
         method = list_method.sub('images', 'image')
         describe 'without block' do
           it 'optimizes images and returns array of results' do
             image_optim = ImageOptim.new
-            dsts = srcs.map do |src|
-              dst = "#{src}_"
+            results = test_images.map do |src|
+              dst = double
               expect(image_optim).to receive(method).with(src).and_return(dst)
-              dst
+              [src, dst]
             end
-            expect(image_optim.send(list_method, srcs)).to eq(srcs.zip(dsts))
+            expect(image_optim.send(list_method, test_images)).to eq(results)
           end
         end
 
@@ -257,13 +255,13 @@ describe ImageOptim do
           it 'optimizes images, yields path and result for each and '\
               'returns array of yield results' do
             image_optim = ImageOptim.new
-            results = srcs.map do |src|
-              dst = "#{src}_"
+            results = test_images.map do |src|
+              dst = double
               expect(image_optim).to receive(method).with(src).and_return(dst)
-              "#{src} #{dst}"
+              [src, dst, :test]
             end
-            expect(image_optim.send(list_method, srcs) do |src, dst|
-              "#{src} #{dst}"
+            expect(image_optim.send(list_method, test_images) do |src, dst|
+              [src, dst, :test]
             end).to eq(results)
           end
         end
