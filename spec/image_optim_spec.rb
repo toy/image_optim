@@ -23,7 +23,7 @@ describe ImageOptim do
   end
 
   describe 'workers' do
-    it 'is ordered by run_order' do
+    they 'are ordered by run_order' do
       image_optim = ImageOptim.new
       original_klasses = ImageOptim::Worker.klasses
       formats = original_klasses.map do |klass|
