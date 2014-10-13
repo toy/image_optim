@@ -104,21 +104,6 @@ describe ImageOptim do
         end
       end
     end
-
-    describe 'optimize image data' do
-      test_images.each do |original|
-        it "optimizes #{original}" do
-          image_optim = ImageOptim.new
-          optimized_data = image_optim.optimize_image_data(original.read)
-          expect(optimized_data).not_to be_nil
-
-          expected_path = image_optim.optimize_image(temp_copy(original))
-          expect(optimized_data).to eq(expected_path.open('rb', &:read))
-
-          expect(image_optim.optimize_image_data(optimized_data)).to be_nil
-        end
-      end
-    end
   end
 
   describe :optimize_image! do
@@ -152,6 +137,61 @@ describe ImageOptim do
       expect(ImageOptim::ImagePath::Optimized).not_to receive(:new)
 
       expect(image_optim.optimize_image!(original)).to eq(nil)
+    end
+  end
+
+  describe :optimize_image_data do
+    it 'create temp file, optimizes image and returns data' do
+      data = double
+      temp = double(:path => double)
+      optimized = double
+      optimized_data = double
+      image_optim = ImageOptim.new
+
+      allow(ImageOptim::ImageMeta).to receive(:for_data).
+        with(data).and_return(double(:format => 'xxx'))
+
+      expect(ImageOptim::ImagePath).to receive(:temp_file).and_yield(temp)
+      expect(temp).to receive(:binmode)
+      expect(temp).to receive(:write).with(data)
+      expect(temp).to receive(:close)
+      expect(image_optim).to receive(:optimize_image).
+        with(temp.path).and_return(optimized)
+      expect(optimized).to receive(:open).
+        with('rb').and_yield(double(:read => optimized_data))
+
+      expect(image_optim.optimize_image_data(data)).to eq(optimized_data)
+    end
+
+    it 'returns nil if optimization fails' do
+      data = double
+      temp = double(:path => double)
+      image_optim = ImageOptim.new
+
+      allow(ImageOptim::ImageMeta).to receive(:for_data).
+        with(data).and_return(double(:format => 'xxx'))
+
+      expect(ImageOptim::ImagePath).to receive(:temp_file).and_yield(temp)
+      expect(temp).to receive(:binmode)
+      expect(temp).to receive(:write).with(data)
+      expect(temp).to receive(:close)
+      expect(image_optim).to receive(:optimize_image).
+        with(temp.path).and_return(nil)
+
+      expect(image_optim.optimize_image_data(data)).to eq(nil)
+    end
+
+    it 'returns nil if format can\'t be detected' do
+      data = double
+      image_optim = ImageOptim.new
+
+      allow(ImageOptim::ImageMeta).to receive(:for_data).
+        with(data).and_return(double(:format => nil))
+
+      expect(ImageOptim::ImagePath).not_to receive(:temp_file)
+      expect(image_optim).not_to receive(:optimize_image)
+
+      expect(image_optim.optimize_image_data(data)).to eq(nil)
     end
   end
 
