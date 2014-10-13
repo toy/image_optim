@@ -2,14 +2,14 @@ require 'spec_helper'
 require 'image_optim/bin_resolver'
 require 'image_optim/cmd'
 
-def with_env(key, value)
-  saved, ENV[key] = ENV[key], value
-  yield
-ensure
-  ENV[key] = saved
-end
-
 describe ImageOptim::BinResolver do
+  def with_env(key, value)
+    saved, ENV[key] = ENV[key], value
+    yield
+  ensure
+    ENV[key] = saved
+  end
+
   before do
     stub_const('BinResolver', ImageOptim::BinResolver)
     stub_const('Bin', BinResolver::Bin)
