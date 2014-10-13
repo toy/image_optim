@@ -138,21 +138,6 @@ describe ImageOptim do
         end
       end
     end
-
-    describe 'stop optimizing' do
-      test_images.each do |original|
-        it "stops optimizing #{original}" do
-          copy = temp_copy(original)
-
-          tries = 0
-          10.times do
-            tries += 1
-            break unless ImageOptim.optimize_image!(copy)
-          end
-          expect(tries).to be_in_range(2...3)
-        end
-      end
-    end
   end
 
   describe 'unsupported' do
