@@ -252,8 +252,16 @@ class Analyser
       @run_cache ||= Hash.new{ |h, k| h[k] = {} }
     end
 
+    def with_progress(workers, last_result, &block)
+      if !last_result || last_result.steps.length < 3
+        workers.with_progress(&block)
+      else
+        workers.each(&block)
+      end
+    end
+
     def run_workers(src, workers, last_result = nil, &block)
-      workers.with_progress do |worker|
+      with_progress(workers, last_result) do |worker|
         worker_result, result_image = run_worker(src, worker)
 
         steps = (last_result ? last_result.steps : []) + [worker_result]
