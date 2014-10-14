@@ -240,6 +240,7 @@ optipng:
 * `:nice` — Nice level *(defaults to `10`)*
 * `:threads` — Number of threads or disable *(defaults to number of processors)*
 * `:verbose` — Verbose output *(defaults to `false`)*
+* `:skip_missing_workers` — Skip workers with missing or problematic binaries *(defaults to `false`)*
 
 Worker can be disabled by passing `false` instead of options hash.
 

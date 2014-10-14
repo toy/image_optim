@@ -93,6 +93,10 @@ class ImageOptim
       !!get!(:verbose)
     end
 
+    def skip_missing_workers
+      !!get!(:skip_missing_workers)
+    end
+
     def for_worker(klass)
       worker_options = get!(klass.bin_sym)
 
