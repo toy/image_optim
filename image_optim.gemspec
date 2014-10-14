@@ -24,4 +24,5 @@ Gem::Specification.new do |s|
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9.3')
     s.add_development_dependency 'rubocop', '~> 0.26.0'
   end
+  s.add_development_dependency 'haml', '~> 4.0'
 end

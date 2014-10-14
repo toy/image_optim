@@ -23,6 +23,7 @@ class ImageOptim
 
     # Binary resolving: create symlink if there is XXX_BIN environment variable,
     # build Bin with full path, check binary version
+    # Return Bin instance
     def resolve!(name)
       name = name.to_sym
 
@@ -42,6 +43,8 @@ class ImageOptim
       else
         fail BinNotFound, "`#{name}` not found"
       end
+
+      @bins[name]
     end
 
     # Path to vendor at root of image_optim

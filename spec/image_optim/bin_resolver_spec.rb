@@ -65,7 +65,7 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it 'resolves bin in path' do
+  it 'resolves bin in path and returns instance of Bin' do
     with_env 'LS_BIN', nil do
       expect(FSPath).not_to receive(:temp_dir)
       expect(resolver).to receive(:full_path).with(:ls).and_return('/bin/ls')
@@ -74,7 +74,7 @@ describe ImageOptim::BinResolver do
       expect(bin).to receive(:check!).exactly(5).times
 
       5.times do
-        resolver.resolve!(:ls)
+        expect(resolver.resolve!(:ls)).to eq(bin)
       end
       expect(resolver.env_path).to eq([
         ENV['PATH'],
