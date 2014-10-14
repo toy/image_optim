@@ -24,7 +24,14 @@ class ImageOptim
       end
 
       def optimize(src, dst)
-        args = %W[-k#{copy_chunks ? 1 : 0} -s#{strategy} -q -y #{src} #{dst}]
+        args = %W[
+          -k#{copy_chunks ? 1 : 0}
+          -s#{strategy}
+          -q
+          -y
+          #{src}
+          #{dst}
+        ]
         execute(:pngout, *args) && optimized?(src, dst)
       end
     end

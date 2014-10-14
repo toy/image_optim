@@ -34,11 +34,15 @@ class ImageOptim
 
       def optimize(src, dst)
         src.copy(dst)
-        args = %W[-q -- #{dst}]
+        args = %W[
+          --quiet
+          --
+          #{dst}
+        ]
         strip.each do |strip_marker|
           args.unshift "--strip-#{strip_marker}"
         end
-        args.unshift "-m#{max_quality}" if max_quality < 100
+        args.unshift "--max=#{max_quality}" if max_quality < 100
         execute(:jpegoptim, *args) && optimized?(src, dst)
       end
     end
