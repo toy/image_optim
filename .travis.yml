@@ -22,8 +22,7 @@ before_install:
 
   - echo 'Installing advancecomp(advpng):'
   - ADVANCECOMP_VERSION=1.19
-  - wget http://prdownloads.sourceforge.net/advancemame/advancecomp-$ADVANCECOMP_VERSION.tar.gz?download
-  - tar -xzf advancecomp-$ADVANCECOMP_VERSION.tar.gz
+  - curl -L "http://prdownloads.sourceforge.net/advancemame/advancecomp-$ADVANCECOMP_VERSION.tar.gz?download" | tar -xz
   - (cd advancecomp-$ADVANCECOMP_VERSION && ./configure && make)
   - mv advancecomp-$ADVANCECOMP_VERSION/advpng ~/bin
 
@@ -35,8 +34,7 @@ before_install:
 
   - echo 'Installing pngout:'
   - PNGOUT_VERSION=20130221
-  - wget http://static.jonof.id.au/dl/kenutils/pngout-$PNGOUT_VERSION-linux.tar.gz
-  - tar -xzf pngout-$PNGOUT_VERSION-linux.tar.gz
+  - curl -L "http://static.jonof.id.au/dl/kenutils/pngout-$PNGOUT_VERSION-linux.tar.gz" | tar -xz
   - mv pngout-$PNGOUT_VERSION-linux/x86_64/pngout ~/bin
 env:
   - PATH=~/bin:$PATH
