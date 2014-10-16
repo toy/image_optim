@@ -28,8 +28,9 @@ before_install:
   - mv advancecomp-$ADVANCECOMP_VERSION/advpng ~/bin
 
   - echo 'Installing pngquant:'
+  - PNGQUANT_VERSION=2.3.1
   - git clone git://github.com/pornel/pngquant.git
-  - (cd pngquant && git checkout $(git describe --tags --abbrev=0) && make)
+  - (cd pngquant && git checkout $PNGQUANT_VERSION && make)
   - mv pngquant/pngquant ~/bin
 
   - echo 'Installing pngout:'
