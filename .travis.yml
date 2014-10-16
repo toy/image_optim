@@ -22,7 +22,7 @@ before_install:
 
   - echo 'Installing advancecomp(advpng):'
   - ADVANCECOMP_VERSION=1.19
-  - wget http://downloads.sourceforge.net/project/advancemame/advancecomp/$ADVANCECOMP_VERSION/advancecomp-$ADVANCECOMP_VERSION.tar.gz
+  - wget http://prdownloads.sourceforge.net/advancemame/advancecomp-$ADVANCECOMP_VERSION.tar.gz?download
   - tar -xzf advancecomp-$ADVANCECOMP_VERSION.tar.gz
   - (cd advancecomp-$ADVANCECOMP_VERSION && ./configure && make)
   - mv advancecomp-$ADVANCECOMP_VERSION/advpng ~/bin
