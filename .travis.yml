@@ -22,20 +22,19 @@ before_install:
 
   - echo 'Installing advancecomp(advpng):'
   - ADVANCECOMP_VERSION=1.19
-  - wget http://downloads.sourceforge.net/project/advancemame/advancecomp/$ADVANCECOMP_VERSION/advancecomp-$ADVANCECOMP_VERSION.tar.gz
-  - tar -xzf advancecomp-$ADVANCECOMP_VERSION.tar.gz
+  - curl -L "http://prdownloads.sourceforge.net/advancemame/advancecomp-$ADVANCECOMP_VERSION.tar.gz?download" | tar -xz
   - (cd advancecomp-$ADVANCECOMP_VERSION && ./configure && make)
   - mv advancecomp-$ADVANCECOMP_VERSION/advpng ~/bin
 
   - echo 'Installing pngquant:'
+  - PNGQUANT_VERSION=2.3.0
   - git clone git://github.com/pornel/pngquant.git
-  - (cd pngquant && git checkout $(git describe --tags --abbrev=0) && make)
+  - (cd pngquant && git checkout $PNGQUANT_VERSION && make)
   - mv pngquant/pngquant ~/bin
 
   - echo 'Installing pngout:'
   - PNGOUT_VERSION=20130221
-  - wget http://static.jonof.id.au/dl/kenutils/pngout-$PNGOUT_VERSION-linux.tar.gz
-  - tar -xzf pngout-$PNGOUT_VERSION-linux.tar.gz
+  - curl -L "http://static.jonof.id.au/dl/kenutils/pngout-$PNGOUT_VERSION-linux.tar.gz" | tar -xz
   - mv pngout-$PNGOUT_VERSION-linux/x86_64/pngout ~/bin
 env:
   - PATH=~/bin:$PATH
