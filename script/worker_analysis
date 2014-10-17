@@ -438,6 +438,7 @@ class Analyser
       worker_option_variants.each do |options|
         options = HashHelpers.deep_symbolise_keys(options)
         worker = WorkerVariant.new(klass, image_optim, options)
+        puts worker.id
         worker.image_formats.each do |format|
           @workers_by_format[format] << worker
         end
