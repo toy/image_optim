@@ -490,12 +490,18 @@ private
   end
 end
 
-option_variants = begin
-  YAML.load_file('.analysis_variants.yml')
+def option_variants
+  path = '.analysis_variants.yml'
+  case h = YAML.load_file(path)
+  when Hash then h
+  when false then {}
+  else abort "expected a hash in #{path}"
+  end
 rescue Errno::ENOENT => e
   warn e
   {}
 end
+
 analyser = Analyser.new(option_variants)
 
 if ARGV.empty?
