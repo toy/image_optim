@@ -9,7 +9,7 @@ class ImageOptim
 
       LEVEL_OPTION =
       option(:level, 3, 'Compression level: '\
-          '`0` - Set unoptimazation flag, '\
+          '`0` - Set unoptimization flag, '\
           '`1` - stores only the changed portion of each image, '\
           '`2` - uses transparency to shrink the file further., '\
           '`3` - several optimization methods (slower, better results)') do |v|
