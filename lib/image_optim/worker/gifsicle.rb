@@ -17,7 +17,7 @@ class ImageOptim
       end
 
       CAREFUL_OPTION =
-      option(:careful, false, "Write larger files that avoid bugs in some other GIF implementations."){ |v| !!v }
+      option(:careful, false, 'Avoid bugs with some software.'){ |v| !!v }
 
       def optimize(src, dst)
         args = %W[
