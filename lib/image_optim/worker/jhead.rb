@@ -17,15 +17,26 @@ class ImageOptim
         -10
       end
 
+      def used_bins
+        [:jhead, :jpegtran]
+      end
+
       def optimize(src, dst)
-        if (2..8).include?(EXIFR::JPEG.new(src.to_s).orientation.to_i)
-          src.copy(dst)
-          args = %W[-autorot #{dst}]
-          resolve_bin!(:jpegtran)
-          execute(:jhead, *args) && dst.size?
-        else
-          false
-        end
+        return false unless oriented?(src)
+        src.copy(dst)
+        args = %W[
+          -autorot
+          #{dst}
+        ]
+        resolve_bin!(:jpegtran)
+        execute(:jhead, *args) && dst.size?
+      end
+
+    private
+
+      def oriented?(image)
+        exif = EXIFR::JPEG.new(image.to_s)
+        (2..8).include?(exif.orientation.to_i)
       end
     end
   end

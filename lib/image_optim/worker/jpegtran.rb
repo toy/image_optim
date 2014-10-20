@@ -17,15 +17,26 @@ class ImageOptim
       option(:jpegrescan, false, 'Use jpegtran through jpegrescan, '\
           'ignore progressive option'){ |v| !!v }
 
+      def used_bins
+        jpegrescan ? [:jpegtran, :jpegrescan] : [:jpegtran]
+      end
+
       def optimize(src, dst)
         if jpegrescan
-          args = %W[#{src} #{dst}]
+          args = %W[
+            #{src}
+            #{dst}
+          ]
           args.unshift '-s' unless copy_chunks
           resolve_bin!(:jpegtran)
           execute(:jpegrescan, *args) && optimized?(src, dst)
         else
-          args = %W[-optimize -outfile #{dst} #{src}]
-          args.unshift '-copy', copy_chunks ? 'all' : 'none'
+          args = %W[
+            -optimize
+            -outfile #{dst}
+            #{src}
+          ]
+          args.unshift '-copy', (copy_chunks ? 'all' : 'none')
           args.unshift '-progressive' if progressive
           execute(:jpegtran, *args) && optimized?(src, dst)
         end

@@ -1,5 +1,4 @@
-$LOAD_PATH.unshift File.expand_path('../../../../lib', __FILE__)
-require 'rspec'
+require 'spec_helper'
 require 'image_optim/bin_resolver/simple_version'
 
 describe ImageOptim::BinResolver::SimpleVersion do
@@ -7,7 +6,7 @@ describe ImageOptim::BinResolver::SimpleVersion do
     ImageOptim::BinResolver::SimpleVersion.new(str)
   end
 
-  it 'should compare versions' do
+  it 'compares versions' do
     expect(v '1.17').to be > '0'
     expect(v '1.17').to be > '0.1'
     expect(v '1.17').to be > '0.9'
@@ -17,7 +16,7 @@ describe ImageOptim::BinResolver::SimpleVersion do
     expect(v '1.17').to be < '2.1'
   end
 
-  it 'should normalize versions' do
+  it 'normalizes versions' do
     variations = %w[1 01 1.0 1.00 1.0.0 1.0.0.0]
     variations.each do |a|
       variations.each do |b|
@@ -26,7 +25,7 @@ describe ImageOptim::BinResolver::SimpleVersion do
     end
   end
 
-  it 'should convert objects' do
+  it 'converts objects' do
     expect(v 1.17).to eq('1.17')
     expect(v '1.17').to eq('1.17')
     expect(v(v 1.17)).to eq('1.17')

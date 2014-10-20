@@ -2,6 +2,7 @@ require 'image_optim/option_helpers'
 require 'image_optim/configuration_error'
 require 'image_optim/hash_helpers'
 require 'image_optim/worker'
+require 'image_optim/cmd'
 require 'set'
 require 'yaml'
 
@@ -10,43 +11,41 @@ class ImageOptim
   class Config
     include OptionHelpers
 
-    CONFIG_HOME = File.expand_path(ENV['XDG_CONFIG_HOME'] || '~/.config')
-    GLOBAL_CONFIG_PATH = File.join(CONFIG_HOME, 'image_optim.yml')
-    LOCAL_CONFIG_PATH = './.image_optim.yml'
+    GLOBAL_PATH = begin
+      File.join(ENV['XDG_CONFIG_HOME'] || '~/.config', 'image_optim.yml')
+    end
+    LOCAL_PATH = './.image_optim.yml'
 
     class << self
-      # Read config at GLOBAL_CONFIG_PATH if it exists, warn if anything is
-      # wrong
-      def global
-        File.file?(GLOBAL_CONFIG_PATH) ? read(GLOBAL_CONFIG_PATH) : {}
-      end
-
-      # Read config at LOCAL_CONFIG_PATH if it exists, warn if anything is
-      # wrong
-      def local
-        File.file?(LOCAL_CONFIG_PATH) ? read(LOCAL_CONFIG_PATH) : {}
-      end
-
-    private
-
-      def read(path)
-        config = YAML.load_file(path)
+      # Read options at path: expand path (warn on failure), return {} if file
+      # does not exist, read yaml, check if it is a Hash, deep symbolise keys
+      def read_options(path)
+        begin
+          full_path = File.expand_path(path)
+        rescue ArgumentError => e
+          warn "Can't expand path #{path}: #{e}"
+          return {}
+        end
+        return {} unless File.file?(full_path)
+        config = YAML.load_file(full_path)
         unless config.is_a?(Hash)
-          fail "excpected hash, got #{config.inspect}"
+          fail "expected hash, got #{config.inspect}"
         end
         HashHelpers.deep_symbolise_keys(config)
       rescue => e
-        warn "exception when reading #{path}: #{e}"
+        warn "exception when reading #{full_path}: #{e}"
         {}
       end
     end
 
     def initialize(options)
-      @options = [
-        Config.global,
-        Config.local,
-        HashHelpers.deep_symbolise_keys(options),
-      ].reduce do |memo, hash|
+      config_paths = options.delete(:config_paths) || [GLOBAL_PATH, LOCAL_PATH]
+      config_paths = Array(config_paths)
+
+      to_merge = config_paths.map{ |path| self.class.read_options(path) }
+      to_merge << HashHelpers.deep_symbolise_keys(options)
+
+      @options = to_merge.reduce do |memo, hash|
         HashHelpers.deep_merge(memo, hash)
       end
       @used = Set.new
@@ -61,8 +60,7 @@ class ImageOptim
     def assert_no_unused_options!
       unknown_options = @options.reject{ |key, _value| @used.include?(key) }
       return if unknown_options.empty?
-      fail ConfigurationError, "unknown options #{unknown_options.inspect} "\
-          "for #{self}"
+      fail ConfigurationError, "unknown options #{unknown_options.inspect}"
     end
 
     def nice
@@ -121,13 +119,17 @@ class ImageOptim
     def processor_count
       @processor_count ||= case host_os = RbConfig::CONFIG['host_os']
       when /darwin9/
-        `hwprefs cpu_count`
+        Cmd.capture 'hwprefs cpu_count'
       when /darwin/
-        (`which hwprefs` != '') ? `hwprefs thread_count` : `sysctl -n hw.ncpu`
+        if (Cmd.capture 'which hwprefs') != ''
+          Cmd.capture 'hwprefs thread_count'
+        else
+          Cmd.capture 'sysctl -n hw.ncpu'
+        end
       when /linux/
-        `grep -c processor /proc/cpuinfo`
+        Cmd.capture 'grep -c processor /proc/cpuinfo'
       when /freebsd/
-        `sysctl -n hw.ncpu`
+        Cmd.capture 'sysctl -n hw.ncpu'
       when /mswin|mingw/
         require 'win32ole'
         WIN32OLE.

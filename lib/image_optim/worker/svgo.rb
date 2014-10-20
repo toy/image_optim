@@ -5,7 +5,10 @@ class ImageOptim
     # https://github.com/svg/svgo
     class Svgo < Worker
       def optimize(src, dst)
-        args = %W[-i #{src} -o #{dst}]
+        args = %W[
+          --input #{src}
+          --output #{dst}
+        ]
         execute(:svgo, *args) && optimized?(src, dst)
       end
     end

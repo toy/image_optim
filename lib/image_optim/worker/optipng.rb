@@ -18,13 +18,17 @@ class ImageOptim
           '`true` - interlace on, '\
           '`false` - interlace off, '\
           '`nil` - as is in original image') do |v|
-        # convert everything truthy to `true`, leave `false` and `nil` as is
-        v && true
+        TrueFalseNil.convert(v)
       end
 
       def optimize(src, dst)
         src.copy(dst)
-        args = %W[-o#{level} -quiet -- #{dst}]
+        args = %W[
+          -o #{level}
+          -quiet
+          --
+          #{dst}
+        ]
         args.unshift "-i#{interlace ? 1 : 0}" unless interlace.nil?
         execute(:optipng, *args) && optimized?(src, dst)
       end

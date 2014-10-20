@@ -1,9 +1,10 @@
-$LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
-require 'rspec'
+require 'spec_helper'
 require 'image_optim/space'
 
 describe ImageOptim::Space do
-  Space = ImageOptim::Space
+  before do
+    stub_const('Space', ImageOptim::Space)
+  end
 
   {
     0           => '      ',
@@ -17,7 +18,7 @@ describe ImageOptim::Space do
     10_000_000  => '  9.5M',
     100_000_000 => ' 95.4M',
   }.each do |size, space|
-    it "should convert #{size} to #{space}" do
+    it "converts #{size} to #{space}" do
       expect(Space.space(size)).to eq(space)
     end
   end

@@ -17,7 +17,13 @@ class ImageOptim
 
       def optimize(src, dst)
         src.copy(dst)
-        args = %W[-#{level} -z -q -- #{dst}]
+        args = %W[
+          --recompress
+          -#{level}
+          --quiet
+          --
+          #{dst}
+        ]
         execute(:advpng, *args) && optimized?(src, dst)
       end
     end

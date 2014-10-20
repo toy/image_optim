@@ -11,3 +11,6 @@ Makefile
 *.o
 *.bundle
 /tmp/
+
+/analysis/
+/.analysis_variants.yml

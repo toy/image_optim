@@ -45,8 +45,8 @@ class ImageOptim
 
     if verbose
       $stderr << config
-      $stderr << "Nice level: #{nice}\n"
-      $stderr << "Using threads: #{threads}\n"
+      $stderr << "nice: #{nice}\n"
+      $stderr << "threads: #{threads}\n"
     end
 
     @bin_resolver = BinResolver.new(self)
@@ -54,6 +54,8 @@ class ImageOptim
     @workers_by_format = create_workers_by_format do |klass|
       config.for_worker(klass)
     end
+
+    log_workers_by_format if verbose
 
     config.assert_no_unused_options!
   end
@@ -68,15 +70,15 @@ class ImageOptim
   def optimize_image(original)
     original = ImagePath.convert(original)
     return unless (workers = workers_for_image(original))
-    handler = Handler.new(original)
-    workers.each do |worker|
-      handler.process do |src, dst|
-        worker.optimize(src, dst)
+    result = Handler.for(original) do |handler|
+      workers.each do |worker|
+        handler.process do |src, dst|
+          worker.optimize(src, dst)
+        end
       end
     end
-    handler.cleanup
-    return unless handler.result
-    ImagePath::Optimized.new(handler.result, original)
+    return unless result
+    ImagePath::Optimized.new(result, original)
   end
 
   # Optimize one file in place, return original as OptimizedImagePath or nil if
@@ -98,7 +100,7 @@ class ImageOptim
       temp.close
 
       if (result = optimize_image(temp.path))
-        result.open('rb', &:read)
+        result.binread
       end
     end
   end
@@ -106,7 +108,7 @@ class ImageOptim
   # Optimize multiple images
   # if block given yields path and result for each image and returns array of
   # yield results
-  # else return array of results
+  # else return array of path and result pairs
   def optimize_images(paths, &block)
     run_method_for(paths, :optimize_image, &block)
   end
@@ -114,7 +116,7 @@ class ImageOptim
   # Optimize multiple images in place
   # if block given yields path and result for each image and returns array of
   # yield results
-  # else return array of results
+  # else return array of path and result pairs
   def optimize_images!(paths, &block)
     run_method_for(paths, :optimize_image!, &block)
   end
@@ -122,7 +124,7 @@ class ImageOptim
   # Optimize multiple image datas
   # if block given yields original and result for each image data and returns
   # array of yield results
-  # else return array of results
+  # else return array of path and result pairs
   def optimize_images_data(datas, &block)
     run_method_for(datas, :optimize_image_data, &block)
   end
@@ -164,28 +166,45 @@ class ImageOptim
 
 private
 
+  def log_workers_by_format
+    $stderr << "Workers by format:\n"
+    @workers_by_format.each do |format, workers|
+      $stderr << "#{format}:\n"
+      workers.each do |worker|
+        $stderr << "  #{worker.class.bin_sym}:\n"
+        worker.options.each do |name, value|
+          $stderr << "    #{name}: #{value.inspect}\n"
+        end
+      end
+    end
+  end
+
   # Create hash with format mapped to list of workers sorted by run order
   def create_workers_by_format(&options_proc)
     by_format = {}
-    Worker.klasses.each do |klass|
-      next unless (options = options_proc[klass])
-      worker = klass.new(self, options)
+    workers = Worker.create_all(self, &options_proc)
+    Worker.resolve_all!(workers)
+    sorted = workers.sort_by.with_index{ |worker, i| [worker.run_order, i] }
+    sorted.each do |worker|
       worker.image_formats.each do |format|
         by_format[format] ||= []
         by_format[format] << worker
       end
     end
-    by_format.each{ |_format, workers| workers.sort! }
+    by_format
   end
 
-  # Run method for each path and yield each path and result if block given
-  def run_method_for(paths, method_name, &block)
-    apply_threading(paths).map do |path|
-      result = send(method_name, path)
+  # Run method for each item in list
+  # if block given yields item and result for item and returns array of yield
+  # results
+  # else return array of item and result pairs
+  def run_method_for(list, method_name, &block)
+    apply_threading(list).map do |item|
+      result = send(method_name, item)
       if block
-        block.call(path, result)
+        block.call(item, result)
       else
-        result
+        [item, result]
       end
     end
   end
@@ -201,7 +220,7 @@ private
 end
 
 %w[
-  pngcrush pngout optipng advpng
+  pngcrush pngout advpng optipng pngquant
   jhead jpegoptim jpegtran
   gifsicle
   svgo

@@ -2,11 +2,14 @@
 # encoding: UTF-8
 
 require 'image_optim/runner'
+require 'image_optim/true_false_nil'
+require 'image_optim/non_negative_integer_range'
 
 options = {}
 
 option_parser = OptionParser.new do |op|
   ImageOptim::TrueFalseNil.add_to_option_parser(op)
+  ImageOptim::NonNegativeIntegerRange.add_to_option_parser(op)
 
   op.banner = <<-TEXT.gsub(/^\s*\|/, '')
     |#{ImageOptim.full_version}
@@ -15,14 +18,36 @@ option_parser = OptionParser.new do |op|
     |  #{op.program_name} [options] image_path …
     |
     |Configuration will be read and prepanded to options from two paths:
-    |  #{ImageOptim::Config::GLOBAL_CONFIG_PATH}
-    |  #{ImageOptim::Config::LOCAL_CONFIG_PATH}
+    |  #{ImageOptim::Config::GLOBAL_PATH}
+    |  #{ImageOptim::Config::LOCAL_PATH}
     |
   TEXT
 
-  op.on('-r', '-R', '--recursive', 'Recurively scan directories '\
+  op.on('--config-paths PATH1,PATH2', Array, 'Config paths to use instead of '\
+      'default ones') do |paths|
+    options[:config_paths] = paths
+  end
+
+  op.separator nil
+
+  op.on('-r', '-R', '--recursive', 'Recursively scan directories '\
       'for images') do |recursive|
     options[:recursive] = recursive
+  end
+
+  op.on("--exclude-dir 'GLOB'", 'Glob for excluding directories '\
+      '(defaults to .*)') do |glob|
+    options[:exclude_dir_glob] = glob
+  end
+
+  op.on("--exclude-file 'GLOB'", 'Glob for excluding files '\
+      '(defaults to .*)') do |glob|
+    options[:exclude_file_glob] = glob
+  end
+
+  op.on("--exclude 'GLOB'", 'Set glob for excluding both directories and '\
+      'files') do |glob|
+    options[:exclude_file_glob] = options[:exclude_dir_glob] = glob
   end
 
   op.separator nil
@@ -65,6 +90,8 @@ option_parser = OptionParser.new do |op|
         [Integer, 'N']
       when Array >= type
         [Array, 'a,b,c']
+      when ImageOptim::NonNegativeIntegerRange == type
+        [type, 'M-N']
       else
         fail "Unknown type #{type}"
       end
@@ -87,33 +114,42 @@ option_parser = OptionParser.new do |op|
   op.separator nil
   op.separator '  Common options:'
 
-  op.on('-v', '--verbose', 'Verbose output') do |verbose|
-    options[:verbose] = verbose
+  op.on('-v', '--verbose', 'Verbose output') do
+    options[:verbose] = true
   end
 
-  op.on_tail('-h', '--help', 'Show full help') do
+  op.on_tail('-h', '--help', 'Show help and exit') do
     puts op.help
     exit
   end
 
-  op.on_tail('--version', 'Show version') do
+  op.on_tail('--version', 'Show version and exit') do
     puts ImageOptim.version
     exit
+  end
+
+  op.on_tail('--info', 'Show environment info and exit') do
+    options[:verbose] = true
+    options[:only_info] = true
   end
 end
 
 begin
   args = ARGV.dup
 
-  # assume -v to be request to print version if it is the only argument
+  # assume -v to be a request to print version if it is the only argument
   args = %w[--version] if args == %w[-v]
 
   option_parser.parse!(args)
   if options[:verbose]
     $stderr.puts ImageOptim.full_version
   end
-  unless ImageOptim::Runner.run!(args, options)
-    abort
+
+  only_info = options.delete(:only_info)
+  runner = ImageOptim::Runner.new(options)
+  unless only_info
+    abort 'specify paths to optimize' if args.empty?
+    abort unless runner.run!(args)
   end
 rescue OptionParser::ParseError => e
   abort "#{e}\n\n#{option_parser.help}"

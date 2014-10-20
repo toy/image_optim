@@ -20,7 +20,7 @@ class ImageOptim
 
       def optimize(src, dst)
         args = %W[
-          -o #{dst}
+          --output=#{dst}
           --no-comments
           --no-names
           --same-delay
@@ -29,9 +29,10 @@ class ImageOptim
           --
           #{src}
         ]
-        args.unshift('-i') if interlace
+
+        args.unshift('--interlace') if interlace
         args.unshift('--careful') if careful
-        args.unshift('-O#{level}') if level
+        args.unshift('--optimize=#{level}') if level
         execute(:gifsicle, *args) && optimized?(src, dst)
       end
     end

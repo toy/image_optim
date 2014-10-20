@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+Dir.chdir(File.dirname(__FILE__))
+
+require 'shellwords'
+
+palettes = [64]
+side = 256
+
+palettes.each do |palette|
+  IO.popen(%W[
+    convert
+    -depth 8
+    -size #{side}x#{side}
+    -strip
+    rgb:-
+    PNG24:#{palette}.png
+  ].shelljoin, 'w') do |f|
+    (side * side).times do |i|
+      color = i * palette / (side * side) * 0x10000 / palette
+      f << [color / 0x100, color % 0x100, 0].pack('C*')
+    end
+  end
+  system "identify -format 'Wrote %f with %k unique colors\n' #{palette}.png"
+end

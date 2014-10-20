@@ -25,7 +25,14 @@ class ImageOptim
       end
 
       def optimize(src, dst)
-        args = %W[-reduce -cc -q -- #{src} #{dst}]
+        args = %W[
+          -reduce
+          -cc
+          -q
+          --
+          #{src}
+          #{dst}
+        ]
         chunks.each do |chunk|
           args.unshift '-rem', chunk
         end

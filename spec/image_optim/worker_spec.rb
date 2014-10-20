@@ -1,16 +1,18 @@
-$LOAD_PATH.unshift File.expand_path('../../../lib', __FILE__)
-require 'rspec'
+require 'spec_helper'
 require 'image_optim/worker'
 
 describe ImageOptim::Worker do
-  Worker = ImageOptim::Worker
+  before do
+    stub_const('Worker', ImageOptim::Worker)
+  end
 
-  describe 'optimize' do
-    it 'should raise NotImplementedError unless overriden' do
-      class Abc < ImageOptim::Worker; end
+  describe :optimize do
+    it 'raises NotImplementedError' do
+      image_optim = ImageOptim.new
+      worker = Worker.new(image_optim, {})
 
       expect do
-        Abc.new({}).optimize(double, double)
+        worker.optimize(double, double)
       end.to raise_error NotImplementedError
     end
   end
