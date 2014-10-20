@@ -16,6 +16,9 @@ class ImageOptim
         OptionHelpers.limit_with_range(v.to_i, 0..3)
       end
 
+      CAREFUL_OPTION =
+      option(:careful, false, "Write larger files that avoid bugs in some other GIF implementations."){ |v| !!v }
+
       def optimize(src, dst)
         args = %W[
           -o #{dst}
