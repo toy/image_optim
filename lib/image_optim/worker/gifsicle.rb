@@ -24,11 +24,11 @@ class ImageOptim
           --same-delay
           --same-loopcount
           --no-warnings
-          --careful
           --
           #{src}
         ]
         args.unshift('-i') if interlace
+        args.unshift('--careful') if careful
         args.unshift('-O#{level}') unless level == 0
         args.unshift('--unoptimize') if level == 0
         execute(:gifsicle, *args) && optimized?(src, dst)
