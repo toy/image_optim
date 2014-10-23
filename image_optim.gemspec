@@ -3,7 +3,7 @@
 Gem::Specification.new do |s|
   s.name        = 'image_optim'
   s.version     = '0.17.1'
-  s.summary     = %q{Optimize (lossless compress) images (jpeg, png, gif, svg) using external utilities (advpng, gifsicle, jpegoptim, jpegtran, optipng, pngcrush, pngout, pngquant, svgo)}
+  s.summary     = %q{Optimize (lossless compress) images (jpeg, png, gif, svg) using external utilities (advpng, gifsicle, jhead, jpegoptim, jpegrescan, jpegtran, optipng, pngcrush, pngout, pngquant, svgo)}
   s.homepage    = "http://github.com/toy/#{s.name}"
   s.authors     = ['Ivan Kuchin']
   s.license     = 'MIT'
