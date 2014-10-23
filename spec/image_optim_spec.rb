@@ -32,8 +32,8 @@ describe ImageOptim do
 
       [
         original_klasses,
-        original_klasses.reverse,
-        original_klasses.shuffle,
+        original_klasses.to_a.reverse,
+        original_klasses.to_a.shuffle,
       ].each do |klasses|
         expect(ImageOptim::Worker).to receive(:klasses).and_return(klasses)
 

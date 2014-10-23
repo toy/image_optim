@@ -11,15 +11,17 @@ require 'English'
 class ImageOptim
   # Base class for all workers
   class Worker
+    @klasses = []
+
     class << self
       # List of available workers
       def klasses
-        @klasses ||= []
+        @klasses.to_enum
       end
 
       # Remember all classes inheriting from this one
       def inherited(base)
-        klasses << base
+        @klasses << base
       end
 
       # Underscored class name symbol
