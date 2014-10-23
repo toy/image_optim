@@ -3,7 +3,6 @@
 [![Code Climate](https://img.shields.io/codeclimate/github/toy/image_optim.svg?style=flat)](https://codeclimate.com/github/toy/image_optim)
 [![Dependency Status](https://img.shields.io/gemnasium/toy/image_optim.svg?style=flat)](https://gemnasium.com/toy/image_optim)
 [![Inch CI](http://inch-ci.org/github/toy/image_optim.svg?branch=master&style=flat)](http://inch-ci.org/github/toy/image_optim)
-[![Gittip](https://img.shields.io/gittip/toy.svg?style=flat)](https://www.gittip.com/toy/)
 
 # image_optim
 
@@ -292,6 +291,10 @@ Worker has no options
 [List](https://github.com/toy/image_optim/graphs/contributors) of contributors to `image_optim`.
 
 If you would like to contribute - that is great and you are very welcome. Please check few notes in file [CONTRIBUTING.markdown](CONTRIBUTING.markdown).
+
+Financial contributions can be made via [gratipay](https://gratipay.com/toy/).
+
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.2/dist/gratipay.png)](https://gratipay.com/toy/)
 
 ## ChangeLog
 
