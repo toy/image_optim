@@ -289,6 +289,8 @@ Worker has no options
 
 ## Contributing
 
+[List](https://github.com/toy/image_optim/graphs/contributors) of contributors to `image_optim`.
+
 If you would like to contribute - that is great and you are very welcome. Please check few notes in file [CONTRIBUTING.markdown](CONTRIBUTING.markdown).
 
 ## ChangeLog
