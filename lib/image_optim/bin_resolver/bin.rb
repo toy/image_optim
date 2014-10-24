@@ -2,6 +2,7 @@ require 'image_optim/bin_resolver/error'
 require 'image_optim/bin_resolver/simple_version'
 require 'image_optim/bin_resolver/comparable_condition'
 require 'image_optim/cmd'
+require 'shellwords'
 
 class ImageOptim
   class BinResolver
