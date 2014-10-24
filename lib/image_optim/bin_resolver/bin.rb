@@ -13,7 +13,7 @@ class ImageOptim
       attr_reader :name, :path, :version
       def initialize(name, path)
         @name = name.to_sym
-        @path = path
+        @path = path.to_s
         @version = detect_version
       end
 
