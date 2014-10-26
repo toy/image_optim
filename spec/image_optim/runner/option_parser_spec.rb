@@ -48,5 +48,46 @@ describe ImageOptim::Runner::OptionParser do
         expect(args).to eq(%w[616 foo bar])
       end
     end
+
+    describe 'help option' do
+      it 'prints help text to stdout and exits' do
+        parser = OptionParser.new({})
+        expect(OptionParser).to receive(:new).and_return(parser)
+
+        help = double
+        expect(parser).to receive(:help).and_return(help)
+
+        expect do
+          OptionParser.parse!(%w[--help])
+        end.to output("#{help}\n").to_stdout &
+          raise_error(SystemExit){ |e| expect(e.status).to eq(0) }
+      end
+    end
+
+    describe 'wrong option' do
+      it 'prints help text to stdout and exits' do
+        parser = OptionParser.new({})
+        expect(OptionParser).to receive(:new).and_return(parser)
+
+        help = double
+        expect(parser).to receive(:help).and_return(help)
+
+        expect do
+          OptionParser.parse!(%w[--unknown-option])
+        end.to output("invalid option: --unknown-option\n\n#{help}\n").
+          to_stderr & raise_error(SystemExit){ |e| expect(e.status).to eq(1) }
+      end
+    end
+  end
+
+  describe :help do
+    it 'should return wrapped text' do
+      parser = OptionParser.new({})
+
+      allow(parser).to receive(:terminal_columns).and_return(80)
+
+      expect(parser.help.split("\n")).
+        to all(satisfy{ |line| line.length <= 80 })
+    end
   end
 end
