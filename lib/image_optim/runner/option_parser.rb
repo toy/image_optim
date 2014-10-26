@@ -23,6 +23,41 @@ class ImageOptim
       rescue OptionParser::ParseError => e
         abort "#{e}\n\n#{parser.help}"
       end
+
+      # Wraps and indents lines of overriden method
+      def help
+        text = super
+
+        # reserve one column
+        cols = `tput cols`.to_i - 1
+        # 1 for distance between summary and description
+        # 2 for additional indent
+        wrapped_indent = summary_indent + ' ' * (summary_width + 1 + 2)
+        wrapped_width = cols - wrapped_indent.length
+        # don't try to wrap if there is too little space for description
+        return text if wrapped_width < 20
+
+        wrapped = ''
+        text.split("\n").each do |line|
+          if line.length <= cols
+            wrapped << line << "\n"
+          else
+            indented = line =~ /^\s/
+            wrapped << line.slice!(wrap_regex(cols)) << "\n"
+            line.scan(wrap_regex(wrapped_width)) do |part|
+              wrapped << wrapped_indent if indented
+              wrapped << part << "\n"
+            end
+          end
+        end
+        wrapped
+      end
+
+    private
+
+      def wrap_regex(width)
+        /.*?.{1,#{width}}(?:\s|\z)/
+      end
     end
   end
 end
@@ -127,10 +162,7 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
       description_lines = %W[
         #{option_definition.description.gsub(' - ', ' - ')}
         (defaults to #{default})
-      ].join(' ').
-        scan(/.*?.{1,60}(?:\s|\z)/).
-        join("\n  ").
-        split("\n")
+      ].join(' ')
 
       op.on("--#{bin}-#{name} #{marking}", type, *description_lines) do |value|
         options[bin] = {} unless options[bin].is_a?(Hash)
