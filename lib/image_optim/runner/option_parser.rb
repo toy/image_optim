@@ -29,21 +29,21 @@ class ImageOptim
         text = super
 
         # reserve one column
-        cols = `tput cols 2> /dev/null`.to_i - 1
+        columns = terminal_columns - 1
         # 1 for distance between summary and description
         # 2 for additional indent
         wrapped_indent = summary_indent + ' ' * (summary_width + 1 + 2)
-        wrapped_width = cols - wrapped_indent.length
+        wrapped_width = columns - wrapped_indent.length
         # don't try to wrap if there is too little space for description
         return text if wrapped_width < 20
 
         wrapped = ''
         text.split("\n").each do |line|
-          if line.length <= cols
+          if line.length <= columns
             wrapped << line << "\n"
           else
             indented = line =~ /^\s/
-            wrapped << line.slice!(wrap_regex(cols)) << "\n"
+            wrapped << line.slice!(wrap_regex(columns)) << "\n"
             line.scan(wrap_regex(wrapped_width)) do |part|
               wrapped << wrapped_indent if indented
               wrapped << part << "\n"
@@ -54,6 +54,10 @@ class ImageOptim
       end
 
     private
+
+      def terminal_columns
+        `tput cols 2> /dev/null`.to_i
+      end
 
       def wrap_regex(width)
         /.*?.{1,#{width}}(?:\s|\z)/
