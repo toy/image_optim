@@ -29,7 +29,7 @@ class ImageOptim
         text = super
 
         # reserve one column
-        cols = `tput cols`.to_i - 1
+        cols = `tput cols 2> /dev/null`.to_i - 1
         # 1 for distance between summary and description
         # 2 for additional indent
         wrapped_indent = summary_indent + ' ' * (summary_width + 1 + 2)
