@@ -44,7 +44,10 @@ class ImageOptim
     @verbose = config.verbose
 
     if verbose
-      $stderr << config
+      $stderr << "config:\n"
+      config.to_s.each_line do |line|
+        $stderr << "  #{line}"
+      end
       $stderr << "nice: #{nice}\n"
       $stderr << "threads: #{threads}\n"
     end
