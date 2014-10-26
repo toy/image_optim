@@ -19,6 +19,12 @@ describe ImageOptim::Runner::OptionParser do
       expect(args).to eq(%w[foo bar])
     end
 
+    it 'stops parsing optiosn after --' do
+      args = %w[-- -r foo bar]
+      OptionParser.parse!(args)
+      expect(args).to eq(%w[-r foo bar])
+    end
+
     describe 'boolean option recursive' do
       %w[-r -R --recursive].each do |flag|
         it "is parsed from #{flag}" do
