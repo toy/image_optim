@@ -139,7 +139,7 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
   op.separator nil
   op.separator '  Common options:'
 
-  op.on('-v', '--verbose', 'Verbose output') do
+  op.on_tail('-v', '--verbose', 'Verbose output') do
     options[:verbose] = true
   end
 
