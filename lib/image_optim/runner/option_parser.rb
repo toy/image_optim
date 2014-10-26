@@ -9,6 +9,8 @@ class ImageOptim
   class Runner
     # Parse options from arguments to image_optim binary
     class OptionParser < ::OptionParser
+      # Parse and remove options from args, return options Hash
+      # Calls abort in case of parse error
       def self.parse!(args)
         # assume -v to be a request to print version if it is the only argument
         args = %w[--version] if args == %w[-v]
