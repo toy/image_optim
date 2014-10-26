@@ -15,13 +15,18 @@ class ImageOptim
         # assume -v to be a request to print version if it is the only argument
         args = %w[--version] if args == %w[-v]
 
-        parser = new
         options = {}
-        DEFINE.call(parser, options)
+        parser = new(options)
         parser.parse!(args)
         options
       rescue OptionParser::ParseError => e
         abort "#{e}\n\n#{parser.help}"
+      end
+
+      # After initialization passes self and options to DEFINE
+      def initialize(options)
+        super
+        DEFINE.call(self, options)
       end
 
       # Wraps and indents lines of overriden method
