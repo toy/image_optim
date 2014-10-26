@@ -3,7 +3,6 @@ require 'image_optim/hash_helpers'
 require 'image_optim/runner/glob_helpers'
 require 'image_optim/space'
 require 'progress'
-require 'optparse'
 require 'find'
 require 'yaml'
 
