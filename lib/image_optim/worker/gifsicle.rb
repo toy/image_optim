@@ -9,9 +9,9 @@ class ImageOptim
 
       LEVEL_OPTION =
       option(:level, 3, 'Compression level:'\
-          '`1` - stores only the changed portion of each image'\
-          '`2` - uses transparency to shrink the file further,'\
-          '`3` - several optimization methods (slower, better results)') do |v|
+          '`1` - light and fast, '\
+          '`2` - normal, '\
+          '`3` - heavy (slower)') do |v|
         OptionHelpers.limit_with_range(v.to_i, 1..3)
       end
 
