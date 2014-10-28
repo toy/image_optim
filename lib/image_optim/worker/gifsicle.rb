@@ -32,7 +32,7 @@ class ImageOptim
 
         args.unshift('--interlace') if interlace
         args.unshift('--careful') if careful
-        args.unshift('--optimize=#{level}') if level
+        args.unshift("--optimize=#{level}") if level
         execute(:gifsicle, *args) && optimized?(src, dst)
       end
     end
