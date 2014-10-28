@@ -115,7 +115,7 @@ describe ImageOptim do
     end
 
     define :have_size do
-      match{ |actual| actual.size? }
+      match(&:size?)
     end
 
     define :be_smaller_than do |expected|
