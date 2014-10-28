@@ -106,6 +106,18 @@ describe ImageOptim do
       end
     end
 
+    define :have_same_data_as do |expected|
+      match{ |actual| actual.binread == expected.binread }
+    end
+
+    define :have_size do
+      match{ |actual| actual.size? }
+    end
+
+    define :be_smaller_than do |expected|
+      match{ |actual| actual.size < expected.size }
+    end
+
     define :be_pixel_identical_to do |expected|
       match do |actual|
         @diff = nrmse(actual, expected)
@@ -127,15 +139,16 @@ describe ImageOptim do
       copies = original_by_copy.keys
 
       ImageOptim.optimize_images(copies) do |copy, optimized|
+        expect(copies).to include(copy)
         original = original_by_copy[copy]
 
-        expect(copy).not_to be_nil
-        expect(copy.read).to eq(original.read)
+        expect(copy).to have_same_data_as(original)
 
         expect(optimized).not_to be_nil
         expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
-        expect(optimized.size).to be_in_range(1...original.size)
-        expect(optimized.read).not_to eq(original.read)
+        expect(optimized).to have_size
+        expect(optimized).to be_smaller_than(original)
+        expect(optimized).not_to have_same_data_as(original)
 
         compare_to = rotate_images.include?(original) ? rotated : original
         expect(optimized).to be_pixel_identical_to(compare_to)
