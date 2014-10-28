@@ -8,9 +8,13 @@ describe ImageOptim do
   images_dir = ImageOptim::ImagePath.new(__FILE__).dirname / 'images'
   test_images = images_dir.glob('**/*.*').freeze
 
-  def temp_copy(image)
-    image.temp_path.tap{ |path| image.copy(path) }
+  helpers = Module.new do
+    def temp_copy(image)
+      image.temp_path.tap{ |path| image.copy(path) }
+    end
   end
+  include helpers
+  extend helpers
 
   matcher :be_in_range do |expected|
     match{ |actual| expected.include?(actual) }
@@ -129,7 +133,7 @@ describe ImageOptim do
       end
     end
 
-    it 'optimizes images' do
+    describe 'optimizing images' do
       rotated = images_dir / 'orient/original.jpg'
       rotate_images = images_dir.glob('orient/?.jpg')
 
@@ -139,19 +143,21 @@ describe ImageOptim do
       copies = original_by_copy.keys
 
       ImageOptim.optimize_images(copies) do |copy, optimized|
-        expect(copies).to include(copy)
+        fail 'expected copy to not be nil' if copy.nil?
         original = original_by_copy[copy]
 
-        expect(copy).to have_same_data_as(original)
+        it "optimizes #{original}" do
+          expect(copy).to have_same_data_as(original)
 
-        expect(optimized).not_to be_nil
-        expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
-        expect(optimized).to have_size
-        expect(optimized).to be_smaller_than(original)
-        expect(optimized).not_to have_same_data_as(original)
+          expect(optimized).not_to be_nil
+          expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
+          expect(optimized).to have_size
+          expect(optimized).to be_smaller_than(original)
+          expect(optimized).not_to have_same_data_as(original)
 
-        compare_to = rotate_images.include?(original) ? rotated : original
-        expect(optimized).to be_pixel_identical_to(compare_to)
+          compare_to = rotate_images.include?(original) ? rotated : original
+          expect(optimized).to be_pixel_identical_to(compare_to)
+        end
       end
     end
 
