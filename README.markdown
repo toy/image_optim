@@ -251,6 +251,8 @@ Worker can be disabled by passing `false` instead of options hash.
 
 ### :gifsicle =>
 * `:interlace` — Turn interlacing on *(defaults to `false`)*
+* `:level` — Compression level: `1` - light and fast, `2` - normal, `3` - heavy (slower) *(defaults to `3`)*
+* `:careful` — Avoid bugs with some software *(defaults to `false`)*
 
 ### :jhead =>
 Worker has no options
