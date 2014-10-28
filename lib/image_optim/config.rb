@@ -11,9 +11,13 @@ class ImageOptim
   class Config
     include OptionHelpers
 
+    # Global config path at `$XDG_CONFIG_HOME/image_optim.yml` (by default
+    # `~/.config/image_optim.yml`)
     GLOBAL_PATH = begin
       File.join(ENV['XDG_CONFIG_HOME'] || '~/.config', 'image_optim.yml')
     end
+
+    # Local config path at `./.image_optim.yml`
     LOCAL_PATH = './.image_optim.yml'
 
     class << self
@@ -38,6 +42,9 @@ class ImageOptim
       end
     end
 
+    # Merge config from files with passed options
+    # Config files are checked at `GLOBAL_PATH` and `LOCAL_PATH` unless
+    # overriden using `:config_paths`
     def initialize(options)
       config_paths = options.delete(:config_paths) || [GLOBAL_PATH, LOCAL_PATH]
       config_paths = Array(config_paths)
@@ -51,18 +58,25 @@ class ImageOptim
       @used = Set.new
     end
 
+    # Gets value for key converted to symbol and mark option as used
     def get!(key)
       key = key.to_sym
       @used << key
       @options[key]
     end
 
+    # Fail unless all options were marked as used (directly or indirectly
+    # accessed using `get!`)
     def assert_no_unused_options!
       unknown_options = @options.reject{ |key, _value| @used.include?(key) }
       return if unknown_options.empty?
       fail ConfigurationError, "unknown options #{unknown_options.inspect}"
     end
 
+    # Nice level:
+    # * `10` by default and for `nil` or `true`
+    # * `0` for `false`
+    # * otherwise convert to integer
     def nice
       nice = get!(:nice)
 
@@ -76,6 +90,10 @@ class ImageOptim
       end
     end
 
+    # Number of parallel threads:
+    # * `processor_count` by default and for `nil` or `true`
+    # * `1` for `false`
+    # * otherwise convert to integer
     def threads
       threads = get!(:threads)
 
@@ -89,14 +107,21 @@ class ImageOptim
       end
     end
 
+    # Verbose mode, converted to boolean
     def verbose
       !!get!(:verbose)
     end
 
+    # Skip missing workers, converted to boolean
     def skip_missing_workers
       !!get!(:skip_missing_workers)
     end
 
+    # Options for worker class by its `bin_sym`:
+    # * `Hash` passed as is
+    # * `{}` for `true` or `nil`
+    # * `false` for `false`
+    # * otherwise fail with `ConfigurationError`
     def for_worker(klass)
       worker_options = get!(klass.bin_sym)
 
@@ -113,6 +138,7 @@ class ImageOptim
       end
     end
 
+    # yaml dump without document beginning prefix `---`
     def to_s
       YAML.dump(HashHelpers.deep_stringify_keys(@options)).sub(/\A---\n/, '')
     end
