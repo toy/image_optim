@@ -2,14 +2,19 @@ require 'spec_helper'
 require 'image_optim'
 require 'image_optim/cmd'
 require 'tempfile'
+require 'English'
 
 describe ImageOptim do
   images_dir = ImageOptim::ImagePath.new(__FILE__).dirname / 'images'
   test_images = images_dir.glob('**/*.*').freeze
 
-  def temp_copy(image)
-    image.temp_path.tap{ |path| image.copy(path) }
+  helpers = Module.new do
+    def temp_copy(image)
+      image.temp_path.tap{ |path| image.copy(path) }
+    end
   end
+  include helpers
+  extend helpers
 
   matcher :be_in_range do |expected|
     match{ |actual| expected.include?(actual) }
@@ -87,21 +92,48 @@ describe ImageOptim do
     end
 
     def nrmse(image_a, image_b)
-      image_a = flatten_animation(image_a)
-      image_b = flatten_animation(image_b)
+      coalesce_a = flatten_animation(image_a)
+      coalesce_b = flatten_animation(image_b)
       nrmse_command = %W[
         compare
         -metric RMSE
-        #{image_a.to_s.shellescape}
-        #{image_b.to_s.shellescape}
+        #{coalesce_a.to_s.shellescape}
+        #{coalesce_b.to_s.shellescape}
         /dev/null
         2>&1
       ].join(' ')
-      nrmse = Cmd.capture(nrmse_command)[/\((\d+(\.\d+)?)\)/, 1]
-      nrmse.to_f if nrmse
+      output = Cmd.capture(nrmse_command)
+      if [0, 1].include?($CHILD_STATUS.exitstatus)
+        output[/\((\d+(\.\d+)?)\)/, 1].to_f
+      else
+        fail "compare #{image_a} with #{image_b} failed with `#{output}`"
+      end
     end
 
-    it 'optimizes images' do
+    define :have_same_data_as do |expected|
+      match{ |actual| actual.binread == expected.binread }
+    end
+
+    define :have_size do
+      match(&:size?)
+    end
+
+    define :be_smaller_than do |expected|
+      match{ |actual| actual.size < expected.size }
+    end
+
+    define :be_pixel_identical_to do |expected|
+      match do |actual|
+        @diff = nrmse(actual, expected)
+        @diff == 0
+      end
+      failure_message do |actual|
+        "expected #{actual} to be pixel identical to #{expected}, got "\
+            "normalized root-mean-square error of #{@diff}"
+      end
+    end
+
+    describe 'optimizing images' do
       rotated = images_dir / 'orient/original.jpg'
       rotate_images = images_dir.glob('orient/?.jpg')
 
@@ -111,18 +143,21 @@ describe ImageOptim do
       copies = original_by_copy.keys
 
       ImageOptim.optimize_images(copies) do |copy, optimized|
+        fail 'expected copy to not be nil' if copy.nil?
         original = original_by_copy[copy]
 
-        expect(copy).not_to be_nil
-        expect(copy.read).to eq(original.read)
+        it "optimizes #{original}" do
+          expect(copy).to have_same_data_as(original)
 
-        expect(optimized).not_to be_nil
-        expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
-        expect(optimized.size).to be_in_range(1...original.size)
-        expect(optimized.read).not_to eq(original.read)
+          expect(optimized).not_to be_nil
+          expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
+          expect(optimized).to have_size
+          expect(optimized).to be_smaller_than(original)
+          expect(optimized).not_to have_same_data_as(original)
 
-        compare_to = rotate_images.include?(original) ? rotated : original
-        expect(nrmse(compare_to, optimized)).to eq(0)
+          compare_to = rotate_images.include?(original) ? rotated : original
+          expect(optimized).to be_pixel_identical_to(compare_to)
+        end
       end
     end
 

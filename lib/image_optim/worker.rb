@@ -84,9 +84,11 @@ class ImageOptim
 
     # Return hash with worker options
     def options
-      self.class.option_definitions.each_with_object({}) do |option, h|
-        h[option.name] = send(option.name)
+      hash = {}
+      self.class.option_definitions.each do |option|
+        hash[option.name] = send(option.name)
       end
+      hash
     end
 
     # Optimize image at src, output at dst, must be overriden in subclass
