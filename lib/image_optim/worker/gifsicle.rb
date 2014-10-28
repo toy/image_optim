@@ -8,7 +8,7 @@ class ImageOptim
       option(:interlace, false, 'Turn interlacing on'){ |v| !!v }
 
       LEVEL_OPTION =
-      option(:level, 3, 'Compression level:'\
+      option(:level, 3, 'Compression level: '\
           '`1` - light and fast, '\
           '`2` - normal, '\
           '`3` - heavy (slower)') do |v|
