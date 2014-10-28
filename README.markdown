@@ -252,6 +252,8 @@ Worker can be disabled by passing `false` instead of options hash.
 
 ### :gifsicle =>
 * `:interlace` — Turn interlacing on *(defaults to `false`)*
+* `:level` — Compression level:`1` - stores only the changed portion of each image`2` - uses transparency to shrink the file further,`3` - several optimization methods (slower, better results) *(defaults to `3`)*
+* `:careful` — Avoid bugs with some software *(defaults to `false`)*
 
 ### :jhead =>
 Worker has no options
