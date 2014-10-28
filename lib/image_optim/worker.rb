@@ -59,6 +59,18 @@ class ImageOptim
         return if errors.empty?
         fail BinResolver::Error, ['Bin resolving errors:', *errors].join("\n")
       end
+
+      # Resolve all bins of all workers showing warning for missing ones and
+      # returning others
+      def reject_missing(workers)
+        resolved = []
+        errors = BinResolver.collect_errors(workers) do |worker|
+          worker.resolve_used_bins!
+          resolved << worker
+        end
+        errors.each{ |error| warn error }
+        resolved
+      end
     end
 
     # Configure (raises on extra options)

@@ -135,6 +135,11 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
   op.separator nil
   op.separator '  Disabling workers:'
 
+  op.on('--[no-]skip-missing-workers', 'Skip workers with missing or '\
+      'problematic binaries') do |skip|
+    options[:skip_missing_workers] = skip
+  end
+
   ImageOptim::Worker.klasses.each do |klass|
     bin = klass.bin_sym
     op.on("--no-#{bin}", "disable #{bin} worker") do |enable|

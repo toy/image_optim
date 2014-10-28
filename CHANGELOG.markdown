@@ -3,6 +3,7 @@
 ## unreleased
 
 * Added options to Gifsicle, specifically --careful (for compatibility) and --optimize for granularity [#51](https://github.com/toy/image_optim/issues/51) [@kaspergrubbe](https://github.com/kaspergrubbe)
+* `:skip_missing_workers` option to skip workers with missing or problematic binaries [#66](https://github.com/toy/image_optim/issues/66) [@toy](https://github.com/toy)
 * Speedup specs (~8x) [#60](https://github.com/toy/image_optim/issues/60) [@toy](https://github.com/toy)
 * `script/worker_analysis` to compare worker chains by optimization, time and losslessness [@toy](https://github.com/toy)
 * `Cmd` module to ensure interrupted commands can't go unnoticed [@toy](https://github.com/toy)

@@ -18,6 +18,9 @@ class ImageOptim
   # Verbose output?
   attr_reader :verbose
 
+  # Skip workers with missing or problematic binaries
+  attr_reader :skip_missing_workers
+
   # Initialize workers, specify options using worker underscored name:
   #
   # pass false to disable worker
@@ -42,6 +45,7 @@ class ImageOptim
     @nice = config.nice
     @threads = config.threads
     @verbose = config.verbose
+    @skip_missing_workers = config.skip_missing_workers
 
     if verbose
       $stderr << "config:\n"
@@ -50,6 +54,7 @@ class ImageOptim
       end
       $stderr << "nice: #{nice}\n"
       $stderr << "threads: #{threads}\n"
+      $stderr << "skip_missing_workers: #{skip_missing_workers}\n"
     end
 
     @bin_resolver = BinResolver.new(self)
@@ -186,7 +191,11 @@ private
   def create_workers_by_format(&options_proc)
     by_format = {}
     workers = Worker.create_all(self, &options_proc)
-    Worker.resolve_all!(workers)
+    if skip_missing_workers
+      workers = Worker.reject_missing(workers)
+    else
+      Worker.resolve_all!(workers)
+    end
     sorted = workers.sort_by.with_index{ |worker, i| [worker.run_order, i] }
     sorted.each do |worker|
       worker.image_formats.each do |format|
