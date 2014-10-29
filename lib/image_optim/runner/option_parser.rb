@@ -61,7 +61,8 @@ class ImageOptim
     private
 
       def terminal_columns
-        `tput cols 2> /dev/null`.to_i
+        stty_columns = `stty size 2> /dev/null`[/^\d+ (\d+)$/, 1]
+        stty_columns ? stty_columns.to_i : `tput cols`.to_i
       end
 
       def wrap_regex(width)
