@@ -18,6 +18,9 @@ class ImageOptim
   # Verbose output?
   attr_reader :verbose
 
+  # Use image_optim_pack
+  attr_reader :pack
+
   # Skip workers with missing or problematic binaries
   attr_reader :skip_missing_workers
 
@@ -45,6 +48,7 @@ class ImageOptim
     @nice = config.nice
     @threads = config.threads
     @verbose = config.verbose
+    @pack = config.pack
     @skip_missing_workers = config.skip_missing_workers
 
     if verbose
@@ -54,6 +58,7 @@ class ImageOptim
       end
       $stderr << "nice: #{nice}\n"
       $stderr << "threads: #{threads}\n"
+      $stderr << "pack: #{pack}\n"
       $stderr << "skip_missing_workers: #{skip_missing_workers}\n"
     end
 

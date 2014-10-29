@@ -133,6 +133,12 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
     options[:nice] = nice
   end
 
+  op.on('--[no-]pack', 'Require image_optim_pack or disable it, '\
+      'by default image_optim_pack will be used if available, '\
+      'will turn on skip-missing-workers unless explicitly disabled') do |pack|
+    options[:pack] = pack
+  end
+
   op.separator nil
   op.separator '  Disabling workers:'
 
