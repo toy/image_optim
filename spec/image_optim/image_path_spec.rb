@@ -39,7 +39,7 @@ describe ImageOptim::ImagePath do
   end
 
   describe :binread do
-    it 'should read binary data' do
+    it 'reads binary data' do
       data = (0..255).to_a.pack('c*')
 
       path = ImagePath.temp_file_path

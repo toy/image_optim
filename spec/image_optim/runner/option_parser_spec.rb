@@ -87,7 +87,7 @@ describe ImageOptim::Runner::OptionParser do
   end
 
   describe :help do
-    it 'should return wrapped text' do
+    it 'returns wrapped text' do
       parser = OptionParser.new({})
 
       allow(parser).to receive(:terminal_columns).and_return(80)
