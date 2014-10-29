@@ -16,22 +16,8 @@ script:
   - bundle exec rspec
   - '! bundle show rubocop || bundle exec rubocop' # run rubocop only if it is bundled
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush
   - npm install -g svgo
   - mkdir ~/bin
-
-  - echo 'Installing advancecomp(advpng):'
-  - ADVANCECOMP_VERSION=1.19
-  - curl -L "http://prdownloads.sourceforge.net/advancemame/advancecomp-$ADVANCECOMP_VERSION.tar.gz?download" | tar -xz
-  - (cd advancecomp-$ADVANCECOMP_VERSION && ./configure && make)
-  - mv advancecomp-$ADVANCECOMP_VERSION/advpng ~/bin
-
-  - echo 'Installing pngquant:'
-  - PNGQUANT_VERSION=2.3.0
-  - git clone git://github.com/pornel/pngquant.git
-  - (cd pngquant && git checkout $PNGQUANT_VERSION && make)
-  - mv pngquant/pngquant ~/bin
 
   - echo 'Installing pngout:'
   - PNGOUT_VERSION=20130221
