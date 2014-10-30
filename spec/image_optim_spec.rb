@@ -137,10 +137,8 @@ describe ImageOptim do
       rotated = images_dir / 'orient/original.jpg'
       rotate_images = images_dir.glob('orient/?.jpg')
 
-      original_by_copy = Hash[test_images.map do |image|
-        [temp_copy(image), image]
-      end]
-      copies = original_by_copy.keys
+      copies = test_images.map{ |image| temp_copy(image) }
+      original_by_copy = Hash[copies.zip(test_images)]
 
       ImageOptim.optimize_images(copies) do |copy, optimized|
         fail 'expected copy to not be nil' if copy.nil?
