@@ -126,7 +126,7 @@ class ImageOptim
       basename = File.basename(path)
       globs.any? do |glob|
         File.fnmatch(glob, relative_path, File::FNM_PATHNAME) ||
-        File.fnmatch(glob, basename, File::FNM_PATHNAME)
+          File.fnmatch(glob, basename, File::FNM_PATHNAME)
       end
     end
 

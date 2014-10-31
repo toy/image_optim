@@ -67,7 +67,7 @@ describe ImageOptim::Handler do
       result = double
 
       expect(Handler).to receive(:new).
-          with(original).and_return(handler)
+        with(original).and_return(handler)
       expect(handler).to receive(:process)
       expect(handler).to receive(:cleanup)
       expect(handler).to receive(:result).and_return(result)
@@ -82,7 +82,7 @@ describe ImageOptim::Handler do
       handler = double
 
       expect(Handler).to receive(:new).
-          with(original).and_return(handler)
+        with(original).and_return(handler)
       expect(handler).to receive(:cleanup)
 
       expect do
