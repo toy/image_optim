@@ -15,8 +15,10 @@ script:
   - bundle exec rspec
   - '! bundle show rubocop || bundle exec rubocop' # run rubocop only if it is bundled
 before_install:
-  - npm install -g svgo
   - mkdir ~/bin
+
+  - echo 'Installing svgo:'
+  - npm install -g svgo
 
   - echo 'Installing pngout:'
   - PNGOUT_VERSION=20130221
