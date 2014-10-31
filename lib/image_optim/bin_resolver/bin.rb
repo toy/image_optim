@@ -2,6 +2,7 @@ require 'image_optim/bin_resolver/error'
 require 'image_optim/bin_resolver/simple_version'
 require 'image_optim/bin_resolver/comparable_condition'
 require 'image_optim/cmd'
+require 'shellwords'
 
 class ImageOptim
   class BinResolver
@@ -12,7 +13,7 @@ class ImageOptim
       attr_reader :name, :path, :version
       def initialize(name, path)
         @name = name.to_sym
-        @path = path
+        @path = path.to_s
         @version = detect_version
       end
 

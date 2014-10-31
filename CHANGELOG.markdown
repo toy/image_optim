@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Add interface to `image_optim_pack` [@toy](https://github.com/toy)
 * Use `in_threads ~> 1.3` [@toy](https://github.com/toy)
 * Added options to Gifsicle, specifically --careful (for compatibility) and --optimize for granularity [#51](https://github.com/toy/image_optim/issues/51) [@kaspergrubbe](https://github.com/kaspergrubbe)
 * `:skip_missing_workers` option to skip workers with missing or problematic binaries [#66](https://github.com/toy/image_optim/issues/66) [@toy](https://github.com/toy)

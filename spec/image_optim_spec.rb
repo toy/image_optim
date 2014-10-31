@@ -5,7 +5,8 @@ require 'tempfile'
 require 'English'
 
 describe ImageOptim do
-  images_dir = ImageOptim::ImagePath.new(__FILE__).dirname / 'images'
+  root_dir = ImageOptim::ImagePath.new(__FILE__).dirname.dirname
+  images_dir = root_dir / 'spec/images'
   test_images = images_dir.glob('**/*.*').freeze
 
   helpers = Module.new do
@@ -137,16 +138,14 @@ describe ImageOptim do
       rotated = images_dir / 'orient/original.jpg'
       rotate_images = images_dir.glob('orient/?.jpg')
 
-      original_by_copy = Hash[test_images.map do |image|
-        [temp_copy(image), image]
-      end]
-      copies = original_by_copy.keys
+      copies = test_images.map{ |image| temp_copy(image) }
+      original_by_copy = Hash[copies.zip(test_images)]
 
       ImageOptim.optimize_images(copies) do |copy, optimized|
         fail 'expected copy to not be nil' if copy.nil?
         original = original_by_copy[copy]
 
-        it "optimizes #{original}" do
+        it "optimizes #{original.relative_path_from(root_dir)}" do
           expect(copy).to have_same_data_as(original)
 
           expect(optimized).not_to be_nil

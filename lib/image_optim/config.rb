@@ -65,6 +65,12 @@ class ImageOptim
       @options[key]
     end
 
+    # Check if key is present
+    def key?(key)
+      key = key.to_sym
+      @options.key?(key)
+    end
+
     # Fail unless all options were marked as used (directly or indirectly
     # accessed using `get!`)
     def assert_no_unused_options!
@@ -112,9 +118,28 @@ class ImageOptim
       !!get!(:verbose)
     end
 
+    # Using image_optim_pack:
+    # * `false` to disable
+    # * `nil` to use if available
+    # * everything else to require
+    def pack
+      pack = get!(:pack)
+      return false if pack == false
+
+      require 'image_optim/pack'
+      true
+    rescue LoadError => e
+      raise "Cannot load image_optim_pack: #{e}" if pack
+      false
+    end
+
     # Skip missing workers, converted to boolean
     def skip_missing_workers
-      !!get!(:skip_missing_workers)
+      if key?(:skip_missing_workers)
+        !!get!(:skip_missing_workers)
+      else
+        pack
+      end
     end
 
     # Options for worker class by its `bin_sym`:

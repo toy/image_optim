@@ -15,10 +15,14 @@ class ImageOptim
     # Directory for symlinks to bins if XXX_BIN was used
     attr_reader :dir
 
+    # Path to pack from image_optim_pack if used
+    attr_reader :pack_path
+
     def initialize(image_optim)
       @image_optim = image_optim
       @bins = {}
       @lock = Mutex.new
+      init_pack
     end
 
     # Binary resolving: create symlink if there is XXX_BIN environment variable,
@@ -52,7 +56,12 @@ class ImageOptim
 
     # Prepand `dir` and append `VENDOR_PATH` to `PATH` from environment
     def env_path
-      [dir, ENV['PATH'], VENDOR_PATH].compact.join(File::PATH_SEPARATOR)
+      [
+        dir,
+        pack_path,
+        ENV['PATH'],
+        VENDOR_PATH,
+      ].compact.join(File::PATH_SEPARATOR)
     end
 
     # Collect resolving errors when running block over items of enumerable
@@ -69,6 +78,21 @@ class ImageOptim
     end
 
   private
+
+    def init_pack
+      return unless @image_optim.pack
+
+      @pack_path = if @image_optim.verbose
+        Pack.path do |message|
+          $stderr << "#{message}\n"
+        end
+      else
+        Pack.path
+      end
+      return if @pack_path
+
+      warn 'No pack for this OS and/or ARCH, check verbose output'
+    end
 
     # Double-checked locking
     def resolving(name)

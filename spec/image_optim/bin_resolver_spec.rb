@@ -17,7 +17,7 @@ describe ImageOptim::BinResolver do
     stub_const('Cmd', ImageOptim::Cmd)
   end
 
-  let(:image_optim){ double(:image_optim, :verbose => false) }
+  let(:image_optim){ double(:image_optim, :verbose => false, :pack => false) }
   let(:resolver){ BinResolver.new(image_optim) }
 
   describe :full_path do
@@ -44,6 +44,20 @@ describe ImageOptim::BinResolver do
       end
     end
 
+    it 'finds bin in pack' do
+      allow(image_optim).to receive(:pack).and_return(true)
+      stub_const('ImageOptim::Pack', Class.new do
+        def self.path
+          'script'
+        end
+      end)
+
+      with_env 'PATH', nil do
+        expect(full_path('update_worker_options_in_readme')).
+          to eq(File.expand_path('script/update_worker_options_in_readme'))
+      end
+    end
+
     it 'works with different path separator' do
       stub_const('File::PATH_SEPARATOR', 'O_o')
       with_env 'PATH', 'bin' do
@@ -63,6 +77,23 @@ describe ImageOptim::BinResolver do
         expect(full_path(name)).to eq(command_v(name))
       end
     end
+  end
+
+  it 'combines path in order dir:pack:path:vendor' do
+    allow(image_optim).to receive(:pack).and_return(true)
+    stub_const('ImageOptim::Pack', Class.new do
+      def self.path
+        'pack_path'
+      end
+    end)
+    allow(resolver).to receive(:dir).and_return('temp_dir')
+
+    expect(resolver.env_path).to eq([
+      'temp_dir',
+      'pack_path',
+      ENV['PATH'],
+      BinResolver::VENDOR_PATH,
+    ].join(':'))
   end
 
   it 'resolves bin in path and returns instance of Bin' do

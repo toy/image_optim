@@ -30,12 +30,25 @@ Documentation for [latest version](http://rubydoc.info/gems/image_optim/frames) 
 gem install image_optim
 ```
 
+You may also want to install [`image_optim_pack`](https://github.com/toy/image_optim_pack) (see [Binaries pack](#binaries-pack)).
+
+```sh
+gem install image_optim_pack
+```
+
 ### Bundler
 
 Add to your `Gemfile`:
 
 ```ruby
 gem 'image_optim'
+```
+
+With `image_optim_pack`:
+
+```ruby
+gem 'image_optim'
+gem 'image_optim_pack'
 ```
 
 With version:
@@ -77,6 +90,14 @@ Besides permanently setting environment variables in `~/.profile`, `~/.bash_prof
   `ENV['PATH'] = "/Applications/ImageOptim.app/Contents/MacOS:#{ENV['PATH']}"; ImageOptim.optimize_images([…])`
 
 ## Binaries installation
+
+### Binaries pack
+
+Easiest way to get latest versions of most binaries for `image_optim` for Linux and Mac OS X is by installing [`image_optim_pack`](https://github.com/toy/image_optim_pack) gem.
+
+Check installation instructions in [Gem installation](#gem-installation) section.
+
+Pack doesn't include `pngout` and `svgo` binaries, their installation instructions are provided below.
 
 ### Linux - Debian/Ubuntu
 
@@ -240,6 +261,7 @@ optipng:
 * `:nice` — Nice level *(defaults to `10`)*
 * `:threads` — Number of threads or disable *(defaults to number of processors)*
 * `:verbose` — Verbose output *(defaults to `false`)*
+* `:pack` — Require image\_optim\_pack or disable it, by default image\_optim\_pack will be used if available, will turn on `:skip-missing-workers` unless explicitly disabled *(defaults to `nil`)*
 * `:skip_missing_workers` — Skip workers with missing or problematic binaries *(defaults to `false`)*
 
 Worker can be disabled by passing `false` instead of options hash.
