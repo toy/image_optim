@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.18.0 (2014-11-01)
+
 * Add interface to `image_optim_pack` [@toy](https://github.com/toy)
 * Use `in_threads ~> 1.3` [@toy](https://github.com/toy)
 * Added options to Gifsicle, specifically --careful (for compatibility) and --optimize for granularity [#51](https://github.com/toy/image_optim/issues/51) [@kaspergrubbe](https://github.com/kaspergrubbe)
