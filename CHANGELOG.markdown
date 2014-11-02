@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Remove app and other extensions from gif images [@toy](https://github.com/toy)
 * Change gifsicle interlace option to deinterlace by default for better compression, pass `nil` to leave as is [@toy](https://github.com/toy)
 
 ## v0.18.0 (2014-11-01)

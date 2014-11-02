@@ -46,6 +46,12 @@ class ImageOptim
           when c = is < '2.1'
             warn "WARN: #{self} (#{c}) may be lossy even with quality `100-`"
           end
+        when :gifsicle
+          case version
+          when c = is < '1.85'
+            warn "WARN: #{self} (#{c}) doesn't support removing extension "\
+                'blocks'
+          end
         end
       end
 

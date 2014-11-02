@@ -35,6 +35,10 @@ class ImageOptim
           #{src}
         ]
 
+        if resolve_bin!(:gifsicle).version >= '1.85'
+          args.unshift('--no-extensions', '--no-app-extensions')
+        end
+
         unless interlace.nil?
           args.unshift(interlace ? '--interlace' : '--no-interlace')
         end
