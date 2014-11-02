@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Change gifsicle interlace option to deinterlace by default for better compression, pass `nil` to leave as is [@toy](https://github.com/toy)
+
 ## v0.18.0 (2014-11-01)
 
 * Add interface to `image_optim_pack` [@toy](https://github.com/toy)

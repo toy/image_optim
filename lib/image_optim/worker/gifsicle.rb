@@ -5,7 +5,12 @@ class ImageOptim
     # http://www.lcdf.org/gifsicle/
     class Gifsicle < Worker
       INTERLACE_OPTION =
-      option(:interlace, false, 'Turn interlacing on'){ |v| !!v }
+      option(:interlace, false, TrueFalseNil, 'Interlace: '\
+          '`true` - interlace on, '\
+          '`false` - interlace off, '\
+          '`nil` - as is in original image') do |v|
+        TrueFalseNil.convert(v)
+      end
 
       LEVEL_OPTION =
       option(:level, 3, 'Compression level: '\
@@ -30,7 +35,9 @@ class ImageOptim
           #{src}
         ]
 
-        args.unshift('--interlace') if interlace
+        unless interlace.nil?
+          args.unshift(interlace ? '--interlace' : '--no-interlace')
+        end
         args.unshift('--careful') if careful
         args.unshift("--optimize=#{level}") if level
         execute(:gifsicle, *args) && optimized?(src, dst)
