@@ -14,7 +14,7 @@ class ImageOptim
       end
 
       INTERLACE_OPTION =
-      option(:interlace, false, TrueFalseNil, 'Interlace, '\
+      option(:interlace, false, TrueFalseNil, 'Interlace: '\
           '`true` - interlace on, '\
           '`false` - interlace off, '\
           '`nil` - as is in original image') do |v|
