@@ -144,8 +144,8 @@
                     .worker-success-count(title="successfull count")
                       = worker_stat.success_count
             %td.number= chain.optimized_size
-            %td.number= format '%.4f', chain.ratio
-            %td.number= format '%.4f', chain.avg_ratio
+            %td.number= format '%.5f', chain.ratio
+            %td.number= format '%.5f', chain.avg_ratio
             %td.number= format '%.2f', chain.time
             %td.number= format '%.5f', chain.avg_difference
             %td.number{class: chain.warn_level && "warn-#{chain.warn_level}"}
