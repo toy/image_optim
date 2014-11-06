@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Worker can change its initialization by overriding `init` and can initialize multiple instances [#70](https://github.com/toy/image_optim/issues/70) [@toy](https://github.com/toy)
+
 ## v0.18.0 (2014-11-01)
 
 * Add interface to `image_optim_pack` [@toy](https://github.com/toy)

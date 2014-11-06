@@ -62,13 +62,27 @@ describe ImageOptim::Worker do
 
     it 'creates all workers for which options_proc returns true' do
       workers = Array.new(3){ worker_double }
-      klasses = workers.map{ |worker| double(:new => worker) }
+      klasses = workers.map{ |worker| double(:init => worker) }
       options_proc = proc{ |klass| klass != klasses[1] }
 
       allow(Worker).to receive(:klasses).and_return(klasses)
 
       expect(Worker.create_all(image_optim, &options_proc)).
         to eq([workers[0], workers[2]])
+    end
+
+    it 'handles workers initializing multiple instances' do
+      workers = [
+        worker_double,
+        [worker_double, worker_double, worker_double],
+        worker_double
+      ]
+      klasses = workers.map{ |worker| double(:init => worker) }
+
+      allow(Worker).to receive(:klasses).and_return(klasses)
+
+      expect(Worker.create_all(image_optim){ true }).
+        to eq(workers.flatten)
     end
 
     describe 'with missing workers' do
@@ -82,7 +96,7 @@ describe ImageOptim::Worker do
           worker
         end
       end
-      let(:klasses){ workers.map{ |worker| double(:new => worker) } }
+      let(:klasses){ workers.map{ |worker| double(:init => worker) } }
 
       before do
         allow(Worker).to receive(:klasses).and_return(klasses)
@@ -125,7 +139,7 @@ describe ImageOptim::Worker do
       workers = run_orders.map do |run_order|
         worker_double(:run_order => run_order)
       end
-      klasses_list = workers.map{ |worker| double(:new => worker) }
+      klasses_list = workers.map{ |worker| double(:init => worker) }
 
       [
         klasses_list,
@@ -134,7 +148,7 @@ describe ImageOptim::Worker do
       ].each do |klasses|
         allow(Worker).to receive(:klasses).and_return(klasses)
 
-        expected_order = klasses.map(&:new).sort_by.with_index do |worker, i|
+        expected_order = klasses.map(&:init).sort_by.with_index do |worker, i|
           [worker.run_order, i]
         end
 

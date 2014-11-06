@@ -14,6 +14,9 @@ class ImageOptim
     @klasses = []
 
     class << self
+      # Default init for worker is new
+      alias_method :init, :new
+
       # List of available workers
       def klasses
         @klasses.to_enum
@@ -62,8 +65,8 @@ class ImageOptim
       def create_all(image_optim, &options_proc)
         workers = klasses.map do |klass|
           next unless (options = options_proc[klass])
-          klass.new(image_optim, options)
-        end.compact
+          klass.init(image_optim, options)
+        end.compact.flatten
 
         resolved = []
         errors = BinResolver.collect_errors(workers) do |worker|
