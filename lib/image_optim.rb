@@ -64,7 +64,7 @@ class ImageOptim
 
     @bin_resolver = BinResolver.new(self)
 
-    @workers_by_format = create_workers_by_format do |klass|
+    @workers_by_format = Worker.create_all_by_format(self) do |klass|
       config.for_worker(klass)
     end
 
@@ -190,25 +190,6 @@ private
         end
       end
     end
-  end
-
-  # Create hash with format mapped to list of workers sorted by run order
-  def create_workers_by_format(&options_proc)
-    by_format = {}
-    workers = Worker.create_all(self, &options_proc)
-    if skip_missing_workers
-      workers = Worker.reject_missing(workers)
-    else
-      Worker.resolve_all!(workers)
-    end
-    sorted = workers.sort_by.with_index{ |worker, i| [worker.run_order, i] }
-    sorted.each do |worker|
-      worker.image_formats.each do |format|
-        by_format[format] ||= []
-        by_format[format] << worker
-      end
-    end
-    by_format
   end
 
   # Run method for each item in list

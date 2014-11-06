@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-require 'image_optim/bin_resolver/error'
+require 'image_optim/bin_resolver'
 require 'image_optim/configuration_error'
 require 'image_optim/option_definition'
 require 'image_optim/option_helpers'
@@ -14,6 +14,9 @@ class ImageOptim
     @klasses = []
 
     class << self
+      # Default init for worker is new
+      alias_method :init, :new
+
       # List of available workers
       def klasses
         @klasses.to_enum
@@ -42,34 +45,45 @@ class ImageOptim
           OptionDefinition.new(name, default, type, description, &proc)
       end
 
-      # Initialize all workers using options from calling options_proc with
-      # klass
-      def create_all(image_optim, &options_proc)
-        Worker.klasses.map do |klass|
-          next unless (options = options_proc[klass])
-          klass.new(image_optim, options)
-        end.compact
-      end
-
-      # Resolve all bins of all workers failing with one joint exception
-      def resolve_all!(workers)
-        errors = BinResolver.collect_errors(workers) do |worker|
-          worker.resolve_used_bins!
+      # Create hash with format mapped to list of workers sorted by run order
+      def create_all_by_format(image_optim, &options_proc)
+        by_format = {}
+        create_all(image_optim, &options_proc).each do |worker|
+          worker.image_formats.each do |format|
+            by_format[format] ||= []
+            by_format[format] << worker
+          end
         end
-        return if errors.empty?
-        fail BinResolver::Error, ['Bin resolving errors:', *errors].join("\n")
+        by_format
       end
 
-      # Resolve all bins of all workers showing warning for missing ones and
-      # returning others
-      def reject_missing(workers)
+      # Create list of workers sorted by run order
+      # Workers are initialized with options provided through options_proc
+      # Resolve all bins of all workers, if there are errors and
+      # skip_missing_workers of image_optim is true - show warnings, otherwise
+      # fail with one joint exception
+      def create_all(image_optim, &options_proc)
+        workers = klasses.map do |klass|
+          next unless (options = options_proc[klass])
+          klass.init(image_optim, options)
+        end.compact.flatten
+
         resolved = []
         errors = BinResolver.collect_errors(workers) do |worker|
           worker.resolve_used_bins!
           resolved << worker
         end
-        errors.each{ |error| warn error }
-        resolved
+
+        unless errors.empty?
+          if image_optim.skip_missing_workers
+            errors.each{ |error| warn error }
+          else
+            message = ['Bin resolving errors:', *errors].join("\n")
+            fail BinResolver::Error, message
+          end
+        end
+
+        resolved.sort_by.with_index{ |worker, i| [worker.run_order, i] }
       end
     end
 

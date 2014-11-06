@@ -4,6 +4,7 @@
 
 * Remove app and other extensions from gif images [@toy](https://github.com/toy)
 * Change gifsicle interlace option to deinterlace by default for better compression, pass `nil` to leave as is [@toy](https://github.com/toy)
+* Worker can change its initialization by overriding `init` and can initialize multiple instances [#70](https://github.com/toy/image_optim/issues/70) [@toy](https://github.com/toy)
 
 ## v0.18.0 (2014-11-01)
 
