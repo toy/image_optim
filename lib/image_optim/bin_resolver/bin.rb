@@ -21,8 +21,8 @@ class ImageOptim
         "#{name} #{version || '?'} at #{path}"
       end
 
-      # Fail or warn if version is known to misbehave depending on severity
-      def check!
+      # Fail if version will not work properly
+      def check_fail!
         fail BadVersion, "didn't get version of #{self}" unless version
 
         is = ComparableCondition.is
@@ -32,6 +32,20 @@ class ImageOptim
           when c = is.between?('1.7.60', '1.7.65')
             fail BadVersion, "#{self} (#{c}) is known to produce broken pngs"
           end
+        when :pngquant
+          case version
+          when c = is < '2.0'
+            fail BadVersion, "#{self} (#{c}) is not supported"
+          end
+        end
+      end
+
+      # Run check_fail!, otherwise warn if version is known to misbehave
+      def check!
+        check_fail!
+
+        is = ComparableCondition.is
+        case name
         when :advpng
           case version
           when c = is < '1.17'
@@ -39,8 +53,6 @@ class ImageOptim
           end
         when :pngquant
           case version
-          when c = is < '2.0'
-            fail BadVersion, "#{self} (#{c}) is not supported"
           when c = is < '2.1'
             warn "WARN: #{self} (#{c}) may be lossy even with quality `100-`"
           end

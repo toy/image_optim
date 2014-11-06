@@ -102,7 +102,8 @@ describe ImageOptim::BinResolver do
       expect(resolver).to receive(:full_path).with(:ls).and_return('/bin/ls')
       bin = double
       expect(Bin).to receive(:new).with(:ls, '/bin/ls').and_return(bin)
-      expect(bin).to receive(:check!).exactly(5).times
+      expect(bin).to receive(:check!).once
+      expect(bin).to receive(:check_fail!).exactly(5).times
 
       5.times do
         expect(resolver.resolve!(:ls)).to eq(bin)
@@ -149,7 +150,8 @@ describe ImageOptim::BinResolver do
       bin = double
       expect(Bin).to receive(:new).
         with(:image_optim, File.expand_path(path)).and_return(bin)
-      expect(bin).to receive(:check!).exactly(5).times
+      expect(bin).to receive(:check!).once
+      expect(bin).to receive(:check_fail!).exactly(5).times
 
       at_exit_blocks = []
       expect(resolver).to receive(:at_exit).once do |&block|
@@ -202,9 +204,10 @@ describe ImageOptim::BinResolver do
       bin = double
       expect(Bin).to receive(:new).once.with(:ls, '/bin/ls').and_return(bin)
 
-      check_count = 0
+      count = 0
       mutex = Mutex.new
-      allow(bin).to receive(:check!){ mutex.synchronize{ check_count += 1 } }
+      allow(bin).to receive(:check!).once
+      allow(bin).to receive(:check_fail!){ mutex.synchronize{ count += 1 } }
 
       10.times.map do
         Thread.new do
@@ -212,7 +215,7 @@ describe ImageOptim::BinResolver do
         end
       end.each(&:join)
 
-      expect(check_count).to eq(10)
+      expect(count).to eq(10)
     end
   end
 
