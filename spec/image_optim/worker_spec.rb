@@ -42,11 +42,13 @@ describe ImageOptim::Worker do
 
       expect(Worker).to receive(:create_all).and_return(workers)
 
-      expect(Worker.create_all_by_format(double)).to eq({
+      worker_by_format = {
         :a => [workers[0], workers[1]],
         :b => [workers[1], workers[2]],
         :c => [workers[2]],
-      })
+      }
+
+      expect(Worker.create_all_by_format(double)).to eq(worker_by_format)
     end
   end
 
@@ -93,8 +95,10 @@ describe ImageOptim::Worker do
         it 'shows warnings and returns resolved workers ' do
           allow(image_optim).to receive(:skip_missing_workers).and_return(true)
 
-          expect(Worker).to receive(:warn).once.with(bin_not_found('not found 0'))
-          expect(Worker).to receive(:warn).once.with(bin_not_found('not found 2'))
+          expect(Worker).to receive(:warn).
+            once.with(bin_not_found('not found 0'))
+          expect(Worker).to receive(:warn).
+            once.with(bin_not_found('not found 2'))
 
           expect(Worker.create_all(image_optim){ true }).
             to eq([workers[1]])
@@ -118,12 +122,12 @@ describe ImageOptim::Worker do
       workers = run_orders.map do |run_order|
         double(:resolve_used_bins! => nil, :run_order => run_order)
       end
-      klasses = workers.map{ |worker| double(:new => worker) }
+      klasses_list = workers.map{ |worker| double(:new => worker) }
 
       [
-        klasses,
-        klasses.reverse,
-        klasses.shuffle,
+        klasses_list,
+        klasses_list.reverse,
+        klasses_list.shuffle,
       ].each do |klasses|
         allow(Worker).to receive(:klasses).and_return(klasses)
 
