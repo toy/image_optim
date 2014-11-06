@@ -273,7 +273,7 @@ Worker can be disabled by passing `false` instead of options hash.
 * `:level` — Compression level: `0` - don't compress, `1` - fast, `2` - normal, `3` - extra, `4` - extreme *(defaults to `4`)*
 
 ### :gifsicle =>
-* `:interlace` — Interlace: `true` - interlace on, `false` - interlace off, `nil` - as is in original image *(defaults to `false`)*
+* `:interlace` — Interlace: `true` - interlace on, `false` - interlace off, `nil` - as is in original image (defaults to running two instances, one with interlace off and one with on) *(defaults to `false`)*
 * `:level` — Compression level: `1` - light and fast, `2` - normal, `3` - heavy (slower) *(defaults to `3`)*
 * `:careful` — Avoid bugs with some software *(defaults to `false`)*
 

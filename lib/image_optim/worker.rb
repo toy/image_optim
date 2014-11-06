@@ -15,6 +15,7 @@ class ImageOptim
 
     class << self
       # Default init for worker is new
+      # Check example of override in gifsicle worker
       alias_method :init, :new
 
       # List of available workers

@@ -180,12 +180,12 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
         fail "Unknown type #{type}"
       end
 
-      description_lines = %W[
-        #{option_definition.description.gsub(' - ', ' - ')}
-        (defaults to #{default})
-      ].join(' ')
+      description = option_definition.description.gsub(' - ', ' - ')
+      unless description['(defaults']
+        description << " (defaults to #{default})"
+      end
 
-      op.on("--#{bin}-#{name} #{marking}", type, *description_lines) do |value|
+      op.on("--#{bin}-#{name} #{marking}", type, description) do |value|
         options[bin] = {} unless options[bin].is_a?(Hash)
         options[bin][option_definition.name.to_sym] = value
       end
