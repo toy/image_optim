@@ -53,12 +53,15 @@ describe ImageOptim::Worker do
   end
 
   describe :create_all do
+    def worker_double(override = {})
+      stubs = {:resolve_used_bins! => nil, :run_order => 0}.merge(override)
+      instance_double(Worker, stubs)
+    end
+
     let(:image_optim){ double }
 
     it 'creates all workers for which options_proc returns true' do
-      workers = Array.new(3) do
-        double(:resolve_used_bins! => nil, :run_order => 0)
-      end
+      workers = Array.new(3){ worker_double }
       klasses = workers.map{ |worker| double(:new => worker) }
       options_proc = proc{ |klass| klass != klasses[1] }
 
@@ -71,7 +74,7 @@ describe ImageOptim::Worker do
     describe 'with missing workers' do
       let(:workers) do
         Array.new(3) do |i|
-          worker = double(:resolve_used_bins! => nil, :run_order => 0)
+          worker = worker_double
           unless i == 1
             allow(worker).to receive(:resolve_used_bins!).
               and_raise(BinResolver::BinNotFound, "not found #{i}")
@@ -120,7 +123,7 @@ describe ImageOptim::Worker do
       image_optim = double
       run_orders = [10, -10, 0, 0, 0, 10, -10]
       workers = run_orders.map do |run_order|
-        double(:resolve_used_bins! => nil, :run_order => run_order)
+        worker_double(:run_order => run_order)
       end
       klasses_list = workers.map{ |worker| double(:new => worker) }
 
