@@ -23,9 +23,7 @@ class ImageOptim
 
       # Fail or warn if version is known to misbehave depending on severity
       def check!
-        unless version
-          fail BadVersion, "didn't get version of #{name} at #{path}"
-        end
+        fail BadVersion, "didn't get version of #{self}" unless version
 
         is = ComparableCondition.is
         case name
