@@ -102,7 +102,8 @@ describe ImageOptim::BinResolver do
       expect(resolver).to receive(:full_path).with(:ls).and_return('/bin/ls')
       bin = double
       expect(Bin).to receive(:new).with(:ls, '/bin/ls').and_return(bin)
-      expect(bin).to receive(:check!).exactly(5).times
+      expect(bin).to receive(:check!).once
+      expect(bin).to receive(:check_fail!).exactly(5).times
 
       5.times do
         expect(resolver.resolve!(:ls)).to eq(bin)
@@ -149,7 +150,8 @@ describe ImageOptim::BinResolver do
       bin = double
       expect(Bin).to receive(:new).
         with(:image_optim, File.expand_path(path)).and_return(bin)
-      expect(bin).to receive(:check!).exactly(5).times
+      expect(bin).to receive(:check!).once
+      expect(bin).to receive(:check_fail!).exactly(5).times
 
       at_exit_blocks = []
       expect(resolver).to receive(:at_exit).once do |&block|
@@ -202,9 +204,10 @@ describe ImageOptim::BinResolver do
       bin = double
       expect(Bin).to receive(:new).once.with(:ls, '/bin/ls').and_return(bin)
 
-      check_count = 0
+      count = 0
       mutex = Mutex.new
-      allow(bin).to receive(:check!){ mutex.synchronize{ check_count += 1 } }
+      allow(bin).to receive(:check!).once
+      allow(bin).to receive(:check_fail!){ mutex.synchronize{ count += 1 } }
 
       10.times.map do
         Thread.new do
@@ -212,29 +215,58 @@ describe ImageOptim::BinResolver do
         end
       end.each(&:join)
 
-      expect(check_count).to eq(10)
+      expect(count).to eq(10)
     end
   end
 
-  it 'raises if did not got bin version' do
-    bin = Bin.new(:pngcrush, '/bin/pngcrush')
-    allow(bin).to receive(:version).and_return(nil)
-
-    5.times do
-      expect do
-        bin.check!
-      end.to raise_error Bin::BadVersion
+  describe 'checking version' do
+    before do
+      allow(resolver).to receive(:full_path){ |name| "/bin/#{name}" }
     end
-  end
 
-  it 'raises on detection of problematic version' do
-    bin = Bin.new(:pngcrush, '/bin/pngcrush')
-    allow(bin).to receive(:version).and_return(SimpleVersion.new('1.7.60'))
+    it 'raises every time if did not get bin version' do
+      with_env 'PNGCRUSH_BIN', nil do
+        bin = Bin.new(:pngcrush, '/bin/pngcrush')
 
-    5.times do
-      expect do
-        bin.check!
-      end.to raise_error Bin::BadVersion
+        expect(Bin).to receive(:new).and_return(bin)
+        allow(bin).to receive(:version).and_return(nil)
+
+        5.times do
+          expect do
+            resolver.resolve!(:pngcrush)
+          end.to raise_error Bin::UnknownVersion
+        end
+      end
+    end
+
+    it 'raises every time on detection of misbehaving version' do
+      with_env 'PNGCRUSH_BIN', nil do
+        bin = Bin.new(:pngcrush, '/bin/pngcrush')
+
+        expect(Bin).to receive(:new).and_return(bin)
+        allow(bin).to receive(:version).and_return(SimpleVersion.new('1.7.60'))
+
+        5.times do
+          expect do
+            resolver.resolve!(:pngcrush)
+          end.to raise_error Bin::BadVersion
+        end
+      end
+    end
+
+    it 'warns once on detection of problematic version' do
+      with_env 'ADVPNG_BIN', nil do
+        bin = Bin.new(:advpng, '/bin/advpng')
+
+        expect(Bin).to receive(:new).and_return(bin)
+        allow(bin).to receive(:version).and_return(SimpleVersion.new('1.15'))
+
+        expect(bin).to receive(:warn).once
+
+        5.times do
+          resolver.resolve!(:pngcrush)
+        end
+      end
     end
   end
 end
