@@ -40,10 +40,12 @@ class ImageOptim
         end
 
         @bins[name] = bin
+
+        bin.check! if bin
       end
 
       if @bins[name]
-        @bins[name].check!
+        @bins[name].check_fail!
       else
         fail BinNotFound, "`#{name}` not found"
       end

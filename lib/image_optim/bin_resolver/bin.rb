@@ -8,6 +8,7 @@ class ImageOptim
   class BinResolver
     # Holds bin name and path, gets version
     class Bin
+      class UnknownVersion < Error; end
       class BadVersion < Error; end
 
       attr_reader :name, :path, :version
@@ -21,31 +22,39 @@ class ImageOptim
         "#{name} #{version || '?'} at #{path}"
       end
 
-      # Fail or warn if version is known to misbehave depending on severity
-      def check!
-        unless version
-          fail BadVersion, "didn't get version of #{name} at #{path}"
-        end
+      is = ComparableCondition.is
 
-        is = ComparableCondition.is
-        case name
-        when :pngcrush
-          case version
-          when c = is.between?('1.7.60', '1.7.65')
-            fail BadVersion, "#{self} (#{c}) is known to produce broken pngs"
-          end
-        when :advpng
-          case version
-          when c = is < '1.17'
-            warn "WARN: #{self} (#{c}) does not use zopfli"
-          end
-        when :pngquant
-          case version
-          when c = is < '2.0'
-            fail BadVersion, "#{self} (#{c}) is not supported"
-          when c = is < '2.1'
-            warn "WARN: #{self} (#{c}) may be lossy even with quality `100-`"
-          end
+      FAIL_CHECKS = [
+        [:pngcrush, is.between?('1.7.60', '1.7.65'), 'is known to produce '\
+              'broken pngs'],
+        [:pngquant, is < '2.0', 'is not supported'],
+      ]
+
+      WARN_CHECKS = [
+        [:advpng, is < '1.17', 'does not use zopfli'],
+        [:pngquant, is < '2.1', 'may be lossy even with quality `100-`'],
+        [:gifsicle, is < '1.85', 'does not support removing extension blocks'],
+      ]
+
+      # Fail if version will not work properly
+      def check_fail!
+        fail UnknownVersion, "didn't get version of #{self}" unless version
+
+        FAIL_CHECKS.each do |bin_name, matcher, message|
+          next unless bin_name == name
+          next unless matcher.match(version)
+          fail BadVersion, "#{self} (#{matcher}) #{message}"
+        end
+      end
+
+      # Run check_fail!, otherwise warn if version is known to misbehave
+      def check!
+        check_fail!
+
+        WARN_CHECKS.each do |bin_name, matcher, message|
+          next unless bin_name == name
+          next unless matcher.match(version)
+          warn "WARN: #{self} (#{matcher}) #{message}"
         end
       end
 

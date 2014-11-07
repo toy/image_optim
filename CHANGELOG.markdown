@@ -2,6 +2,10 @@
 
 ## unreleased
 
+* Don't warn multiple times about problematic binary [#69](https://github.com/toy/image_optim/issues/69) [@toy](https://github.com/toy)
+* Run gisicle two times (with interlace off then with on) if interlace is not set explicitly [#70](https://github.com/toy/image_optim/issues/70) [@toy](https://github.com/toy)
+* Remove app and other extensions from gif images [@toy](https://github.com/toy)
+* Change behaviour of gifsicle interlace option to deinterlace for `false`, pass `nil` to leave as is [@toy](https://github.com/toy)
 * Worker can change its initialization by overriding `init` and can initialize multiple instances [#70](https://github.com/toy/image_optim/issues/70) [@toy](https://github.com/toy)
 
 ## v0.18.0 (2014-11-01)
