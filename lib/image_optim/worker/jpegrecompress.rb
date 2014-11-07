@@ -23,7 +23,7 @@ class ImageOptim
 
       # Run first [-1]
       def run_order
-        -1
+        -5
       end
 
       def optimize(src, dst)
