@@ -145,7 +145,10 @@ class Analyser
     def initialize(klass, image_optim, options)
       allow_consecutive_on = Array(options.delete(:allow_consecutive_on))
       @image_optim = image_optim
-      @id = "#{klass.bin_sym}#{options unless options.empty?}"
+      @id = klass.bin_sym.to_s
+      unless options.empty?
+        @id << "(#{options.map{ |k, v| "#{k}:#{v.inspect}" }.join(', ')})"
+      end
       __setobj__(klass.new(image_optim, options))
       @cons_id = [klass, allow_consecutive_on.map{ |key| [key, send(key)] }]
     end
