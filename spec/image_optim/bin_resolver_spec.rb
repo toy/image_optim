@@ -219,25 +219,54 @@ describe ImageOptim::BinResolver do
     end
   end
 
-  it 'raises if did not got bin version' do
-    bin = Bin.new(:pngcrush, '/bin/pngcrush')
-    allow(bin).to receive(:version).and_return(nil)
-
-    5.times do
-      expect do
-        bin.check!
-      end.to raise_error Bin::BadVersion
+  describe 'checking version' do
+    before do
+      allow(resolver).to receive(:full_path){ |name| "/bin/#{name}" }
     end
-  end
 
-  it 'raises on detection of problematic version' do
-    bin = Bin.new(:pngcrush, '/bin/pngcrush')
-    allow(bin).to receive(:version).and_return(SimpleVersion.new('1.7.60'))
+    it 'raises every time if did not get bin version' do
+      with_env 'PNGCRUSH_BIN', nil do
+        bin = Bin.new(:pngcrush, '/bin/pngcrush')
 
-    5.times do
-      expect do
-        bin.check!
-      end.to raise_error Bin::BadVersion
+        expect(Bin).to receive(:new).and_return(bin)
+        allow(bin).to receive(:version).and_return(nil)
+
+        5.times do
+          expect do
+            resolver.resolve!(:pngcrush)
+          end.to raise_error Bin::UnknownVersion
+        end
+      end
+    end
+
+    it 'raises every time on detection of misbehaving version' do
+      with_env 'PNGCRUSH_BIN', nil do
+        bin = Bin.new(:pngcrush, '/bin/pngcrush')
+
+        expect(Bin).to receive(:new).and_return(bin)
+        allow(bin).to receive(:version).and_return(SimpleVersion.new('1.7.60'))
+
+        5.times do
+          expect do
+            resolver.resolve!(:pngcrush)
+          end.to raise_error Bin::BadVersion
+        end
+      end
+    end
+
+    it 'warns once on detection of problematic version' do
+      with_env 'ADVPNG_BIN', nil do
+        bin = Bin.new(:advpng, '/bin/advpng')
+
+        expect(Bin).to receive(:new).and_return(bin)
+        allow(bin).to receive(:version).and_return(SimpleVersion.new('1.15'))
+
+        expect(bin).to receive(:warn).once
+
+        5.times do
+          resolver.resolve!(:pngcrush)
+        end
+      end
     end
   end
 end
