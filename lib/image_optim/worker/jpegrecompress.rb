@@ -31,6 +31,7 @@ class ImageOptim
         return false if quality_str == :lossless
         args = %W[
           --quality #{quality_str}
+          --no-copy
           #{src}
           #{dst}
         ]
