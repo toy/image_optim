@@ -219,7 +219,7 @@ end
 
 %w[
   pngcrush pngout advpng optipng pngquant
-  jhead jpegoptim jpegtran
+  jhead jpegoptim jpegrecompress jpegtran
   gifsicle
   svgo
 ].each do |worker|

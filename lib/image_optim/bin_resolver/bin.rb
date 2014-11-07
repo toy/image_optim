@@ -73,7 +73,7 @@ class ImageOptim
           capture("#{escaped_path} --version 2> /dev/null")[/\d+(\.\d+){1,}/]
         when :svgo
           capture("#{escaped_path} --version 2>&1")[/\d+(\.\d+){1,}/]
-        when :jhead
+        when :jhead, :'jpeg-recompress'
           capture("#{escaped_path} -V 2> /dev/null")[/\d+(\.\d+){1,}/]
         when :jpegtran
           capture("#{escaped_path} -v - 2>&1")[/version (\d+\S*)/, 1]

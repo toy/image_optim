@@ -22,6 +22,12 @@ before_install:
   - PNGOUT_VERSION=20130221
   - curl -L "http://static.jonof.id.au/dl/kenutils/pngout-$PNGOUT_VERSION-linux.tar.gz" | tar -xz
   - mv pngout-$PNGOUT_VERSION-linux/x86_64/pngout ~/bin
+
+  - echo 'Installing jpeg-recompress:'
+  - JPEGARCHIVE_VERSION=2.0.1
+  - wget https://github.com/danielgtaylor/jpeg-archive/releases/download/$JPEGARCHIVE_VERSION/jpeg-archive-$JPEGARCHIVE_VERSION-linux.tar.bz2
+  - tar -xjf jpeg-archive-$JPEGARCHIVE_VERSION-linux.tar.bz2 jpeg-recompress
+  - mv jpeg-recompress ~/bin
 env:
   - PATH=~/bin:$PATH
 matrix:
