@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
 
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'bundler/setup'
 
 require 'image_optim'
 
