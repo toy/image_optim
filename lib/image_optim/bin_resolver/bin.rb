@@ -8,6 +8,7 @@ class ImageOptim
   class BinResolver
     # Holds bin name and path, gets version
     class Bin
+      class UnknownVersion < Error; end
       class BadVersion < Error; end
 
       attr_reader :name, :path, :version
@@ -23,7 +24,7 @@ class ImageOptim
 
       # Fail if version will not work properly
       def check_fail!
-        fail BadVersion, "didn't get version of #{self}" unless version
+        fail UnknownVersion, "didn't get version of #{self}" unless version
 
         is = ComparableCondition.is
         case name
