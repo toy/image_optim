@@ -29,7 +29,11 @@ class ImageOptim
       def optimize(src, dst)
         quality_str = QUALITY_OPTIONS[quality]
         return false if quality_str == :lossless
-        args = ['-q', quality_str, src, dst]
+        args = %W[
+          --quality #{quality_str}
+          #{src}
+          #{dst}
+        ]
         execute(:'jpeg-recompress', *args) && optimized?(src, dst)
       end
     end
