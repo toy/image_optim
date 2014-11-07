@@ -75,7 +75,7 @@ describe ImageOptim::Worker do
       workers = [
         worker_double,
         [worker_double, worker_double, worker_double],
-        worker_double
+        worker_double,
       ]
       klasses = workers.map{ |worker| double(:init => worker) }
 
