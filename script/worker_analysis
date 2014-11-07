@@ -143,7 +143,6 @@ class Analyser
   class WorkerVariant < DelegateClass(ImageOptim::Worker)
     attr_reader :klass, :id
     def initialize(klass, image_optim, options)
-      @klass = klass
       @image_optim = image_optim
       @id = "#{klass.bin_sym}#{options unless options.empty?}"
       __setobj__(klass.new(image_optim, options))
@@ -270,7 +269,7 @@ class Analyser
 
         block.call(chain_result)
 
-        workers_left = workers.reject{ |w| w.klass == worker.klass }
+        workers_left = workers - [worker]
         run_workers(result_image, workers_left, chain_result, &block)
       end
     end

@@ -28,36 +28,6 @@ describe ImageOptim do
     allow(ImageOptim::Config).to receive(:local).and_return({})
   end
 
-  describe 'workers' do
-    they 'are ordered by run_order' do
-      image_optim = ImageOptim.new
-      original_klasses = ImageOptim::Worker.klasses
-      formats = original_klasses.map do |klass|
-        klass.new(image_optim, {}).image_formats
-      end.flatten.uniq
-
-      [
-        original_klasses,
-        original_klasses.to_a.reverse,
-        original_klasses.to_a.shuffle,
-      ].each do |klasses|
-        expect(ImageOptim::Worker).to receive(:klasses).and_return(klasses)
-
-        image_optim = ImageOptim.new
-
-        formats.each do |format|
-          path = ImageOptim::ImagePath.new("test.#{format}")
-          expect(path).to receive(:format).and_return(format)
-
-          workers = image_optim.workers_for_image(path)
-          expect(workers).to eq(workers.sort_by.with_index do |worker, i|
-            [worker.run_order, i]
-          end)
-        end
-      end
-    end
-  end
-
   disable_all_workers = Hash[ImageOptim::Worker.klasses.map do |klass|
     [klass.bin_sym, false]
   end]
