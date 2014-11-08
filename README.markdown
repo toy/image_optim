@@ -6,13 +6,14 @@
 
 # image_optim
 
-Optimize (lossless compress) images (jpeg, png, gif, svg) using external utilities:
+Optimize (lossless compress, optionally lossy) images (jpeg, png, gif, svg) using external utilities:
 
 * [advpng](http://advancemame.sourceforge.net/doc-advpng.html) from [AdvanceCOMP](http://advancemame.sourceforge.net/comp-readme.html)
 (will use [zopfli](https://code.google.com/p/zopfli/) on default/maximum level 4)
 * [gifsicle](http://www.lcdf.org/gifsicle/)
 * [jhead](http://www.sentex.net/~mwandel/jhead/)
 * [jpegoptim](http://www.kokkonen.net/tjko/projects.html)
+* [jpeg-recompress](https://github.com/danielgtaylor/jpeg-archive#jpeg-recompress)
 * jpegtran from [Independent JPEG Group's JPEG library](http://www.ijg.org/)
 * [optipng](http://optipng.sourceforge.net/)
 * [pngcrush](http://pmt.sourceforge.net/pngcrush/)
@@ -173,6 +174,11 @@ _Note: pngout is free to use even in commercial soft, but you can not redistribu
 npm install -g svgo
 ```
 
+### jpeg-recompress installation (optional)
+
+Download and install the `jpeg-recompress` binary from the [JPEG-Archive Releases](https://github.com/danielgtaylor/jpeg-archive/releases) page,
+or follow the instructions to [build from source](https://github.com/danielgtaylor/jpeg-archive#building).
+
 ## Usage
 
 ### From shell
@@ -263,6 +269,7 @@ optipng:
 * `:verbose` — Verbose output *(defaults to `false`)*
 * `:pack` — Require image\_optim\_pack or disable it, by default image\_optim\_pack will be used if available, will turn on `:skip-missing-workers` unless explicitly disabled *(defaults to `nil`)*
 * `:skip_missing_workers` — Skip workers with missing or problematic binaries *(defaults to `false`)*
+* `:allow_lossy` — Allow lossy workers and optimizations *(defaults to `false`)*
 
 Worker can be disabled by passing `false` instead of options hash.
 
@@ -283,6 +290,9 @@ Worker has no options
 ### :jpegoptim =>
 * `:strip` — List of extra markers to strip: `:comments`, `:exif`, `:iptc`, `:icc` or `:all` *(defaults to `:all`)*
 * `:max_quality` — Maximum image quality factor `0`..`100` *(defaults to `100`)*
+
+### :jpegrecompress =>
+* `:quality` — JPEG quality preset: `0` - low, `1` - medium, `2` - high, `3` - veryhigh *(defaults to `3`)*
 
 ### :jpegtran =>
 * `:copy_chunks` — Copy all chunks *(defaults to `false`)*

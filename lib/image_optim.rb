@@ -3,9 +3,19 @@ require 'image_optim/config'
 require 'image_optim/handler'
 require 'image_optim/image_meta'
 require 'image_optim/image_path'
+require 'image_optim/railtie' if defined?(Rails)
 require 'image_optim/worker'
 require 'in_threads'
 require 'shellwords'
+
+%w[
+  pngcrush pngout advpng optipng pngquant
+  jhead jpegoptim jpegrecompress jpegtran
+  gifsicle
+  svgo
+].each do |worker|
+  require "image_optim/worker/#{worker}"
+end
 
 # Main interface
 class ImageOptim
@@ -23,6 +33,9 @@ class ImageOptim
 
   # Skip workers with missing or problematic binaries
   attr_reader :skip_missing_workers
+
+  # Allow lossy workers and optimizations
+  attr_reader :allow_lossy
 
   # Initialize workers, specify options using worker underscored name:
   #
@@ -50,6 +63,7 @@ class ImageOptim
     @verbose = config.verbose
     @pack = config.pack
     @skip_missing_workers = config.skip_missing_workers
+    @allow_lossy = config.allow_lossy
 
     if verbose
       $stderr << "config:\n"
@@ -60,6 +74,7 @@ class ImageOptim
       $stderr << "threads: #{threads}\n"
       $stderr << "pack: #{pack}\n"
       $stderr << "skip_missing_workers: #{skip_missing_workers}\n"
+      $stderr << "allow_lossy: #{allow_lossy}\n"
     end
 
     @bin_resolver = BinResolver.new(self)
@@ -216,14 +231,3 @@ private
     end
   end
 end
-
-%w[
-  pngcrush pngout advpng optipng pngquant
-  jhead jpegoptim jpegtran
-  gifsicle
-  svgo
-].each do |worker|
-  require "image_optim/worker/#{worker}"
-end
-
-require 'image_optim/railtie' if defined?(Rails)

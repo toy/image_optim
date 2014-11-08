@@ -35,8 +35,15 @@ describe ImageOptim do
   ImageOptim::Worker.klasses.each do |worker_klass|
     describe "#{worker_klass.bin_sym} worker" do
       it 'optimizes at least one test image' do
-        options = disable_all_workers.merge(worker_klass.bin_sym => true)
+        options = disable_all_workers.dup
+        options.merge!(worker_klass.bin_sym => true)
+        options.merge!(:skip_missing_workers => false)
+
         image_optim = ImageOptim.new(options)
+        if Array(worker_klass.init(image_optim)).empty?
+          image_optim = ImageOptim.new(options.merge(:allow_lossy => true))
+        end
+
         expect(test_images.any? do |original|
           image_optim.optimize_image(temp_copy(original))
         end).to be true
@@ -93,14 +100,14 @@ describe ImageOptim do
       match{ |actual| actual.size < expected.size }
     end
 
-    define :be_pixel_identical_to do |expected|
+    define :be_similar_to do |expected, max_difference|
       match do |actual|
         @diff = nrmse(actual, expected)
-        @diff == 0
+        @diff <= max_difference
       end
       failure_message do |actual|
-        "expected #{actual} to be pixel identical to #{expected}, got "\
-            "normalized root-mean-square error of #{@diff}"
+        "expected #{actual} to have at most #{max_difference} difference from "\
+            "#{expected}, got normalized root-mean-square error of #{@diff}"
       end
     end
 
@@ -108,24 +115,29 @@ describe ImageOptim do
       rotated = images_dir / 'orient/original.jpg'
       rotate_images = images_dir.glob('orient/?.jpg')
 
-      copies = test_images.map{ |image| temp_copy(image) }
-      original_by_copy = Hash[copies.zip(test_images)]
+      base_options = {:skip_missing_workers => false}
+      [
+        ['lossless', base_options, 0],
+        ['lossy', base_options.merge(:allow_lossy => true), 0.01],
+      ].each do |type, options, max_difference|
+        image_optim = ImageOptim.new(options)
+        describe type do
+          copies = test_images.map{ |image| temp_copy(image) }
+          pairs = image_optim.optimize_images(copies)
+          test_images.zip(*pairs.transpose).each do |original, copy, optimized|
+            it "optimizes #{original.relative_path_from(root_dir)}" do
+              expect(copy).to have_same_data_as(original)
 
-      ImageOptim.optimize_images(copies) do |copy, optimized|
-        fail 'expected copy to not be nil' if copy.nil?
-        original = original_by_copy[copy]
+              expect(optimized).not_to be_nil
+              expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
+              expect(optimized).to have_size
+              expect(optimized).to be_smaller_than(original)
+              expect(optimized).not_to have_same_data_as(original)
 
-        it "optimizes #{original.relative_path_from(root_dir)}" do
-          expect(copy).to have_same_data_as(original)
-
-          expect(optimized).not_to be_nil
-          expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
-          expect(optimized).to have_size
-          expect(optimized).to be_smaller_than(original)
-          expect(optimized).not_to have_same_data_as(original)
-
-          compare_to = rotate_images.include?(original) ? rotated : original
-          expect(optimized).to be_pixel_identical_to(compare_to)
+              compare_to = rotate_images.include?(original) ? rotated : original
+              expect(optimized).to be_similar_to(compare_to, max_difference)
+            end
+          end
         end
       end
     end

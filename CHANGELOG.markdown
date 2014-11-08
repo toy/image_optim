@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Added lossy worker `jpegrecompress` (uses [`jpeg-recompress`](https://github.com/danielgtaylor/jpeg-archive#jpeg-recompress)), disabled unless `:allow_lossy` is true [#65](https://github.com/toy/image_optim/issues/65) [@wjordan](https://github.com/wjordan) [@toy](https://github.com/toy)
+* `:allow_lossy` option to allow lossy workers and optimizations [@toy](https://github.com/toy)
 * Don't warn multiple times about problematic binary [#69](https://github.com/toy/image_optim/issues/69) [@toy](https://github.com/toy)
 * Run gisicle two times (with interlace off then with on) if interlace is not set explicitly [#70](https://github.com/toy/image_optim/issues/70) [@toy](https://github.com/toy)
 * Remove app and other extensions from gif images [@toy](https://github.com/toy)
