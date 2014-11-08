@@ -19,7 +19,7 @@ before_install:
   if [ -z "$RUBOCOP" ]; then
     mkdir ~/bin
     && npm install -g svgo
-    && curl -L "http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 '*/x86_64/pngout'
+    && curl -L "http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/x86_64/pngout'
   ; fi
 env:
   - PATH=~/bin:$PATH
