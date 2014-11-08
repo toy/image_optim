@@ -9,19 +9,18 @@ rvm:
   - jruby-19mode
   - ree
 script:
-  - test -n "$RUBOCOP" || bundle exec image_optim --info
-  - test -n "$RUBOCOP" || bundle exec rspec
-  - test -z "$RUBOCOP" || bundle exec rubocop
+  if [ -z "$RUBOCOP" ]; then
+    bundle exec image_optim --info
+    && bundle exec rspec
+  ; else
+    bundle exec rubocop
+  ; fi
 before_install:
-  - mkdir ~/bin
-
-  - echo 'Installing svgo:'
-  - npm install -g svgo
-
-  - echo 'Installing pngout:'
-  - PNGOUT_VERSION=20130221
-  - curl -L "http://static.jonof.id.au/dl/kenutils/pngout-$PNGOUT_VERSION-linux.tar.gz" | tar -xz
-  - mv pngout-$PNGOUT_VERSION-linux/x86_64/pngout ~/bin
+  if [ -z "$RUBOCOP" ]; then
+    mkdir ~/bin
+    && npm install -g svgo
+    && curl -L "http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 '*/x86_64/pngout'
+  ; fi
 env:
   - PATH=~/bin:$PATH
 matrix:
