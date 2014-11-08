@@ -6,7 +6,7 @@ class ImageOptim
     class Gifsicle < Worker
       # If interlace specified initialize one instance
       # Otherwise initialize two, one with interlace off and one with on
-      def self.init(image_optim, options)
+      def self.init(image_optim, options = {})
         return super if options.key?(:interlace)
 
         [false, true].map do |interlace|
