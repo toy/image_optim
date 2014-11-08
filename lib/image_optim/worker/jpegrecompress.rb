@@ -12,12 +12,12 @@ class ImageOptim
 
       QUALITY_NAMES = [:low, :medium, :high, :veryhigh]
 
+      quality_names_desc = QUALITY_NAMES.each_with_index.map do |name, i|
+        "`#{i}` - #{name}"
+      end.join(', ')
+
       QUALITY_OPTION =
-      option(:quality, 3, 'JPEG quality preset: '\
-          '`0` - low, '\
-          '`1` - medium, '\
-          '`2` - high, '\
-          '`3` - veryhigh') do |v|
+      option(:quality, 3, "JPEG quality preset: #{quality_names_desc}") do |v|
         OptionHelpers.limit_with_range(v.to_i, 0...QUALITY_NAMES.length)
       end
 
