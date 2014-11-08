@@ -100,14 +100,14 @@ describe ImageOptim do
       match{ |actual| actual.size < expected.size }
     end
 
-    define :be_pixel_identical_to do |expected|
+    define :be_similar_to do |expected, max_difference|
       match do |actual|
         @diff = nrmse(actual, expected)
-        @diff == 0
+        @diff <= max_difference
       end
       failure_message do |actual|
-        "expected #{actual} to be pixel identical to #{expected}, got "\
-            "normalized root-mean-square error of #{@diff}"
+        "expected #{actual} to have at most #{max_difference} difference from "\
+            "#{expected}, got normalized root-mean-square error of #{@diff}"
       end
     end
 
@@ -115,21 +115,29 @@ describe ImageOptim do
       rotated = images_dir / 'orient/original.jpg'
       rotate_images = images_dir.glob('orient/?.jpg')
 
+      base_options = {:skip_missing_workers => false}
+      [
+        ['lossless', base_options, 0],
+        ['lossy', base_options.merge(:allow_lossy => true), 0.01],
+      ].each do |type, options, max_difference|
+        image_optim = ImageOptim.new(options)
+        describe type do
+          copies = test_images.map{ |image| temp_copy(image) }
+          pairs = image_optim.optimize_images(copies)
+          test_images.zip(*pairs.transpose).each do |original, copy, optimized|
+            it "optimizes #{original.relative_path_from(root_dir)}" do
+              expect(copy).to have_same_data_as(original)
 
-      copies = test_images.map{ |image| temp_copy(image) }
-      pairs = ImageOptim.optimize_images(copies)
-      test_images.zip(*pairs.transpose).each do |original, copy, optimized|
-        it "optimizes #{original.relative_path_from(root_dir)}" do
-          expect(copy).to have_same_data_as(original)
+              expect(optimized).not_to be_nil
+              expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
+              expect(optimized).to have_size
+              expect(optimized).to be_smaller_than(original)
+              expect(optimized).not_to have_same_data_as(original)
 
-          expect(optimized).not_to be_nil
-          expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
-          expect(optimized).to have_size
-          expect(optimized).to be_smaller_than(original)
-          expect(optimized).not_to have_same_data_as(original)
-
-          compare_to = rotate_images.include?(original) ? rotated : original
-          expect(optimized).to be_pixel_identical_to(compare_to)
+              compare_to = rotate_images.include?(original) ? rotated : original
+              expect(optimized).to be_similar_to(compare_to, max_difference)
+            end
+          end
         end
       end
     end
