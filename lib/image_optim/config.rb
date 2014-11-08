@@ -142,6 +142,11 @@ class ImageOptim
       end
     end
 
+    # Allow lossy workers and optimizations, converted to boolean
+    def allow_lossy
+      !!get!(:allow_lossy)
+    end
+
     # Options for worker class by its `bin_sym`:
     # * `Hash` passed as is
     # * `{}` for `true` or `nil`

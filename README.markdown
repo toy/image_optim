@@ -268,6 +268,7 @@ optipng:
 * `:verbose` — Verbose output *(defaults to `false`)*
 * `:pack` — Require image\_optim\_pack or disable it, by default image\_optim\_pack will be used if available, will turn on `:skip-missing-workers` unless explicitly disabled *(defaults to `nil`)*
 * `:skip_missing_workers` — Skip workers with missing or problematic binaries *(defaults to `false`)*
+* `:allow_lossy` — Allow lossy workers and optimizations *(defaults to `false`)*
 
 Worker can be disabled by passing `false` instead of options hash.
 

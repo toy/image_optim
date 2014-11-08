@@ -58,12 +58,12 @@ describe ImageOptim::Worker do
       instance_double(Worker, stubs)
     end
 
-    let(:image_optim){ double }
+    let(:image_optim){ double(:allow_lossy => false) }
 
     it 'creates all workers for which options_proc returns true' do
       workers = Array.new(3){ worker_double }
       klasses = workers.map{ |worker| double(:init => worker) }
-      options_proc = proc{ |klass| klass != klasses[1] }
+      options_proc = proc{ |klass| klass != klasses[1] ? {} : false }
 
       allow(Worker).to receive(:klasses).and_return(klasses)
 
@@ -81,7 +81,7 @@ describe ImageOptim::Worker do
 
       allow(Worker).to receive(:klasses).and_return(klasses)
 
-      expect(Worker.create_all(image_optim){ true }).
+      expect(Worker.create_all(image_optim){ {} }).
         to eq(workers.flatten)
     end
 
@@ -117,7 +117,7 @@ describe ImageOptim::Worker do
           expect(Worker).to receive(:warn).
             once.with(bin_not_found('not found 2'))
 
-          expect(Worker.create_all(image_optim){ true }).
+          expect(Worker.create_all(image_optim){ {} }).
             to eq([workers[1]])
         end
       end
@@ -127,14 +127,14 @@ describe ImageOptim::Worker do
           allow(image_optim).to receive(:skip_missing_workers).and_return(false)
 
           expect do
-            Worker.create_all(image_optim){ true }
+            Worker.create_all(image_optim){ {} }
           end.to raise_error(BinResolver::Error, /not found 0\nnot found 2/)
         end
       end
     end
 
     it 'orders workers by run_order' do
-      image_optim = double
+      image_optim = double(:allow_lossy => false)
       run_orders = [10, -10, 0, 0, 0, 10, -10]
       workers = run_orders.map do |run_order|
         worker_double(:run_order => run_order)
@@ -152,7 +152,7 @@ describe ImageOptim::Worker do
           [worker.run_order, i]
         end
 
-        expect(Worker.create_all(image_optim){ true }).to eq(expected_order)
+        expect(Worker.create_all(image_optim){ {} }).to eq(expected_order)
       end
     end
   end

@@ -157,6 +157,13 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
   op.separator nil
   op.separator '  Worker options:'
 
+  op.on('--allow-lossy', 'Allow lossy workers and '\
+      'optimizations') do |allow_lossy|
+    options[:allow_lossy] = allow_lossy
+  end
+
+  op.separator nil
+
   ImageOptim::Worker.klasses.each_with_index do |klass, i|
     next if klass.option_definitions.empty?
     op.separator nil unless i.zero?

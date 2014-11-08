@@ -24,6 +24,9 @@ class ImageOptim
   # Skip workers with missing or problematic binaries
   attr_reader :skip_missing_workers
 
+  # Allow lossy workers and optimizations
+  attr_reader :allow_lossy
+
   # Initialize workers, specify options using worker underscored name:
   #
   # pass false to disable worker
@@ -50,6 +53,7 @@ class ImageOptim
     @verbose = config.verbose
     @pack = config.pack
     @skip_missing_workers = config.skip_missing_workers
+    @allow_lossy = config.allow_lossy
 
     if verbose
       $stderr << "config:\n"
@@ -60,6 +64,7 @@ class ImageOptim
       $stderr << "threads: #{threads}\n"
       $stderr << "pack: #{pack}\n"
       $stderr << "skip_missing_workers: #{skip_missing_workers}\n"
+      $stderr << "allow_lossy: #{allow_lossy}\n"
     end
 
     @bin_resolver = BinResolver.new(self)

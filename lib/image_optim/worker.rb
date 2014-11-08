@@ -89,10 +89,14 @@ class ImageOptim
       def init_all(image_optim, &options_proc)
         klasses.map do |klass|
           next unless (options = options_proc[klass])
+          options = options.merge(:allow_lossy => image_optim.allow_lossy)
           klass.init(image_optim, options)
         end.compact.flatten
       end
     end
+
+    # Allow lossy optimizations
+    attr_reader :allow_lossy
 
     # Configure (raises on extra options)
     def initialize(image_optim, options = {})
@@ -100,6 +104,7 @@ class ImageOptim
         fail ArgumentError, 'first parameter should be an ImageOptim instance'
       end
       @image_optim = image_optim
+      @allow_lossy = !!options.delete(:allow_lossy)
       self.class.option_definitions.each do |option_definition|
         value = if options.key?(option_definition.name)
           options[option_definition.name]
