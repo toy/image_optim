@@ -64,10 +64,7 @@ class ImageOptim
       # skip_missing_workers of image_optim is true - show warnings, otherwise
       # fail with one joint exception
       def create_all(image_optim, &options_proc)
-        workers = klasses.map do |klass|
-          next unless (options = options_proc[klass])
-          klass.init(image_optim, options)
-        end.compact.flatten
+        workers = init_all(image_optim, &options_proc)
 
         resolved = []
         errors = BinResolver.collect_errors(workers) do |worker|
@@ -85,6 +82,15 @@ class ImageOptim
         end
 
         resolved.sort_by.with_index{ |worker, i| [worker.run_order, i] }
+      end
+
+    private
+
+      def init_all(image_optim, &options_proc)
+        klasses.map do |klass|
+          next unless (options = options_proc[klass])
+          klass.init(image_optim, options)
+        end.compact.flatten
       end
     end
 
