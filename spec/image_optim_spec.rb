@@ -35,7 +35,9 @@ describe ImageOptim do
   ImageOptim::Worker.klasses.each do |worker_klass|
     describe "#{worker_klass.bin_sym} worker" do
       it 'optimizes at least one test image' do
-        options = disable_all_workers.merge(worker_klass.bin_sym => true)
+        options = disable_all_workers.dup
+        options.merge!(worker_klass.bin_sym => true)
+        options.merge!(:skip_missing_workers => false)
 
         image_optim = ImageOptim.new(options)
         if Array(worker_klass.init(image_optim)).empty?
