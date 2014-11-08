@@ -9,9 +9,9 @@ rvm:
   - jruby-19mode
   - ree
 script:
-  - bundle exec image_optim --info
-  - bundle exec rspec
-  - '! bundle show rubocop || bundle exec rubocop' # run rubocop only if it is bundled
+  - test -n "$RUBOCOP" || bundle exec image_optim --info
+  - test -n "$RUBOCOP" || bundle exec rspec
+  - test -z "$RUBOCOP" || bundle exec rubocop
 before_install:
   - mkdir ~/bin
 
@@ -26,3 +26,6 @@ env:
   - PATH=~/bin:$PATH
 matrix:
   fast_finish: true
+  include:
+    - env: RUBOCOP=true
+      rvm: default
