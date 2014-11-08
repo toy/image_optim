@@ -6,13 +6,14 @@
 
 # image_optim
 
-Optimize (lossless compress) images (jpeg, png, gif, svg) using external utilities:
+Optimize (lossless compress, optionally lossy) images (jpeg, png, gif, svg) using external utilities:
 
 * [advpng](http://advancemame.sourceforge.net/doc-advpng.html) from [AdvanceCOMP](http://advancemame.sourceforge.net/comp-readme.html)
 (will use [zopfli](https://code.google.com/p/zopfli/) on default/maximum level 4)
 * [gifsicle](http://www.lcdf.org/gifsicle/)
 * [jhead](http://www.sentex.net/~mwandel/jhead/)
 * [jpegoptim](http://www.kokkonen.net/tjko/projects.html)
+* [jpeg-recompress](https://github.com/danielgtaylor/jpeg-archive#jpeg-recompress)
 * jpegtran from [Independent JPEG Group's JPEG library](http://www.ijg.org/)
 * [optipng](http://optipng.sourceforge.net/)
 * [pngcrush](http://pmt.sourceforge.net/pngcrush/)
