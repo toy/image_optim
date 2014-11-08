@@ -5,6 +5,11 @@ class ImageOptim
   class Worker
     # https://github.com/danielgtaylor/jpeg-archive#jpeg-recompress
     class Jpegrecompress < Worker
+      # Initialize only if allow_lossy
+      def self.init(image_optim, options = {})
+        super if options[:allow_lossy]
+      end
+
       QUALITY_OPTION =
           option(:quality, 4, 'JPEG quality preset: '\
           '`0` - low, '\
