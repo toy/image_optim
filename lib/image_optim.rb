@@ -3,9 +3,19 @@ require 'image_optim/config'
 require 'image_optim/handler'
 require 'image_optim/image_meta'
 require 'image_optim/image_path'
+require 'image_optim/railtie' if defined?(Rails)
 require 'image_optim/worker'
 require 'in_threads'
 require 'shellwords'
+
+%w[
+  pngcrush pngout advpng optipng pngquant
+  jhead jpegoptim jpegrecompress jpegtran
+  gifsicle
+  svgo
+].each do |worker|
+  require "image_optim/worker/#{worker}"
+end
 
 # Main interface
 class ImageOptim
@@ -221,14 +231,3 @@ private
     end
   end
 end
-
-%w[
-  pngcrush pngout advpng optipng pngquant
-  jhead jpegoptim jpegrecompress jpegtran
-  gifsicle
-  svgo
-].each do |worker|
-  require "image_optim/worker/#{worker}"
-end
-
-require 'image_optim/railtie' if defined?(Rails)
