@@ -141,11 +141,16 @@ class Analyser
 
   # Delegate to worker with short id
   class WorkerVariant < DelegateClass(ImageOptim::Worker)
-    attr_reader :klass, :id
+    attr_reader :cons_id, :id
     def initialize(klass, image_optim, options)
+      allow_consecutive_on = Array(options.delete(:allow_consecutive_on))
       @image_optim = image_optim
-      @id = "#{klass.bin_sym}#{options unless options.empty?}"
+      @id = klass.bin_sym.to_s
+      unless options.empty?
+        @id << "(#{options.map{ |k, v| "#{k}:#{v.inspect}" }.join(', ')})"
+      end
       __setobj__(klass.new(image_optim, options))
+      @cons_id = [klass, allow_consecutive_on.map{ |key| [key, send(key)] }]
     end
 
     def cache_etag
@@ -269,7 +274,7 @@ class Analyser
 
         block.call(chain_result)
 
-        workers_left = workers - [worker]
+        workers_left = workers.reject{ |w| w.cons_id == worker.cons_id }
         run_workers(result_image, workers_left, chain_result, &block)
       end
     end
@@ -426,6 +431,7 @@ class Analyser
     @workers_by_format = Hash.new{ |h, k| h[k] = [] }
     ImageOptim::Worker.klasses.each do |klass|
       worker_options_config = option_variants.delete(klass.bin_sym) || {}
+      allow_consecutive_on = worker_options_config.delete(:allow_consecutive_on)
       worker_option_variants = case worker_options_config
       when Array
         worker_options_config
@@ -436,6 +442,7 @@ class Analyser
       end
       worker_option_variants.each do |options|
         options = HashHelpers.deep_symbolise_keys(options)
+        options[:allow_consecutive_on] = allow_consecutive_on
         worker = WorkerVariant.new(klass, image_optim, options)
         puts worker.id
         worker.image_formats.each do |format|
@@ -516,6 +523,10 @@ Example of `.analysis_variants.yml`:
   optipng: # 6 worker variants by combining options
     level: [6, 7]
     interlace: [true, false, nil]
+  gifsicle: # allow variants with different interlace to run consecutively
+    allow_consecutive_on: interlace
+    interlace: [true, false]
+    careful: [true, false]
   # other workers will be used with default options
   HELP
 end
