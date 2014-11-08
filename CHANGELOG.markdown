@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.19.0 (2014-11-08)
+
 * Added lossy worker `jpegrecompress` (uses [`jpeg-recompress`](https://github.com/danielgtaylor/jpeg-archive#jpeg-recompress)), disabled unless `:allow_lossy` is true [#65](https://github.com/toy/image_optim/issues/65) [@wjordan](https://github.com/wjordan) [@toy](https://github.com/toy)
 * `:allow_lossy` option to allow lossy workers and optimizations [@toy](https://github.com/toy)
 * Don't warn multiple times about problematic binary [#69](https://github.com/toy/image_optim/issues/69) [@toy](https://github.com/toy)
