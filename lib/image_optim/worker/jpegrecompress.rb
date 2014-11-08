@@ -11,14 +11,14 @@ class ImageOptim
       end
 
       QUALITY_OPTION =
-          option(:quality, 4, 'JPEG quality preset: '\
+      option(:quality, 4, 'JPEG quality preset: '\
           '`0` - low, '\
           '`1` - medium, '\
           '`2` - high, '\
           '`3` - veryhigh, '\
           '`4` - lossless') do |v|
-            OptionHelpers.limit_with_range(v.to_i, 0..4)
-          end
+        OptionHelpers.limit_with_range(v.to_i, 0..4)
+      end
 
       QUALITY_OPTIONS = [:low, :medium, :high, :veryhigh, :lossless]
 
