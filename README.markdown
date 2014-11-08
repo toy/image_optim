@@ -291,7 +291,7 @@ Worker has no options
 * `:max_quality` — Maximum image quality factor `0`..`100` *(defaults to `100`)*
 
 ### :jpegrecompress =>
-* `:quality` — JPEG quality preset: `0` - low, `1` - medium, `2` - high, `3` - veryhigh, `4` - lossless *(defaults to `4`)*
+* `:quality` — JPEG quality preset: `0` - low, `1` - medium, `2` - high, `3` - veryhigh *(defaults to `3`)*
 
 ### :jpegtran =>
 * `:copy_chunks` — Copy all chunks *(defaults to `false`)*

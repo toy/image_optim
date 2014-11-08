@@ -10,20 +10,19 @@ class ImageOptim
         super if options[:allow_lossy]
       end
 
-      QUALITY_NAMES = [:low, :medium, :high, :veryhigh, :lossless]
+      QUALITY_NAMES = [:low, :medium, :high, :veryhigh]
 
       QUALITY_OPTION =
-      option(:quality, 4, 'JPEG quality preset: '\
+      option(:quality, 3, 'JPEG quality preset: '\
           '`0` - low, '\
           '`1` - medium, '\
           '`2` - high, '\
-          '`3` - veryhigh, '\
-          '`4` - lossless') do |v|
-        OptionHelpers.limit_with_range(v.to_i, 0..4)
+          '`3` - veryhigh') do |v|
+        OptionHelpers.limit_with_range(v.to_i, 0...QUALITY_NAMES.length)
       end
 
       def used_bins
-        QUALITY_NAMES[quality] == :lossless ? [] : [:'jpeg-recompress']
+        [:'jpeg-recompress']
       end
 
       # Run first [-1]
@@ -32,10 +31,8 @@ class ImageOptim
       end
 
       def optimize(src, dst)
-        quality_str = QUALITY_NAMES[quality]
-        return false if quality_str == :lossless
         args = %W[
-          --quality #{quality_str}
+          --quality #{QUALITY_NAMES[quality]}
           --no-copy
           #{src}
           #{dst}
