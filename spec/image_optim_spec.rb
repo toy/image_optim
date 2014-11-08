@@ -36,7 +36,12 @@ describe ImageOptim do
     describe "#{worker_klass.bin_sym} worker" do
       it 'optimizes at least one test image' do
         options = disable_all_workers.merge(worker_klass.bin_sym => true)
+
         image_optim = ImageOptim.new(options)
+        if Array(worker_klass.init(image_optim)).empty?
+          image_optim = ImageOptim.new(options.merge(:allow_lossy => true))
+        end
+
         expect(test_images.any? do |original|
           image_optim.optimize_image(temp_copy(original))
         end).to be true
