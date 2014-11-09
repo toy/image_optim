@@ -1,6 +1,10 @@
 if ENV['CODECLIMATE_REPO_TOKEN']
-  require 'codeclimate-test-reporter'
-  CodeClimate::TestReporter.start
+  begin
+    require 'codeclimate-test-reporter'
+    CodeClimate::TestReporter.start
+  rescue LoadError => e
+    $stderr.puts "Got following while loading codeclimate-test-reporter: #{e}"
+  end
 end
 
 RSpec.configure do |c|
