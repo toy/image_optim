@@ -58,23 +58,18 @@ class ImageOptim
   #     ImageOptim.new(:nice => 20)
   def initialize(options = {})
     config = Config.new(options)
-    @nice = config.nice
-    @threads = config.threads
     @verbose = config.verbose
-    @pack = config.pack
-    @skip_missing_workers = config.skip_missing_workers
-    @allow_lossy = config.allow_lossy
+    $stderr << "config:\n#{config.to_s.gsub(/^/, '  ')}" if verbose
 
-    if verbose
-      $stderr << "config:\n"
-      config.to_s.each_line do |line|
-        $stderr << "  #{line}"
-      end
-      $stderr << "nice: #{nice}\n"
-      $stderr << "threads: #{threads}\n"
-      $stderr << "pack: #{pack}\n"
-      $stderr << "skip_missing_workers: #{skip_missing_workers}\n"
-      $stderr << "allow_lossy: #{allow_lossy}\n"
+    %w[
+      nice
+      threads
+      pack
+      skip_missing_workers
+      allow_lossy
+    ].each do |name|
+      instance_variable_set(:"@#{name}", config.send(name))
+      $stderr << "#{name}: #{send(name)}\n" if verbose
     end
 
     @bin_resolver = BinResolver.new(self)
