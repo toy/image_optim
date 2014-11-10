@@ -28,3 +28,7 @@ matrix:
   include:
     - env: RUBOCOP=true
       rvm: default
+addons:
+  code_climate:
+    repo_token:
+      secure: FDikT3JnOJHOAFSaKwVPB1VOphU0sSzAnzQ+YjSt9XFE+9uFQHth/j4rFoVoqALhCj+47trv6spwkbcSjGCVzm+87OI80GkLCCzNjDOz2W4sP9JWItVgS1VoWW+ioPxpLgpguTb3wutwKOUMEAf+40EX657ZiHumM7nNHrF+RCU=
