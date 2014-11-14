@@ -46,6 +46,7 @@ class ImageOptim
     def initialize(options)
       options = HashHelpers.deep_symbolise_keys(options)
       @recursive = options.delete(:recursive)
+      @progress = options.delete(:show_progress) != false
       @exclude_dir_globs, @exclude_file_globs = %w[dir file].map do |type|
         glob = options.delete(:"exclude_#{type}_glob") || '.*'
         GlobHelpers.expand_braces(glob)
@@ -71,8 +72,8 @@ class ImageOptim
   private
 
     def optimize_images!(to_optimize, &block)
-      @image_optim.
-        optimize_images!(to_optimize.with_progress('optimizing'), &block)
+      to_optimize = to_optimize.with_progress('optimizing') if @progress
+      @image_optim.optimize_images!(to_optimize, &block)
     end
 
     def find_to_optimize(paths)

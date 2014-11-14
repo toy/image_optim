@@ -124,6 +124,10 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
 
   op.separator nil
 
+  op.on('--no-progress', 'Disable showing progress') do |show_progress|
+    options[:show_progress] = show_progress
+  end
+
   op.on('--[no-]threads N', Integer, 'Number of threads or disable '\
       '(defaults to number of processors)') do |threads|
     options[:threads] = threads
