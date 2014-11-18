@@ -5,6 +5,9 @@ AllCops:
 Lint/EndAlignment:
   AlignWith: variable
 
+Metrics/AbcSize:
+  Max: 30
+
 Metrics/ClassLength:
   Max: 150
 
