@@ -193,9 +193,9 @@ class ImageOptim
       when /mswin|mingw/
         require 'win32ole'
         WIN32OLE.
-          connect('winmgmts://').
-          ExecQuery('select NumberOfLogicalProcessors from Win32_Processor').
-          to_enum.first.NumberOfLogicalProcessors
+        connect('winmgmts://').
+        ExecQuery('select NumberOfLogicalProcessors from Win32_Processor').
+        to_enum.first.NumberOfLogicalProcessors
       else
         warn "Unknown architecture (#{host_os}) assuming one processor."
         1

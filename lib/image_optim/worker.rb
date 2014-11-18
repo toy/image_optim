@@ -27,18 +27,7 @@ class ImageOptim
       end
       @image_optim = image_optim
       @allow_lossy = !!options.delete(:allow_lossy)
-      self.class.option_definitions.each do |option_definition|
-        value = if options.key?(option_definition.name)
-          options[option_definition.name]
-        else
-          option_definition.default
-        end
-        if option_definition.proc
-          value = option_definition.proc[value]
-        end
-        instance_variable_set("@#{option_definition.name}", value)
-      end
-
+      parse_options(options)
       assert_no_unknown_options!(options)
     end
 
@@ -99,6 +88,20 @@ class ImageOptim
     end
 
   private
+
+    def parse_options(options)
+      self.class.option_definitions.each do |option_definition|
+        value = if options.key?(option_definition.name)
+          options[option_definition.name]
+        else
+          option_definition.default
+        end
+        if option_definition.proc
+          value = option_definition.proc[value]
+        end
+        instance_variable_set("@#{option_definition.name}", value)
+      end
+    end
 
     def assert_no_unknown_options!(options)
       known_keys = self.class.option_definitions.map(&:name)

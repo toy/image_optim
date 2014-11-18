@@ -14,13 +14,15 @@ class ImageOptim
       app.assets
     end
 
-    def register_preprocessor(app)
-      options = if app.config.assets.image_optim == true
+    def options
+      if app.config.assets.image_optim == true
         {}
       else
         app.config.assets.image_optim || {}
       end
+    end
 
+    def register_preprocessor(app)
       image_optim = ImageOptim.new(options)
 
       processor = proc do |_context, data|
