@@ -381,13 +381,24 @@ class Analyser
         @avg_ratio = results.sum(&:ratio) / results.length
         @avg_difference = results.sum(&:difference) / results.length
         @max_difference = results.map(&:difference).max
-        @warn_level = case
+        @time = results.sum(&:time)
+
+        @warn_level = calculate_warn_level
+        @speed = calculate_speed
+      end
+
+    private
+
+      def calculate_warn_level
+        case
         when max_difference >= 0.1 then 'high'
         when max_difference >= 0.01 then 'medium'
         when max_difference >= 0.001 then 'low'
         end
-        @time = results.sum(&:time)
-        @speed = case
+      end
+
+      def calculate_speed
+        case
         when time > 0 then (original_size - optimized_size) / time
         when original_size == optimized_size then 0
         else 1.0 / 0.0
