@@ -25,19 +25,23 @@ class ImageOptim
       end
 
       def optimize(src, dst)
-        args = %W[
+        flags = %W[
           -reduce
           -cc
           -q
+        ]
+        chunks.each do |chunk|
+          flags.push '-rem', chunk
+        end
+        flags.push '-fix' if fix
+        flags.push '-brute' if brute
+
+        args = flags + %W[
           --
           #{src}
           #{dst}
         ]
-        chunks.each do |chunk|
-          args.unshift '-rem', chunk
-        end
-        args.unshift '-fix' if fix
-        args.unshift '-brute' if brute
+
         execute(:pngcrush, *args) && optimized?(src, dst)
       end
     end
