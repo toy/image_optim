@@ -25,7 +25,7 @@ class ImageOptim
       end
 
       def optimize(src, dst)
-        flags = %W[
+        flags = %w[
           -reduce
           -cc
           -q
