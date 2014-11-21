@@ -2,7 +2,7 @@
 
 ## unreleased
 
-* Add `-noreduce_palette` for pngcrush >= 1.7.80 due to a bug [@toy](https://github.com/toy)
+* Blacklist pngcrush 1.7.80 as it loses one color in indexed images [@toy](https://github.com/toy)
 * Command line option `--no-progress` to disable showing progress of optimizing images [@toy](https://github.com/toy)
 
 ## v0.19.0 (2014-11-08)
