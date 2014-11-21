@@ -35,9 +35,6 @@ class ImageOptim
         end
         flags.push '-fix' if fix
         flags.push '-brute' if brute
-        if resolve_bin!(:pngcrush).version >= '1.7.80'
-          flags.push '-noreduce_palette'
-        end
 
         args = flags + %W[
           --
