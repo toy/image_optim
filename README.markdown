@@ -307,6 +307,7 @@ Worker has no options
 * `:chunks` — List of chunks to remove or `:alla` - all except tRNS/transparency or `:allb` - all except tRNS and gAMA/gamma *(defaults to `:alla`)*
 * `:fix` — Fix otherwise fatal conditions such as bad CRCs *(defaults to `false`)*
 * `:brute` — Brute force try all methods, very time-consuming and generally not worthwhile *(defaults to `false`)*
+* `:blacken` — Blacken fully transparent pixels *(defaults to `true`)*
 
 ### :pngout =>
 * `:copy_chunks` — Copy optional chunks *(defaults to `false`)*

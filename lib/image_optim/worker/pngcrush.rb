@@ -19,6 +19,9 @@ class ImageOptim
       option(:brute, false, 'Brute force try all methods, '\
           'very time-consuming and generally not worthwhile'){ |v| !!v }
 
+      BLACKEN_OPTION =
+      option(:blacken, true, 'Blacken fully transparent pixels'){ |v| !!v }
+
       # Always run first [-1]
       def run_order
         -1
@@ -35,6 +38,9 @@ class ImageOptim
         end
         flags.push '-fix' if fix
         flags.push '-brute' if brute
+        if resolve_bin!(:pngcrush).version >= '1.7.38'
+          flags.push '-blacken' if blacken
+        end
 
         args = flags + %W[
           --

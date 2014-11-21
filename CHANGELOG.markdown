@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Add `:blacken` option to `pngcrush` worker, to blacken fully transparent pixels, on by default [@toy](https://github.com/toy)
 * Command line option `--no-progress` to disable showing progress of optimizing images [@toy](https://github.com/toy)
 
 ## v0.19.1 (2014-11-22)
