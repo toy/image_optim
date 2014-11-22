@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.19.1 (2014-11-22)
+
 * Blacklist pngcrush 1.7.80 as it loses one color in indexed images [@toy](https://github.com/toy)
 
 ## v0.19.0 (2014-11-08)
