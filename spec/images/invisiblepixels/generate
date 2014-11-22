@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+Dir.chdir(File.dirname(__FILE__))
+
+require 'shellwords'
+
+side = 64
+
+IO.popen(%W[
+  convert
+  -depth 8
+  -size #{side}x#{side}
+  -strip
+  rgba:-
+  PNG32:image.png
+].shelljoin, 'w') do |f|
+  side.times do |a|
+    side.times do |b|
+      alpha = [0, 1, 0x7f, 0xff][(a / 8 + b / 8) % 4]
+      f << [rand(256), rand(256), rand(256), alpha].pack('C*')
+    end
+  end
+end
+system 'image_optim --pngcrush-blacken=n image.png'

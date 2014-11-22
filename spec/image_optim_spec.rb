@@ -75,6 +75,7 @@ describe ImageOptim do
       nrmse_command = %W[
         compare
         -metric RMSE
+        -alpha Background
         #{coalesce_a.to_s.shellescape}
         #{coalesce_b.to_s.shellescape}
         /dev/null
