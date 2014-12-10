@@ -162,7 +162,7 @@ describe ImageOptim::Worker do
     allow(ImageOptim::Worker).to receive(:inherited)
 
     stub_const('Abc', Class.new(Worker) do
-      option(:test, 1, 'Test context') do |v|
+      option(:test, 1, 'Test context') do |_v|
         some_instance_method
       end
     end)
