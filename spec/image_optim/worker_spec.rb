@@ -167,7 +167,7 @@ describe ImageOptim::Worker do
       end
     end)
 
-    expect_any_instance_of(Abc).to receive(:some_instance_method)
-    Abc.new(ImageOptim.new)
+    expect_any_instance_of(Abc).to receive(:some_instance_method).and_return(20)
+    expect(Abc.new(ImageOptim.new).test).to eq(20)
   end
 end
