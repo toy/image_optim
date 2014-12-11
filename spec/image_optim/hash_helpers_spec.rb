@@ -73,5 +73,4 @@ describe ImageOptim::HashHelpers do
 
     expect(HashHelpers.deep_merge(merge_a, merge_b)).to eq(merge_result)
   end
-
 end
