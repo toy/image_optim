@@ -97,7 +97,7 @@ class ImageOptim
           option_definition.default
         end
         if option_definition.proc
-          value = option_definition.proc[value]
+          value = instance_exec(value, &option_definition.proc)
         end
         instance_variable_set("@#{option_definition.name}", value)
       end
