@@ -157,17 +157,33 @@ describe ImageOptim::Worker do
     end
   end
 
-  it 'runs option block in context of worker' do
-    # don't add Abc to list of wokers
-    allow(ImageOptim::Worker).to receive(:inherited)
+  describe :option do
+    it 'runs option block in context of worker' do
+      # don't add Abc to list of wokers
+      allow(ImageOptim::Worker).to receive(:inherited)
 
-    stub_const('Abc', Class.new(Worker) do
-      option(:test, 1, 'Test context') do |_v|
-        some_instance_method
+      stub_const('Abc', Class.new(Worker) do
+        option(:test, 1, 'Test context') do |_v|
+          some_instance_method
+        end
+      end)
+
+      expect_any_instance_of(Abc).to receive(:some_instance_method).and_return(20)
+      expect(Abc.new(ImageOptim.new).test).to eq(20)
+    end
+
+    it 'returns instance of OptionDefinition' do
+      # don't add Abc to list of wokers
+      allow(ImageOptim::Worker).to receive(:inherited)
+
+      definition = nil
+      Class.new(Worker) do
+        definition = option(:test, 1, 'Test'){ |v| v }
       end
-    end)
 
-    expect_any_instance_of(Abc).to receive(:some_instance_method).and_return(20)
-    expect(Abc.new(ImageOptim.new).test).to eq(20)
+      expect(definition).to be_an(ImageOptim::OptionDefinition)
+      expect(definition.name).to eq(:test)
+      expect(definition.default).to eq(1)
+    end
   end
 end

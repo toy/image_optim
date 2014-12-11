@@ -34,8 +34,8 @@ class ImageOptim
 
       def option(name, default, type, description = nil, &proc)
         attr_reader name
-        option_definitions <<
-          OptionDefinition.new(name, default, type, description, &proc)
+        OptionDefinition.new(name, default, type, description, &proc).
+          tap{ |option_definition| option_definitions << option_definition }
       end
 
       # Create hash with format mapped to list of workers sorted by run order
