@@ -19,7 +19,11 @@ class ImageOptim
     def value(worker, options)
       value = options.key?(name) ? options[name] : default
       if proc
-        worker.instance_exec(value, &proc)
+        if proc.arity == 2
+          worker.instance_exec(value, self, &proc)
+        else
+          worker.instance_exec(value, &proc)
+        end
       else
         value
       end
