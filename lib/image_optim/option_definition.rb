@@ -14,5 +14,15 @@ class ImageOptim
       @description = description.to_s
       @default, @type, @proc = default, type, proc
     end
+
+    # Get value for worker from options
+    def value(worker, options)
+      value = options.key?(name) ? options[name] : default
+      if proc
+        worker.instance_exec(value, &proc)
+      else
+        value
+      end
+    end
   end
 end
