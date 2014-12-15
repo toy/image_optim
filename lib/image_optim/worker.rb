@@ -91,14 +91,7 @@ class ImageOptim
 
     def parse_options(options)
       self.class.option_definitions.each do |option_definition|
-        value = if options.key?(option_definition.name)
-          options[option_definition.name]
-        else
-          option_definition.default
-        end
-        if option_definition.proc
-          value = instance_exec(value, &option_definition.proc)
-        end
+        value = option_definition.value(self, options)
         instance_variable_set("@#{option_definition.name}", value)
       end
     end
