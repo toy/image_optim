@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.20.0 (2014-12-15)
+
 * Ignore and show warning for lossy options `jpegoptim#max_quality` and `pngquant#quality` in default/lossless mode [#71](https://github.com/toy/image_optim/issues/71) [@toy](https://github.com/toy)
 * Add `:blacken` option to `pngcrush` worker, to blacken fully transparent pixels, on by default [@toy](https://github.com/toy)
 * Command line option `--no-progress` to disable showing progress of optimizing images [@toy](https://github.com/toy)
