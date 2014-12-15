@@ -23,7 +23,7 @@ class ImageOptim
 
       MAX_QUALITY_OPTION =
       option(:max_quality, 100, 'Maximum image quality factor '\
-          '`0`..`100`') do |v, opt_def|
+          '`0`..`100`, ignored in default/lossless mode') do |v, opt_def|
         if allow_lossy
           OptionHelpers.limit_with_range(v.to_i, 0..100)
         else

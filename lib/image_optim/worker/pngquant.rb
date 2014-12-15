@@ -9,7 +9,8 @@ class ImageOptim
       QUALITY_OPTION =
       option(:quality, 100..100, NonNegativeIntegerRange, 'min..max - don\'t '\
           'save below min, use less colors below max (both in range `0..100`; '\
-          'in yaml - `!ruby/range 0..100`)') do |v, opt_def|
+          'in yaml - `!ruby/range 0..100`), ignored in default/lossless '\
+          'mode') do |v, opt_def|
         if allow_lossy
           min = OptionHelpers.limit_with_range(v.begin, 0..100)
           min..OptionHelpers.limit_with_range(v.end, min..100)

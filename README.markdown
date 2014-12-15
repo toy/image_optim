@@ -290,7 +290,7 @@ Worker has no options
 
 ### :jpegoptim =>
 * `:strip` — List of extra markers to strip: `:comments`, `:exif`, `:iptc`, `:icc` or `:all` *(defaults to `:all`)*
-* `:max_quality` — Maximum image quality factor `0`..`100` *(defaults to `100`)*
+* `:max_quality` — Maximum image quality factor `0`..`100`, ignored in default/lossless mode *(defaults to `100`)*
 
 ### :jpegrecompress =>
 * `:quality` — JPEG quality preset: `0` - low, `1` - medium, `2` - high, `3` - veryhigh *(defaults to `3`)*
@@ -315,7 +315,7 @@ Worker has no options
 * `:strategy` — Strategy: `0` - xtreme, `1` - intense, `2` - longest Match, `3` - huffman Only, `4` - uncompressed *(defaults to `0`)*
 
 ### :pngquant =>
-* `:quality` — min..max - don't save below min, use less colors below max (both in range `0..100`; in yaml - `!ruby/range 0..100`) *(defaults to `100..100`)*
+* `:quality` — min..max - don't save below min, use less colors below max (both in range `0..100`; in yaml - `!ruby/range 0..100`), ignored in default/lossless mode *(defaults to `100..100`)*
 * `:speed` — speed/quality trade-off: `1` - slow, `3` - default, `11` - fast & rough *(defaults to `3`)*
 
 ### :svgo =>
