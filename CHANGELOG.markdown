@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Fix [paperclip-optimizer issue #13](https://github.com/janfoeh/paperclip-optimizer/issues/13): railtie broken with `undefined local variable or method 'app'` [#72](https://github.com/toy/image_optim/issues/72) [@janfoeh](https://github.com/janfoeh)
+
 ## v0.20.0 (2014-12-15)
 
 * Ignore and show warning for lossy options `jpegoptim#max_quality` and `pngquant#quality` in default/lossless mode [#71](https://github.com/toy/image_optim/issues/71) [@toy](https://github.com/toy)
