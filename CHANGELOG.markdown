@@ -2,7 +2,7 @@
 
 ## unreleased
 
-* Fix broken railtie: `undefined local variable or method 'app'` [@janfoeh](https://github.com/janfoeh)
+* Fix [paperclip-optimizer issue #13](https://github.com/janfoeh/paperclip-optimizer/issues/13): railtie broken with `undefined local variable or method 'app'` [@janfoeh](https://github.com/janfoeh)
 
 ## v0.20.0 (2014-12-15)
 
