@@ -14,7 +14,7 @@ class ImageOptim
       app.assets
     end
 
-    def options
+    def options(app)
       if app.config.assets.image_optim == true
         {}
       else
@@ -23,7 +23,7 @@ class ImageOptim
     end
 
     def register_preprocessor(app)
-      image_optim = ImageOptim.new(options)
+      image_optim = ImageOptim.new(options(app))
 
       processor = proc do |_context, data|
         image_optim.optimize_image_data(data) || data
