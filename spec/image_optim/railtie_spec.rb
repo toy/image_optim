@@ -88,4 +88,32 @@ describe 'ImageOptim::Railtie' do
       end
     end
   end
+
+  describe :assets do
+    before do
+      stub_const('ImagePath', ImageOptim::ImagePath)
+    end
+
+    %w[
+      icecream.gif
+      lena.jpg
+      rails.png
+      test.svg
+    ].each do |asset_name|
+      it "optimizes #{asset_name}" do
+        asset = init_rails_app.assets.find_asset(asset_name)
+
+        asset_data = asset.body
+        original = ImagePath.convert(asset.pathname)
+
+        expect(asset_data).to be_smaller_than(original)
+
+        ImagePath.temp_file_path %W[spec .#{original.format}] do |temp|
+          temp.write(asset_data)
+
+          expect(temp).to be_similar_to(original, 0)
+        end
+      end
+    end
+  end
 end if ENV['RAILS_VERSION']
