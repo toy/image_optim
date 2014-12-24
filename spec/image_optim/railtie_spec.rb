@@ -21,6 +21,9 @@ describe 'ImageOptim::Railtie' do
       config.assets.cache_store = :null_store
       config.assets.paths = %w[spec/images]
 
+      config.assets.delete(:compress)
+      config.assets.delete(:image_optim)
+
       yield config if block_given?
     end.initialize!
   end
