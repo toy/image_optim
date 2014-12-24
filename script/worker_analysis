@@ -9,7 +9,8 @@ require 'progress'
 require 'shellwords'
 require 'gdbm'
 require 'digest'
-require 'haml'
+require 'erb'
+require 'ostruct'
 
 DIR = 'tmp'
 Pathname(DIR).mkpath
@@ -470,7 +471,7 @@ class Analyser
       WorkerRunner.new(path, workers_for_image(path)).results
     end
 
-    template = Haml::Engine.new(File.read("#{__FILE__}.haml"))
+    template = ERB.new(File.read("#{__FILE__}.erb"))
     by_format = results.group_by(&:format)
     formats = by_format.keys.sort
     basenames = Hash[formats.map do |format|
@@ -483,7 +484,7 @@ class Analyser
         :stats => stats,
         :format_links => basenames,
       }
-      html = template.render(nil, model)
+      html = template.result(OpenStruct.new(model).instance_eval{ binding })
       path = FSPath("#{DIR}/#{basenames[format]}")
       path.write(html)
       puts "Created #{path}"

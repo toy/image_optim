@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Remove haml development dependency [@toy](https://github.com/toy)
+
 ## v0.20.1 (2014-12-19)
 
 * Fix [paperclip-optimizer issue #13](https://github.com/janfoeh/paperclip-optimizer/issues/13): railtie broken with `undefined local variable or method 'app'` [#72](https://github.com/toy/image_optim/issues/72) [@janfoeh](https://github.com/janfoeh)
