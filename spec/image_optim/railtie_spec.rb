@@ -28,4 +28,32 @@ describe 'ImageOptim::Railtie' do
   after do
     Rails.application = nil
   end
+
+  describe :initialization do
+    it 'initializes by default' do
+      expect(ImageOptim).to receive(:new)
+      init_rails_app
+    end
+
+    it 'initializes if config.assets.image_optim is nil' do
+      expect(ImageOptim).to receive(:new)
+      init_rails_app do |config|
+        config.assets.image_optim = nil
+      end
+    end
+
+    it 'does not initialize if config.assets.image_optim is false' do
+      expect(ImageOptim).not_to receive(:new)
+      init_rails_app do |config|
+        config.assets.image_optim = false
+      end
+    end
+
+    it 'does not initialize if config.assets.compress is false' do
+      expect(ImageOptim).not_to receive(:new)
+      init_rails_app do |config|
+        config.assets.compress = false
+      end
+    end
+  end
 end if ENV['RAILS_VERSION']
