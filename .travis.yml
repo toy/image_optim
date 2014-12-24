@@ -32,11 +32,11 @@ matrix:
   allow_failures:
     - rvm: '2.2'
   include:
-    - env: RUBOCOP=true
-      rvm: default
     - env: RAILS_VERSION='~> 3.2'
       rvm: default
     - env: RAILS_VERSION='~> 4.0'
+      rvm: default
+    - env: RUBOCOP=true
       rvm: default
 addons:
   code_climate:
