@@ -12,6 +12,9 @@ rvm:
 script:
   if [ -n "$RUBOCOP" ]; then
     bundle exec rubocop
+  ; elif [ -n "$RAILS_VERSION" ]; then
+    bundle exec image_optim --info
+    && bundle exec rspec spec/image_optim/railtie_spec.rb
   ; else
     bundle exec image_optim --info
     && bundle exec rspec
@@ -30,6 +33,10 @@ matrix:
     - rvm: '2.2'
   include:
     - env: RUBOCOP=true
+      rvm: default
+    - env: RAILS_VERSION='~> 3.2'
+      rvm: default
+    - env: RAILS_VERSION='~> 4.0'
       rvm: default
 addons:
   code_climate:
