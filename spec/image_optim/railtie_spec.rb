@@ -16,13 +16,15 @@ describe 'ImageOptim::Railtie' do
 
       config.logger = Logger.new('/dev/null')
 
-      config.assets.enabled = true
-      config.assets.version = '1.0'
-      config.assets.cache_store = :null_store
-      config.assets.paths = %w[spec/images]
+      config.assets.tap do |assets|
+        assets.enabled = true
+        assets.version = '1.0'
+        assets.cache_store = :null_store
+        assets.paths = %w[spec/images]
 
-      config.assets.delete(:compress)
-      config.assets.delete(:image_optim)
+        assets.delete(:compress)
+        assets.delete(:image_optim)
+      end
 
       yield config if block_given?
     end.initialize!
