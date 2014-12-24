@@ -58,5 +58,34 @@ describe 'ImageOptim::Railtie' do
         config.assets.compress = false
       end
     end
+
+    describe 'options' do
+      it 'initializes with empty hash by default' do
+        expect(ImageOptim).to receive(:new).with({})
+        init_rails_app
+      end
+
+      it 'initializes with empty hash if config.assets.image_optim is true' do
+        expect(ImageOptim).to receive(:new).with({}).and_call_original
+        init_rails_app do |config|
+          config.assets.image_optim = true
+        end
+      end
+
+      it 'initializes with empty hash if config.assets.image_optim is nil' do
+        expect(ImageOptim).to receive(:new).with({}).and_call_original
+        init_rails_app do |config|
+          config.assets.image_optim = nil
+        end
+      end
+
+      it 'initializes with hash assigned to config.assets.image_optim' do
+        hash = double
+        expect(ImageOptim).to receive(:new).with(hash)
+        init_rails_app do |config|
+          config.assets.image_optim = hash
+        end
+      end
+    end
   end
 end if ENV['RAILS_VERSION']
