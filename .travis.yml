@@ -10,11 +10,11 @@ rvm:
   - jruby-19mode
   - ree
 script:
-  if [ -z "$RUBOCOP" ]; then
+  if [ -n "$RUBOCOP" ]; then
+    bundle exec rubocop
+  ; else
     bundle exec image_optim --info
     && bundle exec rspec
-  ; else
-    bundle exec rubocop
   ; fi
 before_install:
   if [ -z "$RUBOCOP" ]; then
