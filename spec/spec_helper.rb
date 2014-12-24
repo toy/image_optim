@@ -47,3 +47,18 @@ def nrmse(image_a, image_b)
     fail "compare #{image_a} with #{image_b} failed with `#{output}`"
   end
 end
+
+RSpec::Matchers.define :be_smaller_than do |expected|
+  match{ |actual| actual.size < expected.size }
+end
+
+RSpec::Matchers.define :be_similar_to do |expected, max_difference|
+  match do |actual|
+    @diff = nrmse(actual, expected)
+    @diff <= max_difference
+  end
+  failure_message do |actual|
+    "expected #{actual} to have at most #{max_difference} difference from "\
+        "#{expected}, got normalized root-mean-square error of #{@diff}"
+  end
+end

@@ -60,21 +60,6 @@ describe ImageOptim do
       match(&:size?)
     end
 
-    define :be_smaller_than do |expected|
-      match{ |actual| actual.size < expected.size }
-    end
-
-    define :be_similar_to do |expected, max_difference|
-      match do |actual|
-        @diff = nrmse(actual, expected)
-        @diff <= max_difference
-      end
-      failure_message do |actual|
-        "expected #{actual} to have at most #{max_difference} difference from "\
-            "#{expected}, got normalized root-mean-square error of #{@diff}"
-      end
-    end
-
     describe 'optimizing images' do
       rotated = images_dir / 'orient/original.jpg'
       rotate_images = images_dir.glob('orient/?.jpg')
