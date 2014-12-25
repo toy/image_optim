@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Add tests for railtie, also to prevent [issues like #72](https://github.com/toy/image_optim/issues/72) [#73](https://github.com/toy/image_optim/issues/73) [@toy](https://github.com/toy)
 * Remove haml development dependency [@toy](https://github.com/toy)
 
 ## v0.20.1 (2014-12-19)
