@@ -10,11 +10,14 @@ rvm:
   - jruby-19mode
   - ree
 script:
-  if [ -z "$RUBOCOP" ]; then
+  if [ -n "$RUBOCOP" ]; then
+    bundle exec rubocop
+  ; elif [ -n "$RAILS_VERSION" ]; then
+    bundle exec image_optim --info
+    && bundle exec rspec spec/image_optim/railtie_spec.rb
+  ; else
     bundle exec image_optim --info
     && bundle exec rspec
-  ; else
-    bundle exec rubocop
   ; fi
 before_install:
   if [ -z "$RUBOCOP" ]; then
@@ -29,6 +32,10 @@ matrix:
   allow_failures:
     - rvm: '2.2'
   include:
+    - env: RAILS_VERSION='~> 3.2'
+      rvm: default
+    - env: RAILS_VERSION='~> 4.0'
+      rvm: default
     - env: RUBOCOP=true
       rvm: default
 addons:

@@ -52,64 +52,12 @@ describe ImageOptim do
   end
 
   describe :optimize_image do
-    def flatten_animation(image)
-      if image.format == :gif
-        flattened = image.temp_path
-        flatten_command = %W[
-          convert
-          #{image.to_s.shellescape}
-          -coalesce
-          -append
-          #{flattened.to_s.shellescape}
-        ].join(' ')
-        expect(Cmd.run(flatten_command)).to be_truthy
-        flattened
-      else
-        image
-      end
-    end
-
-    def nrmse(image_a, image_b)
-      coalesce_a = flatten_animation(image_a)
-      coalesce_b = flatten_animation(image_b)
-      nrmse_command = %W[
-        compare
-        -metric RMSE
-        -alpha Background
-        #{coalesce_a.to_s.shellescape}
-        #{coalesce_b.to_s.shellescape}
-        /dev/null
-        2>&1
-      ].join(' ')
-      output = Cmd.capture(nrmse_command)
-      if [0, 1].include?($CHILD_STATUS.exitstatus)
-        output[/\((\d+(\.\d+)?)\)/, 1].to_f
-      else
-        fail "compare #{image_a} with #{image_b} failed with `#{output}`"
-      end
-    end
-
     define :have_same_data_as do |expected|
       match{ |actual| actual.binread == expected.binread }
     end
 
     define :have_size do
       match(&:size?)
-    end
-
-    define :be_smaller_than do |expected|
-      match{ |actual| actual.size < expected.size }
-    end
-
-    define :be_similar_to do |expected, max_difference|
-      match do |actual|
-        @diff = nrmse(actual, expected)
-        @diff <= max_difference
-      end
-      failure_message do |actual|
-        "expected #{actual} to have at most #{max_difference} difference from "\
-            "#{expected}, got normalized root-mean-square error of #{@diff}"
-      end
     end
 
     describe 'optimizing images' do

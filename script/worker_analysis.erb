@@ -1,9 +1,9 @@
-!!! 5
-%html
-  %head
-    %meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
-    %title Worker Analysis
-    :css
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <title>Worker Analysis</title>
+    <style>
       body {
         font: 14px "Myriad Pro", "Helvetica", Arial, sans-serif;
         margin: 20px;
@@ -97,10 +97,12 @@
       .worker-name.unused {
         text-decoration: line-through;
       }
-    :javascript
+    </style>
+    <script>
       /*! sortable.js 0.6.0 */
       (function(){var a,b,c,d,e,f,g;a="table[data-sortable]",d=/^-?[£$¤]?[\d,.]+%?$/,g=/^\s+|\s+$/g,f="ontouchstart"in document.documentElement,c=f?"touchstart":"click",b=function(a,b,c){return null!=a.addEventListener?a.addEventListener(b,c,!1):a.attachEvent("on"+b,c)},e={init:function(b){var c,d,f,g,h;for(null==b&&(b={}),null==b.selector&&(b.selector=a),d=document.querySelectorAll(b.selector),h=[],f=0,g=d.length;g>f;f++)c=d[f],h.push(e.initTable(c));return h},initTable:function(a){var b,c,d,f,g,h;if(1===(null!=(h=a.tHead)?h.rows.length:void 0)&&"true"!==a.getAttribute("data-sortable-initialized")){for(a.setAttribute("data-sortable-initialized","true"),d=a.querySelectorAll("th"),b=f=0,g=d.length;g>f;b=++f)c=d[b],"false"!==c.getAttribute("data-sortable")&&e.setupClickableTH(a,c,b);return a}},setupClickableTH:function(a,d,f){var g;return g=e.getColumnType(a,f),"click"===c&&b(d,"mousedown",function(){return event.preventDefault?event.preventDefault():event.returnValue=!1}),b(d,c,function(){var b,c,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v;for("true"===this.getAttribute("data-sorted")?(l=this.getAttribute("data-sorted-direction"),b="ascending"===l?"descending":"ascending"):b=this.getAttribute("data-default-direction")||g.defaultSortDirection,n=this.parentNode.querySelectorAll("th"),o=0,r=n.length;r>o;o++)d=n[o],d.setAttribute("data-sorted","false"),d.removeAttribute("data-sorted-direction");for(this.setAttribute("data-sorted","true"),this.setAttribute("data-sorted-direction",b),m=a.tBodies[0],i=[],u=m.rows,c=p=0,s=u.length;s>p;c=++p)h=u[c],i.push([e.getNodeValue(h.cells[f]),h,c]);for(k="descending"===b?-1:1,i.sort(function(a,b){var c;return c=g.compare(a,b),0!==c?c*k:a[2]-b[2]}),v=[],q=0,t=i.length;t>q;q++)j=i[q],v.push(m.appendChild(j[1]));return v})},getColumnType:function(a,b){var c,f,g,h,i;for(i=a.tBodies[0].rows,g=0,h=i.length;h>g;g++)if(c=i[g],f=e.getNodeValue(c.cells[b]),""!==f){if(f.match(d))return e.types.numeric;if(!isNaN(Date.parse(f)))return e.types.date}return e.types.alpha},getNodeValue:function(a){return a?null!==a.getAttribute("data-value")?a.getAttribute("data-value"):"undefined"!=typeof a.innerText?a.innerText.replace(g,""):a.textContent.replace(g,""):""},types:{numeric:{defaultSortDirection:"descending",compare:function(a,b){var c,d;return c=parseFloat(a[0].replace(/[^0-9.-]/g,""),10),d=parseFloat(b[0].replace(/[^0-9.-]/g,""),10),isNaN(c)&&(c=0),isNaN(d)&&(d=0),c-d}},alpha:{defaultSortDirection:"ascending",compare:function(a,b){return a[0].localeCompare(b[0])}},date:{defaultSortDirection:"ascending",compare:function(a,b){var c,d;return c=Date.parse(a[0]),d=Date.parse(b[0]),isNaN(c)&&(c=0),isNaN(d)&&(d=0),c-d}}}},setTimeout(e.init,0),window.Sortable=e}).call(this);
-    :javascript
+    </script>
+    <script>
       function toggleShowUnused(){
         var checked = document.getElementById('toggle-show-unused').checked
         document.body.classList[checked ? 'add' : 'remove']('show-unused')
@@ -118,57 +120,80 @@
           row.classList[show ? 'remove' : 'add']('filtered-out')
         }
       }
-  %body
-    .formats
-      - format_links.each do |format, link|
-        - if stats_format == format
-          %span= format
-        - else
-          %a(href="#{link}")= format
-    %table
-      %tr
-        %td.warn-low Max difference >= 0.001
-        %td.warn-medium Max difference >= 0.01
-        %td.warn-high Max difference >= 0.1
-    %p
-      %label
-        %input#toggle-show-unused(type="checkbox" onchange="toggleShowUnused()")
+    </script>
+  </head>
+  <body>
+    <div class='formats'>
+      <% format_links.each do |format, link| %>
+        <% if stats_format == format %>
+          <span><%= format %></span>
+        <% else %>
+          <a href="<%= link %>"><%= format %></a>
+        <% end %>
+      <% end %>
+    </div>
+    <table>
+      <tr>
+        <td class='warn-low'>Max difference >= 0.001</td>
+        <td class='warn-medium'>Max difference >= 0.01</td>
+        <td class='warn-high'>Max difference >= 0.1</td>
+      </tr>
+    </table>
+    <p>
+      <label>
+        <input id='toggle-show-unused' onchange='toggleShowUnused()' type='checkbox'>
         Show chains with workers failed for every image
-    %p
-      %label(for="filter")
+      </label>
+    </p>
+    <p>
+      <label for='filter'>
         Filter chains by regexp
-        %input#filter(type="text" onkeyup="filterTable()")
-    %p
-      Images: #{stats.each_chain.first.entry_count},
-      size: #{stats.each_chain.first.original_size}
-    %table(data-sortable)
-      %thead
-        %tr
-          %th Chain
-          %th(data-default-direction="ascending"
-              data-sorted="true"
-              data-sorted-direction="ascending") Optimized size
-          %th(data-default-direction="ascending") Ratio
-          %th(data-default-direction="ascending") Avg ratio
-          %th(data-default-direction="ascending") Time (s)
-          %th(data-default-direction="ascending") Avg difference
-          %th(data-default-direction="ascending") Max difference
-          %th Speed (B/s)
-      %tbody.filterable
-        - stats.each_chain do |chain|
-          %tr{class: chain.unused_workers && 'unused'}
-            %td
-              - chain.worker_stats.each do |worker_stat|
-                .worker-name{:class => worker_stat.unused? && 'unused'}
-                  = worker_stat.name
-                  - unless worker_stat.unused?
-                    .worker-success-count(title="successfull count")
-                      = worker_stat.success_count
-            %td.number= chain.optimized_size
-            %td.number= format '%.5f', chain.ratio
-            %td.number= format '%.5f', chain.avg_ratio
-            %td.number= format '%.2f', chain.time
-            %td.number= format '%.5f', chain.avg_difference
-            %td.number{class: chain.warn_level && "warn-#{chain.warn_level}"}
-              = format '%.5f', chain.max_difference
-            %td.number= format '%.2f', chain.speed
+        <input id='filter' onkeyup='filterTable()' type='text'>
+      </label>
+    </p>
+    <p>
+      Images: <%= stats.each_chain.first.entry_count %>,
+      size: <%= stats.each_chain.first.original_size %>
+    </p>
+    <table data-sortable>
+      <thead>
+        <tr>
+          <th>Chain</th>
+          <th data-default-direction='ascending' data-sorted-direction='ascending' data-sorted='true'>Optimized size</th>
+          <th data-default-direction='ascending'>Ratio</th>
+          <th data-default-direction='ascending'>Avg ratio</th>
+          <th data-default-direction='ascending'>Time (s)</th>
+          <th data-default-direction='ascending'>Avg difference</th>
+          <th data-default-direction='ascending'>Max difference</th>
+          <th>Speed (B/s)</th>
+        </tr>
+      </thead>
+      <tbody class='filterable'>
+        <% stats.each_chain do |chain| %>
+          <tr class="<%= chain.unused_workers ? 'unused' : '' %>">
+          <td>
+            <% chain.worker_stats.each do |worker_stat| %>
+              <div class='worker-name <%= worker_stat.unused? ? 'unused' : '' %>'>
+                <%= worker_stat.name %>
+                <% unless worker_stat.unused? %>
+                  <div class='worker-success-count' title='successfull count'>
+                    <%= worker_stat.success_count %>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </td>
+          <td class='number'><%= chain.optimized_size %></td>
+          <td class='number'><%= format '%.5f', chain.ratio %></td>
+          <td class='number'><%= format '%.5f', chain.avg_ratio %></td>
+          <td class='number'><%= format '%.2f', chain.time %></td>
+          <td class='number'><%= format '%.5f', chain.avg_difference %></td>
+          <td class='number <%= chain.warn_level ? "warn-#{chain.warn_level}" : '' %>'>
+            <%= format '%.5f', chain.max_difference %>
+          </td>
+          <td class='number'><%= format '%.2f', chain.speed %></td>
+        <% end %>
+      </tbody>
+    </table>
+  </body>
+</html>
