@@ -5,6 +5,10 @@
 * Add tests for railtie, also to prevent [issues like #72](https://github.com/toy/image_optim/issues/72) [#73](https://github.com/toy/image_optim/issues/73) [@toy](https://github.com/toy)
 * Remove haml development dependency [@toy](https://github.com/toy)
 
+## v0.20.2 (2014-12-26)
+
+* Fix `ImagePath#temp_path` for ruby 2.2 caused by `Tmpname#make_tmpname` accepting only objects directly convertible to String for prefix and suffix starting with 2.2 [#74](https://github.com/toy/image_optim/issues/74) [@toy](https://github.com/toy)
+
 ## v0.20.1 (2014-12-19)
 
 * Fix [paperclip-optimizer issue #13](https://github.com/janfoeh/paperclip-optimizer/issues/13): railtie broken with `undefined local variable or method 'app'` [#72](https://github.com/toy/image_optim/issues/72) [@janfoeh](https://github.com/janfoeh)

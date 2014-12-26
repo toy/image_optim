@@ -29,8 +29,6 @@ env:
   - PATH=~/bin:$PATH
 matrix:
   fast_finish: true
-  allow_failures:
-    - rvm: '2.2'
   include:
     - env: RAILS_VERSION='~> 3.2'
       rvm: default
