@@ -29,7 +29,7 @@ class ImageOptim
     # Get temp path for this file with same extension
     def temp_path(*args, &block)
       ext = extname
-      self.class.temp_file_path([basename(ext), ext], *args, &block)
+      self.class.temp_file_path([basename(ext).to_s, ext], *args, &block)
     end
 
     # Copy file to dest preserving attributes
