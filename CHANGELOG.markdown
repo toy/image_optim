@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.20.2 (2014-12-26)
+
 * Fix `ImagePath#temp_path` for ruby 2.2 caused by `Tmpname#make_tmpname` accepting only objects directly convertible to String for prefix and suffix starting with 2.2 [#74](https://github.com/toy/image_optim/issues/74) [@toy](https://github.com/toy)
 
 ## v0.20.1 (2014-12-19)
