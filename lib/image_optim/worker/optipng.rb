@@ -21,6 +21,9 @@ class ImageOptim
         TrueFalseNil.convert(v)
       end
 
+      STRIP_OPTION =
+      option(:strip, true, 'Remove all auxiliary chunks'){ |v| !!v }
+
       def optimize(src, dst)
         src.copy(dst)
         args = %W[
@@ -30,6 +33,10 @@ class ImageOptim
           #{dst}
         ]
         args.unshift "-i#{interlace ? 1 : 0}" unless interlace.nil?
+        if strip
+          args.unshift 'all'
+          args.unshift '-strip'
+        end
         execute(:optipng, *args) && optimized?(src, dst)
       end
     end
