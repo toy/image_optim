@@ -48,14 +48,14 @@ class ImageOptim
         ]
 
         if resolve_bin!(:gifsicle).version >= '1.85'
-          args.unshift('--no-extensions', '--no-app-extensions')
+          args.unshift '--no-extensions', '--no-app-extensions'
         end
 
         unless interlace.nil?
-          args.unshift(interlace ? '--interlace' : '--no-interlace')
+          args.unshift interlace ? '--interlace' : '--no-interlace'
         end
-        args.unshift('--careful') if careful
-        args.unshift("--optimize=#{level}") if level
+        args.unshift '--careful' if careful
+        args.unshift "--optimize=#{level}" if level
         execute(:gifsicle, *args) && optimized?(src, dst)
       end
     end
