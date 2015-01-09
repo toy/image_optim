@@ -11,6 +11,7 @@ Makefile
 *.o
 *.bundle
 /tmp/
+/.vagrant/
 
 /analysis/
 /.analysis_variants.yml
