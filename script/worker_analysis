@@ -458,12 +458,13 @@ class Analyser
         options = HashHelpers.deep_symbolise_keys(options)
         options[:allow_consecutive_on] = allow_consecutive_on
         worker = WorkerVariant.new(klass, image_optim, options)
-        puts worker.id
         worker.image_formats.each do |format|
           @workers_by_format[format] << worker
         end
       end
     end
+
+    log_workers_by_format
 
     fail "unknown variants: #{option_variants}" unless option_variants.empty?
   end
@@ -508,6 +509,15 @@ private
 
   def workers_for_image(path)
     @workers_by_format[ImageOptim::ImagePath.convert(path).format]
+  end
+
+  def log_workers_by_format
+    @workers_by_format.each do |format, workers|
+      puts "#{format}:"
+      workers.sort_by(&:run_order).each do |worker|
+        puts "  #{worker.id} [#{worker.run_order}]"
+      end
+    end
   end
 end
 
