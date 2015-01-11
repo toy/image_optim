@@ -275,7 +275,9 @@ class Analyser
 
         block.call(chain_result)
 
-        workers_left = workers.reject{ |w| w.cons_id == worker.cons_id }
+        workers_left = workers.reject do |w|
+          w.cons_id == worker.cons_id || w.run_order < worker.run_order
+        end
         run_workers(result_image, workers_left, chain_result, &block)
       end
     end
