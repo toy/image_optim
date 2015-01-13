@@ -89,7 +89,7 @@ ImageOptim::ImagePath.class_eval do
     @digest ||= Digest::SHA256.file(to_s).hexdigest
   end
 
-  def cache_etag
+  def etag
     [mtime, digest]
   end
 end
@@ -154,7 +154,7 @@ class Analyser
       @cons_id = [klass, allow_consecutive_on.map{ |key| [key, send(key)] }]
     end
 
-    def cache_etag
+    def etag
       [
         id,
         bin_versions,
@@ -242,8 +242,8 @@ class Analyser
     end
 
     def results
-      cache_etag = [@path.cache_etag, @workers.map(&:cache_etag).sort]
-      Cache.get(@path.to_s, cache_etag) do
+      etag = [@path.etag, @workers.map(&:etag).sort]
+      Cache.get(@path.to_s, etag) do
         results = []
         run_workers(@path, @workers){ |result| results << result }
         run_cache.clear
