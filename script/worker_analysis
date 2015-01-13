@@ -185,17 +185,33 @@ class Analyser
     :time,
     :src_size,
     :dst_size,
+    :cache,
   ]) do
-    def self.run(src, dst, worker)
+    def self.run(src, worker)
+      dst = src.temp_path
       start = Process.times.sum
       success = worker.optimize(src, dst)
       time = Process.times.sum - start
 
-      new(worker.id, success, time, src.size, success ? dst.size : nil)
+      dst_size = success ? dst.size : nil
+      cache = (success ? dst : src).digest.sub(/../, '\0/') + ".#{src.format}"
+      result = new(worker.id, success, time, src.size, dst_size, cache)
+      if success
+        path = result.path
+        unless path.exist?
+          path.dirname.mkpath
+          dst.rename(path)
+        end
+      end
+      result
     end
 
     def size
       success ? dst_size : src_size
+    end
+
+    def path
+      ImageOptim::ImagePath.convert("#{DIR}/worker-analysis/#{cache}")
     end
 
     def inspect
@@ -284,9 +300,13 @@ class Analyser
 
     def run_worker(src, worker)
       run_cache[:run][[src.digest, worker.id]] ||= begin
-        dst = src.temp_path
-        worker_result = StepResult.run(src, dst, worker)
-        [worker_result, worker_result.success ? dst : src]
+        result = Cache.get([src.digest, worker.id], worker.etag)
+        if !result || (result.success && !result.path.exist?)
+          result = Cache.set([src.digest, worker.id], worker.etag) do
+            StepResult.run(src, worker)
+          end
+        end
+        [result, result.success ? result.path : src]
       end
     end
 
