@@ -104,16 +104,17 @@ class Analyser
     PATH = "#{DIR}/worker-analysis.db"
 
     class << self
-      def get(key, etag, &block)
+      def get(context, key, etag, &block)
+        full_key = [context, key]
         if block
-          get!(key, etag) || set!(key, etag, &block)
+          get!(full_key, etag) || set!(full_key, etag, &block)
         else
-          get!(key, etag)
+          get!(full_key, etag)
         end
       end
 
-      def set(key, etag, &block)
-        set!(key, etag, &block)
+      def set(context, key, etag, &block)
+        set!([context, key], etag, &block)
       end
 
     private
@@ -259,7 +260,7 @@ class Analyser
 
     def results
       etag = [@path.etag, @workers.map(&:etag).sort]
-      Cache.get(@path.to_s, etag) do
+      Cache.get(:results, @path.to_s, etag) do
         results = []
         run_workers(@path, @workers){ |result| results << result }
         run_cache.clear
@@ -300,9 +301,10 @@ class Analyser
 
     def run_worker(src, worker)
       run_cache[:run][[src.digest, worker.id]] ||= begin
-        result = Cache.get([src.digest, worker.id], worker.etag)
+        cache_args = [:result, [src.digest, worker.id], worker.etag]
+        result = Cache.get(*cache_args)
         if !result || (result.success && !result.path.exist?)
-          result = Cache.set([src.digest, worker.id], worker.etag) do
+          result = Cache.set(*cache_args) do
             StepResult.run(src, worker)
           end
         end
