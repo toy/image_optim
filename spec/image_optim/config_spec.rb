@@ -91,9 +91,9 @@ describe ImageOptim::Config do
       expect(config.for_worker(Abc)).to eq(:option => true)
     end
 
-    it 'returns passed false' do
+    it 'returns {:disable => true} for false' do
       config = IOConfig.new(:abc => false)
-      expect(config.for_worker(Abc)).to eq(false)
+      expect(config.for_worker(Abc)).to eq(:disable => true)
     end
 
     it 'raises on unknown option' do

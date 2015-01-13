@@ -80,7 +80,8 @@ class ImageOptim
 
       def init_all(image_optim, &options_proc)
         klasses.map do |klass|
-          next unless (options = options_proc[klass])
+          options = options_proc[klass]
+          next if options[:disable]
           options = options.merge(:allow_lossy => image_optim.allow_lossy)
           klass.init(image_optim, options)
         end.compact.flatten

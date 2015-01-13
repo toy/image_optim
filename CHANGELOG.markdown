@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Add disabling worker by passing `:disable => true` (previously only by passing `false` instead of options hash) [@toy](https://github.com/toy)
 * Add tests for railtie, also to prevent [issues like #72](https://github.com/toy/image_optim/issues/72) [#73](https://github.com/toy/image_optim/issues/73) [@toy](https://github.com/toy)
 * Remove haml development dependency [@toy](https://github.com/toy)
 * Add `-strip` option to optipng worker to remove all metadata chunks, on by default [#75](https://github.com/toy/image_optim/issues/75) [@jwidderich](https://github.com/jwidderich)

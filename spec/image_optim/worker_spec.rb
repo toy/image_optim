@@ -63,7 +63,9 @@ describe ImageOptim::Worker do
     it 'creates all workers for which options_proc returns true' do
       workers = Array.new(3){ worker_double }
       klasses = workers.map{ |worker| double(:init => worker) }
-      options_proc = proc{ |klass| klass != klasses[1] ? {} : false }
+      options_proc = proc do |klass|
+        klass == klasses[1] ? {:disable => true} : {}
+      end
 
       allow(Worker).to receive(:klasses).and_return(klasses)
 
