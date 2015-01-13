@@ -89,7 +89,7 @@ ImageOptim::ImagePath.class_eval do
     @digest ||= Digest::SHA256.file(to_s).hexdigest
   end
 
-  def cache_etag
+  def etag
     [mtime, digest]
   end
 end
@@ -104,16 +104,17 @@ class Analyser
     PATH = "#{DIR}/worker-analysis.db"
 
     class << self
-      def get(key, etag, &block)
+      def get(context, key, etag, &block)
+        full_key = [context, key]
         if block
-          get!(key, etag) || set!(key, etag, &block)
+          get!(full_key, etag) || set!(full_key, etag, &block)
         else
-          get!(key, etag)
+          get!(full_key, etag)
         end
       end
 
-      def set(key, etag, &block)
-        set!(key, etag, &block)
+      def set(context, key, etag, &block)
+        set!([context, key], etag, &block)
       end
 
     private
@@ -154,7 +155,7 @@ class Analyser
       @cons_id = [klass, allow_consecutive_on.map{ |key| [key, send(key)] }]
     end
 
-    def cache_etag
+    def etag
       [
         id,
         bin_versions,
@@ -185,17 +186,33 @@ class Analyser
     :time,
     :src_size,
     :dst_size,
+    :cache,
   ]) do
-    def self.run(src, dst, worker)
+    def self.run(src, worker)
+      dst = src.temp_path
       start = Process.times.sum
       success = worker.optimize(src, dst)
       time = Process.times.sum - start
 
-      new(worker.id, success, time, src.size, success ? dst.size : nil)
+      dst_size = success ? dst.size : nil
+      cache = (success ? dst : src).digest.sub(/../, '\0/') + ".#{src.format}"
+      result = new(worker.id, success, time, src.size, dst_size, cache)
+      if success
+        path = result.path
+        unless path.exist?
+          path.dirname.mkpath
+          dst.rename(path)
+        end
+      end
+      result
     end
 
     def size
       success ? dst_size : src_size
+    end
+
+    def path
+      ImageOptim::ImagePath.convert("#{DIR}/worker-analysis/#{cache}")
     end
 
     def inspect
@@ -242,8 +259,8 @@ class Analyser
     end
 
     def results
-      cache_etag = [@path.cache_etag, @workers.map(&:cache_etag).sort]
-      Cache.get(@path.to_s, cache_etag) do
+      etag = [@path.etag, @workers.map(&:etag).sort]
+      Cache.get(:results, @path.to_s, etag) do
         results = []
         run_workers(@path, @workers){ |result| results << result }
         run_cache.clear
@@ -275,21 +292,29 @@ class Analyser
 
         block.call(chain_result)
 
-        workers_left = workers.reject{ |w| w.cons_id == worker.cons_id }
+        workers_left = workers.reject do |w|
+          w.cons_id == worker.cons_id || w.run_order < worker.run_order
+        end
         run_workers(result_image, workers_left, chain_result, &block)
       end
     end
 
     def run_worker(src, worker)
       run_cache[:run][[src.digest, worker.id]] ||= begin
-        dst = src.temp_path
-        worker_result = StepResult.run(src, dst, worker)
-        [worker_result, worker_result.success ? dst : src]
+        cache_args = [:result, [src.digest, worker.id], worker.etag]
+        result = Cache.get(*cache_args)
+        if !result || (result.success && !result.path.exist?)
+          result = Cache.set(*cache_args) do
+            StepResult.run(src, worker)
+          end
+        end
+        [result, result.success ? result.path : src]
       end
     end
 
     def difference_with(other)
-      run_cache[:difference][other.digest] ||= begin
+      run_cache[:difference][other.digest] ||=
+      Cache.get(:difference, [@path.digest, other.digest].sort, nil) do
         images = [flatten_animation(@path), flatten_animation(other)]
 
         alpha_presence = images.map do |image|
@@ -456,12 +481,13 @@ class Analyser
         options = HashHelpers.deep_symbolise_keys(options)
         options[:allow_consecutive_on] = allow_consecutive_on
         worker = WorkerVariant.new(klass, image_optim, options)
-        puts worker.id
         worker.image_formats.each do |format|
           @workers_by_format[format] << worker
         end
       end
     end
+
+    log_workers_by_format
 
     fail "unknown variants: #{option_variants}" unless option_variants.empty?
   end
@@ -506,6 +532,15 @@ private
 
   def workers_for_image(path)
     @workers_by_format[ImageOptim::ImagePath.convert(path).format]
+  end
+
+  def log_workers_by_format
+    @workers_by_format.each do |format, workers|
+      puts "#{format}:"
+      workers.sort_by(&:run_order).each do |worker|
+        puts "  #{worker.id} [#{worker.run_order}]"
+      end
+    end
   end
 end
 
