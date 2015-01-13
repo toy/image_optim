@@ -313,7 +313,8 @@ class Analyser
     end
 
     def difference_with(other)
-      run_cache[:difference][other.digest] ||= begin
+      run_cache[:difference][other.digest] ||=
+      Cache.get(:difference, [@path.digest, other.digest].sort, nil) do
         images = [flatten_animation(@path), flatten_animation(other)]
 
         alpha_presence = images.map do |image|
