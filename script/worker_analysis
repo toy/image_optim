@@ -391,7 +391,7 @@ class Analyser
       attr_reader :entry_count
       attr_reader :original_size, :optimized_size, :ratio, :avg_ratio
       attr_reader :avg_difference, :max_difference, :warn_level
-      attr_reader :time, :speed
+      attr_reader :time, :avg_time, :speed
 
       def initialize(worker_ids, results)
         steps_by_worker_id = results.flat_map(&:steps).group_by(&:worker_id)
@@ -408,6 +408,7 @@ class Analyser
         @avg_difference = results.sum(&:difference) / results.length
         @max_difference = results.map(&:difference).max
         @time = results.sum(&:time)
+        @avg_time = time / results.length
 
         @warn_level = calculate_warn_level
         @speed = calculate_speed

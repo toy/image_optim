@@ -162,7 +162,7 @@
           <th data-default-direction='ascending' data-sorted-direction='ascending' data-sorted='true'>Optimized size</th>
           <th data-default-direction='ascending'>Ratio</th>
           <th data-default-direction='ascending'>Avg ratio</th>
-          <th data-default-direction='ascending'>Time (s)</th>
+          <th data-default-direction='ascending'>Avg time (s)</th>
           <th data-default-direction='ascending'>Avg difference</th>
           <th data-default-direction='ascending'>Max difference</th>
           <th>Speed (B/s)</th>
@@ -186,7 +186,7 @@
           <td class='number'><%= chain.optimized_size %></td>
           <td class='number'><%= format '%.5f', chain.ratio %></td>
           <td class='number'><%= format '%.5f', chain.avg_ratio %></td>
-          <td class='number'><%= format '%.2f', chain.time %></td>
+          <td class='number'><%= format '%.4f', chain.avg_time %></td>
           <td class='number'><%= format '%.5f', chain.avg_difference %></td>
           <td class='number <%= chain.warn_level ? "warn-#{chain.warn_level}" : '' %>'>
             <%= format '%.5f', chain.max_difference %>
