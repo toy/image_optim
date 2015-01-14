@@ -542,7 +542,7 @@ private
   def log_workers_by_format
     @workers_by_format.each do |format, workers|
       puts "#{format}:"
-      workers.sort_by(&:run_order).each do |worker|
+      workers.sort_by.with_index{ |w, i| [w.run_order, i] }.each do |worker|
         puts "  #{worker.id} [#{worker.run_order}]"
       end
     end
