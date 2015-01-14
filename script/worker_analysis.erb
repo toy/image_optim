@@ -62,6 +62,10 @@
       input { display: block; width: 30%; }
       input[type=checkbox] { display: inline; width: auto; }
 
+      .nowrap {
+        white-space: nowrap;
+      }
+
       .number {
         text-align: right;
       }
@@ -171,7 +175,7 @@
       <tbody class='filterable'>
         <% stats.each_chain do |chain| %>
           <tr class="<%= chain.unused_workers ? 'unused' : '' %>">
-          <td>
+          <td class="nowrap">
             <% chain.worker_stats.each do |worker_stat| %>
               <div class='worker-name <%= worker_stat.unused? ? 'unused' : '' %>'>
                 <%= worker_stat.name %>
