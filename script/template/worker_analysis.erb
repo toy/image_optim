@@ -59,6 +59,11 @@
         display: none;
       }
 
+      tr.relativeTo { background: #fdd; }
+      table[data-sortable] tbody tr.relativeTo:hover {
+        background: #fdf;
+      }
+
       input { display: block; width: 30%; }
       input[type=checkbox] { display: inline; width: auto; }
 
@@ -102,6 +107,7 @@
         text-decoration: line-through;
       }
     </style>
+    <script src="<%= template_dir %>/jquery-2.1.3.min.js"></script>
     <script src="<%= template_dir %>/sortable-0.6.0.min.js"></script>
     <script>
       function toggleShowUnused(){
@@ -121,6 +127,39 @@
           row.classList[show ? 'remove' : 'add']('filtered-out')
         }
       }
+
+      $(function(){
+        $('table[data-sortable] td[data-rel]').each(function(i, cell){
+          $(cell).attr('data-value', $.trim($(cell).text()))
+        })
+        var relative_to
+        $('table[data-sortable]').on('click', 'tbody tr', function(e){
+          if (relative_to) {
+            $(relative_to).removeClass('relativeTo')
+          }
+
+          if (relative_to === this) {
+            $('table[data-sortable] td[data-rel]').each(function(i, cell){
+              $(cell).text($(cell).attr('data-value'))
+            })
+            relative_to = null
+          } else {
+            $(this).addClass('relativeTo')
+
+            var values = $(this).children('td[data-rel]').map(function(i, cell){
+              return parseFloat($(cell).attr('data-value'))
+            })
+
+            $('table[data-sortable] td[data-rel]').each(function(ii, cell){
+              var i = ii % values.length
+              var value = parseFloat($(cell).attr('data-value')) / values[i]
+              var precision = 1000
+              $(cell).text(Math.round(value * precision * 100) / precision + '%')
+            })
+            relative_to = this
+          }
+        })
+      })
     </script>
   </head>
   <body>
@@ -184,14 +223,12 @@
                 </div>
               <% end %>
             </td>
-            <td class='number'><%= chain.optimized_size %></td>
-            <td class='number'><%= format '%.5f', chain.ratio %></td>
-            <td class='number'><%= format '%.5f', chain.avg_ratio %></td>
-            <td class='number'><%= format '%.4f', chain.avg_time %></td>
+            <td class='number' data-rel><%= chain.optimized_size %></td>
+            <td class='number' data-rel><%= format '%.5f', chain.ratio %></td>
+            <td class='number' data-rel><%= format '%.5f', chain.avg_ratio %></td>
+            <td class='number' data-rel><%= format '%.4f', chain.avg_time %></td>
             <td class='number'><%= format '%.5f', chain.avg_difference %></td>
-            <td class='number <%= chain.warn_level ? "warn-#{chain.warn_level}" : '' %>'>
-              <%= format '%.5f', chain.max_difference %>
-            </td>
+            <td class='number <%= chain.warn_level ? "warn-#{chain.warn_level}" : '' %>'><%= format '%.5f', chain.max_difference %></td>
             <td class='number'><%= format '%.2f', chain.speed %></td>
           </tr>
         <% end %>
