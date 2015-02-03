@@ -500,7 +500,7 @@ class Analyser
   def analyse(paths)
     results = collect_results(paths)
 
-    template = ERB.new(File.read("#{__FILE__}.erb"))
+    template = ERB.new(template_path.read)
     by_format = results.group_by(&:format)
     formats = by_format.keys.sort
     basenames = Hash[formats.map do |format|
@@ -550,6 +550,10 @@ private
         puts "  #{worker.id} [#{worker.run_order}]"
       end
     end
+  end
+
+  def template_path
+    FSPath("#{File.dirname(__FILE__)}/template/#{File.basename(__FILE__)}.erb")
   end
 end
 
