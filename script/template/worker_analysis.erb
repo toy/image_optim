@@ -172,27 +172,28 @@
       <tbody class='filterable'>
         <% stats.each_chain do |chain| %>
           <tr class="<%= chain.unused_workers ? 'unused' : '' %>">
-          <td class="nowrap">
-            <% chain.worker_stats.each do |worker_stat| %>
-              <div class='worker-name <%= worker_stat.unused? ? 'unused' : '' %>'>
-                <%= worker_stat.name %>
-                <% unless worker_stat.unused? %>
-                  <div class='worker-success-count' title='successfull count'>
-                    <%= worker_stat.success_count %>
-                  </div>
-                <% end %>
-              </div>
-            <% end %>
-          </td>
-          <td class='number'><%= chain.optimized_size %></td>
-          <td class='number'><%= format '%.5f', chain.ratio %></td>
-          <td class='number'><%= format '%.5f', chain.avg_ratio %></td>
-          <td class='number'><%= format '%.4f', chain.avg_time %></td>
-          <td class='number'><%= format '%.5f', chain.avg_difference %></td>
-          <td class='number <%= chain.warn_level ? "warn-#{chain.warn_level}" : '' %>'>
-            <%= format '%.5f', chain.max_difference %>
-          </td>
-          <td class='number'><%= format '%.2f', chain.speed %></td>
+            <td class="nowrap">
+              <% chain.worker_stats.each do |worker_stat| %>
+                <div class='worker-name <%= worker_stat.unused? ? 'unused' : '' %>'>
+                  <%= worker_stat.name %>
+                  <% unless worker_stat.unused? %>
+                    <div class='worker-success-count' title='successfull count'>
+                      <%= worker_stat.success_count %>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </td>
+            <td class='number'><%= chain.optimized_size %></td>
+            <td class='number'><%= format '%.5f', chain.ratio %></td>
+            <td class='number'><%= format '%.5f', chain.avg_ratio %></td>
+            <td class='number'><%= format '%.4f', chain.avg_time %></td>
+            <td class='number'><%= format '%.5f', chain.avg_difference %></td>
+            <td class='number <%= chain.warn_level ? "warn-#{chain.warn_level}" : '' %>'>
+              <%= format '%.5f', chain.max_difference %>
+            </td>
+            <td class='number'><%= format '%.2f', chain.speed %></td>
+          </tr>
         <% end %>
       </tbody>
     </table>
