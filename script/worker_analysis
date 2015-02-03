@@ -394,10 +394,7 @@ class Analyser
       attr_reader :time, :avg_time, :speed
 
       def initialize(worker_ids, results)
-        steps_by_worker_id = results.flat_map(&:steps).group_by(&:worker_id)
-        @worker_stats = worker_ids.map do |worker_id|
-          Worker.new(worker_id, steps_by_worker_id[worker_id])
-        end
+        @worker_stats = build_worker_stats(worker_ids, results)
         @unused_workers = worker_stats.any?(&:unused?)
 
         @entry_count = results.count
@@ -415,6 +412,13 @@ class Analyser
       end
 
     private
+
+      def build_worker_stats(worker_ids, results)
+        steps_by_worker_id = results.flat_map(&:steps).group_by(&:worker_id)
+        worker_ids.map do |worker_id|
+          Worker.new(worker_id, steps_by_worker_id[worker_id])
+        end
+      end
 
       def calculate_warn_level
         case
