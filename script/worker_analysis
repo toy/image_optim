@@ -498,9 +498,7 @@ class Analyser
   end
 
   def analyse(paths)
-    results = process_paths(paths).shuffle.with_progress.flat_map do |path|
-      WorkerRunner.new(path, workers_for_image(path)).results
-    end
+    results = collect_results(paths)
 
     template = ERB.new(File.read("#{__FILE__}.erb"))
     by_format = results.group_by(&:format)
@@ -523,6 +521,12 @@ class Analyser
   end
 
 private
+
+  def collect_results(paths)
+    process_paths(paths).shuffle.with_progress.flat_map do |path|
+      WorkerRunner.new(path, workers_for_image(path)).results
+    end
+  end
 
   def process_paths(paths)
     paths = paths.map{ |path| ImageOptim::ImagePath.convert(path) }
