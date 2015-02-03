@@ -508,13 +508,14 @@ class Analyser
     end]
     formats.each do |format|
       stats = Stats.new('all', by_format[format])
+      path = FSPath("#{DIR}/#{basenames[format]}")
       model = {
         :stats_format => format,
         :stats => stats,
         :format_links => basenames,
+        :template_dir => template_path.dirname.relative_path_from(path.dirname),
       }
       html = template.result(OpenStruct.new(model).instance_eval{ binding })
-      path = FSPath("#{DIR}/#{basenames[format]}")
       path.write(html)
       puts "Created #{path}"
     end
