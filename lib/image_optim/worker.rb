@@ -120,35 +120,39 @@ class ImageOptim
 
     # Run command setting priority and hiding output
     def execute(bin, *arguments)
-      command = build_command!(bin, *arguments)
+      resolve_bin!(bin)
+
+      cmd_args = [bin, *arguments].map(&:to_s)
 
       start = Time.now
 
-      success = run_command(command)
+      success = run_command(cmd_args)
 
       if @image_optim.verbose
-        $stderr << "#{success ? '✓' : '✗'} #{Time.now - start}s #{command}\n"
+        seconds = Time.now - start
+        $stderr << "#{success ? '✓' : '✗'} #{seconds}s #{cmd_args.shelljoin}\n"
       end
 
       success
     end
 
-    # Build command string
-    def build_command!(bin, *arguments)
-      resolve_bin!(bin)
-
-      [bin, *arguments].map(&:to_s).shelljoin
-    end
-
     # Run command defining environment, setting nice level, removing output and
     # reraising signal exception
-    def run_command(command)
-      full_command = %W[
-        env PATH=#{@image_optim.env_path.shellescape}
-        nice -n #{@image_optim.nice}
-        #{command} > /dev/null 2>&1
-      ].join(' ')
-      Cmd.run full_command
+    def run_command(cmd_args)
+      if RUBY_VERSION < '1.9' || defined?(JRUBY_VERSION)
+        Cmd.run %W[
+          env PATH=#{@image_optim.env_path.shellescape}
+          nice -n #{@image_optim.nice}
+          #{cmd_args.shelljoin} > /dev/null 2>&1
+        ].join(' ')
+      else
+        Cmd.run *[
+          {'PATH' => @image_optim.env_path},
+          %W[nice -n #{@image_optim.nice}],
+          cmd_args,
+          {:out => '/dev/null', :err => '/dev/null'},
+        ].flatten
+      end
     end
   end
 end
