@@ -500,7 +500,7 @@ class Analyser
   def analyse(paths)
     results = collect_results(paths)
 
-    template = ERB.new(template_path.read)
+    template = ERB.new(template_path.read, nil, '>')
     by_format = results.group_by(&:format)
     formats = by_format.keys.sort
     basenames = Hash[formats.map do |format|
