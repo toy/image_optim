@@ -115,7 +115,9 @@
         document.body.classList[checked ? 'add' : 'remove']('show-unused')
       }
       function filterTable(){
-        var filter = new RegExp(document.getElementById('filter').value)
+        var filterText = document.getElementById('filter').value
+        var invert = filterText[0] == '-'
+        var filter = new RegExp(filterText.replace(/^-/, ''))
         var rows = document.querySelectorAll('tbody.filterable tr')
         for (var i = 0, _i = rows.length; i < _i; i++) {
           var row = rows[i]
@@ -123,7 +125,7 @@
             var text = row.textContent.replace(/\s+/g, ' ')
             row.setAttribute('data-filter-text', text)
           }
-          var show = filter.test(row.getAttribute('data-filter-text'))
+          var show = filter.test(row.getAttribute('data-filter-text')) != invert
           row.classList[show ? 'remove' : 'add']('filtered-out')
         }
       }
@@ -187,7 +189,7 @@
     </p>
     <p>
       <label for='filter'>
-        Filter chains by regexp
+        Filter chains by regexp (prefix with "-" to filter-out):
         <input id='filter' onkeyup='filterTable()' type='text'>
       </label>
     </p>
