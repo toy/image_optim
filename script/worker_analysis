@@ -101,7 +101,7 @@ class Analyser
 
   # Caching entries using GDBM
   class Cache
-    PATH = "#{DIR}/worker-analysis.db"
+    DB = GDBM.new("#{DIR}/worker-analysis.db")
 
     class << self
       def get(context, key, etag, &block)
@@ -119,14 +119,8 @@ class Analyser
 
     private
 
-      def open
-        GDBM.open(PATH) do |db|
-          yield db
-        end
-      end
-
       def get!(key, etag)
-        raw = open{ |db| db[Marshal.dump(key)] }
+        raw = DB[Marshal.dump(key)]
         return unless raw
         entry = Marshal.load(raw)
         return unless entry[1] == etag
@@ -135,7 +129,7 @@ class Analyser
 
       def set!(key, etag, &block)
         value = block.call
-        open{ |db| db[Marshal.dump(key)] = Marshal.dump([value, etag]) }
+        DB[Marshal.dump(key)] = Marshal.dump([value, etag])
         value
       end
     end
