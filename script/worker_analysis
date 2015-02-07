@@ -143,15 +143,13 @@ class Analyser
 
   # Delegate to worker with short id
   class WorkerVariant < DelegateClass(ImageOptim::Worker)
-    attr_reader :cons_id, :id
+    attr_reader :name, :id, :cons_id
     def initialize(klass, image_optim, options)
       allow_consecutive_on = Array(options.delete(:allow_consecutive_on))
       @image_optim = image_optim
-      @id = klass.bin_sym.to_s
-      unless options.empty?
-        @id << "(#{options.map{ |k, v| "#{k}:#{v.inspect}" }.join(', ')})"
-      end
+      @name = klass.bin_sym.to_s + options_string(options)
       __setobj__(klass.new(image_optim, options))
+      @id = klass.bin_sym.to_s + options_string(self.options)
       @cons_id = [klass, allow_consecutive_on.map{ |key| [key, send(key)] }]
     end
 
@@ -176,6 +174,11 @@ class Analyser
         source_path = __getobj__.method(:optimize).source_location[0]
         Digest::SHA256.file(source_path).hexdigest
       end
+    end
+
+    def options_string(options)
+      return '' if options.empty?
+      "(#{options.sort.map{ |k, v| "#{k}:#{v.inspect}" }.join(', ')})"
     end
   end
 
@@ -259,13 +262,10 @@ class Analyser
     end
 
     def results
-      etag = [@path.etag, @workers.map(&:etag).sort]
-      Cache.get(:results, @path.to_s, etag) do
-        results = []
-        run_workers(@path, @workers){ |result| results << result }
-        run_cache.clear
-        results
-      end
+      results = []
+      run_workers(@path, @workers){ |result| results << result }
+      run_cache.clear
+      results
     end
 
   private
@@ -393,8 +393,8 @@ class Analyser
       attr_reader :avg_difference, :max_difference, :warn_level
       attr_reader :time, :avg_time, :speed
 
-      def initialize(worker_ids, results)
-        @worker_stats = build_worker_stats(worker_ids, results)
+      def initialize(worker_ids, results, ids2names)
+        @worker_stats = build_worker_stats(worker_ids, results, ids2names)
         @unused_workers = worker_stats.any?(&:unused?)
 
         @entry_count = results.count
@@ -413,10 +413,11 @@ class Analyser
 
     private
 
-      def build_worker_stats(worker_ids, results)
+      def build_worker_stats(worker_ids, results, ids2names)
         steps_by_worker_id = results.flat_map(&:steps).group_by(&:worker_id)
         worker_ids.map do |worker_id|
-          Worker.new(worker_id, steps_by_worker_id[worker_id])
+          worker_name = ids2names[worker_id] || worker_id
+          Worker.new(worker_name, steps_by_worker_id[worker_id])
         end
       end
 
@@ -451,15 +452,16 @@ class Analyser
       end
     end
 
-    attr_reader :name, :results
-    def initialize(name, results)
+    attr_reader :name, :results, :ids2names
+    def initialize(name, results, ids2names)
       @name = name.to_s
       @results = results
+      @ids2names = ids2names
     end
 
     def each_chain(&block)
       chains = results.group_by(&:worker_ids).map do |worker_ids, results|
-        Chain.new(worker_ids, results)
+        Chain.new(worker_ids, results, ids2names)
       end
       chains.sort_by!{ |chain| [chain.optimized_size, chain.time] }
       chains.each(&block)
@@ -507,7 +509,7 @@ class Analyser
       [format, "worker-analysis-#{format}.html"]
     end]
     formats.each do |format|
-      stats = Stats.new('all', by_format[format])
+      stats = Stats.new('all', by_format[format], worker_ids2names)
       path = FSPath("#{DIR}/#{basenames[format]}")
       model = {
         :stats_format => format,
@@ -522,6 +524,12 @@ class Analyser
   end
 
 private
+
+  def worker_ids2names
+    Hash[@workers_by_format.values.flatten.map do |worker|
+      [worker.id, worker.name]
+    end]
+  end
 
   def collect_results(paths)
     process_paths(paths).shuffle.with_progress.flat_map do |path|
@@ -548,7 +556,7 @@ private
     @workers_by_format.each do |format, workers|
       puts "#{format}:"
       workers.sort_by.with_index{ |w, i| [w.run_order, i] }.each do |worker|
-        puts "  #{worker.id} [#{worker.run_order}]"
+        puts "  #{worker.name} [#{worker.run_order}]"
       end
     end
   end
