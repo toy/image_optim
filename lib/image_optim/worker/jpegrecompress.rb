@@ -25,7 +25,7 @@ class ImageOptim
         [:'jpeg-recompress']
       end
 
-      # Run first [-1]
+      # Run early as lossy worker
       def run_order
         -5
       end
