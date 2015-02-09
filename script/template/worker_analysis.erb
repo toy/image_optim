@@ -86,7 +86,8 @@
       }
 
       .worker-name,
-      .worker-success-count {
+      .worker-success-count,
+      .worker-avg-time {
         display: inline-block;
         border-radius: 8px;
       }
@@ -96,12 +97,18 @@
         border: 1px solid #999;
         margin: -3px 0 1px 0;
       }
-      .worker-success-count {
+      .worker-success-count,
+      .worker-avg-time {
         font-size: 0.9em;
         line-height: 1em;
-        background: #dfd;
         padding: 1px 2px 0;
         border: 1px solid #9b9;
+      }
+      .worker-success-count {
+        background: #dfd;
+      }
+      .worker-avg-time {
+        background: #fdd;
       }
       .worker-name.unused {
         text-decoration: line-through;
@@ -182,6 +189,10 @@
       </tr>
     </table>
     <p>
+      <span class='worker-success-count'>10</span> - successful count;
+      <span class='worker-avg-time'>0.123</span> - average time in seconds
+    </p>
+    <p>
       <label>
         <input id='toggle-show-unused' onchange='toggleShowUnused()' type='checkbox'>
         Show chains with workers failed for every image
@@ -218,10 +229,13 @@
                 <div class='worker-name <%= worker_stat.unused? ? 'unused' : '' %>'>
                   <%= worker_stat.name %>
                   <% unless worker_stat.unused? %>
-                    <div class='worker-success-count' title='successfull count'>
+                    <div class='worker-success-count'>
                       <%= worker_stat.success_count %>
                     </div>
                   <% end %>
+                  <div class='worker-avg-time'>
+                    <%= format '%.3f', worker_stat.avg_time %>
+                  </div>
                 </div>
               <% end %>
             </td>

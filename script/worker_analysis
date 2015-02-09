@@ -436,9 +436,12 @@ class Analyser
     class Worker
       attr_reader :name
       attr_reader :success_count
+      attr_reader :time, :avg_time
       def initialize(name, steps)
         @name = name
         @success_count = steps.count(&:success)
+        @time = steps.sum(&:time)
+        @avg_time = time / steps.length
       end
 
       def unused?
