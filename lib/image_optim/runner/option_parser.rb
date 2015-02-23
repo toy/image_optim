@@ -86,10 +86,10 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
   op.banner = <<-TEXT.gsub(/^\s*\|/, '')
     |#{ImageOptim.full_version}
     |
-    |Usege:
+    |Usage:
     |  #{op.program_name} [options] image_path …
     |
-    |Configuration will be read and prepanded to options from two paths:
+    |Configuration will be read and prepended to options from two paths:
     |  #{ImageOptim::Config::GLOBAL_PATH}
     |  #{ImageOptim::Config::LOCAL_PATH}
     |
