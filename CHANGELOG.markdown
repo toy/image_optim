@@ -6,6 +6,7 @@
 * Add tests for railtie, also to prevent [issues like #72](https://github.com/toy/image_optim/issues/72) [#73](https://github.com/toy/image_optim/issues/73) [@toy](https://github.com/toy)
 * Remove haml development dependency [@toy](https://github.com/toy)
 * Add `-strip` option to optipng worker to remove all metadata chunks, on by default [#75](https://github.com/toy/image_optim/issues/75) [@jwidderich](https://github.com/jwidderich)
+* Fixing minor spelling mistakes from `--help` output [#79](https://github.com/toy/image_optim/issues/79) [@kaspergrubbe](https://github.com/kaspergrubbe)
 
 ## v0.20.2 (2014-12-26)
 
