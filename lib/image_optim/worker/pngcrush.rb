@@ -22,9 +22,8 @@ class ImageOptim
       BLACKEN_OPTION =
       option(:blacken, true, 'Blacken fully transparent pixels'){ |v| !!v }
 
-      # Always run first [-1]
       def run_order
-        -1
+        -6
       end
 
       def optimize(src, dst)

@@ -31,9 +31,8 @@ class ImageOptim
         OptionHelpers.limit_with_range(v.to_i, 1..11)
       end
 
-      # Always run first
       def run_order
-        -5
+        -2
       end
 
       def optimize(src, dst)
