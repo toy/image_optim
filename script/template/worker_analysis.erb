@@ -59,8 +59,17 @@
         display: none;
       }
 
+      tr.relativeTo { background: #fdd; }
+      table[data-sortable] tbody tr.relativeTo:hover {
+        background: #fdf;
+      }
+
       input { display: block; width: 30%; }
       input[type=checkbox] { display: inline; width: auto; }
+
+      .nowrap {
+        white-space: nowrap;
+      }
 
       .number {
         text-align: right;
@@ -77,7 +86,8 @@
       }
 
       .worker-name,
-      .worker-success-count {
+      .worker-success-count,
+      .worker-avg-time {
         display: inline-block;
         border-radius: 8px;
       }
@@ -87,28 +97,34 @@
         border: 1px solid #999;
         margin: -3px 0 1px 0;
       }
-      .worker-success-count {
+      .worker-success-count,
+      .worker-avg-time {
         font-size: 0.9em;
         line-height: 1em;
-        background: #dfd;
         padding: 1px 2px 0;
         border: 1px solid #9b9;
+      }
+      .worker-success-count {
+        background: #dfd;
+      }
+      .worker-avg-time {
+        background: #fdd;
       }
       .worker-name.unused {
         text-decoration: line-through;
       }
     </style>
-    <script>
-      /*! sortable.js 0.6.0 */
-      (function(){var a,b,c,d,e,f,g;a="table[data-sortable]",d=/^-?[£$¤]?[\d,.]+%?$/,g=/^\s+|\s+$/g,f="ontouchstart"in document.documentElement,c=f?"touchstart":"click",b=function(a,b,c){return null!=a.addEventListener?a.addEventListener(b,c,!1):a.attachEvent("on"+b,c)},e={init:function(b){var c,d,f,g,h;for(null==b&&(b={}),null==b.selector&&(b.selector=a),d=document.querySelectorAll(b.selector),h=[],f=0,g=d.length;g>f;f++)c=d[f],h.push(e.initTable(c));return h},initTable:function(a){var b,c,d,f,g,h;if(1===(null!=(h=a.tHead)?h.rows.length:void 0)&&"true"!==a.getAttribute("data-sortable-initialized")){for(a.setAttribute("data-sortable-initialized","true"),d=a.querySelectorAll("th"),b=f=0,g=d.length;g>f;b=++f)c=d[b],"false"!==c.getAttribute("data-sortable")&&e.setupClickableTH(a,c,b);return a}},setupClickableTH:function(a,d,f){var g;return g=e.getColumnType(a,f),"click"===c&&b(d,"mousedown",function(){return event.preventDefault?event.preventDefault():event.returnValue=!1}),b(d,c,function(){var b,c,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v;for("true"===this.getAttribute("data-sorted")?(l=this.getAttribute("data-sorted-direction"),b="ascending"===l?"descending":"ascending"):b=this.getAttribute("data-default-direction")||g.defaultSortDirection,n=this.parentNode.querySelectorAll("th"),o=0,r=n.length;r>o;o++)d=n[o],d.setAttribute("data-sorted","false"),d.removeAttribute("data-sorted-direction");for(this.setAttribute("data-sorted","true"),this.setAttribute("data-sorted-direction",b),m=a.tBodies[0],i=[],u=m.rows,c=p=0,s=u.length;s>p;c=++p)h=u[c],i.push([e.getNodeValue(h.cells[f]),h,c]);for(k="descending"===b?-1:1,i.sort(function(a,b){var c;return c=g.compare(a,b),0!==c?c*k:a[2]-b[2]}),v=[],q=0,t=i.length;t>q;q++)j=i[q],v.push(m.appendChild(j[1]));return v})},getColumnType:function(a,b){var c,f,g,h,i;for(i=a.tBodies[0].rows,g=0,h=i.length;h>g;g++)if(c=i[g],f=e.getNodeValue(c.cells[b]),""!==f){if(f.match(d))return e.types.numeric;if(!isNaN(Date.parse(f)))return e.types.date}return e.types.alpha},getNodeValue:function(a){return a?null!==a.getAttribute("data-value")?a.getAttribute("data-value"):"undefined"!=typeof a.innerText?a.innerText.replace(g,""):a.textContent.replace(g,""):""},types:{numeric:{defaultSortDirection:"descending",compare:function(a,b){var c,d;return c=parseFloat(a[0].replace(/[^0-9.-]/g,""),10),d=parseFloat(b[0].replace(/[^0-9.-]/g,""),10),isNaN(c)&&(c=0),isNaN(d)&&(d=0),c-d}},alpha:{defaultSortDirection:"ascending",compare:function(a,b){return a[0].localeCompare(b[0])}},date:{defaultSortDirection:"ascending",compare:function(a,b){var c,d;return c=Date.parse(a[0]),d=Date.parse(b[0]),isNaN(c)&&(c=0),isNaN(d)&&(d=0),c-d}}}},setTimeout(e.init,0),window.Sortable=e}).call(this);
-    </script>
+    <script src="<%= template_dir %>/jquery-2.1.3.min.js"></script>
+    <script src="<%= template_dir %>/sortable-0.6.0.min.js"></script>
     <script>
       function toggleShowUnused(){
         var checked = document.getElementById('toggle-show-unused').checked
         document.body.classList[checked ? 'add' : 'remove']('show-unused')
       }
       function filterTable(){
-        var filter = new RegExp(document.getElementById('filter').value)
+        var filterText = document.getElementById('filter').value
+        var invert = filterText[0] == '-'
+        var filter = new RegExp(filterText.replace(/^-/, ''))
         var rows = document.querySelectorAll('tbody.filterable tr')
         for (var i = 0, _i = rows.length; i < _i; i++) {
           var row = rows[i]
@@ -116,10 +132,43 @@
             var text = row.textContent.replace(/\s+/g, ' ')
             row.setAttribute('data-filter-text', text)
           }
-          var show = filter.test(row.getAttribute('data-filter-text'))
+          var show = filter.test(row.getAttribute('data-filter-text')) != invert
           row.classList[show ? 'remove' : 'add']('filtered-out')
         }
       }
+
+      $(function(){
+        $('table[data-sortable] td[data-rel]').each(function(i, cell){
+          $(cell).attr('data-value', $.trim($(cell).text()))
+        })
+        var relative_to
+        $('table[data-sortable]').on('click', 'tbody tr', function(e){
+          if (relative_to) {
+            $(relative_to).removeClass('relativeTo')
+          }
+
+          if (relative_to === this) {
+            $('table[data-sortable] td[data-rel]').each(function(i, cell){
+              $(cell).text($(cell).attr('data-value'))
+            })
+            relative_to = null
+          } else {
+            $(this).addClass('relativeTo')
+
+            var values = $(this).children('td[data-rel]').map(function(i, cell){
+              return parseFloat($(cell).attr('data-value'))
+            })
+
+            $('table[data-sortable] td[data-rel]').each(function(ii, cell){
+              var i = ii % values.length
+              var value = parseFloat($(cell).attr('data-value')) / values[i]
+              var precision = 1000
+              $(cell).text(Math.round(value * precision * 100) / precision + '%')
+            })
+            relative_to = this
+          }
+        })
+      })
     </script>
   </head>
   <body>
@@ -140,6 +189,10 @@
       </tr>
     </table>
     <p>
+      <span class='worker-success-count'>10</span> - successful count;
+      <span class='worker-avg-time'>0.123</span> - average time in seconds
+    </p>
+    <p>
       <label>
         <input id='toggle-show-unused' onchange='toggleShowUnused()' type='checkbox'>
         Show chains with workers failed for every image
@@ -147,7 +200,7 @@
     </p>
     <p>
       <label for='filter'>
-        Filter chains by regexp
+        Filter chains by regexp (prefix with "-" to filter-out):
         <input id='filter' onkeyup='filterTable()' type='text'>
       </label>
     </p>
@@ -162,7 +215,7 @@
           <th data-default-direction='ascending' data-sorted-direction='ascending' data-sorted='true'>Optimized size</th>
           <th data-default-direction='ascending'>Ratio</th>
           <th data-default-direction='ascending'>Avg ratio</th>
-          <th data-default-direction='ascending'>Time (s)</th>
+          <th data-default-direction='ascending'>Avg time (s)</th>
           <th data-default-direction='ascending'>Avg difference</th>
           <th data-default-direction='ascending'>Max difference</th>
           <th>Speed (B/s)</th>
@@ -171,27 +224,29 @@
       <tbody class='filterable'>
         <% stats.each_chain do |chain| %>
           <tr class="<%= chain.unused_workers ? 'unused' : '' %>">
-          <td>
-            <% chain.worker_stats.each do |worker_stat| %>
-              <div class='worker-name <%= worker_stat.unused? ? 'unused' : '' %>'>
-                <%= worker_stat.name %>
-                <% unless worker_stat.unused? %>
-                  <div class='worker-success-count' title='successfull count'>
-                    <%= worker_stat.success_count %>
+            <td class="nowrap">
+              <% chain.worker_stats.each do |worker_stat| %>
+                <div class='worker-name <%= worker_stat.unused? ? 'unused' : '' %>'>
+                  <%= worker_stat.name %>
+                  <% unless worker_stat.unused? %>
+                    <div class='worker-success-count'>
+                      <%= worker_stat.success_count %>
+                    </div>
+                  <% end %>
+                  <div class='worker-avg-time'>
+                    <%= format '%.3f', worker_stat.avg_time %>
                   </div>
-                <% end %>
-              </div>
-            <% end %>
-          </td>
-          <td class='number'><%= chain.optimized_size %></td>
-          <td class='number'><%= format '%.5f', chain.ratio %></td>
-          <td class='number'><%= format '%.5f', chain.avg_ratio %></td>
-          <td class='number'><%= format '%.2f', chain.time %></td>
-          <td class='number'><%= format '%.5f', chain.avg_difference %></td>
-          <td class='number <%= chain.warn_level ? "warn-#{chain.warn_level}" : '' %>'>
-            <%= format '%.5f', chain.max_difference %>
-          </td>
-          <td class='number'><%= format '%.2f', chain.speed %></td>
+                </div>
+              <% end %>
+            </td>
+            <td class='number' data-rel><%= chain.optimized_size %></td>
+            <td class='number' data-rel><%= format '%.5f', chain.ratio %></td>
+            <td class='number' data-rel><%= format '%.5f', chain.avg_ratio %></td>
+            <td class='number' data-rel><%= format '%.4f', chain.avg_time %></td>
+            <td class='number'><%= format '%.5f', chain.avg_difference %></td>
+            <td class='number <%= chain.warn_level ? "warn-#{chain.warn_level}" : '' %>'><%= format '%.5f', chain.max_difference %></td>
+            <td class='number'><%= format '%.2f', chain.speed %></td>
+          </tr>
         <% end %>
       </tbody>
     </table>

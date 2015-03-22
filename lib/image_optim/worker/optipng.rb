@@ -24,6 +24,10 @@ class ImageOptim
       STRIP_OPTION =
       option(:strip, true, 'Remove all auxiliary chunks'){ |v| !!v }
 
+      def run_order
+        -4
+      end
+
       def optimize(src, dst)
         src.copy(dst)
         args = %W[

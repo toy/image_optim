@@ -12,7 +12,7 @@ class ImageOptim
         [:jpeg]
       end
 
-      # Run first [-10]
+      # Run first, while exif is still present
       def run_order
         -10
       end

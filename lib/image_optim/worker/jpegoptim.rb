@@ -35,7 +35,7 @@ class ImageOptim
         end
       end
 
-      # Run first [-1] if max_quality < 100 otherwise with normal priority
+      # Run earlier if max_quality is less than 100
       def run_order
         max_quality < 100 ? -1 : 0
       end

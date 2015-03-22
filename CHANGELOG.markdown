@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Change order of png workers according to analysis to pngcrush, optipng, pngquant, pngout, advpng (was pngquant, pngcrush, pngout, advpng, optipng) [@toy](https://github.com/toy)
 * Run worker command without invoking shell (except ruby < 1.9 and jruby) [@toy](https://github.com/toy)
 * Add disabling worker by passing `:disable => true` (previously only by passing `false` instead of options hash) [@toy](https://github.com/toy)
 * Add tests for railtie, also to prevent [issues like #72](https://github.com/toy/image_optim/issues/72) [#73](https://github.com/toy/image_optim/issues/73) [@toy](https://github.com/toy)
