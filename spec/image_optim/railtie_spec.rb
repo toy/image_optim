@@ -105,7 +105,7 @@ describe 'ImageOptim::Railtie' do
       it "optimizes #{asset_name}" do
         asset = init_rails_app.assets.find_asset(asset_name)
 
-        asset_data = asset.body
+        asset_data = asset.source
         original = ImagePath.convert(asset.pathname)
 
         expect(asset_data).to be_smaller_than(original)
