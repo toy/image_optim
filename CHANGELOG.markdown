@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.21.0 (2015-05-30)
+
 * Use exifr 1.2.2 with fix for a bug [#85](https://github.com/toy/image_optim/issues/85) [@toy](https://github.com/toy)
 * Change order of png workers according to analysis to pngcrush, optipng, pngquant, pngout, advpng (was pngquant, pngcrush, pngout, advpng, optipng) [@toy](https://github.com/toy)
 * Run worker command without invoking shell (except ruby < 1.9 and jruby) [@toy](https://github.com/toy)
