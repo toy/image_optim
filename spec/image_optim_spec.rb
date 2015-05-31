@@ -67,7 +67,7 @@ describe ImageOptim do
       base_options = {:skip_missing_workers => false}
       [
         ['lossless', base_options, 0],
-        ['lossy', base_options.merge(:allow_lossy => true), 0.01],
+        ['lossy', base_options.merge(:allow_lossy => true), 0.025],
       ].each do |type, options, max_difference|
         image_optim = ImageOptim.new(options)
         describe type do
