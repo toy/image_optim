@@ -1,7 +1,7 @@
 VAGRANTFILE_API_VERSION = '2'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = 'ubuntu/trusty64'
+  config.vm.box = 'ubuntu/precise64'
 
   config.vm.provision 'shell', :inline => <<-SH
     set -e
@@ -11,8 +11,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     echo 'apt-get update...'
     apt-get update > /dev/null
 
-    echo 'Install git, node, npm, imagemagick, ruby1.9.1-dev...'
-    apt-get install -y git npm nodejs-legacy imagemagick ruby1.9.1-dev > /dev/null
+    echo 'Install git, imagemagick, ruby1.9.1-dev...'
+    apt-get install -y git npm imagemagick ruby1.9.1-dev > /dev/null
+
+    echo 'Install node, npm...'
+    curl -sL https://deb.nodesource.com/setup | sudo bash - > /dev/null
+    sudo apt-get install -y nodejs > /dev/null
 
     echo 'Update rubygems...'
     REALLY_GEM_UPDATE_SYSTEM=x gem update --system > /dev/null
