@@ -8,8 +8,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     cd /vagrant
 
-    echo 'Install git, node, npm, imagemagick...'
-    apt-get install -y git npm nodejs-legacy imagemagick > /dev/null
+    echo 'apt-get update...'
+    apt-get update > /dev/null
+
+    echo 'Install git, node, npm, imagemagick, ruby1.9.1-dev...'
+    apt-get install -y git npm nodejs-legacy imagemagick ruby1.9.1-dev > /dev/null
 
     echo 'Update rubygems...'
     REALLY_GEM_UPDATE_SYSTEM=x gem update --system > /dev/null
