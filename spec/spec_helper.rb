@@ -28,12 +28,12 @@ def flatten_animation(image)
   end
 end
 
-def nrmse(image_a, image_b)
+def mepp(image_a, image_b)
   coalesce_a = flatten_animation(image_a)
   coalesce_b = flatten_animation(image_b)
   command = %W[
     compare
-    -metric RMSE
+    -metric MEPP
     -alpha Background
     #{coalesce_a.to_s.shellescape}
     #{coalesce_b.to_s.shellescape}
@@ -42,7 +42,8 @@ def nrmse(image_a, image_b)
   ].join(' ')
   output = ImageOptim::Cmd.capture(command)
   if [0, 1].include?($CHILD_STATUS.exitstatus)
-    output[/\((\d+(\.\d+)?)\)/, 1].to_f
+    num_r = '\d+(?:\.\d+(?:[eE][-+]?\d+)?)?'
+    output[/\((#{num_r}), #{num_r}\)/, 1].to_f
   else
     fail "compare #{image_a} with #{image_b} failed with `#{output}`"
   end
@@ -54,7 +55,7 @@ end
 
 RSpec::Matchers.define :be_similar_to do |expected, max_difference|
   match do |actual|
-    @diff = nrmse(actual, expected)
+    @diff = mepp(actual, expected)
     @diff <= max_difference
   end
   failure_message do |actual|
