@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Use quality `0..100` by default in lossy mode of pngquant worker [#77](https://github.com/toy/image_optim/issues/77) [@toy](https://github.com/toy)
+
 ## v0.21.0 (2015-05-30)
 
 * Use exifr 1.2.2 with fix for a bug [#85](https://github.com/toy/image_optim/issues/85) [@toy](https://github.com/toy)
