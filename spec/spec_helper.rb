@@ -14,14 +14,14 @@ end
 def flatten_animation(image)
   if image.format == :gif
     flattened = image.temp_path
-    flatten_command = %W[
+    command = %W[
       convert
       #{image.to_s.shellescape}
       -coalesce
       -append
       #{flattened.to_s.shellescape}
     ].join(' ')
-    expect(ImageOptim::Cmd.run(flatten_command)).to be_truthy
+    expect(ImageOptim::Cmd.run(command)).to be_truthy
     flattened
   else
     image
@@ -31,7 +31,7 @@ end
 def nrmse(image_a, image_b)
   coalesce_a = flatten_animation(image_a)
   coalesce_b = flatten_animation(image_b)
-  nrmse_command = %W[
+  command = %W[
     compare
     -metric RMSE
     -alpha Background
@@ -40,7 +40,7 @@ def nrmse(image_a, image_b)
     /dev/null
     2>&1
   ].join(' ')
-  output = ImageOptim::Cmd.capture(nrmse_command)
+  output = ImageOptim::Cmd.capture(command)
   if [0, 1].include?($CHILD_STATUS.exitstatus)
     output[/\((\d+(\.\d+)?)\)/, 1].to_f
   else
