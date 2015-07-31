@@ -35,6 +35,8 @@ matrix:
       rvm: default
     - env: RUBOCOP=true
       rvm: default
+  allow_failures:
+    - rvm: jruby-19mode
 addons:
   code_climate:
     repo_token:
