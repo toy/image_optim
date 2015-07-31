@@ -6,7 +6,6 @@ rvm:
   - '2.0'
   - '2.1'
   - '2.2'
-  - jruby-18mode
   - jruby-19mode
   - ree
 script:
