@@ -3,6 +3,7 @@
 ## unreleased
 
 * Use quality `0..100` by default in lossy mode of pngquant worker [#77](https://github.com/toy/image_optim/issues/77) [@toy](https://github.com/toy)
+* Don't replace original image when "optimized" one is larger [@R167](https://github.com/R167)
 
 ## v0.21.0 (2015-05-30)
 
