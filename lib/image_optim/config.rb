@@ -133,6 +133,18 @@ class ImageOptim
       false
     end
 
+    # Whether or not to perfom size sanity check
+    def always_replace
+      opt = get!(:always_replace)
+
+      case opt
+      when false
+        false
+      else
+        true
+      end
+    end
+
     # Skip missing workers, converted to boolean
     def skip_missing_workers
       if key?(:skip_missing_workers)

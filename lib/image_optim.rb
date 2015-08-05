@@ -37,6 +37,9 @@ class ImageOptim
   # Allow lossy workers and optimizations
   attr_reader :allow_lossy
 
+  # Always overwrite original with optimized image on `optimize_image!`
+  attr_reader :always_replace
+
   # Initialize workers, specify options using worker underscored name:
   #
   # pass false to disable worker
@@ -67,6 +70,7 @@ class ImageOptim
       pack
       skip_missing_workers
       allow_lossy
+      always_replace
     ].each do |name|
       instance_variable_set(:"@#{name}", config.send(name))
       $stderr << "#{name}: #{send(name)}\n" if verbose
@@ -119,7 +123,7 @@ class ImageOptim
   #     image_optim.optimize_image!(original, :always_replace => false)
   def optimize_image!(original, options = {})
     original = ImagePath.convert(original)
-    options = {:always_replace => true}.merge(options)
+    options = {:always_replace => always_replace}.merge(options)
     return unless (result = optimize_image(original))
     return if !options[:always_replace] && result.size > result.original_size
     result.replace(original)

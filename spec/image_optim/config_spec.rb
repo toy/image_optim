@@ -45,6 +45,27 @@ describe ImageOptim::Config do
     end
   end
 
+  describe :always_replace do
+    before do
+      allow(IOConfig).to receive(:read_options).and_return({})
+    end
+
+    it 'is true by default' do
+      config = IOConfig.new({})
+      expect(config.always_replace).to be true
+    end
+
+    it 'is false when false' do
+      config = IOConfig.new(:always_replace => false)
+      expect(config.always_replace).to be false
+    end
+
+    it 'is false when false' do
+      config = IOConfig.new(:always_replace => true)
+      expect(config.always_replace).to be true
+    end
+  end
+
   describe :threads do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
