@@ -153,6 +153,10 @@ class ImageOptim
   # if block given yields path and result for each image and returns array of
   # yield results
   # else return array of path and result pairs
+  #
+  # Passing optional params will pass them down to the `optimize_image!` call
+  #
+  #     image_optim.optimize_images!(some_images, :always_replace => false)
   def optimize_images!(paths, options = {}, &block)
     run_method_for(paths, :optimize_image!, options, &block)
   end
