@@ -106,10 +106,22 @@ class ImageOptim
 
   # Optimize one file in place, return original as OptimizedImagePath or nil if
   # optimization failed
-  def optimize_image!(original)
+  #
+  # Normal operation will obey default logic of workers
+  #
+  #     image_optim.optimize_image!(original)
+  #
+  # Setting always replace to false will perform a sanity check to see if the
+  # 'optimized' image is indeed smaller than the original. If it is indeed
+  # larger, the original will not be replaced and the code will act like
+  # optimization failed
+  #
+  #     image_optim.optimize_image!(original, :always_replace => false)
+  def optimize_image!(original, options = {})
     original = ImagePath.convert(original)
+    options = {:always_replace => true}.merge(options)
     return unless (result = optimize_image(original))
-    return unless result.size < result.original_size
+    return if !options[:always_replace] && result.size > result.original_size
     result.replace(original)
     ImagePath::Optimized.new(original, result.original_size)
   end
@@ -141,8 +153,8 @@ class ImageOptim
   # if block given yields path and result for each image and returns array of
   # yield results
   # else return array of path and result pairs
-  def optimize_images!(paths, &block)
-    run_method_for(paths, :optimize_image!, &block)
+  def optimize_images!(paths, options = {}, &block)
+    run_method_for(paths, :optimize_image!, options, &block)
   end
 
   # Optimize multiple image datas
@@ -207,9 +219,9 @@ private
   # if block given yields item and result for item and returns array of yield
   # results
   # else return array of item and result pairs
-  def run_method_for(list, method_name, &block)
+  def run_method_for(list, method_name, *args, &block)
     apply_threading(list).map do |item|
-      result = send(method_name, item)
+      result = send(method_name, item, *Array(args))
       if block
         block.call(item, result)
       else

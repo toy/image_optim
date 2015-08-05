@@ -216,6 +216,12 @@ Optimize image in place:
 image_optim.optimize_image!('b.jpg')
 ```
 
+Optimize image in place and perform size sanity check:
+
+```ruby
+image_optim.optimize_image!('b.jpg', :always_replace => false)
+```
+
 Optimize image data:
 
 ```ruby

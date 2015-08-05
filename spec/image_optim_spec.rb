@@ -133,7 +133,8 @@ describe ImageOptim do
       expect(image_optim.optimize_image!(original)).to eq(optimized_wrap)
     end
 
-    it 'does not replace when original is smaller' do
+    it 'does not replace when original is smaller'\
+        'and :always_replace => false' do
       original = double
       optimized = double(:original_size => 12_345, :size => 900_000)
       image_optim = ImageOptim.new
@@ -147,7 +148,51 @@ describe ImageOptim do
       expect(optimized).to receive(:size).and_return(900_000)
       expect(optimized).to receive(:original_size).and_return(12_345)
 
-      expect(image_optim.optimize_image!(original)).to eq(nil)
+      expect(image_optim.optimize_image!(original, :always_replace => false)).
+        to eq(nil)
+    end
+
+    it 'does replace when original is smaller and :always_replace => true' do
+      original = double
+      optimized = double(:original_size => 12_345, :size => 900_000)
+      optimized_wrap = double
+      image_optim = ImageOptim.new
+
+      allow(ImageOptim::ImagePath).to receive(:convert).
+        with(original).and_return(original)
+
+      expect(image_optim).to receive(:optimize_image).
+        with(original).and_return(optimized)
+
+      expect(optimized).to receive(:replace).with(original)
+      expect(ImageOptim::ImagePath::Optimized).to receive(:new).
+        with(original, 12_345).and_return(optimized_wrap)
+
+      expect(image_optim.optimize_image!(original, :always_replace => true)).
+        to eq(optimized_wrap)
+    end
+
+    it 'does replace when result is smaller and'\
+        ':always_replace => false' do
+      original = double
+      optimized = double(:original_size => 12_345, :size => 1_000)
+      optimized_wrap = double
+      image_optim = ImageOptim.new
+
+      allow(ImageOptim::ImagePath).to receive(:convert).
+        with(original).and_return(original)
+
+      expect(image_optim).to receive(:optimize_image).
+        with(original).and_return(optimized)
+
+      expect(optimized).to receive(:size).and_return(1_000)
+      expect(optimized).to receive(:original_size).and_return(12_345)
+      expect(optimized).to receive(:replace).with(original)
+      expect(ImageOptim::ImagePath::Optimized).to receive(:new).
+        with(original, 12_345).and_return(optimized_wrap)
+
+      expect(image_optim.optimize_image!(original, :always_replace => false)).
+        to eq(optimized_wrap)
     end
 
     it 'returns nil if optimization fails' do
@@ -231,11 +276,28 @@ describe ImageOptim do
           it 'optimizes images and returns array of results' do
             image_optim = ImageOptim.new
             results = test_images.map do |src|
+              params = [src]
+              params << {} if list_method == 'optimize_images!'
               dst = double
-              expect(image_optim).to receive(method).with(src).and_return(dst)
+              expect(image_optim).to receive(method).with(*params).
+              and_return(dst)
               [src, dst]
             end
             expect(image_optim.send(list_method, test_images)).to eq(results)
+          end
+          if list_method == 'otimize_images!'
+            it 'passes down options' do
+              image_optim = ImageOptim.new
+              results = test_images.map do |src|
+                dst = double
+                expect(image_optim).to receive(method).
+                with(src, :test_thing => true).and_return(dst)
+                [src, dst]
+              end
+              expect(image_optim.
+              send(list_method, test_images, :test_thing => true)).
+                to eq(results)
+            end
           end
         end
 
@@ -244,8 +306,11 @@ describe ImageOptim do
               'returns array of yield results' do
             image_optim = ImageOptim.new
             results = test_images.map do |src|
+              params = [src]
+              params << {} if list_method == 'optimize_images!'
               dst = double
-              expect(image_optim).to receive(method).with(src).and_return(dst)
+              expect(image_optim).to receive(method).with(*params).
+              and_return(dst)
               [src, dst, :test]
             end
             expect(image_optim.send(list_method, test_images) do |src, dst|
