@@ -117,7 +117,7 @@ describe ImageOptim do
   describe :optimize_image! do
     it 'optimizes image and replaces original' do
       original = double
-      optimized = double(:original_size => 12_345)
+      optimized = double(:original_size => 12_345, :size => 1_000)
       optimized_wrap = double
       image_optim = ImageOptim.new
 
@@ -131,6 +131,23 @@ describe ImageOptim do
         with(original, 12_345).and_return(optimized_wrap)
 
       expect(image_optim.optimize_image!(original)).to eq(optimized_wrap)
+    end
+
+    it 'does not replace when original is smaller' do
+      original = double
+      optimized = double(:original_size => 12_345, :size => 900_000)
+      image_optim = ImageOptim.new
+
+      allow(ImageOptim::ImagePath).to receive(:convert).
+        with(original).and_return(original)
+
+      expect(image_optim).to receive(:optimize_image).
+        with(original).and_return(optimized)
+
+      expect(optimized).to receive(:size).and_return(900_000)
+      expect(optimized).to receive(:original_size).and_return(12_345)
+
+      expect(image_optim.optimize_image!(original)).to eq(nil)
     end
 
     it 'returns nil if optimization fails' do

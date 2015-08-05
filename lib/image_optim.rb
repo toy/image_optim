@@ -109,6 +109,7 @@ class ImageOptim
   def optimize_image!(original)
     original = ImagePath.convert(original)
     return unless (result = optimize_image(original))
+    return unless result.size < result.original_size
     result.replace(original)
     ImagePath::Optimized.new(original, result.original_size)
   end
