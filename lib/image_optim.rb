@@ -105,7 +105,7 @@ class ImageOptim
       end
     end
     return unless result
-    return if skip_bigger && result.size > result.original_size
+    return if skip_bigger && result.size > original.size
     ImagePath::Optimized.new(result, original)
   end
 

@@ -93,8 +93,8 @@ describe ImageOptim do
       describe 'skipping larger' do
         it 'skips larger files' do
           image_optim = ImageOptim.new(:skip_bigger => true)
-          original = double
-          optimized = double(:original_size => 12_345, :size => 100_000)
+          original = double(:size => 12_345)
+          optimized = double(:size => 100_000)
 
           allow(ImageOptim::ImagePath).to receive(:convert).and_return original
 
@@ -104,7 +104,7 @@ describe ImageOptim do
           allow(ImageOptim::Handler).to receive(:for).and_return optimized
 
           expect(optimized).to receive(:size).and_return 100_000
-          expect(optimized).to receive(:original_size).and_return 12_345
+          expect(original).to receive(:size).and_return 12_345
 
           expect(image_optim.optimize_image(original)).to be nil
         end
