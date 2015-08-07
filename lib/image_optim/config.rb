@@ -134,14 +134,14 @@ class ImageOptim
     end
 
     # Whether or not to perfom size sanity check
-    def always_replace
-      opt = get!(:always_replace)
+    def skip_bigger
+      opt = get!(:skip_bigger)
 
       case opt
-      when false
-        false
-      else
+      when true
         true
+      else
+        false
       end
     end
 

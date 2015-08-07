@@ -280,7 +280,7 @@ optipng:
 * `:pack` — Require image\_optim\_pack or disable it, by default image\_optim\_pack will be used if available, will turn on `:skip-missing-workers` unless explicitly disabled *(defaults to `nil`)*
 * `:skip_missing_workers` — Skip workers with missing or problematic binaries *(defaults to `false`)*
 * `:allow_lossy` — Allow lossy workers and optimizations *(defaults to `false`)*
-* `:always_replace` — Always replace original when calling `optimize_image!` and plural variant *(defaults to `true`)*
+* `:skip_bigger` — Always replace original when calling `optimize_image!` and plural variant *(defaults to `false`)*
 
 Worker can be disabled by passing `false` instead of options hash or by setting option `:disable` to `true`.
 

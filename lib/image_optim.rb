@@ -37,8 +37,8 @@ class ImageOptim
   # Allow lossy workers and optimizations
   attr_reader :allow_lossy
 
-  # Always overwrite original with optimized image on `optimize_image!`
-  attr_reader :always_replace
+  # Skip images where optimization makes them bigger
+  attr_reader :skip_bigger
 
   # Initialize workers, specify options using worker underscored name:
   #
@@ -70,7 +70,7 @@ class ImageOptim
       pack
       skip_missing_workers
       allow_lossy
-      always_replace
+      skip_bigger
     ].each do |name|
       instance_variable_set(:"@#{name}", config.send(name))
       $stderr << "#{name}: #{send(name)}\n" if verbose
@@ -105,6 +105,7 @@ class ImageOptim
       end
     end
     return unless result
+    return if skip_bigger && result.size > result.original_size
     ImagePath::Optimized.new(result, original)
   end
 
@@ -120,12 +121,10 @@ class ImageOptim
   # larger, the original will not be replaced and the code will act like
   # optimization failed
   #
-  #     image_optim.optimize_image!(original, :always_replace => false)
-  def optimize_image!(original, options = {})
+  #     image_optim.optimize_image!(original, :skip_bigger => true)
+  def optimize_image!(original)
     original = ImagePath.convert(original)
-    options = {:always_replace => always_replace}.merge(options)
     return unless (result = optimize_image(original))
-    return if !options[:always_replace] && result.size > result.original_size
     result.replace(original)
     ImagePath::Optimized.new(original, result.original_size)
   end
@@ -160,9 +159,9 @@ class ImageOptim
   #
   # Passing optional params will pass them down to the `optimize_image!` call
   #
-  #     image_optim.optimize_images!(some_images, :always_replace => false)
-  def optimize_images!(paths, options = {}, &block)
-    run_method_for(paths, :optimize_image!, options, &block)
+  #     image_optim.optimize_images!(some_images, :skip_bigger => true)
+  def optimize_images!(paths, &block)
+    run_method_for(paths, :optimize_image!, &block)
   end
 
   # Optimize multiple image datas
@@ -229,9 +228,9 @@ private
   # if block given yields item and result for item and returns array of yield
   # results
   # else return array of item and result pairs
-  def run_method_for(list, method_name, *args, &block)
+  def run_method_for(list, method_name, &block)
     apply_threading(list).map do |item|
-      result = send(method_name, item, *Array(args))
+      result = send(method_name, item)
       if block
         block.call(item, result)
       else
