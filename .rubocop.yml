@@ -20,9 +20,6 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 8
 
-Performance/ParallelAssignment:
-  Enabled: false
-
 Style/AccessModifierIndentation:
   EnforcedStyle: outdent
 
@@ -46,6 +43,9 @@ Style/IfUnlessModifier:
 
 Style/IndentHash:
   EnforcedStyle: consistent
+
+Style/ParallelAssignment:
+  Enabled: false
 
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
