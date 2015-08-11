@@ -111,17 +111,6 @@ class ImageOptim
 
   # Optimize one file in place, return original as OptimizedImagePath or nil if
   # optimization failed
-  #
-  # Normal operation will obey default logic of workers
-  #
-  #     image_optim.optimize_image!(original)
-  #
-  # Setting always replace to false will perform a sanity check to see if the
-  # 'optimized' image is indeed smaller than the original. If it is indeed
-  # larger, the original will not be replaced and the code will act like
-  # optimization failed
-  #
-  #     image_optim.optimize_image!(original, :skip_bigger => true)
   def optimize_image!(original)
     original = ImagePath.convert(original)
     return unless (result = optimize_image(original))
@@ -156,10 +145,6 @@ class ImageOptim
   # if block given yields path and result for each image and returns array of
   # yield results
   # else return array of path and result pairs
-  #
-  # Passing optional params will pass them down to the `optimize_image!` call
-  #
-  #     image_optim.optimize_images!(some_images, :skip_bigger => true)
   def optimize_images!(paths, &block)
     run_method_for(paths, :optimize_image!, &block)
   end

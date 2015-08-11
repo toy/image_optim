@@ -91,34 +91,26 @@ describe ImageOptim do
       end
 
       describe 'skipping larger' do
+        let(:original){ double(:size => 12_345) }
+        let(:optimized){ double(:original_size => 12_345, :size => 100_000) }
+
         it 'skips larger files' do
           image_optim = ImageOptim.new(:skip_bigger => true)
-          original = double(:size => 12_345)
-          optimized = double(:size => 100_000)
 
           allow(ImageOptim::ImagePath).to receive(:convert).and_return original
-
-          expect(image_optim).to receive(:workers_for_image).with(original).
-            and_return true
-
+          allow(image_optim).to receive(:workers_for_image).with(original).
+            and_return([])
           allow(ImageOptim::Handler).to receive(:for).and_return optimized
-
-          expect(optimized).to receive(:size).and_return 100_000
-          expect(original).to receive(:size).and_return 12_345
 
           expect(image_optim.optimize_image(original)).to be nil
         end
 
         it 'does not skips larger files when opt is off' do
           image_optim = ImageOptim.new(:skip_bigger => false)
-          original = double(:size => 12_345)
-          optimized = double(:original_size => 12_345, :size => 100_000)
 
           allow(ImageOptim::ImagePath).to receive(:convert).and_return original
-
-          expect(image_optim).to receive(:workers_for_image).with(original).
-            and_return true
-
+          allow(image_optim).to receive(:workers_for_image).with(original).
+            and_return([])
           allow(ImageOptim::Handler).to receive(:for).and_return optimized
 
           expect(image_optim.optimize_image(original)).to_not be nil
@@ -152,7 +144,7 @@ describe ImageOptim do
   describe :optimize_image! do
     it 'optimizes image and replaces original' do
       original = double
-      optimized = double(:original_size => 12_345, :size => 1_000)
+      optimized = double(:original_size => 12_345)
       optimized_wrap = double
       image_optim = ImageOptim.new
 
@@ -250,8 +242,7 @@ describe ImageOptim do
             image_optim = ImageOptim.new
             results = test_images.map do |src|
               dst = double
-              expect(image_optim).to receive(method).with(src).
-              and_return(dst)
+              expect(image_optim).to receive(method).with(src).and_return(dst)
               [src, dst]
             end
             expect(image_optim.send(list_method, test_images)).to eq(results)
@@ -264,8 +255,7 @@ describe ImageOptim do
             image_optim = ImageOptim.new
             results = test_images.map do |src|
               dst = double
-              expect(image_optim).to receive(method).with(src).
-              and_return(dst)
+              expect(image_optim).to receive(method).with(src).and_return(dst)
               [src, dst, :test]
             end
             expect(image_optim.send(list_method, test_images) do |src, dst|

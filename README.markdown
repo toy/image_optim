@@ -234,9 +234,6 @@ end
 image_optim.optimize_images!(Dir['*.*'])
 
 image_optim.optimize_images_data(datas)
-
-# Pass options like the sanity check
-image_optim.optimize_images!(images, :always_replace => false)
 ```
 
 ### From rails

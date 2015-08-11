@@ -135,14 +135,7 @@ class ImageOptim
 
     # Whether or not to perfom size sanity check
     def skip_bigger
-      opt = get!(:skip_bigger)
-
-      case opt
-      when true
-        true
-      else
-        false
-      end
+      !!get!(:skip_bigger)
     end
 
     # Skip missing workers, converted to boolean
