@@ -21,6 +21,10 @@ class ImageOptim
         OptionHelpers.limit_with_range(v.to_i, 0...QUALITY_NAMES.length)
       end
 
+      METHOD_NAMES = [:mpe, :ssim, :'ms-ssim', :smallfry]
+
+      METHOD_OPTION = option(:method, :ssim, Array, "Compression method: #{METHOD_NAMES.join(', ')}")
+
       def used_bins
         [:'jpeg-recompress']
       end
@@ -33,6 +37,7 @@ class ImageOptim
       def optimize(src, dst)
         args = %W[
           --quality #{QUALITY_NAMES[quality]}
+          --method #{method.first}
           --no-copy
           #{src}
           #{dst}
