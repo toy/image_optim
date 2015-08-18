@@ -3,6 +3,7 @@
 ## unreleased
 
 * Add `--skip-if-larger` flag to pngquant worker. The pngquant worker already does this, but this will make it fail faster. [#125](https://github.com/toy/image_optim/pull/125) [#181](https://github.com/toy/image_optim/pull/181) [@iggant][https://github.com/iggant] [@oblakeerickson][https://github.com/oblakeerickson]
+* Add `method` option for jpegrecompress, default to `ssim` [#103](https://github.com/toy/image_optim/pull/103) [@ramiroaraujo](https://github.com/ramiroaraujo) [@oblakeerickson](https://github.com/oblakeerickson)
 
 ## v0.27.1 (2020-09-30)
 
