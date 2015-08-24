@@ -3,6 +3,7 @@
 ## unreleased
 
 * Use quality `0..100` by default in lossy mode of pngquant worker [#77](https://github.com/toy/image_optim/issues/77) [@toy](https://github.com/toy)
+* Add `method` option for jpegrecompress, default to `ssim`[#103](https://github.com/toy/image_optim/pull/103)
 
 ## v0.21.0 (2015-05-30)
 
