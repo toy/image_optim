@@ -23,7 +23,8 @@ class ImageOptim
 
       METHOD_NAMES = [:mpe, :ssim, :'ms-ssim', :smallfry]
 
-      METHOD_OPTION = option(:method, :ssim, Array, "Compression method: #{METHOD_NAMES.join(', ')}")
+      METHOD_OPTION = option(:method, 'ssim',
+                             "Compression method: #{METHOD_NAMES.join(', ')}")
 
       def used_bins
         [:'jpeg-recompress']
@@ -37,7 +38,7 @@ class ImageOptim
       def optimize(src, dst)
         args = %W[
           --quality #{QUALITY_NAMES[quality]}
-          --method #{method.first}
+          --method #{method}
           --no-copy
           #{src}
           #{dst}
