@@ -72,9 +72,7 @@ describe ImageOptim::Handler do
       expect(handler).to receive(:cleanup)
       expect(handler).to receive(:result).and_return(result)
 
-      expect(Handler.for(original) do |h|
-        h.process
-      end).to eq(result)
+      expect(Handler.for(original, &:process)).to eq(result)
     end
 
     it 'cleans up if exception is raised' do
