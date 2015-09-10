@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Don't use `-strip` option for optipng when the bin version is less than 0.7 [#106](https://github.com/toy/image_optim/issues/106) [@toy](https://github.com/toy)
 * Use quality `0..100` by default in lossy mode of pngquant worker [#77](https://github.com/toy/image_optim/issues/77) [@toy](https://github.com/toy)
 
 ## v0.21.0 (2015-05-30)

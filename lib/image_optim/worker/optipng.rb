@@ -37,7 +37,9 @@ class ImageOptim
           #{dst}
         ]
         args.unshift "-i#{interlace ? 1 : 0}" unless interlace.nil?
-        args.unshift '-strip', 'all' if strip
+        if resolve_bin!(:optipng).version >= '0.7'
+          args.unshift '-strip', 'all' if strip
+        end
         execute(:optipng, *args) && optimized?(src, dst)
       end
     end

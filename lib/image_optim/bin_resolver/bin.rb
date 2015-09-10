@@ -36,6 +36,7 @@ class ImageOptim
         [:gifsicle, is < '1.85', 'does not support removing extension blocks'],
         [:pngcrush, is < '1.7.38', 'does not have blacken flag'],
         [:pngquant, is < '2.1', 'may be lossy even with quality `100-`'],
+        [:optipng, is < '0.7', 'does not support -strip option'],
       ]
 
       # Fail if version will not work properly
