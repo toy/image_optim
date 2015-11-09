@@ -320,7 +320,8 @@ Worker has no options
 * `:speed` — speed/quality trade-off: `1` - slow, `3` - default, `11` - fast & rough *(defaults to `3`)*
 
 ### svgo:
-Worker has no options
+* `:disable_plugins` — List of plugins to disable *(defaults to `[]`)*
+* `:enable_plugins` — List of plugins to enable *(defaults to `[]`)*
 
 <!---</worker-options>-->
 
