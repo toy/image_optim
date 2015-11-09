@@ -7,7 +7,7 @@ class ImageOptim
     # http://pngquant.org/
     class Pngquant < Worker
       QUALITY_OPTION =
-      option(:quality, '100..100, 0..100 in lossy mode',
+      option(:quality, '`100..100`, `0..100` in lossy mode',
              NonNegativeIntegerRange, 'min..max - don\'t '\
          'save below min, use less colors below max (both in range `0..100`; '\
          'in yaml - `!ruby/range 0..100`), ignored in default/lossless '\
