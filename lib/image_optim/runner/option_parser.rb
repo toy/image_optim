@@ -175,7 +175,7 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
     bin = klass.bin_sym
     klass.option_definitions.each do |option_definition|
       name = option_definition.name.to_s.tr('_', '-')
-      default = option_definition.default
+      default = option_definition.default_description
       type = option_definition.type
 
       type, marking = case
