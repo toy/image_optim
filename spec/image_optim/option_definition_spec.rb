@@ -89,4 +89,22 @@ describe ImageOptim::OptionDefinition do
       end
     end
   end
+
+  describe '#default_description' do
+    context 'when default is not a string' do
+      subject{ described_class.new('abc', :def, 'desc') }
+
+      it 'returns inspected value in backticks' do
+        expect(subject.default_description).to eq('`:def`')
+      end
+    end
+
+    context 'when default is a string' do
+      subject{ described_class.new('abc', '`1`', 'desc') }
+
+      it 'returns it as is' do
+        expect(subject.default_description).to eq('`1`')
+      end
+    end
+  end
 end

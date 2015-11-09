@@ -28,5 +28,11 @@ class ImageOptim
         value
       end
     end
+
+    # Describe default value, returns string as is otherwise surrounds
+    # inspected value with backticks
+    def default_description
+      default.is_a?(String) ? default : "`#{default.inspect}`"
+    end
   end
 end
