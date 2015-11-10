@@ -56,19 +56,19 @@ describe ImageOptim::OptionDefinition do
 
       context 'when option is nil' do
         it 'returns nil' do
-          expect(subject.value(nil, {:abc => nil})).to eq(nil)
+          expect(subject.value(nil, :abc => nil)).to eq(nil)
         end
       end
 
       context 'when option is set' do
         it 'returns value' do
-          expect(subject.value(nil, {:abc => 123})).to eq(123)
+          expect(subject.value(nil, :abc => 123)).to eq(123)
         end
       end
     end
 
     context 'when proc given' do
-      subject{ described_class.new('abc', :def, 'desc'){ |v| v.inspect } }
+      subject{ described_class.new('abc', :def, 'desc', &:inspect) }
 
       context 'when option not provided' do
         it 'returns default passed through proc' do
@@ -78,13 +78,13 @@ describe ImageOptim::OptionDefinition do
 
       context 'when option is nil' do
         it 'returns nil passed through proc' do
-          expect(subject.value(nil, {:abc => nil})).to eq('nil')
+          expect(subject.value(nil, :abc => nil)).to eq('nil')
         end
       end
 
       context 'when option is set' do
         it 'returns value passed through proc' do
-          expect(subject.value(nil, {:abc => 123})).to eq('123')
+          expect(subject.value(nil, :abc => 123)).to eq('123')
         end
       end
     end
