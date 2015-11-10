@@ -5,6 +5,7 @@
 * Unify getting description of option default value using `default_description` [@toy](https://github.com/toy)
 * Don't use `-strip` option for optipng when the bin version is less than 0.7 [#106](https://github.com/toy/image_optim/issues/106) [@toy](https://github.com/toy)
 * Use quality `0..100` by default in lossy mode of pngquant worker [#77](https://github.com/toy/image_optim/issues/77) [@toy](https://github.com/toy)
+* Add `:disable_plugins` and `:enable_plugins` options to `svgo` worker [#110](https://github.com/toy/image_optim/pull/110) [@tomhughes](https://github.com/tomhughes)
 
 ## v0.21.0 (2015-05-30)
 
