@@ -56,7 +56,7 @@ gem 'image_optim_pack'
 With version:
 
 ```ruby
-gem 'image_optim', '~> 0.11'
+gem 'image_optim', '~> 0.21'
 ```
 
 If you want to check latest changes:
@@ -271,6 +271,7 @@ optipng:
 * `:pack` — Require image\_optim\_pack or disable it, by default image\_optim\_pack will be used if available, will turn on `:skip-missing-workers` unless explicitly disabled *(defaults to `nil`)*
 * `:skip_missing_workers` — Skip workers with missing or problematic binaries *(defaults to `false`)*
 * `:allow_lossy` — Allow lossy workers and optimizations *(defaults to `false`)*
+* `:skip_bigger` — Perform sanity check (esp. on jpg) and only return if new image is smaller *(defaults to `false`)*
 
 Worker can be disabled by passing `false` instead of options hash or by setting option `:disable` to `true`.
 

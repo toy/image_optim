@@ -133,6 +133,11 @@ class ImageOptim
       false
     end
 
+    # Whether or not to perfom size sanity check
+    def skip_bigger
+      !!get!(:skip_bigger)
+    end
+
     # Skip missing workers, converted to boolean
     def skip_missing_workers
       if key?(:skip_missing_workers)

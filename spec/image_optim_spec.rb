@@ -89,6 +89,33 @@ describe ImageOptim do
           end
         end
       end
+
+      describe 'skipping larger' do
+        let(:original){ double(:size => 12_345) }
+        let(:optimized){ double(:original_size => 12_345, :size => 100_000) }
+
+        it 'skips larger files' do
+          image_optim = ImageOptim.new(:skip_bigger => true)
+
+          allow(ImageOptim::ImagePath).to receive(:convert).and_return original
+          allow(image_optim).to receive(:workers_for_image).with(original).
+            and_return([])
+          allow(ImageOptim::Handler).to receive(:for).and_return optimized
+
+          expect(image_optim.optimize_image(original)).to be nil
+        end
+
+        it 'does not skips larger files when opt is off' do
+          image_optim = ImageOptim.new(:skip_bigger => false)
+
+          allow(ImageOptim::ImagePath).to receive(:convert).and_return original
+          allow(image_optim).to receive(:workers_for_image).with(original).
+            and_return([])
+          allow(ImageOptim::Handler).to receive(:for).and_return optimized
+
+          expect(image_optim.optimize_image(original)).to_not be nil
+        end
+      end
     end
 
     it 'ignores text file' do

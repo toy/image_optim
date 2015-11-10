@@ -45,6 +45,27 @@ describe ImageOptim::Config do
     end
   end
 
+  describe :skip_bigger do
+    before do
+      allow(IOConfig).to receive(:read_options).and_return({})
+    end
+
+    it 'is true by default' do
+      config = IOConfig.new({})
+      expect(config.skip_bigger).to be false
+    end
+
+    it 'is false when false' do
+      config = IOConfig.new(:skip_bigger => true)
+      expect(config.skip_bigger).to be true
+    end
+
+    it 'is false when false' do
+      config = IOConfig.new(:skip_bigger => false)
+      expect(config.skip_bigger).to be false
+    end
+  end
+
   describe :threads do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})

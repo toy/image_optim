@@ -8,6 +8,7 @@
 
 Gemfile.lock
 Makefile
+.DS_Store
 *.o
 *.bundle
 /tmp/

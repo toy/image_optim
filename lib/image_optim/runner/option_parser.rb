@@ -143,6 +143,11 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
     options[:pack] = pack
   end
 
+  op.on('--[no-]skip-bigger', 'Skip files that end up becoming larger. '\
+      '(defaults to false)') do |skip_bigger|
+    options[:skip_bigger] = skip_bigger
+  end
+
   op.separator nil
   op.separator '  Disabling workers:'
 
