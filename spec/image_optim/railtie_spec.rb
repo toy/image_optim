@@ -88,11 +88,30 @@ describe 'ImageOptim::Railtie' do
         end
       end
 
-      it 'is possible to assign individual values' do
+      it 'is possible to set individual options' do
         hash = {:config_paths => 'config/image_optim.yml'}
         expect(ImageOptim).to receive(:new).with(hash)
         init_rails_app do |config|
           config.assets.image_optim.config_paths = 'config/image_optim.yml'
+        end
+      end
+
+      it 'is possible to set individual worker options' do
+        hash = {:advpng => {:level => 3}}
+        expect(ImageOptim).to receive(:new).with(hash)
+        init_rails_app do |config|
+          expect(config.assets.image_optim.advpng).to eq({})
+          config.assets.image_optim.advpng.level = 3
+        end
+      end
+
+      it 'is not possible to set unknown worker options' do
+        expect(ImageOptim).to receive(:new).with({})
+        init_rails_app do |config|
+          expect(config.assets.image_optim.unknown).to eq(nil)
+          expect do
+            config.assets.image_optim.unknown.level = 3
+          end.to raise_error(NoMethodError)
         end
       end
     end

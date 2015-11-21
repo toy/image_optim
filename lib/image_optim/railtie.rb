@@ -4,7 +4,13 @@ class ImageOptim
   # Adds image_optim as preprocessor for gif, jpeg, png and svg images
   class Railtie < Rails::Railtie
     config.before_configuration do |app|
-      app.config.assets.image_optim = ActiveSupport::OrderedOptions.new
+      worker_names = ImageOptim::Worker.klasses.map(&:bin_sym)
+      app.config.assets.image_optim =
+        ActiveSupport::OrderedOptions.new do |hash, key|
+          if worker_names.include?(key.to_sym)
+            hash[key] = ActiveSupport::OrderedOptions.new
+          end
+        end
     end
 
     initializer 'image_optim.initializer' do |app|
