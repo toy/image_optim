@@ -23,11 +23,19 @@ describe 'ImageOptim::Railtie' do
         assets.paths = %w[spec/images]
 
         assets.delete(:compress)
-        assets.delete(:image_optim)
       end
 
       yield config if block_given?
     end.initialize!
+  end
+
+  around do |example|
+    options = Marshal.dump(ImageOptim::Railtie.config.assets.image_optim)
+    begin
+      example.run
+    ensure
+      ImageOptim::Railtie.config.assets.image_optim = Marshal.load(options)
+    end
   end
 
   after do
@@ -86,6 +94,14 @@ describe 'ImageOptim::Railtie' do
         expect(ImageOptim).to receive(:new).with(hash)
         init_rails_app do |config|
           config.assets.image_optim = hash
+        end
+      end
+
+      it 'is possible to assign individual values' do
+        hash = {:config_paths => 'config/image_optim.yml'}
+        expect(ImageOptim).to receive(:new).with(hash).and_call_original
+        init_rails_app do |config|
+          config.assets.image_optim.config_paths = 'config/image_optim.yml'
         end
       end
     end

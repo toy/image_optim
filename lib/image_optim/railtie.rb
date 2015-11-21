@@ -3,6 +3,8 @@ require 'image_optim'
 class ImageOptim
   # Adds image_optim as preprocessor for gif, jpeg, png and svg images
   class Railtie < Rails::Railtie
+    config.assets.image_optim = ActiveSupport::OrderedOptions.new
+
     initializer 'image_optim.initializer' do |app|
       register_preprocessor(app) if register_preprocessor?(app)
     end
