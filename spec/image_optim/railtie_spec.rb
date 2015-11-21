@@ -67,14 +67,14 @@ describe 'ImageOptim::Railtie' do
       end
 
       it 'initializes with empty hash if config.assets.image_optim is true' do
-        expect(ImageOptim).to receive(:new).with({}).and_call_original
+        expect(ImageOptim).to receive(:new).with({})
         init_rails_app do |config|
           config.assets.image_optim = true
         end
       end
 
       it 'initializes with empty hash if config.assets.image_optim is nil' do
-        expect(ImageOptim).to receive(:new).with({}).and_call_original
+        expect(ImageOptim).to receive(:new).with({})
         init_rails_app do |config|
           config.assets.image_optim = nil
         end
@@ -90,7 +90,7 @@ describe 'ImageOptim::Railtie' do
 
       it 'is possible to assign individual values' do
         hash = {:config_paths => 'config/image_optim.yml'}
-        expect(ImageOptim).to receive(:new).with(hash).and_call_original
+        expect(ImageOptim).to receive(:new).with(hash)
         init_rails_app do |config|
           config.assets.image_optim.config_paths = 'config/image_optim.yml'
         end
