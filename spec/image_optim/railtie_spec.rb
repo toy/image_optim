@@ -29,15 +29,6 @@ describe 'ImageOptim::Railtie' do
     end.initialize!
   end
 
-  around do |example|
-    options = Marshal.dump(ImageOptim::Railtie.config.assets.image_optim)
-    begin
-      example.run
-    ensure
-      ImageOptim::Railtie.config.assets.image_optim = Marshal.load(options)
-    end
-  end
-
   after do
     Rails.application = nil
   end
