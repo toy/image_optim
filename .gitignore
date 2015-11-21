@@ -5,6 +5,7 @@
 /rdoc/
 /.yardoc/
 /coverage/
+/vendor/
 
 Gemfile.lock
 Makefile

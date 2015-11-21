@@ -1,6 +1,7 @@
 AllCops:
   Exclude:
     - '*.gemspec'
+    - 'vendor/**/*'
 
 Lint/EndAlignment:
   AlignWith: variable
