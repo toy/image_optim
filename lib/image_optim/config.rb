@@ -148,6 +148,15 @@ class ImageOptim
       !!get!(:allow_lossy)
     end
 
+    def cache_dir
+      dir = get!(:cache_dir)
+      dir unless dir.nil? || dir.empty?
+    end
+
+    def cache_worker_digests
+      !!get!(:cache_worker_digests)
+    end
+
     # Options for worker class by its `bin_sym`:
     # * `Hash` passed as is
     # * `{}` for `true` or `nil`

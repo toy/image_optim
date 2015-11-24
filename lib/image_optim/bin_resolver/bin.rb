@@ -20,6 +20,11 @@ class ImageOptim
         @version = detect_version
       end
 
+      def digest
+        return @digest if defined?(@digest)
+        @digest = File.exist?(@path) && Digest::SHA1.file(@path).hexdigest
+      end
+
       def to_s
         "#{name} #{version || '?'} at #{path}"
       end

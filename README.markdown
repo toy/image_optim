@@ -274,6 +274,8 @@ optipng:
 * `:pack` — Require image\_optim\_pack or disable it, by default image\_optim\_pack will be used if available, will turn on `:skip-missing-workers` unless explicitly disabled *(defaults to `nil`)*
 * `:skip_missing_workers` — Skip workers with missing or problematic binaries *(defaults to `false`)*
 * `:allow_lossy` — Allow lossy workers and optimizations *(defaults to `false`)*
+* `:cache_dir` — Configure cache directory
+* `:cache_worker_digests` - Also cache worker digests along with original file digest and worker options: updating workers invalidates cache
 
 Worker can be disabled by passing `false` instead of options hash or by setting option `:disable` to `true`.
 

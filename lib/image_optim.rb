@@ -1,4 +1,5 @@
 require 'image_optim/bin_resolver'
+require 'image_optim/cache'
 require 'image_optim/config'
 require 'image_optim/handler'
 require 'image_optim/image_meta'
@@ -38,6 +39,12 @@ class ImageOptim
   # Allow lossy workers and optimizations
   attr_reader :allow_lossy
 
+  # Cache directory
+  attr_reader :cache_dir
+
+  # Cache worker digests
+  attr_reader :cache_worker_digests
+
   # Initialize workers, specify options using worker underscored name:
   #
   # pass false to disable worker
@@ -68,6 +75,8 @@ class ImageOptim
       pack
       skip_missing_workers
       allow_lossy
+      cache_dir
+      cache_worker_digests
     ].each do |name|
       instance_variable_set(:"@#{name}", config.send(name))
       $stderr << "#{name}: #{send(name)}\n" if verbose
@@ -78,6 +87,8 @@ class ImageOptim
     @workers_by_format = Worker.create_all_by_format(self) do |klass|
       config.for_worker(klass)
     end
+
+    @cache = Cache.new(self, @workers_by_format)
 
     log_workers_by_format if verbose
 
@@ -94,15 +105,19 @@ class ImageOptim
   def optimize_image(original)
     original = Path.convert(original)
     return unless (workers = workers_for_image(original))
-    result = Handler.for(original) do |handler|
-      workers.each do |worker|
-        handler.process do |src, dst|
-          worker.optimize(src, dst)
+
+    optimized = @cache.fetch(original) do
+      Handler.for(original) do |handler|
+        workers.each do |worker|
+          handler.process do |src, dst|
+            worker.optimize(src, dst)
+          end
         end
       end
     end
-    return unless result
-    OptimizedPath.new(result, original)
+
+    return unless optimized
+    OptimizedPath.new(optimized, original)
   end
 
   # Optimize one file in place, return original as OptimizedPath or nil if

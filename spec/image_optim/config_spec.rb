@@ -67,6 +67,33 @@ describe ImageOptim::Config do
     end
   end
 
+  describe '#cache_dir' do
+    before do
+      allow(IOConfig).to receive(:read_options).and_return({})
+    end
+
+    it 'is nil by default' do
+      config = IOConfig.new({})
+      expect(config.cache_dir).to be nil
+    end
+
+    it 'is nil if set to the empty string' do
+      config = IOConfig.new(:cache_dir => '')
+      expect(config.cache_dir).to be nil
+    end
+  end
+
+  describe '#cache_worker_digests' do
+    before do
+      allow(IOConfig).to receive(:read_options).and_return({})
+    end
+
+    it 'is false by default' do
+      config = IOConfig.new({})
+      expect(config.cache_worker_digests).to be false
+    end
+  end
+
   describe '#for_worker' do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
