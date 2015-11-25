@@ -160,6 +160,25 @@ sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush png
 ```bash
 brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush pngquant
 ```
+### Docker
+
+A dockerfile is included in the root the the project which builds a minimal image including ruby, irb and the image_optim gem.
+
+#### Running
+
+```bash
+$ docker run --rm -it rhardih/image_optim sh
+/tmp # irb
+irb(main):001:0> require 'image_optim'
+=> true
+irb(main):002:0> io = ImageOptim.new
+```
+
+#### Building
+
+```bash
+$ docker build -t <tag_name> .
+```
 
 ### pngout installation (optional)
 
