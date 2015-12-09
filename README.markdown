@@ -104,7 +104,7 @@ Pack doesn't include `pngout` and `svgo` binaries, their installation instructio
 ### Linux - Debian/Ubuntu
 
 ```bash
-sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-progs optipng pngcrush pngquant
+sudo apt-get install -y advancecomp gifsicle jhead jpegoptim libjpeg-dev libjpeg-progs optipng pngcrush pngquant
 ```
 
 If you get an old version of `pngquant`, please check how to install up-to-date version or compile from source at [http://pngquant.org/](http://pngquant.org/).
