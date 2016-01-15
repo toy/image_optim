@@ -43,7 +43,7 @@ class ImageOptim
         image_optim.optimize_image_data(data) || data
       end
 
-      if Gem::Version.new(Sprockets::Rails::VERSION) >= Gem::Version.new("3.0.0")
+      if defined?(Sprockets::Rails) && Gem::Version.new(Sprockets::Rails::VERSION) >= Gem::Version.new("3.0.0")
         app.config.assets.configure do |env|
           env.register_preprocessor 'image/gif', :image_optim, &processor
           env.register_preprocessor 'image/jpeg', :image_optim, &processor
