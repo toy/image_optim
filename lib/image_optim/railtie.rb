@@ -21,7 +21,11 @@ class ImageOptim
       return if app.config.assets.compress == false
       return if app.config.assets.image_optim == false
 
-      app.assets
+      if defined?(Sprockets::Rails) && Gem::Version.new(Sprockets::Rails::VERSION) >= Gem::Version.new("3.0.0")
+        true
+      else
+        app.assets
+      end
     end
 
     def options(app)
@@ -33,6 +37,30 @@ class ImageOptim
     end
 
     def register_preprocessor(app)
+      if defined?(Sprockets::Rails) && Gem::Version.new(Sprockets::Rails::VERSION) >= Gem::Version.new("3.0.0")
+        image_prepocessor(app)
+      else
+        legacy_image_prepocessor(app)
+      end
+    end
+
+  private
+    def image_prepocessor(app)
+      app.config.assets.configure do |env|
+        image_optim = ImageOptim.new(options(app))
+
+        processor = proc do |_context, data|
+          image_optim.optimize_image_data(data) || data
+        end
+
+        env.register_preprocessor 'image/gif', :image_optim, &processor
+        env.register_preprocessor 'image/jpeg', :image_optim, &processor
+        env.register_preprocessor 'image/png', :image_optim, &processor
+        env.register_preprocessor 'image/svg+xml', :image_optim, &processor
+      end
+    end
+
+    def legacy_image_prepocessor(app)
       image_optim = ImageOptim.new(options(app))
 
       processor = proc do |_context, data|
