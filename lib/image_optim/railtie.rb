@@ -21,7 +21,11 @@ class ImageOptim
       return if app.config.assets.compress == false
       return if app.config.assets.image_optim == false
 
-      app.assets
+      if defined?(Sprockets::Rails) && Gem::Version.new(Sprockets::Rails::VERSION) >= Gem::Version.new("3.0.0")
+        true
+      else
+        app.assets
+      end
     end
 
     def options(app)
@@ -39,10 +43,20 @@ class ImageOptim
         image_optim.optimize_image_data(data) || data
       end
 
-      app.assets.register_preprocessor 'image/gif', :image_optim, &processor
-      app.assets.register_preprocessor 'image/jpeg', :image_optim, &processor
-      app.assets.register_preprocessor 'image/png', :image_optim, &processor
-      app.assets.register_preprocessor 'image/svg+xml', :image_optim, &processor
+      if Gem::Version.new(Sprockets::Rails::VERSION) >= Gem::Version.new("3.0.0")
+        app.config.assets.configure do |env|
+          env.register_preprocessor 'image/gif', :image_optim, &processor
+          env.register_preprocessor 'image/jpeg', :image_optim, &processor
+          env.register_preprocessor 'image/png', :image_optim, &processor
+          env.register_preprocessor 'image/svg+xml', :image_optim, &processor
+        end
+      else
+        app.assets.register_preprocessor 'image/gif', :image_optim, &processor
+        app.assets.register_preprocessor 'image/jpeg', :image_optim, &processor
+        app.assets.register_preprocessor 'image/png', :image_optim, &processor
+        app.assets.register_preprocessor 'image/svg+xml', :image_optim, &processor
+      end
+
     end
   end
 end
