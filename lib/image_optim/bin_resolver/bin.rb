@@ -73,15 +73,15 @@ class ImageOptim
       def version_string
         case name
         when :advpng, :gifsicle, :jpegoptim, :optipng, :pngquant
-          capture("#{escaped_path} --version 2> /dev/null")[/\d+(\.\d+){1,}/]
+          capture("#{escaped_path} --version 2> /dev/null")[/\d+(\.\d+)+/]
         when :svgo
-          capture("#{escaped_path} --version 2>&1")[/\d+(\.\d+){1,}/]
+          capture("#{escaped_path} --version 2>&1")[/\d+(\.\d+)+/]
         when :jhead, :'jpeg-recompress'
-          capture("#{escaped_path} -V 2> /dev/null")[/\d+(\.\d+){1,}/]
+          capture("#{escaped_path} -V 2> /dev/null")[/\d+(\.\d+)+/]
         when :jpegtran
           capture("#{escaped_path} -v - 2>&1")[/version (\d+\S*)/, 1]
         when :pngcrush
-          capture("#{escaped_path} -version 2>&1")[/pngcrush (\d+(\.\d+){1,})/, 1]
+          capture("#{escaped_path} -version 2>&1")[/pngcrush (\d+(\.\d+)+)/, 1]
         when :pngout
           date_regexp = /[A-Z][a-z]{2} (?: |\d)\d \d{4}/
           date_str = capture("#{escaped_path} 2>&1")[date_regexp]
