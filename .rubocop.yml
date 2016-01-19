@@ -62,5 +62,11 @@ Style/SpaceBeforeBlockBraces:
 Style/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
+Style/AlignParameters:
+  EnforcedStyle: with_first_parameter
+
+#Style/TrailingCommaInArguments:
+#  EnforcedStyleForMultiline: comma
+#Style/TrailingCommaInLiteral:
 Style/TrailingComma:
   EnforcedStyleForMultiline: comma
