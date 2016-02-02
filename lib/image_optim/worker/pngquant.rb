@@ -45,6 +45,7 @@ class ImageOptim
           --quality=#{quality.begin}-#{quality.end}
           --speed=#{speed}
           --output=#{dst}
+          --skip-if-larger
           --force
           --
           #{src}
