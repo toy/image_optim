@@ -6,6 +6,12 @@ describe ImageOptim::Runner::OptionParser do
     stub_const('OptionParser', ImageOptim::Runner::OptionParser)
   end
 
+  def exit_with_status(status)
+    raise_error(SystemExit) do |e|
+      expect(e.status).to eq(status)
+    end
+  end
+
   describe :parse! do
     it 'returns empty hash for arguments without options' do
       args = %w[foo bar]
@@ -65,8 +71,8 @@ describe ImageOptim::Runner::OptionParser do
 
         expect do
           OptionParser.parse!(%w[--help])
-        end.to output("#{help}\n").to_stdout &
-          raise_error(SystemExit){ |e| expect(e.status).to eq(0) }
+        end.to exit_with_status(0) &
+               output("#{help}\n").to_stdout
       end
     end
 
@@ -80,8 +86,8 @@ describe ImageOptim::Runner::OptionParser do
 
         expect do
           OptionParser.parse!(%w[--unknown-option])
-        end.to output("invalid option: --unknown-option\n\n#{help}\n").
-          to_stderr & raise_error(SystemExit){ |e| expect(e.status).to eq(1) }
+        end.to exit_with_status(1) &
+               output("invalid option: --unknown-option\n\n#{help}\n").to_stderr
       end
     end
   end
