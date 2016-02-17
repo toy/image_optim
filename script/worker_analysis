@@ -12,7 +12,7 @@ require 'digest'
 require 'erb'
 require 'ostruct'
 
-DIR = 'tmp'
+DIR = 'tmp'.freeze
 Pathname(DIR).mkpath
 
 Array.class_eval do
@@ -127,8 +127,8 @@ class Analyser
         entry[0]
       end
 
-      def set!(key, etag, &block)
-        value = block.call
+      def set!(key, etag, &_block)
+        value = yield
         DB[Marshal.dump(key)] = Marshal.dump([value, etag])
         value
       end
@@ -284,7 +284,7 @@ class Analyser
         chain_result = ChainResult.new(src.format, steps)
         chain_result.difference = difference_with(result_image)
 
-        block.call(chain_result)
+        yield chain_result
 
         workers_left = workers.reject do |w|
           w.cons_id == worker.cons_id || w.run_order < worker.run_order

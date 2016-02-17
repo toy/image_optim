@@ -209,7 +209,7 @@ describe ImageOptim::BinResolver do
       allow(bin).to receive(:check!).once
       allow(bin).to receive(:check_fail!){ mutex.synchronize{ count += 1 } }
 
-      10.times.map do
+      Array.new(10) do
         Thread.new do
           resolver.resolve!(:ls)
         end

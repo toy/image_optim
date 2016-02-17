@@ -32,7 +32,7 @@ class ImageOptim
       def deep_transform_keys(hash, &block)
         new_hash = {}
         hash.each do |k, v|
-          new_hash[block.call(k)] = if v.is_a?(Hash)
+          new_hash[yield k] = if v.is_a?(Hash)
             deep_transform_keys(v, &block)
           else
             v

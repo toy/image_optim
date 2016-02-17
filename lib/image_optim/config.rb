@@ -18,7 +18,7 @@ class ImageOptim
     end
 
     # Local config path at `./.image_optim.yml`
-    LOCAL_PATH = './.image_optim.yml'
+    LOCAL_PATH = './.image_optim.yml'.freeze
 
     class << self
       # Read options at path: expand path (warn on failure), return {} if file
@@ -192,10 +192,9 @@ class ImageOptim
         Cmd.capture 'sysctl -n hw.ncpu'
       when /mswin|mingw/
         require 'win32ole'
-        WIN32OLE.
-        connect('winmgmts://').
-        ExecQuery('select NumberOfLogicalProcessors from Win32_Processor').
-        to_enum.first.NumberOfLogicalProcessors
+        query = 'select NumberOfLogicalProcessors from Win32_Processor'
+        result = WIN32OLE.connect('winmgmts://').ExecQuery(query)
+        result.to_enum.first.NumberOfLogicalProcessors
       else
         warn "Unknown architecture (#{host_os}) assuming one processor."
         1

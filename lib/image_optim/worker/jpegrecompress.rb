@@ -10,7 +10,7 @@ class ImageOptim
         super if options[:allow_lossy]
       end
 
-      QUALITY_NAMES = [:low, :medium, :high, :veryhigh]
+      QUALITY_NAMES = [:low, :medium, :high, :veryhigh].freeze
 
       quality_names_desc = QUALITY_NAMES.each_with_index.map do |name, i|
         "`#{i}` - #{name}"
