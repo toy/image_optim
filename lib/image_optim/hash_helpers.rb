@@ -16,11 +16,11 @@ class ImageOptim
 
       # Returns a new hash with recursive merge of all keys
       def deep_merge(a, b)
-        a.merge(b) do |_k, v_a, v_b|
-          if v_a.is_a?(Hash) && v_b.is_a?(Hash)
-            deep_merge(v_a, v_b)
+        a.merge(b) do |_key, value_a, value_b|
+          if value_a.is_a?(Hash) && value_b.is_a?(Hash)
+            deep_merge(value_a, value_b)
           else
-            v_b
+            value_b
           end
         end
       end
@@ -31,11 +31,11 @@ class ImageOptim
       # provided block
       def deep_transform_keys(hash, &block)
         new_hash = {}
-        hash.each do |k, v|
-          new_hash[yield k] = if v.is_a?(Hash)
-            deep_transform_keys(v, &block)
+        hash.each do |key, value|
+          new_hash[yield key] = if value.is_a?(Hash)
+            deep_transform_keys(value, &block)
           else
-            v
+            value
           end
         end
         new_hash
