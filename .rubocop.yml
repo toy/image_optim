@@ -24,6 +24,9 @@ Metrics/PerceivedComplexity:
 Style/AccessModifierIndentation:
   EnforcedStyle: outdent
 
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
 Style/CaseIndentation:
   IndentWhenRelativeTo: end
 
@@ -41,6 +44,12 @@ Style/HashSyntax:
 
 Style/IfUnlessModifier:
   MaxLineLength: 40
+
+Style/IndentArray:
+  EnforcedStyle: consistent
+
+Style/IndentAssignment:
+  Enabled: false
 
 Style/IndentHash:
   EnforcedStyle: consistent
