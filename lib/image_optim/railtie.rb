@@ -14,17 +14,24 @@ class ImageOptim
     end
 
     initializer 'image_optim.initializer' do |app|
-      register_preprocessor(app) if register_preprocessor?(app)
+      if register_preprocessor?(app)
+        options = build_options(app)
+        if app.assets
+          register_preprocessor(app.assets, options)
+        else
+          app.config.assets.configure do |env|
+            register_preprocessor(env, options)
+          end
+        end
+      end
     end
 
     def register_preprocessor?(app)
-      return if app.config.assets.compress == false
-      return if app.config.assets.image_optim == false
-
-      app.assets
+      app.config.assets.compress != false &&
+        app.config.assets.image_optim != false
     end
 
-    def options(app)
+    def build_options(app)
       if app.config.assets.image_optim == true
         {}
       else
@@ -32,17 +39,17 @@ class ImageOptim
       end
     end
 
-    def register_preprocessor(app)
-      image_optim = ImageOptim.new(options(app))
+    def register_preprocessor(env, options)
+      image_optim = ImageOptim.new(options)
 
       processor = proc do |_context, data|
         image_optim.optimize_image_data(data) || data
       end
 
-      app.assets.register_preprocessor 'image/gif', :image_optim, &processor
-      app.assets.register_preprocessor 'image/jpeg', :image_optim, &processor
-      app.assets.register_preprocessor 'image/png', :image_optim, &processor
-      app.assets.register_preprocessor 'image/svg+xml', :image_optim, &processor
+      env.register_preprocessor 'image/gif', :image_optim, &processor
+      env.register_preprocessor 'image/jpeg', :image_optim, &processor
+      env.register_preprocessor 'image/png', :image_optim, &processor
+      env.register_preprocessor 'image/svg+xml', :image_optim, &processor
     end
   end
 end
