@@ -29,7 +29,7 @@ class ImageOptim
               'broken pngs'],
         [:pngcrush, is == '1.7.80', 'loses one color in indexed images'],
         [:pngquant, is < '2.0', 'is not supported'],
-      ]
+      ].freeze
 
       WARN_CHECKS = [
         [:advpng, is < '1.17', 'does not use zopfli'],
@@ -37,7 +37,7 @@ class ImageOptim
         [:pngcrush, is < '1.7.38', 'does not have blacken flag'],
         [:pngquant, is < '2.1', 'may be lossy even with quality `100-`'],
         [:optipng, is < '0.7', 'does not support -strip option'],
-      ]
+      ].freeze
 
       # Fail if version will not work properly
       def check_fail!

@@ -28,16 +28,15 @@ describe ImageOptim do
     allow(ImageOptim::Config).to receive(:local).and_return({})
   end
 
-  disable_all_workers = Hash[ImageOptim::Worker.klasses.map do |klass|
-    [klass.bin_sym, false]
-  end]
+  isolated_options_base = {:skip_missing_workers => false}
+  ImageOptim::Worker.klasses.each do |klass|
+    isolated_options_base[klass.bin_sym] = false
+  end
 
   ImageOptim::Worker.klasses.each do |worker_klass|
     describe "#{worker_klass.bin_sym} worker" do
       it 'optimizes at least one test image' do
-        options = disable_all_workers.dup
-        options.merge!(worker_klass.bin_sym => true)
-        options.merge!(:skip_missing_workers => false)
+        options = isolated_options_base.merge(worker_klass.bin_sym => true)
 
         image_optim = ImageOptim.new(options)
         if Array(worker_klass.init(image_optim)).empty?

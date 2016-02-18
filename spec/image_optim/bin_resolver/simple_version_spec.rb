@@ -32,26 +32,26 @@ describe ImageOptim::BinResolver::SimpleVersion do
       1.0.0.0
     ].each do |variation|
       it "normalizes #{variation}" do
-        expect(v variation).to eq(1)
+        expect(v(variation)).to eq(1)
       end
     end
   end
 
   describe 'conversion' do
     it 'converts Integer' do
-      expect(v 117).to eq('117')
+      expect(v(117)).to eq('117')
     end
 
     it 'converts Float' do
-      expect(v 1.17).to eq('1.17')
+      expect(v(1.17)).to eq('1.17')
     end
 
     it 'converts String' do
-      expect(v '1.17').to eq('1.17')
+      expect(v('1.17')).to eq('1.17')
     end
 
     it 'converts self' do
-      expect(v(v 1.17)).to eq('1.17')
+      expect(v(v(1.17))).to eq('1.17')
     end
   end
 end

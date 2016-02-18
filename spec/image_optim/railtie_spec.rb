@@ -7,7 +7,7 @@ describe 'ImageOptim::Railtie' do
   def init_rails_app
     Class.new(Rails::Application) do
       # Rails 4 requires application class to have name
-      def self.name
+      define_singleton_method :name do
         'Dummy'
       end
 

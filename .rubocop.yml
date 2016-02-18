@@ -24,6 +24,9 @@ Metrics/PerceivedComplexity:
 Style/AccessModifierIndentation:
   EnforcedStyle: outdent
 
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
 Style/CaseIndentation:
   IndentWhenRelativeTo: end
 
@@ -42,6 +45,12 @@ Style/HashSyntax:
 Style/IfUnlessModifier:
   MaxLineLength: 40
 
+Style/IndentArray:
+  EnforcedStyle: consistent
+
+Style/IndentAssignment:
+  Enabled: false
+
 Style/IndentHash:
   EnforcedStyle: consistent
 
@@ -56,11 +65,17 @@ Style/PercentLiteralDelimiters:
 Style/Semicolon:
   AllowAsExpressionSeparator: true
 
+Style/SignalException:
+  EnforcedStyle: semantic
+
 Style/SpaceBeforeBlockBraces:
   EnforcedStyle: no_space
 
 Style/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
-Style/TrailingComma:
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: no_comma
+
+Style/TrailingCommaInLiteral:
   EnforcedStyleForMultiline: comma

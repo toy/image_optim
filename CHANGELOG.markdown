@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Use rubocop ~> 0.37 [@toy](https://github.com/toy)
+
 ## v0.22.0 (2015-11-21)
 
 * Unify getting description of option default value using `default_description` [@toy](https://github.com/toy)

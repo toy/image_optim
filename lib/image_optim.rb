@@ -212,7 +212,7 @@ private
     apply_threading(list).map do |item|
       result = send(method_name, item)
       if block
-        block.call(item, result)
+        yield item, result
       else
         [item, result]
       end

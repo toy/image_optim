@@ -7,6 +7,8 @@ class ImageOptim
     #
     # Jhead internally uses jpegtran which should be on path
     class Jhead < Worker
+      ORIENTED = 2..8 # not top-left
+
       # Works on jpegs
       def image_formats
         [:jpeg]
@@ -36,7 +38,7 @@ class ImageOptim
 
       def oriented?(image)
         exif = EXIFR::JPEG.new(image.to_s)
-        (2..8).include?(exif.orientation.to_i)
+        ORIENTED.include?(exif.orientation.to_i)
       end
     end
   end
