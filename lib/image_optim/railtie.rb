@@ -14,14 +14,10 @@ class ImageOptim
     end
 
     initializer 'image_optim.initializer' do |app|
-      register_preprocessor(app) if register_preprocessor?(app)
-    end
+      next if app.config.assets.compress == false
+      next if app.config.assets.image_optim == false
 
-    def register_preprocessor?(app)
-      return if app.config.assets.compress == false
-      return if app.config.assets.image_optim == false
-
-      app.assets
+      register_preprocessor(app)
     end
 
     def options(app)
