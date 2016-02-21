@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Add support for `sprockets-rails` 3.x, kudos to [@iggant](https://github.com/iggant) and [@valff](https://github.com/valff) for initial PRs [#120](https://github.com/toy/image_optim/pull/120) [#121](https://github.com/toy/image_optim/pull/121) [#126](https://github.com/toy/image_optim/pull/126) [@toy](https://github.com/toy)
 * Use rubocop ~> 0.37 [@toy](https://github.com/toy)
 
 ## v0.22.0 (2015-11-21)

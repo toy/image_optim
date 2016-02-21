@@ -26,7 +26,17 @@ class ImageOptim
 
       @image_optim = ImageOptim.new(options(app))
 
-      register_preprocessor(app)
+      register_preprocessor(app) do |*args|
+        if args[1] # context and data arguments in sprockets 2
+          optimize_image_data(args[1])
+        else
+          input = args[0]
+          {
+            :data => optimize_image_data(input[:data]),
+            :charset => nil, # no gzipped version with rails/sprockets#228
+          }
+        end
+      end
     end
 
     def options(app)
@@ -41,13 +51,15 @@ class ImageOptim
       @image_optim.optimize_image_data(data) || data
     end
 
-    def register_preprocessor(app)
-      processor = proc do |_context, data|
-        optimize_image_data(data)
-      end
-
+    def register_preprocessor(app, &processor)
       MIME_TYPES.each do |mime_type|
-        app.assets.register_preprocessor mime_type, :image_optim, &processor
+        if app.assets
+          app.assets.register_preprocessor mime_type, :image_optim, &processor
+        else
+          app.config.assets.configure do |env|
+            env.register_preprocessor mime_type, :image_optim, &processor
+          end
+        end
       end
     end
   end
