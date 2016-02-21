@@ -341,4 +341,4 @@ In separate file [CHANGELOG.markdown](CHANGELOG.markdown).
 
 ## Copyright
 
-Copyright (c) 2012-2015 Ivan Kuchin. See [LICENSE.txt](LICENSE.txt) for details.
+Copyright (c) 2012-2016 Ivan Kuchin. See [LICENSE.txt](LICENSE.txt) for details.
