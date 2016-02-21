@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Fix missing old (1.x) `pngquant` version as it was output to stderr [#123](https://github.com/toy/image_optim/issues/123) [@toy](https://github.com/toy)
+* Fix capturing wrong version of `pngcrush` when it complains about different png.h and png.c [#122](https://github.com/toy/image_optim/issues/122) [@toy](https://github.com/toy)
 * Add support for `sprockets-rails` 3.x, kudos to [@iggant](https://github.com/iggant) and [@valff](https://github.com/valff) for initial PRs [#120](https://github.com/toy/image_optim/pull/120) [#121](https://github.com/toy/image_optim/pull/121) [#126](https://github.com/toy/image_optim/pull/126) [@toy](https://github.com/toy)
 * Use rubocop ~> 0.37 [@toy](https://github.com/toy)
 
