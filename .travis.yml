@@ -35,7 +35,11 @@ before_install:
 matrix:
   fast_finish: true
   include:
+    - env: RAILS_VERSION='~> 3.2' SPROCKETS_VERSION='~> 2.0'
+      rvm: default
     - env: RAILS_VERSION='~> 3.2'
+      rvm: default
+    - env: RAILS_VERSION='~> 4.0' SPROCKETS_RAILS_VERSION='~> 2.0'
       rvm: default
     - env: RAILS_VERSION='~> 4.0'
       rvm: default

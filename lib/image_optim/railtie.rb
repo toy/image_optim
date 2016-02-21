@@ -3,6 +3,13 @@ require 'image_optim'
 class ImageOptim
   # Adds image_optim as preprocessor for gif, jpeg, png and svg images
   class Railtie < Rails::Railtie
+    MIME_TYPES = %w[
+      image/gif
+      image/jpeg
+      image/png
+      image/svg+xml
+    ].freeze
+
     config.before_configuration do |app|
       worker_names = ImageOptim::Worker.klasses.map(&:bin_sym)
       app.config.assets.image_optim =
@@ -14,14 +21,22 @@ class ImageOptim
     end
 
     initializer 'image_optim.initializer' do |app|
-      register_preprocessor(app) if register_preprocessor?(app)
-    end
+      next if app.config.assets.compress == false
+      next if app.config.assets.image_optim == false
 
-    def register_preprocessor?(app)
-      return if app.config.assets.compress == false
-      return if app.config.assets.image_optim == false
+      @image_optim = ImageOptim.new(options(app))
 
-      app.assets
+      register_preprocessor(app) do |*args|
+        if args[1] # context and data arguments in sprockets 2
+          optimize_image_data(args[1])
+        else
+          input = args[0]
+          {
+            :data => optimize_image_data(input[:data]),
+            :charset => nil, # no gzipped version with rails/sprockets#228
+          }
+        end
+      end
     end
 
     def options(app)
@@ -32,17 +47,20 @@ class ImageOptim
       end
     end
 
-    def register_preprocessor(app)
-      image_optim = ImageOptim.new(options(app))
+    def optimize_image_data(data)
+      @image_optim.optimize_image_data(data) || data
+    end
 
-      processor = proc do |_context, data|
-        image_optim.optimize_image_data(data) || data
+    def register_preprocessor(app, &processor)
+      MIME_TYPES.each do |mime_type|
+        if app.assets
+          app.assets.register_preprocessor mime_type, :image_optim, &processor
+        else
+          app.config.assets.configure do |env|
+            env.register_preprocessor mime_type, :image_optim, &processor
+          end
+        end
       end
-
-      app.assets.register_preprocessor 'image/gif', :image_optim, &processor
-      app.assets.register_preprocessor 'image/jpeg', :image_optim, &processor
-      app.assets.register_preprocessor 'image/png', :image_optim, &processor
-      app.assets.register_preprocessor 'image/svg+xml', :image_optim, &processor
     end
   end
 end
