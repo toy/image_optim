@@ -17,6 +17,8 @@ class ImageOptim
       next if app.config.assets.compress == false
       next if app.config.assets.image_optim == false
 
+      @image_optim = ImageOptim.new(options(app))
+
       register_preprocessor(app)
     end
 
@@ -28,11 +30,13 @@ class ImageOptim
       end
     end
 
-    def register_preprocessor(app)
-      image_optim = ImageOptim.new(options(app))
+    def optimize_image_data(data)
+      @image_optim.optimize_image_data(data) || data
+    end
 
+    def register_preprocessor(app)
       processor = proc do |_context, data|
-        image_optim.optimize_image_data(data) || data
+        optimize_image_data(data)
       end
 
       app.assets.register_preprocessor 'image/gif', :image_optim, &processor
