@@ -3,6 +3,13 @@ require 'image_optim'
 class ImageOptim
   # Adds image_optim as preprocessor for gif, jpeg, png and svg images
   class Railtie < Rails::Railtie
+    MIME_TYPES = %w[
+      image/gif
+      image/jpeg
+      image/png
+      image/svg+xml
+    ].freeze
+
     config.before_configuration do |app|
       worker_names = ImageOptim::Worker.klasses.map(&:bin_sym)
       app.config.assets.image_optim =
@@ -39,10 +46,9 @@ class ImageOptim
         optimize_image_data(data)
       end
 
-      app.assets.register_preprocessor 'image/gif', :image_optim, &processor
-      app.assets.register_preprocessor 'image/jpeg', :image_optim, &processor
-      app.assets.register_preprocessor 'image/png', :image_optim, &processor
-      app.assets.register_preprocessor 'image/svg+xml', :image_optim, &processor
+      MIME_TYPES.each do |mime_type|
+        app.assets.register_preprocessor mime_type, :image_optim, &processor
+      end
     end
   end
 end
