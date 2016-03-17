@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Use first 8 characters of sha1 hex for jpegrescan version [#131](https://github.com/toy/image_optim/issues/131) [@toy](https://github.com/toy)
+
 ## v0.22.1 (2016-02-21)
 
 * Fix missing old (1.x) `pngquant` version as it was output to stderr [#123](https://github.com/toy/image_optim/issues/123) [@toy](https://github.com/toy)

@@ -3,6 +3,7 @@ require 'image_optim/bin_resolver/simple_version'
 require 'image_optim/bin_resolver/comparable_condition'
 require 'image_optim/cmd'
 require 'shellwords'
+require 'digest/sha1'
 
 class ImageOptim
   class BinResolver
@@ -87,8 +88,8 @@ class ImageOptim
           date_str = capture("#{escaped_path} 2>&1")[date_regexp]
           Date.parse(date_str).strftime('%Y%m%d') if date_str
         when :jpegrescan
-          # jpegrescan has no version so just check presence
-          path && '-'
+          # jpegrescan has no version so use first 8 characters of sha1 hex
+          Digest::SHA1.file(path).hexdigest[0, 8] if path
         else
           fail "getting `#{name}` version is not defined"
         end
