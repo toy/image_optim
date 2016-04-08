@@ -40,9 +40,9 @@ matrix:
     - env: RAILS_VERSION='~> 3.2'
       rvm: default
     - env: RAILS_VERSION='~> 4.0' SPROCKETS_RAILS_VERSION='~> 2.0'
-      rvm: default
+      rvm: 2.0
     - env: RAILS_VERSION='~> 4.0'
-      rvm: default
+      rvm: 2.0
     - env: RUBOCOP=true
       rvm: default
   allow_failures:
