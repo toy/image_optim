@@ -17,16 +17,12 @@ class ImageOptim
       alias_method :init, :new
     end
 
-    # Allow lossy optimizations
-    attr_reader :allow_lossy
-
     # Configure (raises on extra options)
     def initialize(image_optim, options = {})
       unless image_optim.is_a?(ImageOptim)
         fail ArgumentError, 'first parameter should be an ImageOptim instance'
       end
       @image_optim = image_optim
-      @allow_lossy = !!options.delete(:allow_lossy)
       parse_options(options)
       assert_no_unknown_options!(options)
     end

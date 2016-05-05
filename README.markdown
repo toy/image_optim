@@ -289,10 +289,12 @@ Worker can be disabled by passing `false` instead of options hash or by setting 
 Worker has no options
 
 ### jpegoptim:
+* `:allow_lossy` — Allow limiting maximum quality *(defaults to `false`)*
 * `:strip` — List of extra markers to strip: `:comments`, `:exif`, `:iptc`, `:icc` or `:all` *(defaults to `:all`)*
 * `:max_quality` — Maximum image quality factor `0`..`100`, ignored in default/lossless mode *(defaults to `100`)*
 
 ### jpegrecompress:
+* `:allow_lossy` — Allow worker, it is always lossy *(defaults to `false`)*
 * `:quality` — JPEG quality preset: `0` - low, `1` - medium, `2` - high, `3` - veryhigh *(defaults to `3`)*
 
 ### jpegtran:
@@ -316,6 +318,7 @@ Worker has no options
 * `:strategy` — Strategy: `0` - xtreme, `1` - intense, `2` - longest Match, `3` - huffman Only, `4` - uncompressed *(defaults to `0`)*
 
 ### pngquant:
+* `:allow_lossy` — Allow quality option *(defaults to `false`)*
 * `:quality` — min..max - don't save below min, use less colors below max (both in range `0..100`; in yaml - `!ruby/range 0..100`), ignored in default/lossless mode *(defaults to `100..100`, `0..100` in lossy mode)*
 * `:speed` — speed/quality trade-off: `1` - slow, `3` - default, `11` - fast & rough *(defaults to `3`)*
 

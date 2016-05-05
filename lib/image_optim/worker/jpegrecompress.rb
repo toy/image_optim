@@ -5,6 +5,9 @@ class ImageOptim
   class Worker
     # https://github.com/danielgtaylor/jpeg-archive#jpeg-recompress
     class Jpegrecompress < Worker
+      ALLOW_LOSSY_OPTION =
+      option(:allow_lossy, false, 'Allow worker, it is always lossy'){ |v| !!v }
+
       # Initialize only if allow_lossy
       def self.init(image_optim, options = {})
         super if options[:allow_lossy]

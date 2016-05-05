@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Make `:allow_lossy` an individual option for workers that can use it, so it will be in the list of worker options [#130](https://github.com/toy/image_optim/issues/130) [@toy](https://github.com/toy)
 * Use first 8 characters of sha1 hex for jpegrescan version [#131](https://github.com/toy/image_optim/issues/131) [@toy](https://github.com/toy)
 
 ## v0.22.1 (2016-02-21)

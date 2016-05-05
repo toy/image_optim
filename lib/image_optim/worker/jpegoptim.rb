@@ -5,6 +5,9 @@ class ImageOptim
   class Worker
     # http://www.kokkonen.net/tjko/projects.html
     class Jpegoptim < Worker
+      ALLOW_LOSSY_OPTION =
+      option(:allow_lossy, false, 'Allow limiting maximum quality'){ |v| !!v }
+
       STRIP_OPTION =
       option(:strip, :all, Array, 'List of extra markers to strip: '\
           '`:comments`, '\

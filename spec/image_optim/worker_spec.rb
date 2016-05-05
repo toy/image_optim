@@ -58,11 +58,15 @@ describe ImageOptim::Worker do
       instance_double(Worker, stubs)
     end
 
+    def worker_class_doubles(workers)
+      workers.map{ |worker| class_double(Worker, :init => worker) }
+    end
+
     let(:image_optim){ double(:allow_lossy => false) }
 
     it 'creates all workers for which options_proc returns true' do
       workers = Array.new(3){ worker_double }
-      klasses = workers.map{ |worker| double(:init => worker) }
+      klasses = worker_class_doubles(workers)
       options_proc = proc do |klass|
         klass == klasses[1] ? {:disable => true} : {}
       end
@@ -79,7 +83,7 @@ describe ImageOptim::Worker do
         [worker_double, worker_double, worker_double],
         worker_double,
       ]
-      klasses = workers.map{ |worker| double(:init => worker) }
+      klasses = worker_class_doubles(workers)
 
       allow(Worker).to receive(:klasses).and_return(klasses)
 
@@ -98,7 +102,7 @@ describe ImageOptim::Worker do
           worker
         end
       end
-      let(:klasses){ workers.map{ |worker| double(:init => worker) } }
+      let(:klasses){ worker_class_doubles(workers) }
 
       before do
         allow(Worker).to receive(:klasses).and_return(klasses)
@@ -136,12 +140,11 @@ describe ImageOptim::Worker do
     end
 
     it 'orders workers by run_order' do
-      image_optim = double(:allow_lossy => false)
       run_orders = [10, -10, 0, 0, 0, 10, -10]
       workers = run_orders.map do |run_order|
         worker_double(:run_order => run_order)
       end
-      klasses_list = workers.map{ |worker| double(:init => worker) }
+      klasses_list = worker_class_doubles(workers)
 
       [
         klasses_list,
@@ -155,6 +158,39 @@ describe ImageOptim::Worker do
         end
 
         expect(Worker.create_all(image_optim){ {} }).to eq(expected_order)
+      end
+    end
+
+    describe 'passing allow_lossy' do
+      it 'passes allow_lossy if worker has such attribute' do
+        klasses = worker_class_doubles([worker_double, worker_double])
+
+        allow(Worker).to receive(:klasses).and_return(klasses)
+
+        klasses[0].send(:attr_reader, :allow_lossy)
+        expect(klasses[0]).to receive(:init).
+          with(image_optim, hash_including(:allow_lossy))
+        expect(klasses[1]).to receive(:init).
+          with(image_optim, hash_not_including(:allow_lossy))
+
+        Worker.create_all(image_optim){ {} }
+      end
+
+      it 'allows overriding per worker' do
+        klasses = worker_class_doubles([worker_double, worker_double])
+        options_proc = proc do |klass|
+          klass == klasses[1] ? {:allow_lossy => :b} : {}
+        end
+
+        allow(Worker).to receive(:klasses).and_return(klasses)
+
+        klasses.each{ |klass| klass.send(:attr_reader, :allow_lossy) }
+        expect(klasses[0]).to receive(:init).
+          with(image_optim, hash_including(:allow_lossy => false))
+        expect(klasses[1]).to receive(:init).
+          with(image_optim, hash_including(:allow_lossy => :b))
+
+        Worker.create_all(image_optim, &options_proc)
       end
     end
   end

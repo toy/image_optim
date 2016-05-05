@@ -6,6 +6,9 @@ class ImageOptim
   class Worker
     # http://pngquant.org/
     class Pngquant < Worker
+      ALLOW_LOSSY_OPTION =
+      option(:allow_lossy, false, 'Allow quality option'){ |v| !!v }
+
       QUALITY_OPTION =
       option(:quality, '`100..100`, `0..100` in lossy mode',
              NonNegativeIntegerRange, 'min..max - don\'t '\
