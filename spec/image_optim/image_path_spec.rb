@@ -6,7 +6,7 @@ describe ImageOptim::ImagePath do
     stub_const('ImagePath', ImageOptim::ImagePath)
   end
 
-  describe :convert do
+  describe '.convert' do
     it 'returns ImagePath for string' do
       path = 'a'
 
@@ -38,7 +38,7 @@ describe ImageOptim::ImagePath do
     end
   end
 
-  describe :binread do
+  describe '#binread' do
     it 'reads binary data' do
       data = (0..255).to_a.pack('c*')
 
@@ -49,6 +49,39 @@ describe ImageOptim::ImagePath do
       if ''.respond_to?(:encoding)
         expect(path.binread.encoding).to eq(Encoding.find('ASCII-8BIT'))
       end
+    end
+  end
+
+  describe '#replace' do
+    let(:src){ ImagePath.temp_file_path }
+    let(:dst){ ImagePath.temp_file_path }
+
+    it 'moves data to destination' do
+      src.write('src')
+
+      src.replace(dst)
+
+      expect(dst.read).to eq('src')
+    end
+
+    it 'removes original file' do
+      src.replace(dst)
+
+      expect(src).to_not exist
+    end
+
+    it 'preserves attributes of destination file' do
+      dst.chmod(0666)
+
+      src.replace(dst)
+
+      expect(dst.stat.mode & 0777).to eq(0666)
+    end
+
+    it 'changes inode of destination' do
+      expect do
+        src.replace(dst)
+      end.to change{ dst.stat.ino }
     end
   end
 end

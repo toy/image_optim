@@ -37,13 +37,13 @@ class ImageOptim
       FileUtils.copy_file(self, dst, true)
     end
 
-    # Atomic replace src with self
-    def replace(src)
-      src = self.class.new(src)
-      src.temp_path(src.dirname) do |temp|
-        src.copy(temp)
-        temp.write(read)
-        temp.rename(src.to_s)
+    # Atomic replace dst with self
+    def replace(dst)
+      dst = self.class.new(dst)
+      dst.temp_path(dst.dirname) do |temp|
+        dst.copy(temp)
+        FileUtils.copy_file(self, temp, false)
+        temp.rename(dst.to_s)
         unlink
       end
     end
