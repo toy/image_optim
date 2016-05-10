@@ -36,6 +36,9 @@ Style/DotPosition:
 Style/DoubleNegation:
   Enabled: false
 
+Style/EmptyCaseCondition:
+  Enabled: false
+
 Style/Encoding:
   EnforcedStyle: when_needed
 
