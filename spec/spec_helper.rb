@@ -7,6 +7,13 @@ if ENV['CODECLIMATE_REPO_TOKEN']
   end
 end
 
+RSpec.configure do |c|
+  c.before do
+    stub_const('ImageOptim::Config::GLOBAL_PATH', File::NULL)
+    stub_const('ImageOptim::Config::LOCAL_PATH', File::NULL)
+  end
+end
+
 def flatten_animation(image)
   if image.format == :gif
     flattened = image.temp_path
