@@ -68,23 +68,21 @@ describe ImageOptim do
         ['lossless', base_options, 0],
         ['lossy', base_options.merge(:allow_lossy => true), 0.001],
       ].each do |type, options, max_difference|
-        image_optim = ImageOptim.new(options)
-        describe type do
+        it "does it #{type}" do
+          image_optim = ImageOptim.new(options)
           copies = test_images.map{ |image| temp_copy(image) }
           pairs = image_optim.optimize_images(copies)
           test_images.zip(*pairs.transpose).each do |original, copy, optimized|
-            it "optimizes #{original.relative_path_from(root_dir)}" do
-              expect(copy).to have_same_data_as(original)
+            expect(copy).to have_same_data_as(original)
 
-              expect(optimized).not_to be_nil
-              expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
-              expect(optimized).to have_size
-              expect(optimized).to be_smaller_than(original)
-              expect(optimized).not_to have_same_data_as(original)
+            expect(optimized).not_to be_nil
+            expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
+            expect(optimized).to have_size
+            expect(optimized).to be_smaller_than(original)
+            expect(optimized).not_to have_same_data_as(original)
 
-              compare_to = rotate_images.include?(original) ? rotated : original
-              expect(optimized).to be_similar_to(compare_to, max_difference)
-            end
+            compare_to = rotate_images.include?(original) ? rotated : original
+            expect(optimized).to be_similar_to(compare_to, max_difference)
           end
         end
       end
