@@ -1,10 +1,6 @@
-if ENV['CODECLIMATE_REPO_TOKEN']
-  begin
-    require 'codeclimate-test-reporter'
-    CodeClimate::TestReporter.start
-  rescue LoadError => e
-    $stderr.puts "Got following while loading codeclimate-test-reporter: #{e}"
-  end
+if ENV['CODECLIMATE_REPO_TOKEN'] && RUBY_VERSION >= '1.9'
+  require 'codeclimate-test-reporter'
+  CodeClimate::TestReporter.start
 end
 
 RSpec.configure do |c|
