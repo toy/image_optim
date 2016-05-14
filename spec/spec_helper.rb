@@ -7,10 +7,6 @@ if ENV['CODECLIMATE_REPO_TOKEN']
   end
 end
 
-RSpec.configure do |c|
-  c.alias_example_to :they
-end
-
 def flatten_animation(image)
   if image.format == :gif
     flattened = image.temp_path
