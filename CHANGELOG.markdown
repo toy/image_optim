@@ -2,7 +2,7 @@
 
 ## unreleased
 
-* Use `FileUtils.copy_file` in `ImagePath#replace` to not read entire file into memory [#132](https://github.com/toy/image_optim/issues/132) [@toy](https://github.com/toy)
+* Use `FileUtils.move` in `ImagePath#replace` to rename file instead of copying on same device [#134](https://github.com/toy/image_optim/issues/134) [@toy](https://github.com/toy)
 * Make `:allow_lossy` an individual option for workers that can use it, so it will be in the list of worker options [#130](https://github.com/toy/image_optim/issues/130) [@toy](https://github.com/toy)
 * Use first 8 characters of sha1 hex for jpegrescan version [#131](https://github.com/toy/image_optim/issues/131) [@toy](https://github.com/toy)
 

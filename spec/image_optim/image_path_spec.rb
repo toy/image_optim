@@ -71,11 +71,23 @@ describe ImageOptim::ImagePath do
     end
 
     it 'preserves attributes of destination file' do
-      dst.chmod(0666)
+      mode = 0666
+
+      dst.chmod(mode)
 
       src.replace(dst)
 
-      expect(dst.stat.mode & 0777).to eq(0666)
+      expect(dst.stat.mode & 0777).to eq(mode)
+    end
+
+    it 'does not preserve mtime of destination file' do
+      time = src.mtime
+
+      dst.utime(time - 1000, time - 1000)
+
+      src.replace(dst)
+
+      expect(dst.mtime).to be >= time
     end
 
     it 'changes inode of destination' do

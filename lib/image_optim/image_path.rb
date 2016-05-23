@@ -32,19 +32,43 @@ class ImageOptim
       self.class.temp_file_path([basename(ext).to_s, ext], *args, &block)
     end
 
-    # Copy file to dest preserving attributes
-    def copy(dst)
-      FileUtils.copy_file(self, dst, true)
+    # Copy file to dst, optionally preserving attributes
+    #
+    # See FileUtils.copy_file
+    def copy(dst, preserve = false)
+      FileUtils.copy_file(self, dst, preserve)
+    end
+
+    # Move file to dst: rename on same device, copy and unlink original
+    # otherwise
+    #
+    # See FileUtils.mv
+    def move(dst)
+      FileUtils.move(self, dst)
+    end
+
+    # Copy metadata: uid, gid, mode, optionally atime and mtime
+    #
+    # Adapted from FileUtils::Entry_#copy_metadata by Minero Aoki
+    def copy_metadata(dst, time = false)
+      stat = lstat
+      dst.utime(stat.atime, stat.mtime) if time
+      begin
+        dst.chown(stat.uid, stat.gid)
+      rescue Errno::EPERM
+        dst.chmod(stat.mode & 01777)
+      else
+        dst.chmod(stat.mode)
+      end
     end
 
     # Atomic replace dst with self
     def replace(dst)
       dst = self.class.new(dst)
       dst.temp_path(dst.dirname) do |temp|
-        dst.copy(temp)
-        FileUtils.copy_file(self, temp, false)
+        move(temp)
+        dst.copy_metadata(temp)
         temp.rename(dst.to_s)
-        unlink
       end
     end
 
