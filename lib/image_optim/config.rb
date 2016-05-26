@@ -22,7 +22,8 @@ class ImageOptim
 
     class << self
       # Read options at path: expand path (warn on failure), return {} if file
-      # does not exist, read yaml, check if it is a Hash, deep symbolise keys
+      # does not exist or is empty, read yaml, check if it is a Hash, deep
+      # symbolise keys
       def read_options(path)
         begin
           full_path = File.expand_path(path)
@@ -30,7 +31,7 @@ class ImageOptim
           warn "Can't expand path #{path}: #{e}"
           return {}
         end
-        return {} unless File.file?(full_path)
+        return {} unless File.size?(full_path)
         config = YAML.load_file(full_path)
         unless config.is_a?(Hash)
           fail "expected hash, got #{config.inspect}"

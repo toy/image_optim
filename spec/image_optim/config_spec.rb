@@ -159,16 +159,16 @@ describe ImageOptim::Config do
         expect(IOConfig).to receive(:warn)
         expect(File).to receive(:expand_path).
           with(path).and_raise(ArgumentError)
-        expect(File).not_to receive(:file?)
+        expect(File).not_to receive(:size?)
 
         expect(IOConfig.read_options(path)).to eq({})
       end
 
-      it 'returns empty hash if path is not a file' do
+      it 'returns empty hash if path is not a file or is an empty file' do
         expect(IOConfig).not_to receive(:warn)
         expect(File).to receive(:expand_path).
           with(path).and_return(full_path)
-        expect(File).to receive(:file?).
+        expect(File).to receive(:size?).
           with(full_path).and_return(false)
 
         expect(IOConfig.read_options(path)).to eq({})
@@ -181,7 +181,7 @@ describe ImageOptim::Config do
         expect(IOConfig).not_to receive(:warn)
         expect(File).to receive(:expand_path).
           with(path).and_return(full_path)
-        expect(File).to receive(:file?).
+        expect(File).to receive(:size?).
           with(full_path).and_return(true)
         expect(YAML).to receive(:load_file).
           with(full_path).and_return(stringified)
@@ -193,7 +193,7 @@ describe ImageOptim::Config do
         expect(IOConfig).to receive(:warn)
         expect(File).to receive(:expand_path).
           with(path).and_return(full_path)
-        expect(File).to receive(:file?).
+        expect(File).to receive(:size?).
           with(full_path).and_return(true)
         expect(YAML).to receive(:load_file).
           with(full_path).and_return([:config])
@@ -205,7 +205,7 @@ describe ImageOptim::Config do
         expect(IOConfig).to receive(:warn)
         expect(File).to receive(:expand_path).
           with(path).and_return(full_path)
-        expect(File).to receive(:file?).
+        expect(File).to receive(:size?).
           with(full_path).and_return(true)
         expect(YAML).to receive(:load_file).
           with(full_path).and_raise
