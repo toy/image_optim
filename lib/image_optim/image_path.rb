@@ -74,8 +74,7 @@ class ImageOptim
 
     # Get format using ImageSize
     def format
-      image_meta = ImageMeta.for_path(self)
-      image_meta && image_meta.format
+      ImageMeta.format_for_path(self)
     end
 
     # Read binary data

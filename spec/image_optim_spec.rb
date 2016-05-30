@@ -153,8 +153,8 @@ describe ImageOptim do
       optimized_data = double
       image_optim = ImageOptim.new
 
-      allow(ImageOptim::ImageMeta).to receive(:for_data).
-        with(data).and_return(double(:format => 'xxx'))
+      allow(ImageOptim::ImageMeta).to receive(:format_for_data).
+        with(data).and_return('xxx')
 
       expect(ImageOptim::ImagePath).to receive(:temp_file).and_yield(temp)
       expect(temp).to receive(:binmode)
@@ -172,8 +172,8 @@ describe ImageOptim do
       temp = double(:path => double)
       image_optim = ImageOptim.new
 
-      allow(ImageOptim::ImageMeta).to receive(:for_data).
-        with(data).and_return(double(:format => 'xxx'))
+      allow(ImageOptim::ImageMeta).to receive(:format_for_data).
+        with(data).and_return('xxx')
 
       expect(ImageOptim::ImagePath).to receive(:temp_file).and_yield(temp)
       expect(temp).to receive(:binmode)
@@ -189,8 +189,8 @@ describe ImageOptim do
       data = double
       image_optim = ImageOptim.new
 
-      allow(ImageOptim::ImageMeta).to receive(:for_data).
-        with(data).and_return(double(:format => nil))
+      allow(ImageOptim::ImageMeta).to receive(:format_for_data).
+        with(data).and_return(nil)
 
       expect(ImageOptim::ImagePath).not_to receive(:temp_file)
       expect(image_optim).not_to receive(:optimize_image)

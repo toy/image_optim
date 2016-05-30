@@ -115,9 +115,9 @@ class ImageOptim
 
   # Optimize image data, return new data or nil if optimization failed
   def optimize_image_data(original_data)
-    image_meta = ImageMeta.for_data(original_data)
-    return unless image_meta && image_meta.format
-    ImagePath.temp_file %W[image_optim .#{image_meta.format}] do |temp|
+    format = ImageMeta.format_for_data(original_data)
+    return unless format
+    ImagePath.temp_file %W[image_optim .#{format}] do |temp|
       temp.binmode
       temp.write(original_data)
       temp.close
