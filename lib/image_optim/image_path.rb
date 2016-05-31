@@ -4,28 +4,6 @@ require 'image_optim/image_meta'
 class ImageOptim
   # FSPath with additional helpful methods
   class ImagePath < FSPath
-    # Holds optimized image with reference to original and its size
-    class Optimized < DelegateClass(self)
-      def initialize(path, original_or_size = nil)
-        path = ImagePath.convert(path)
-        __setobj__(path)
-        if original_or_size.is_a?(Integer)
-          @original = path
-          @original_size = original_or_size
-        elsif original_or_size
-          @original = ImagePath.convert(original_or_size)
-          @original_size = @original.size
-        end
-      end
-
-      # Original path, use original_size to get its size as original can be
-      # overwritten
-      attr_reader :original
-
-      # Stored size of original
-      attr_reader :original_size
-    end
-
     # Get temp path for this file with same extension
     def temp_path(*args, &block)
       ext = extname

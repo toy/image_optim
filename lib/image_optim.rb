@@ -3,6 +3,7 @@ require 'image_optim/config'
 require 'image_optim/handler'
 require 'image_optim/image_meta'
 require 'image_optim/image_path'
+require 'image_optim/optimized_path'
 require 'image_optim/railtie' if defined?(Rails)
 require 'image_optim/worker'
 require 'in_threads'
@@ -88,7 +89,7 @@ class ImageOptim
     @workers_by_format[ImagePath.convert(path).format]
   end
 
-  # Optimize one file, return new path as OptimizedImagePath or nil if
+  # Optimize one file, return new path as OptimizedPath or nil if
   # optimization failed
   def optimize_image(original)
     original = ImagePath.convert(original)
@@ -101,16 +102,16 @@ class ImageOptim
       end
     end
     return unless result
-    ImagePath::Optimized.new(result, original)
+    OptimizedPath.new(result, original)
   end
 
-  # Optimize one file in place, return original as OptimizedImagePath or nil if
+  # Optimize one file in place, return original as OptimizedPath or nil if
   # optimization failed
   def optimize_image!(original)
     original = ImagePath.convert(original)
     return unless (result = optimize_image(original))
     result.replace(original)
-    ImagePath::Optimized.new(original, result.original_size)
+    OptimizedPath.new(original, result.original_size)
   end
 
   # Optimize image data, return new data or nil if optimization failed

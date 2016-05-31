@@ -76,7 +76,7 @@ describe ImageOptim do
             expect(copy).to have_same_data_as(original)
 
             expect(optimized).not_to be_nil
-            expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
+            expect(optimized).to be_a(ImageOptim::OptimizedPath)
             expect(optimized).to have_size
             expect(optimized).to be_smaller_than(original)
             expect(optimized).not_to have_same_data_as(original)
@@ -124,7 +124,7 @@ describe ImageOptim do
       expect(image_optim).to receive(:optimize_image).
         with(original).and_return(optimized)
       expect(optimized).to receive(:replace).with(original)
-      expect(ImageOptim::ImagePath::Optimized).to receive(:new).
+      expect(ImageOptim::OptimizedPath).to receive(:new).
         with(original, 12_345).and_return(optimized_wrap)
 
       expect(image_optim.optimize_image!(original)).to eq(optimized_wrap)
@@ -139,7 +139,7 @@ describe ImageOptim do
 
       expect(image_optim).to receive(:optimize_image).
         with(original).and_return(nil)
-      expect(ImageOptim::ImagePath::Optimized).not_to receive(:new)
+      expect(ImageOptim::OptimizedPath).not_to receive(:new)
 
       expect(image_optim.optimize_image!(original)).to eq(nil)
     end
