@@ -12,7 +12,7 @@ describe ImageOptim::Runner::OptionParser do
     end
   end
 
-  describe :parse! do
+  describe '.parse!' do
     it 'returns empty hash for arguments without options' do
       args = %w[foo bar]
       expect(OptionParser.parse!(args)).to eq({})
@@ -92,7 +92,7 @@ describe ImageOptim::Runner::OptionParser do
     end
   end
 
-  describe :help do
+  describe '#help' do
     it 'returns wrapped text' do
       parser = OptionParser.new({})
 

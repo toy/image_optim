@@ -33,7 +33,7 @@ describe 'ImageOptim::Railtie' do
     Rails.application = nil
   end
 
-  describe :initialization do
+  describe 'initialization' do
     it 'initializes by default' do
       expect(ImageOptim).to receive(:new)
       init_rails_app
@@ -117,7 +117,7 @@ describe 'ImageOptim::Railtie' do
     end
   end
 
-  describe :assets do
+  describe 'optimizing assets' do
     before do
       stub_const('ImagePath', ImageOptim::ImagePath)
     end

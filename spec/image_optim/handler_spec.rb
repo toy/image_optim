@@ -60,7 +60,7 @@ describe ImageOptim::Handler do
     handler.cleanup
   end
 
-  describe :open do
+  describe '.for' do
     it 'yields instance, runs cleanup and returns result' do
       original = double
       handler = double

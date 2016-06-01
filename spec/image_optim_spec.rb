@@ -50,7 +50,7 @@ describe ImageOptim do
     end
   end
 
-  describe :optimize_image do
+  describe '#optimize_image' do
     define :have_same_data_as do |expected|
       match{ |actual| actual.binread == expected.binread }
     end
@@ -111,7 +111,7 @@ describe ImageOptim do
     end
   end
 
-  describe :optimize_image! do
+  describe '#optimize_image!' do
     it 'optimizes image and replaces original' do
       original = double
       optimized = double(:original_size => 12_345)
@@ -145,7 +145,7 @@ describe ImageOptim do
     end
   end
 
-  describe :optimize_image_data do
+  describe '#optimize_image_data' do
     it 'create temp file, optimizes image and returns data' do
       data = double
       temp = double(:path => double)
@@ -199,39 +199,37 @@ describe ImageOptim do
     end
   end
 
-  describe 'optimize multiple' do
-    %w[
-      optimize_images
-      optimize_images!
-      optimize_images_data
-    ].each do |list_method|
-      describe list_method do
-        method = list_method.sub('images', 'image')
-        describe 'without block' do
-          it 'optimizes images and returns array of results' do
-            image_optim = ImageOptim.new
-            results = test_images.map do |src|
-              dst = double
-              expect(image_optim).to receive(method).with(src).and_return(dst)
-              [src, dst]
-            end
-            expect(image_optim.send(list_method, test_images)).to eq(results)
+  %w[
+    optimize_images
+    optimize_images!
+    optimize_images_data
+  ].each do |list_method|
+    describe "##{list_method}" do
+      method = list_method.sub('images', 'image')
+      describe 'without block' do
+        it 'optimizes images and returns array of results' do
+          image_optim = ImageOptim.new
+          results = test_images.map do |src|
+            dst = double
+            expect(image_optim).to receive(method).with(src).and_return(dst)
+            [src, dst]
           end
+          expect(image_optim.send(list_method, test_images)).to eq(results)
         end
+      end
 
-        describe 'given block' do
-          it 'optimizes images, yields path and result for each and '\
-              'returns array of yield results' do
-            image_optim = ImageOptim.new
-            results = test_images.map do |src|
-              dst = double
-              expect(image_optim).to receive(method).with(src).and_return(dst)
-              [src, dst, :test]
-            end
-            expect(image_optim.send(list_method, test_images) do |src, dst|
-              [src, dst, :test]
-            end).to eq(results)
+      describe 'given block' do
+        it 'optimizes images, yields path and result for each and '\
+            'returns array of yield results' do
+          image_optim = ImageOptim.new
+          results = test_images.map do |src|
+            dst = double
+            expect(image_optim).to receive(method).with(src).and_return(dst)
+            [src, dst, :test]
           end
+          expect(image_optim.send(list_method, test_images) do |src, dst|
+            [src, dst, :test]
+          end).to eq(results)
         end
       end
     end

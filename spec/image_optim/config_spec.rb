@@ -6,7 +6,7 @@ describe ImageOptim::Config do
     stub_const('IOConfig', ImageOptim::Config)
   end
 
-  describe :assert_no_unused_options! do
+  describe '#assert_no_unused_options!' do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
     end
@@ -24,7 +24,7 @@ describe ImageOptim::Config do
     end
   end
 
-  describe :nice do
+  describe '#nice' do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
     end
@@ -45,7 +45,7 @@ describe ImageOptim::Config do
     end
   end
 
-  describe :threads do
+  describe '#threads' do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
     end
@@ -67,7 +67,7 @@ describe ImageOptim::Config do
     end
   end
 
-  describe :for_worker do
+  describe '#for_worker' do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
       stub_const('Abc', Class.new do
@@ -104,7 +104,7 @@ describe ImageOptim::Config do
     end
   end
 
-  describe 'config' do
+  describe '#initialize' do
     it 'reads options from default locations' do
       expect(IOConfig).to receive(:read_options).
         with(IOConfig::GLOBAL_PATH).and_return(:a => 1, :b => 2, :c => 3)
@@ -150,68 +150,66 @@ describe ImageOptim::Config do
     end
   end
 
-  describe 'class methods' do
-    describe :read_options do
-      let(:path){ double(:path) }
-      let(:full_path){ double(:full_path) }
+  describe '.read_options' do
+    let(:path){ double(:path) }
+    let(:full_path){ double(:full_path) }
 
-      it 'warns if expand path fails' do
-        expect(IOConfig).to receive(:warn)
-        expect(File).to receive(:expand_path).
-          with(path).and_raise(ArgumentError)
-        expect(File).not_to receive(:size?)
+    it 'warns if expand path fails' do
+      expect(IOConfig).to receive(:warn)
+      expect(File).to receive(:expand_path).
+        with(path).and_raise(ArgumentError)
+      expect(File).not_to receive(:size?)
 
-        expect(IOConfig.read_options(path)).to eq({})
-      end
+      expect(IOConfig.read_options(path)).to eq({})
+    end
 
-      it 'returns empty hash if path is not a file or is an empty file' do
-        expect(IOConfig).not_to receive(:warn)
-        expect(File).to receive(:expand_path).
-          with(path).and_return(full_path)
-        expect(File).to receive(:size?).
-          with(full_path).and_return(false)
+    it 'returns empty hash if path is not a file or is an empty file' do
+      expect(IOConfig).not_to receive(:warn)
+      expect(File).to receive(:expand_path).
+        with(path).and_return(full_path)
+      expect(File).to receive(:size?).
+        with(full_path).and_return(false)
 
-        expect(IOConfig.read_options(path)).to eq({})
-      end
+      expect(IOConfig.read_options(path)).to eq({})
+    end
 
-      it 'returns hash with deep symbolised keys from reader' do
-        stringified = {'config' => {'this' => true}}
-        symbolized = {:config => {:this => true}}
+    it 'returns hash with deep symbolised keys from reader' do
+      stringified = {'config' => {'this' => true}}
+      symbolized = {:config => {:this => true}}
 
-        expect(IOConfig).not_to receive(:warn)
-        expect(File).to receive(:expand_path).
-          with(path).and_return(full_path)
-        expect(File).to receive(:size?).
-          with(full_path).and_return(true)
-        expect(YAML).to receive(:load_file).
-          with(full_path).and_return(stringified)
+      expect(IOConfig).not_to receive(:warn)
+      expect(File).to receive(:expand_path).
+        with(path).and_return(full_path)
+      expect(File).to receive(:size?).
+        with(full_path).and_return(true)
+      expect(YAML).to receive(:load_file).
+        with(full_path).and_return(stringified)
 
-        expect(IOConfig.read_options(path)).to eq(symbolized)
-      end
+      expect(IOConfig.read_options(path)).to eq(symbolized)
+    end
 
-      it 'warns and returns an empty hash if reader returns non hash' do
-        expect(IOConfig).to receive(:warn)
-        expect(File).to receive(:expand_path).
-          with(path).and_return(full_path)
-        expect(File).to receive(:size?).
-          with(full_path).and_return(true)
-        expect(YAML).to receive(:load_file).
-          with(full_path).and_return([:config])
+    it 'warns and returns an empty hash if reader returns non hash' do
+      expect(IOConfig).to receive(:warn)
+      expect(File).to receive(:expand_path).
+        with(path).and_return(full_path)
+      expect(File).to receive(:size?).
+        with(full_path).and_return(true)
+      expect(YAML).to receive(:load_file).
+        with(full_path).and_return([:config])
 
-        expect(IOConfig.read_options(path)).to eq({})
-      end
+      expect(IOConfig.read_options(path)).to eq({})
+    end
 
-      it 'warns and returns an empty hash if reader raises exception' do
-        expect(IOConfig).to receive(:warn)
-        expect(File).to receive(:expand_path).
-          with(path).and_return(full_path)
-        expect(File).to receive(:size?).
-          with(full_path).and_return(true)
-        expect(YAML).to receive(:load_file).
-          with(full_path).and_raise
+    it 'warns and returns an empty hash if reader raises exception' do
+      expect(IOConfig).to receive(:warn)
+      expect(File).to receive(:expand_path).
+        with(path).and_return(full_path)
+      expect(File).to receive(:size?).
+        with(full_path).and_return(true)
+      expect(YAML).to receive(:load_file).
+        with(full_path).and_raise
 
-        expect(IOConfig.read_options(path)).to eq({})
-      end
+      expect(IOConfig.read_options(path)).to eq({})
     end
   end
 end

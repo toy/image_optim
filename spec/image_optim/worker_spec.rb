@@ -8,7 +8,7 @@ describe ImageOptim::Worker do
     stub_const('BinResolver', ImageOptim::BinResolver)
   end
 
-  describe :optimize do
+  describe '#optimize' do
     it 'raises NotImplementedError' do
       image_optim = ImageOptim.new
       worker = Worker.new(image_optim, {})
@@ -19,7 +19,7 @@ describe ImageOptim::Worker do
     end
   end
 
-  describe :create_all_by_format do
+  describe '.create_all_by_format' do
     it 'passes arguments to create_all' do
       image_optim = double
       options_proc = proc{ true }
@@ -52,7 +52,7 @@ describe ImageOptim::Worker do
     end
   end
 
-  describe :create_all do
+  describe '.create_all' do
     def worker_double(override = {})
       stubs = {:resolve_used_bins! => nil, :run_order => 0}.merge(override)
       instance_double(Worker, stubs)
@@ -195,7 +195,7 @@ describe ImageOptim::Worker do
     end
   end
 
-  describe :option do
+  describe '.option' do
     it 'runs option block in context of worker' do
       # don't add Abc to list of wokers
       allow(ImageOptim::Worker).to receive(:inherited)

@@ -2,11 +2,7 @@ require 'spec_helper'
 require 'image_optim/runner/glob_helpers'
 
 describe ImageOptim::Runner::GlobHelpers do
-  before do
-    stub_const('GlobHelpers', ImageOptim::Runner::GlobHelpers)
-  end
-
-  describe :expand_braces do
+  describe '.expand_braces' do
     {
       'hello.world' => %w[hello.world],
       '{hello,.world}' => %w[hello .world],
@@ -18,7 +14,7 @@ describe ImageOptim::Runner::GlobHelpers do
       'test{ing,}' => %w[testing test],
     }.each do |glob, expected|
       it "expands #{glob}" do
-        expect(GlobHelpers.expand_braces(glob)).to match_array(expected)
+        expect(described_class.expand_braces(glob)).to match_array(expected)
       end
     end
   end

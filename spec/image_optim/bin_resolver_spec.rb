@@ -20,7 +20,7 @@ describe ImageOptim::BinResolver do
   let(:image_optim){ double(:image_optim, :verbose => false, :pack => false) }
   let(:resolver){ BinResolver.new(image_optim) }
 
-  describe :full_path do
+  describe '#full_path' do
     def full_path(name)
       resolver.instance_eval{ full_path(name) }
     end
