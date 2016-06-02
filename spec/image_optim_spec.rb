@@ -5,7 +5,7 @@ require 'tempfile'
 require 'English'
 
 describe ImageOptim do
-  root_dir = ImageOptim::ImagePath.new(__FILE__).dirname.dirname
+  root_dir = ImageOptim::Path.new(__FILE__).dirname.dirname
   images_dir = root_dir / 'spec/images'
   test_images = images_dir.glob('**/*.*').freeze
 
@@ -89,7 +89,7 @@ describe ImageOptim do
     end
 
     it 'ignores text file' do
-      original = ImageOptim::ImagePath.new(__FILE__)
+      original = ImageOptim::Path.new(__FILE__)
       copy = temp_copy(original)
 
       expect(Tempfile).not_to receive(:new)
@@ -118,7 +118,7 @@ describe ImageOptim do
       optimized_wrap = double
       image_optim = ImageOptim.new
 
-      allow(ImageOptim::ImagePath).to receive(:convert).
+      allow(ImageOptim::Path).to receive(:convert).
         with(original).and_return(original)
 
       expect(image_optim).to receive(:optimize_image).
@@ -134,7 +134,7 @@ describe ImageOptim do
       original = double
       image_optim = ImageOptim.new
 
-      allow(ImageOptim::ImagePath).to receive(:convert).
+      allow(ImageOptim::Path).to receive(:convert).
         with(original).and_return(original)
 
       expect(image_optim).to receive(:optimize_image).
@@ -156,7 +156,7 @@ describe ImageOptim do
       allow(ImageOptim::ImageMeta).to receive(:format_for_data).
         with(data).and_return('xxx')
 
-      expect(ImageOptim::ImagePath).to receive(:temp_file).and_yield(temp)
+      expect(ImageOptim::Path).to receive(:temp_file).and_yield(temp)
       expect(temp).to receive(:binmode)
       expect(temp).to receive(:write).with(data)
       expect(temp).to receive(:close)
@@ -175,7 +175,7 @@ describe ImageOptim do
       allow(ImageOptim::ImageMeta).to receive(:format_for_data).
         with(data).and_return('xxx')
 
-      expect(ImageOptim::ImagePath).to receive(:temp_file).and_yield(temp)
+      expect(ImageOptim::Path).to receive(:temp_file).and_yield(temp)
       expect(temp).to receive(:binmode)
       expect(temp).to receive(:write).with(data)
       expect(temp).to receive(:close)
@@ -192,7 +192,7 @@ describe ImageOptim do
       allow(ImageOptim::ImageMeta).to receive(:format_for_data).
         with(data).and_return(nil)
 
-      expect(ImageOptim::ImagePath).not_to receive(:temp_file)
+      expect(ImageOptim::Path).not_to receive(:temp_file)
       expect(image_optim).not_to receive(:optimize_image)
 
       expect(image_optim.optimize_image_data(data)).to eq(nil)

@@ -80,7 +80,7 @@ Process.times.class.class_eval do
   end
 end
 
-ImageOptim::ImagePath.class_eval do
+ImageOptim::Path.class_eval do
   def shellescape
     to_s.shellescape
   end
@@ -209,7 +209,7 @@ class Analyser
     end
 
     def path
-      ImageOptim::ImagePath.convert("#{DIR}/worker-analysis/#{cache}")
+      ImageOptim::Path.convert("#{DIR}/worker-analysis/#{cache}")
     end
 
     def inspect
@@ -251,7 +251,7 @@ class Analyser
   # Run all possible worker chains
   class WorkerRunner
     def initialize(path, workers)
-      @path = ImageOptim::ImagePath.convert(path)
+      @path = ImageOptim::Path.convert(path)
       @workers = workers
     end
 
@@ -535,7 +535,7 @@ private
   end
 
   def process_paths(paths)
-    paths = paths.map{ |path| ImageOptim::ImagePath.convert(path) }
+    paths = paths.map{ |path| ImageOptim::Path.convert(path) }
     paths.select!{ |path| path.exist? || warn("#{path} doesn't exits") }
     paths.select!{ |path| path.file? || warn("#{path} is not a file") }
     paths.select!{ |path| path.format || warn("#{path} is not an image") }
@@ -546,7 +546,7 @@ private
   end
 
   def workers_for_image(path)
-    @workers_by_format[ImageOptim::ImagePath.convert(path).format]
+    @workers_by_format[ImageOptim::Path.convert(path).format]
   end
 
   def log_workers_by_format

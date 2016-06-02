@@ -1,16 +1,16 @@
-require 'image_optim/image_path'
+require 'image_optim/path'
 
 class ImageOptim
   # Holds optimized image with reference to original and its size
-  class OptimizedPath < DelegateClass(ImagePath)
+  class OptimizedPath < DelegateClass(Path)
     def initialize(path, original_or_size = nil)
-      path = ImagePath.convert(path)
+      path = Path.convert(path)
       __setobj__(path)
       if original_or_size.is_a?(Integer)
         @original = path
         @original_size = original_or_size
       elsif original_or_size
-        @original = ImagePath.convert(original_or_size)
+        @original = Path.convert(original_or_size)
         @original_size = @original.size
       end
     end

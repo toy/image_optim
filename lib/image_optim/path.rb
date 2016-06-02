@@ -3,7 +3,7 @@ require 'image_optim/image_meta'
 
 class ImageOptim
   # FSPath with additional helpful methods
-  class ImagePath < FSPath
+  class Path < FSPath
     # Get temp path for this file with same extension
     def temp_path(*args, &block)
       ext = extname

@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'image_optim/worker/optipng'
-require 'image_optim/image_path'
+require 'image_optim/path'
 
 describe ImageOptim::Worker::Optipng do
   describe 'strip option' do
@@ -8,8 +8,8 @@ describe ImageOptim::Worker::Optipng do
 
     let(:options){ {} }
     let(:optipng_version){ '0.7' }
-    let(:src){ instance_double(ImageOptim::ImagePath, :copy => nil) }
-    let(:dst){ instance_double(ImageOptim::ImagePath) }
+    let(:src){ instance_double(ImageOptim::Path, :copy => nil) }
+    let(:dst){ instance_double(ImageOptim::Path) }
 
     before do
       optipng_bin = instance_double(ImageOptim::BinResolver::Bin)

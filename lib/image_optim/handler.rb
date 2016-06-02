@@ -1,4 +1,4 @@
-require 'image_optim/image_path'
+require 'image_optim/path'
 
 class ImageOptim
   # Handles processing of original to result using upto two temp files
