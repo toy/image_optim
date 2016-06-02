@@ -51,7 +51,7 @@ class ImageOptim
     end
 
     # Get format using ImageSize
-    def format
+    def image_format
       ImageMeta.format_for_path(self)
     end
 

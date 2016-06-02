@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Rename `ImageOptim::ImagePath` to `ImageOptim::Path` and its method `#format` to `#image_format` [@toy](https://github.com/toy)
 * Ignore empty config files [#133](https://github.com/toy/image_optim/issues/133) [@toy](https://github.com/toy)
 * Use `FileUtils.move` in `ImagePath#replace` to rename file instead of copying on same device, don't preserve mtime and atime [#134](https://github.com/toy/image_optim/issues/134) [@toy](https://github.com/toy)
 * Make `:allow_lossy` an individual option for workers that can use it, so it will be in the list of worker options [#130](https://github.com/toy/image_optim/issues/130) [@toy](https://github.com/toy)

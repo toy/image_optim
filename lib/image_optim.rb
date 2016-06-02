@@ -86,7 +86,7 @@ class ImageOptim
 
   # Get workers for image
   def workers_for_image(path)
-    @workers_by_format[Path.convert(path).format]
+    @workers_by_format[Path.convert(path).image_format]
   end
 
   # Optimize one file, return new path as OptimizedPath or nil if

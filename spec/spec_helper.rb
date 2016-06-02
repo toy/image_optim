@@ -11,7 +11,7 @@ RSpec.configure do |c|
 end
 
 def flatten_animation(image)
-  if image.format == :gif
+  if image.image_format == :gif
     flattened = image.temp_path
     command = %W[
       convert
