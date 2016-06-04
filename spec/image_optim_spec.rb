@@ -17,10 +17,6 @@ describe ImageOptim do
   include helpers
   extend helpers
 
-  matcher :be_in_range do |expected|
-    match{ |actual| expected.include?(actual) }
-  end
-
   before do
     stub_const('Cmd', ImageOptim::Cmd)
 

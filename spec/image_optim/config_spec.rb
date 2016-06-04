@@ -74,10 +74,6 @@ describe ImageOptim::Config do
         def self.bin_sym
           :abc
         end
-
-        def image_formats
-          []
-        end
       end)
     end
 
