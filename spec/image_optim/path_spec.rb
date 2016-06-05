@@ -1,40 +1,40 @@
 require 'spec_helper'
-require 'image_optim/image_path'
+require 'image_optim/path'
 
-describe ImageOptim::ImagePath do
+describe ImageOptim::Path do
   before do
-    stub_const('ImagePath', ImageOptim::ImagePath)
+    stub_const('Path', ImageOptim::Path)
   end
 
   describe '.convert' do
-    it 'returns ImagePath for string' do
+    it 'returns Path for string' do
       path = 'a'
 
-      expect(ImagePath.convert(path)).to be_a(ImagePath)
-      expect(ImagePath.convert(path)).to eq(ImagePath.new(path))
+      expect(Path.convert(path)).to be_a(Path)
+      expect(Path.convert(path)).to eq(Path.new(path))
 
-      expect(ImagePath.convert(path)).not_to eq(path)
-      expect(ImagePath.convert(path)).not_to be(path)
+      expect(Path.convert(path)).not_to eq(path)
+      expect(Path.convert(path)).not_to be(path)
     end
 
-    it 'returns ImagePath for Pathname' do
+    it 'returns Path for Pathname' do
       pathname = Pathname.new('a')
 
-      expect(ImagePath.convert(pathname)).to be_a(ImagePath)
-      expect(ImagePath.convert(pathname)).to eq(ImagePath.new(pathname))
+      expect(Path.convert(pathname)).to be_a(Path)
+      expect(Path.convert(pathname)).to eq(Path.new(pathname))
 
-      expect(ImagePath.convert(pathname)).to eq(pathname)
-      expect(ImagePath.convert(pathname)).not_to be(pathname)
+      expect(Path.convert(pathname)).to eq(pathname)
+      expect(Path.convert(pathname)).not_to be(pathname)
     end
 
-    it 'returns same instance for ImagePath' do
-      image_path = ImagePath.new('a')
+    it 'returns same instance for Path' do
+      image_path = Path.new('a')
 
-      expect(ImagePath.convert(image_path)).to be_a(ImagePath)
-      expect(ImagePath.convert(image_path)).to eq(ImagePath.new(image_path))
+      expect(Path.convert(image_path)).to be_a(Path)
+      expect(Path.convert(image_path)).to eq(Path.new(image_path))
 
-      expect(ImagePath.convert(image_path)).to eq(image_path)
-      expect(ImagePath.convert(image_path)).to be(image_path)
+      expect(Path.convert(image_path)).to eq(image_path)
+      expect(Path.convert(image_path)).to be(image_path)
     end
   end
 
@@ -42,7 +42,7 @@ describe ImageOptim::ImagePath do
     it 'reads binary data' do
       data = (0..255).to_a.pack('c*')
 
-      path = ImagePath.temp_file_path
+      path = Path.temp_file_path
       path.write(data)
 
       expect(path.binread).to eq(data)
@@ -53,8 +53,8 @@ describe ImageOptim::ImagePath do
   end
 
   describe '#replace' do
-    let(:src){ ImagePath.temp_file_path }
-    let(:dst){ ImagePath.temp_file_path }
+    let(:src){ Path.temp_file_path }
+    let(:dst){ Path.temp_file_path }
 
     it 'moves data to destination' do
       src.write('src')

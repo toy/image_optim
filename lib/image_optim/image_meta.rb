@@ -2,24 +2,19 @@ require 'image_size'
 
 class ImageOptim
   # Getting format of image at path or as data
-  class ImageMeta
-    def self.for_path(path)
+  module ImageMeta
+    def self.format_for_path(path)
       is = ImageSize.path(path)
-      new(is.format)
+      is.format if is
     rescue ImageSize::FormatError => e
       warn "#{e} (detecting format of image at #{path})"
     end
 
-    def self.for_data(data)
+    def self.format_for_data(data)
       is = ImageSize.new(data)
-      new(is.format)
+      is.format if is
     rescue ImageSize::FormatError => e
       warn "#{e} (detecting format of image data)"
-    end
-
-    attr_reader :format
-    def initialize(format)
-      @format = format
     end
   end
 end

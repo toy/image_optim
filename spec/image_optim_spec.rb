@@ -5,7 +5,7 @@ require 'tempfile'
 require 'English'
 
 describe ImageOptim do
-  root_dir = ImageOptim::ImagePath.new(__FILE__).dirname.dirname
+  root_dir = ImageOptim::Path.new(__FILE__).dirname.dirname
   images_dir = root_dir / 'spec/images'
   test_images = images_dir.glob('**/*.*').freeze
 
@@ -16,10 +16,6 @@ describe ImageOptim do
   end
   include helpers
   extend helpers
-
-  matcher :be_in_range do |expected|
-    match{ |actual| expected.include?(actual) }
-  end
 
   before do
     stub_const('Cmd', ImageOptim::Cmd)
@@ -50,7 +46,7 @@ describe ImageOptim do
     end
   end
 
-  describe :optimize_image do
+  describe '#optimize_image' do
     define :have_same_data_as do |expected|
       match{ |actual| actual.binread == expected.binread }
     end
@@ -76,7 +72,7 @@ describe ImageOptim do
             expect(copy).to have_same_data_as(original)
 
             expect(optimized).not_to be_nil
-            expect(optimized).to be_a(ImageOptim::ImagePath::Optimized)
+            expect(optimized).to be_a(ImageOptim::OptimizedPath)
             expect(optimized).to have_size
             expect(optimized).to be_smaller_than(original)
             expect(optimized).not_to have_same_data_as(original)
@@ -89,7 +85,7 @@ describe ImageOptim do
     end
 
     it 'ignores text file' do
-      original = ImageOptim::ImagePath.new(__FILE__)
+      original = ImageOptim::Path.new(__FILE__)
       copy = temp_copy(original)
 
       expect(Tempfile).not_to receive(:new)
@@ -111,20 +107,20 @@ describe ImageOptim do
     end
   end
 
-  describe :optimize_image! do
+  describe '#optimize_image!' do
     it 'optimizes image and replaces original' do
       original = double
       optimized = double(:original_size => 12_345)
       optimized_wrap = double
       image_optim = ImageOptim.new
 
-      allow(ImageOptim::ImagePath).to receive(:convert).
+      allow(ImageOptim::Path).to receive(:convert).
         with(original).and_return(original)
 
       expect(image_optim).to receive(:optimize_image).
         with(original).and_return(optimized)
       expect(optimized).to receive(:replace).with(original)
-      expect(ImageOptim::ImagePath::Optimized).to receive(:new).
+      expect(ImageOptim::OptimizedPath).to receive(:new).
         with(original, 12_345).and_return(optimized_wrap)
 
       expect(image_optim.optimize_image!(original)).to eq(optimized_wrap)
@@ -134,18 +130,18 @@ describe ImageOptim do
       original = double
       image_optim = ImageOptim.new
 
-      allow(ImageOptim::ImagePath).to receive(:convert).
+      allow(ImageOptim::Path).to receive(:convert).
         with(original).and_return(original)
 
       expect(image_optim).to receive(:optimize_image).
         with(original).and_return(nil)
-      expect(ImageOptim::ImagePath::Optimized).not_to receive(:new)
+      expect(ImageOptim::OptimizedPath).not_to receive(:new)
 
       expect(image_optim.optimize_image!(original)).to eq(nil)
     end
   end
 
-  describe :optimize_image_data do
+  describe '#optimize_image_data' do
     it 'create temp file, optimizes image and returns data' do
       data = double
       temp = double(:path => double)
@@ -153,10 +149,10 @@ describe ImageOptim do
       optimized_data = double
       image_optim = ImageOptim.new
 
-      allow(ImageOptim::ImageMeta).to receive(:for_data).
-        with(data).and_return(double(:format => 'xxx'))
+      allow(ImageOptim::ImageMeta).to receive(:format_for_data).
+        with(data).and_return('xxx')
 
-      expect(ImageOptim::ImagePath).to receive(:temp_file).and_yield(temp)
+      expect(ImageOptim::Path).to receive(:temp_file).and_yield(temp)
       expect(temp).to receive(:binmode)
       expect(temp).to receive(:write).with(data)
       expect(temp).to receive(:close)
@@ -172,10 +168,10 @@ describe ImageOptim do
       temp = double(:path => double)
       image_optim = ImageOptim.new
 
-      allow(ImageOptim::ImageMeta).to receive(:for_data).
-        with(data).and_return(double(:format => 'xxx'))
+      allow(ImageOptim::ImageMeta).to receive(:format_for_data).
+        with(data).and_return('xxx')
 
-      expect(ImageOptim::ImagePath).to receive(:temp_file).and_yield(temp)
+      expect(ImageOptim::Path).to receive(:temp_file).and_yield(temp)
       expect(temp).to receive(:binmode)
       expect(temp).to receive(:write).with(data)
       expect(temp).to receive(:close)
@@ -189,49 +185,47 @@ describe ImageOptim do
       data = double
       image_optim = ImageOptim.new
 
-      allow(ImageOptim::ImageMeta).to receive(:for_data).
-        with(data).and_return(double(:format => nil))
+      allow(ImageOptim::ImageMeta).to receive(:format_for_data).
+        with(data).and_return(nil)
 
-      expect(ImageOptim::ImagePath).not_to receive(:temp_file)
+      expect(ImageOptim::Path).not_to receive(:temp_file)
       expect(image_optim).not_to receive(:optimize_image)
 
       expect(image_optim.optimize_image_data(data)).to eq(nil)
     end
   end
 
-  describe 'optimize multiple' do
-    %w[
-      optimize_images
-      optimize_images!
-      optimize_images_data
-    ].each do |list_method|
-      describe list_method do
-        method = list_method.sub('images', 'image')
-        describe 'without block' do
-          it 'optimizes images and returns array of results' do
-            image_optim = ImageOptim.new
-            results = test_images.map do |src|
-              dst = double
-              expect(image_optim).to receive(method).with(src).and_return(dst)
-              [src, dst]
-            end
-            expect(image_optim.send(list_method, test_images)).to eq(results)
+  %w[
+    optimize_images
+    optimize_images!
+    optimize_images_data
+  ].each do |list_method|
+    describe "##{list_method}" do
+      method = list_method.sub('images', 'image')
+      describe 'without block' do
+        it 'optimizes images and returns array of results' do
+          image_optim = ImageOptim.new
+          results = test_images.map do |src|
+            dst = double
+            expect(image_optim).to receive(method).with(src).and_return(dst)
+            [src, dst]
           end
+          expect(image_optim.send(list_method, test_images)).to eq(results)
         end
+      end
 
-        describe 'given block' do
-          it 'optimizes images, yields path and result for each and '\
-              'returns array of yield results' do
-            image_optim = ImageOptim.new
-            results = test_images.map do |src|
-              dst = double
-              expect(image_optim).to receive(method).with(src).and_return(dst)
-              [src, dst, :test]
-            end
-            expect(image_optim.send(list_method, test_images) do |src, dst|
-              [src, dst, :test]
-            end).to eq(results)
+      describe 'given block' do
+        it 'optimizes images, yields path and result for each and '\
+            'returns array of yield results' do
+          image_optim = ImageOptim.new
+          results = test_images.map do |src|
+            dst = double
+            expect(image_optim).to receive(method).with(src).and_return(dst)
+            [src, dst, :test]
           end
+          expect(image_optim.send(list_method, test_images) do |src, dst|
+            [src, dst, :test]
+          end).to eq(results)
         end
       end
     end

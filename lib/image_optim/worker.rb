@@ -77,8 +77,8 @@ class ImageOptim
 
     # Short inspect
     def inspect
-      options_string = options.map do |name, value|
-        " @#{name}=#{value.inspect}"
+      options_string = self.class.option_definitions.map do |option|
+        " @#{option.name}=#{send(option.name).inspect}"
       end.join(',')
       "#<#{self.class}#{options_string}>"
     end

@@ -12,7 +12,7 @@ describe ImageOptim::Runner::OptionParser do
     end
   end
 
-  describe :parse! do
+  describe '.parse!' do
     it 'returns empty hash for arguments without options' do
       args = %w[foo bar]
       expect(OptionParser.parse!(args)).to eq({})
@@ -25,7 +25,7 @@ describe ImageOptim::Runner::OptionParser do
       expect(args).to eq(%w[foo bar])
     end
 
-    it 'stops parsing optiosn after --' do
+    it 'stops parsing options after --' do
       args = %w[-- -r foo bar]
       OptionParser.parse!(args)
       expect(args).to eq(%w[-r foo bar])
@@ -92,7 +92,7 @@ describe ImageOptim::Runner::OptionParser do
     end
   end
 
-  describe :help do
+  describe '#help' do
     it 'returns wrapped text' do
       parser = OptionParser.new({})
 

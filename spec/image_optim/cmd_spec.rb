@@ -12,7 +12,7 @@ describe ImageOptim::Cmd do
     end
   end
 
-  describe :run do
+  describe '.run' do
     it 'calls system and returns result' do
       status = double
       expect(Cmd).to receive(:system).with('cmd', 'arg').and_return(status)
@@ -38,7 +38,7 @@ describe ImageOptim::Cmd do
     end
   end
 
-  describe :capture do
+  describe '.capture' do
     it 'calls ` and returns result' do
       output = double
       expect(Cmd).to receive(:`).with('cmd arg arg+').and_return(output)

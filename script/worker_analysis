@@ -80,7 +80,7 @@ Process.times.class.class_eval do
   end
 end
 
-ImageOptim::ImagePath.class_eval do
+ImageOptim::Path.class_eval do
   def shellescape
     to_s.shellescape
   end
@@ -192,7 +192,8 @@ class Analyser
       time = Process.times.sum - start
 
       dst_size = success ? dst.size : nil
-      cache = (success ? dst : src).digest.sub(/../, '\0/') + ".#{src.format}"
+      digest = (success ? dst : src).digest
+      cache = digest.sub(/../, '\0/') + ".#{src.image_format}"
       result = new(worker.id, success, time, src.size, dst_size, cache)
       if success
         path = result.path
@@ -209,7 +210,7 @@ class Analyser
     end
 
     def path
-      ImageOptim::ImagePath.convert("#{DIR}/worker-analysis/#{cache}")
+      ImageOptim::Path.convert("#{DIR}/worker-analysis/#{cache}")
     end
 
     def inspect
@@ -251,7 +252,7 @@ class Analyser
   # Run all possible worker chains
   class WorkerRunner
     def initialize(path, workers)
-      @path = ImageOptim::ImagePath.convert(path)
+      @path = ImageOptim::Path.convert(path)
       @workers = workers
     end
 
@@ -281,7 +282,7 @@ class Analyser
         worker_result, result_image = run_worker(src, worker)
 
         steps = (last_result ? last_result.steps : []) + [worker_result]
-        chain_result = ChainResult.new(src.format, steps)
+        chain_result = ChainResult.new(src.image_format, steps)
         chain_result.difference = difference_with(result_image)
 
         yield chain_result
@@ -337,7 +338,7 @@ class Analyser
 
     def flatten_animation(image)
       run_cache[:flatten][image.digest] ||= begin
-        if image.format == :gif
+        if image.image_format == :gif
           flattened = image.temp_path
           Cmd.run(*%W[
             convert
@@ -535,10 +536,10 @@ private
   end
 
   def process_paths(paths)
-    paths = paths.map{ |path| ImageOptim::ImagePath.convert(path) }
+    paths = paths.map{ |path| ImageOptim::Path.convert(path) }
     paths.select!{ |path| path.exist? || warn("#{path} doesn't exits") }
     paths.select!{ |path| path.file? || warn("#{path} is not a file") }
-    paths.select!{ |path| path.format || warn("#{path} is not an image") }
+    paths.select!{ |path| path.image_format || warn("#{path} is not an image") }
     paths.select! do |path|
       workers_for_image(path) || warn("#{path} can't be handled by any worker")
     end
@@ -546,7 +547,7 @@ private
   end
 
   def workers_for_image(path)
-    @workers_by_format[ImageOptim::ImagePath.convert(path).format]
+    @workers_by_format[ImageOptim::Path.convert(path).image_format]
   end
 
   def log_workers_by_format

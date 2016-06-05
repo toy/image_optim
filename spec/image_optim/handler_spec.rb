@@ -9,15 +9,12 @@ describe ImageOptim::Handler do
   it 'uses original as source for first conversion '\
       'and two temp files for further conversions' do
     original = double(:original)
-    allow(original).to receive(:temp_path) do
-      fail 'temp_path called unexpectedly'
-    end
+    allow(original).to receive(:respond_to?).with(:temp_path).and_return(true)
 
     handler = Handler.new(original)
     temp_a = double(:temp_a)
     temp_b = double(:temp_b)
-    expect(original).to receive(:temp_path).once.and_return(temp_a)
-    expect(original).to receive(:temp_path).once.and_return(temp_b)
+    expect(original).to receive(:temp_path).and_return(temp_a, temp_b)
 
     # first unsuccessful run
     handler.process do |src, dst|
@@ -60,7 +57,7 @@ describe ImageOptim::Handler do
     handler.cleanup
   end
 
-  describe :open do
+  describe '.for' do
     it 'yields instance, runs cleanup and returns result' do
       original = double
       handler = double

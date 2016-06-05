@@ -2,7 +2,8 @@ require 'image_optim/bin_resolver'
 require 'image_optim/config'
 require 'image_optim/handler'
 require 'image_optim/image_meta'
-require 'image_optim/image_path'
+require 'image_optim/optimized_path'
+require 'image_optim/path'
 require 'image_optim/railtie' if defined?(Rails)
 require 'image_optim/worker'
 require 'in_threads'
@@ -85,13 +86,13 @@ class ImageOptim
 
   # Get workers for image
   def workers_for_image(path)
-    @workers_by_format[ImagePath.convert(path).format]
+    @workers_by_format[Path.convert(path).image_format]
   end
 
-  # Optimize one file, return new path as OptimizedImagePath or nil if
+  # Optimize one file, return new path as OptimizedPath or nil if
   # optimization failed
   def optimize_image(original)
-    original = ImagePath.convert(original)
+    original = Path.convert(original)
     return unless (workers = workers_for_image(original))
     result = Handler.for(original) do |handler|
       workers.each do |worker|
@@ -101,23 +102,23 @@ class ImageOptim
       end
     end
     return unless result
-    ImagePath::Optimized.new(result, original)
+    OptimizedPath.new(result, original)
   end
 
-  # Optimize one file in place, return original as OptimizedImagePath or nil if
+  # Optimize one file in place, return original as OptimizedPath or nil if
   # optimization failed
   def optimize_image!(original)
-    original = ImagePath.convert(original)
+    original = Path.convert(original)
     return unless (result = optimize_image(original))
     result.replace(original)
-    ImagePath::Optimized.new(original, result.original_size)
+    OptimizedPath.new(original, result.original_size)
   end
 
   # Optimize image data, return new data or nil if optimization failed
   def optimize_image_data(original_data)
-    image_meta = ImageMeta.for_data(original_data)
-    return unless image_meta && image_meta.format
-    ImagePath.temp_file %W[image_optim .#{image_meta.format}] do |temp|
+    format = ImageMeta.format_for_data(original_data)
+    return unless format
+    Path.temp_file %W[image_optim .#{format}] do |temp|
       temp.binmode
       temp.write(original_data)
       temp.close

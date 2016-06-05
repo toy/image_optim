@@ -33,7 +33,7 @@ describe 'ImageOptim::Railtie' do
     Rails.application = nil
   end
 
-  describe :initialization do
+  describe 'initialization' do
     it 'initializes by default' do
       expect(ImageOptim).to receive(:new)
       init_rails_app
@@ -117,9 +117,9 @@ describe 'ImageOptim::Railtie' do
     end
   end
 
-  describe :assets do
+  describe 'optimizing assets' do
     before do
-      stub_const('ImagePath', ImageOptim::ImagePath)
+      stub_const('Path', ImageOptim::Path)
     end
 
     %w[
@@ -132,11 +132,11 @@ describe 'ImageOptim::Railtie' do
         asset = init_rails_app.assets.find_asset(asset_name)
 
         asset_data = asset.source
-        original = ImagePath.convert(asset.pathname)
+        original = Path.convert(asset.pathname)
 
         expect(asset_data).to be_smaller_than(original)
 
-        ImagePath.temp_file_path %W[spec .#{original.format}] do |temp|
+        Path.temp_file_path %W[spec .#{original.image_format}] do |temp|
           temp.write(asset_data)
 
           expect(temp).to be_similar_to(original, 0)

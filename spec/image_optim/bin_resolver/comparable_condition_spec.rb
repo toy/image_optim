@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'image_optim/bin_resolver/comparable_condition'
 
 describe ImageOptim::BinResolver::ComparableCondition do
-  is = ImageOptim::BinResolver::ComparableCondition.is
+  let(:is){ ImageOptim::BinResolver::ComparableCondition.is }
 
   it 'builds conditions' do
     expect(is.between?(10, 20).method).to eq(:between?)
