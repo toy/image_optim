@@ -6,6 +6,9 @@ describe ImageOptim::Worker do
   before do
     stub_const('Worker', ImageOptim::Worker)
     stub_const('BinResolver', ImageOptim::BinResolver)
+
+    # don't add to list of wokers
+    allow(ImageOptim::Worker).to receive(:inherited)
   end
 
   describe '#initialize' do
@@ -18,9 +21,6 @@ describe ImageOptim::Worker do
 
   describe '#options' do
     it 'returns a Hash with options' do
-      # don't add Abc to list of wokers
-      allow(ImageOptim::Worker).to receive(:inherited)
-
       worker_class = Class.new(Worker) do
         option(:one, 1, 'One')
         option(:two, 2, 'Two')
@@ -44,10 +44,6 @@ describe ImageOptim::Worker do
   end
 
   describe '#image_formats' do
-    before do
-      allow(ImageOptim::Worker).to receive(:inherited)
-    end
-
     {
       'GifOptim' => :gif,
       'JpegOptim' => :jpeg,
@@ -68,9 +64,6 @@ describe ImageOptim::Worker do
 
   describe '#inspect' do
     it 'returns inspect String containing options' do
-      # don't add Abc to list of wokers
-      allow(ImageOptim::Worker).to receive(:inherited)
-
       stub_const('DefOptim', Class.new(Worker) do
         option(:one, 1, 'One')
         option(:two, 2, 'Two')
@@ -80,6 +73,16 @@ describe ImageOptim::Worker do
       worker = DefOptim.new(ImageOptim.new, :three => '...')
 
       expect(worker.inspect).to eq('#<DefOptim @one=1, @two=2, @three="...">')
+    end
+  end
+
+  describe '.inherited' do
+    it 'adds subclasses to klasses' do
+      base_class = Class.new{ extend ImageOptim::Worker::ClassMethods }
+      expect(base_class.klasses.to_a).to eq([])
+
+      worker_class = Class.new(base_class)
+      expect(base_class.klasses.to_a).to eq([worker_class])
     end
   end
 
@@ -261,9 +264,6 @@ describe ImageOptim::Worker do
 
   describe '.option' do
     it 'runs option block in context of worker' do
-      # don't add Abc to list of wokers
-      allow(ImageOptim::Worker).to receive(:inherited)
-
       stub_const('Abc', Class.new(Worker) do
         option(:test, 1, 'Test context') do |_v|
           some_instance_method
@@ -276,9 +276,6 @@ describe ImageOptim::Worker do
     end
 
     it 'returns instance of OptionDefinition' do
-      # don't add Abc to list of wokers
-      allow(ImageOptim::Worker).to receive(:inherited)
-
       definition = nil
       Class.new(Worker) do
         definition = option(:test, 1, 'Test'){ |v| v }
