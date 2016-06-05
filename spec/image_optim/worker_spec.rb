@@ -8,14 +8,78 @@ describe ImageOptim::Worker do
     stub_const('BinResolver', ImageOptim::BinResolver)
   end
 
+  describe '#initialize' do
+    it 'expects first argument to be an instanace of ImageOptim' do
+      expect do
+        Worker.new(double)
+      end.to raise_error ArgumentError
+    end
+  end
+
+  describe '#options' do
+    it 'returns a Hash with options' do
+      # don't add Abc to list of wokers
+      allow(ImageOptim::Worker).to receive(:inherited)
+
+      worker_class = Class.new(Worker) do
+        option(:one, 1, 'One')
+        option(:two, 2, 'Two')
+        option(:three, 3, 'Three')
+      end
+
+      worker = worker_class.new(ImageOptim.new, :three => '...')
+
+      expect(worker.options).to eq(:one => 1, :two => 2, :three => '...')
+    end
+  end
+
   describe '#optimize' do
     it 'raises NotImplementedError' do
-      image_optim = ImageOptim.new
-      worker = Worker.new(image_optim, {})
+      worker = Worker.new(ImageOptim.new, {})
 
       expect do
         worker.optimize(double, double)
       end.to raise_error NotImplementedError
+    end
+  end
+
+  describe '#image_formats' do
+    before do
+      allow(ImageOptim::Worker).to receive(:inherited)
+    end
+
+    {
+      'GifOptim' => :gif,
+      'JpegOptim' => :jpeg,
+      'PngOptim' => :png,
+      'SvgOptim' => :svg,
+    }.each do |class_name, image_format|
+      it "detects if class name contains #{image_format}" do
+        worker = stub_const(class_name, Class.new(Worker)).new(ImageOptim.new)
+        expect(worker.image_formats).to eq([image_format])
+      end
+    end
+
+    it 'fails if class name does not contain known type' do
+      worker = stub_const('TiffOptim', Class.new(Worker)).new(ImageOptim.new)
+      expect{ worker.image_formats }.to raise_error(/can't guess/)
+    end
+  end
+
+  describe '#inspect' do
+    it 'returns inspect String containing options' do
+      # don't add Abc to list of wokers
+      allow(ImageOptim::Worker).to receive(:inherited)
+
+      stub_const('DefOptim', Class.new(Worker) do
+        option(:one, 1, 'One')
+        option(:two, 2, 'Two')
+        option(:three, 3, 'Three')
+      end)
+
+      worker = DefOptim.new(ImageOptim.new, :three => '...')
+
+      expect(worker.inspect).to eq('#<DefOptim @one=1, @two=2, @three="...">')
     end
   end
 
