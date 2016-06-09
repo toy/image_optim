@@ -19,9 +19,6 @@ describe ImageOptim do
 
   before do
     stub_const('Cmd', ImageOptim::Cmd)
-
-    allow(ImageOptim::Config).to receive(:global).and_return({})
-    allow(ImageOptim::Config).to receive(:local).and_return({})
   end
 
   isolated_options_base = {:skip_missing_workers => false}
