@@ -3,10 +3,12 @@ if ENV['CODECLIMATE'] && ENV['CODECLIMATE_REPO_TOKEN']
   CodeClimate::TestReporter.start
 end
 
+require 'image_optim/path'
+
 RSpec.configure do |c|
   c.before do
-    stub_const('ImageOptim::Config::GLOBAL_PATH', '/dev/null')
-    stub_const('ImageOptim::Config::LOCAL_PATH', '/dev/null')
+    stub_const('ImageOptim::Config::GLOBAL_PATH', ImageOptim::Path::NULL)
+    stub_const('ImageOptim::Config::LOCAL_PATH', ImageOptim::Path::NULL)
   end
 
   c.order = :random
@@ -38,7 +40,7 @@ def mepp(image_a, image_b)
     -alpha Background
     #{coalesce_a.to_s.shellescape}
     #{coalesce_b.to_s.shellescape}
-    /dev/null
+    #{ImageOptim::Path::NULL}
     2>&1
   ].join(' ')
   output = ImageOptim::Cmd.capture(command)
