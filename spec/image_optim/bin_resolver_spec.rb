@@ -93,7 +93,7 @@ describe ImageOptim::BinResolver do
       'pack_path',
       ENV['PATH'],
       BinResolver::VENDOR_PATH,
-    ].join(':'))
+    ].join(File::PATH_SEPARATOR))
   end
 
   it 'resolves bin in path and returns instance of Bin' do
@@ -111,7 +111,7 @@ describe ImageOptim::BinResolver do
       expect(resolver.env_path).to eq([
         ENV['PATH'],
         BinResolver::VENDOR_PATH,
-      ].join(':'))
+      ].join(File::PATH_SEPARATOR))
     end
   end
 
@@ -129,7 +129,7 @@ describe ImageOptim::BinResolver do
       expect(resolver.env_path).to eq([
         ENV['PATH'],
         BinResolver::VENDOR_PATH,
-      ].join(':'))
+      ].join(File::PATH_SEPARATOR))
     end
   end
 
@@ -165,7 +165,7 @@ describe ImageOptim::BinResolver do
         tmpdir,
         ENV['PATH'],
         BinResolver::VENDOR_PATH,
-      ].join(':'))
+      ].join(File::PATH_SEPARATOR))
 
       expect(FileUtils).to receive(:remove_entry_secure).with(tmpdir)
       at_exit_blocks.each(&:call)
@@ -190,7 +190,7 @@ describe ImageOptim::BinResolver do
         expect(resolver.env_path).to eq([
           ENV['PATH'],
           BinResolver::VENDOR_PATH,
-        ].join(':'))
+        ].join(File::PATH_SEPARATOR))
       end
     end
   end
