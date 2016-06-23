@@ -50,7 +50,7 @@ describe ImageOptim::Cmd do
       expect(Cmd.capture('echo test')).to eq("test\n")
       expect($CHILD_STATUS.exitstatus).to eq(0)
 
-      expect(Cmd.capture('printf more; sh -c exit\ 1')).to eq('more')
+      expect(Cmd.capture('printf more && sh -c exit\ 1')).to eq('more')
       expect($CHILD_STATUS.exitstatus).to eq(1)
 
       expect(Cmd.capture('sh -c exit\ 66')).to eq('')
