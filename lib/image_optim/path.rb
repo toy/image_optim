@@ -34,7 +34,7 @@ class ImageOptim
       begin
         dst.chown(stat.uid, stat.gid)
       rescue Errno::EPERM
-        dst.chmod(stat.mode & 01777)
+        dst.chmod(stat.mode & 0o1777)
       else
         dst.chmod(stat.mode)
       end
