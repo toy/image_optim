@@ -3,7 +3,7 @@
 [![Code Climate](https://img.shields.io/codeclimate/github/toy/image_optim.svg?style=flat)](https://codeclimate.com/github/toy/image_optim)
 [![Code Climate Coverage](https://img.shields.io/codeclimate/coverage/github/toy/image_optim.svg?style=flat)](https://codeclimate.com/github/toy/image_optim)
 [![Dependency Status](https://img.shields.io/gemnasium/toy/image_optim.svg?style=flat)](https://gemnasium.com/toy/image_optim)
-[![Inch CI](http://inch-ci.org/github/toy/image_optim.svg?branch=master&style=flat)](http://inch-ci.org/github/toy/image_optim)
+[![Inch CI](https://inch-ci.org/github/toy/image_optim.svg?branch=master&style=flat)](https://inch-ci.org/github/toy/image_optim)
 
 # image_optim
 
