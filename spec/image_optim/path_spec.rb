@@ -43,7 +43,7 @@ describe ImageOptim::Path do
       data = (0..255).to_a.pack('c*')
 
       path = Path.temp_file_path
-      path.write(data)
+      path.binwrite(data)
 
       expect(path.binread).to eq(data)
       if ''.respond_to?(:encoding)

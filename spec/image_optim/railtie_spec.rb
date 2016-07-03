@@ -137,7 +137,7 @@ describe 'ImageOptim::Railtie' do
         expect(asset_data).to be_smaller_than(original)
 
         Path.temp_file_path %W[spec .#{original.image_format}] do |temp|
-          temp.write(asset_data)
+          temp.binwrite(asset_data)
 
           expect(temp).to be_similar_to(original, 0)
         end

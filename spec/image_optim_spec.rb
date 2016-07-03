@@ -97,7 +97,7 @@ describe ImageOptim do
     }.each do |type, data|
       it "ingores broken #{type}" do
         path = FSPath.temp_file_path
-        path.write(data)
+        path.binwrite(data)
         expect(ImageOptim::ImageMeta).to receive(:warn)
         expect(ImageOptim.optimize_image(path)).to be_nil
       end

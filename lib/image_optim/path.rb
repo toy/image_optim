@@ -55,11 +55,6 @@ class ImageOptim
       ImageMeta.format_for_path(self)
     end
 
-    # Read binary data
-    def binread
-      open('rb', &:read)
-    end
-
     # Returns path if it is already an instance of this class otherwise new
     # instance
     def self.convert(path)
