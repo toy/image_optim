@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gemspec
 
-if RUBY_VERSION >= '1.9'
+if ENV['CODECLIMATE']
   gem 'codeclimate-test-reporter', :group => :test, :require => nil
 end
 
