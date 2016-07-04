@@ -13,25 +13,30 @@ rvm:
   - '2.2'
   - jruby-19mode
   - ree
-script:
-  if [ -n "$RUBOCOP" ]; then
-    bundle exec rubocop
-  ; elif [ -n "$RAILS_VERSION" ]; then
-    bundle exec image_optim --info
-    && bundle exec rspec spec/image_optim/railtie_spec.rb
-  ; else
-    bundle exec image_optim --info
-    && bundle exec rspec
-  ; fi
-before_install:
-  if [ -z "$RUBOCOP" ]; then
-    command -v svgo || npm install svgo
-    ;
-    command -v pngout || (
-      mkdir -p ~/bin
-      && curl -L "http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/x86_64/pngout'
-    )
-  ; fi
+script: |
+  (
+    set -ex
+    if [ -n "$RUBOCOP" ]; then
+      bundle exec rubocop
+    elif [ -n "$RAILS_VERSION" ]; then
+      bundle exec image_optim --info
+      bundle exec rspec spec/image_optim/railtie_spec.rb
+    else
+      bundle exec image_optim --info
+      bundle exec rspec
+    fi
+  )
+before_install: |
+  (
+    set -ex
+    if [ -z "$RUBOCOP" ]; then
+      command -v svgo || npm install svgo
+      command -v pngout || {
+        mkdir -p ~/bin
+        curl -L "http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/x86_64/pngout'
+      }
+    fi
+  )
 matrix:
   fast_finish: true
   include:
