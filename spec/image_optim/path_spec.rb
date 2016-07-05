@@ -77,7 +77,8 @@ describe ImageOptim::Path do
 
       src.replace(dst)
 
-      expect(dst.stat.mode & 0o777).to eq(mode)
+      got = dst.stat.mode & 0o777
+      expect(got).to eq(mode), format('expected %04o, got %04o', mode, got)
     end
 
     it 'does not preserve mtime of destination file' do
