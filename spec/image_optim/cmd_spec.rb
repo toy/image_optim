@@ -21,13 +21,13 @@ describe ImageOptim::Cmd do
     end
 
     it 'returns process success status' do
-      expect(Cmd.run('sh -c exit\ 0')).to eq(true)
+      expect(Cmd.run('sh -c "exit 0"')).to eq(true)
       expect($CHILD_STATUS.exitstatus).to eq(0)
 
-      expect(Cmd.run('sh -c exit\ 1')).to eq(false)
+      expect(Cmd.run('sh -c "exit 1"')).to eq(false)
       expect($CHILD_STATUS.exitstatus).to eq(1)
 
-      expect(Cmd.run('sh -c exit\ 66')).to eq(false)
+      expect(Cmd.run('sh -c "exit 66"')).to eq(false)
       expect($CHILD_STATUS.exitstatus).to eq(66)
     end
 
@@ -50,10 +50,10 @@ describe ImageOptim::Cmd do
       expect(Cmd.capture('echo test')).to eq("test\n")
       expect($CHILD_STATUS.exitstatus).to eq(0)
 
-      expect(Cmd.capture('printf more && sh -c exit\ 1')).to eq('more')
+      expect(Cmd.capture('printf more && sh -c "exit 1"')).to eq('more')
       expect($CHILD_STATUS.exitstatus).to eq(1)
 
-      expect(Cmd.capture('sh -c exit\ 66')).to eq('')
+      expect(Cmd.capture('sh -c "exit 66"')).to eq('')
       expect($CHILD_STATUS.exitstatus).to eq(66)
     end
 
