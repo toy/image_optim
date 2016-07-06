@@ -10,6 +10,10 @@ describe ImageOptim::Path do
     end
   end
 
+  def inodes_supported?
+    File.stat(__FILE__).ino != 0
+  end
+
   before do
     stub_const('Path', ImageOptim::Path)
   end
@@ -101,6 +105,7 @@ describe ImageOptim::Path do
     end
 
     it 'changes inode of destination' do
+      skip 'inodes are not supported' unless inodes_supported?
       expect do
         src.replace(dst)
       end.to change{ dst.stat.ino }
