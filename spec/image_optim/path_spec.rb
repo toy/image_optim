@@ -1,7 +1,15 @@
 require 'spec_helper'
 require 'image_optim/path'
+require 'tempfile'
 
 describe ImageOptim::Path do
+  def any_file_modes_allowed?
+    Tempfile.open 'posix' do |f|
+      File.chmod(0, f.path)
+      File.stat(f.path).mode & 0o777 == 0
+    end
+  end
+
   before do
     stub_const('Path', ImageOptim::Path)
   end
@@ -71,6 +79,7 @@ describe ImageOptim::Path do
     end
 
     it 'preserves attributes of destination file' do
+      skip 'full file modes are not support' unless any_file_modes_allowed?
       mode = 0o666
 
       dst.chmod(mode)
