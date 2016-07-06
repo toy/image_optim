@@ -2,6 +2,13 @@ require 'spec_helper'
 require 'image_optim/cmd'
 
 describe ImageOptim::Cmd do
+  def signals_supported?
+    Process.kill(0, 0)
+    true
+  rescue
+    false
+  end
+
   before do
     stub_const('Cmd', ImageOptim::Cmd)
   end
@@ -32,6 +39,7 @@ describe ImageOptim::Cmd do
     end
 
     it 'raises SignalException if process terminates after signal' do
+      skip 'signals are not supported' unless signals_supported?
       expect_int_exception do
         Cmd.run('kill -s INT $$')
       end
@@ -58,6 +66,7 @@ describe ImageOptim::Cmd do
     end
 
     it 'raises SignalException if process terminates after signal' do
+      skip 'signals are not supported' unless signals_supported?
       expect_int_exception do
         Cmd.capture('kill -s INT $$')
       end
