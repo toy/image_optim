@@ -1,10 +1,10 @@
 require 'spec_helper'
 require 'image_optim/bin_resolver'
 require 'image_optim/cmd'
+require 'image_optim/path'
 
 describe ImageOptim::BinResolver do
   def stub_env(key, value)
-    allow(ENV).to receive(:[]).and_call_original
     allow(ENV).to receive(:[]).with(key).and_return(value)
   end
 
@@ -13,6 +13,8 @@ describe ImageOptim::BinResolver do
     stub_const('Bin', BinResolver::Bin)
     stub_const('SimpleVersion', BinResolver::SimpleVersion)
     stub_const('Cmd', ImageOptim::Cmd)
+
+    allow(ENV).to receive(:[]).and_call_original
   end
 
   let(:image_optim){ double(:image_optim, :verbose => false, :pack => false) }
@@ -23,56 +25,55 @@ describe ImageOptim::BinResolver do
       resolver.instance_eval{ full_path(name) }
     end
 
-    def command_v(name)
-      path = Cmd.capture("sh -c 'command -v #{name}' 2> /dev/null").strip
-      path unless path.empty?
-    end
+    context 'when PATHEXT is not set' do
+      it 'finds binary without ext in combined path' do
+        stub_env 'PATH', %w[/a /b /c /d].join(File::PATH_SEPARATOR)
+        stub_env 'PATHEXT', nil
 
-    it 'finds binary in path' do
-      stub_env 'PATH', 'bin'
-      expect(full_path('image_optim')).
-        to eq(File.expand_path('bin/image_optim'))
-    end
-
-    it 'finds bin in vendor' do
-      stub_env 'PATH', nil
-      expect(full_path('jpegrescan')).
-        to eq(File.expand_path('vendor/jpegrescan'))
-    end
-
-    it 'finds bin in pack' do
-      allow(image_optim).to receive(:pack).and_return(true)
-      stub_const('ImageOptim::Pack', Class.new do
-        def self.path
-          'script'
+        [
+          [:file?,        '/a/abc', false],
+          [:file?,        '/b/abc', true],
+          [:executable?,  '/b/abc', false],
+          [:file?,        '/c/abc', true],
+          [:executable?,  '/c/abc', true],
+        ].each do |method, path, result|
+          allow(File).to receive(method).
+            with(File.expand_path(path)).and_return(result)
         end
-      end)
 
-      stub_env 'PATH', nil
-      expect(full_path('update_worker_options_in_readme')).
-        to eq(File.expand_path('script/update_worker_options_in_readme'))
+        expect(full_path('abc')).
+          to eq(File.expand_path('/c/abc'))
+      end
     end
 
-    it 'works with different path separator' do
-      stub_const('File::PATH_SEPARATOR', 'O_o')
-      stub_env 'PATH', 'bin'
-      expect(full_path('image_optim')).
-        to eq(File.expand_path('bin/image_optim'))
+    context 'when PATHEXT is set' do
+      it 'finds binary with ext in combined path' do
+        stub_env 'PATH', %w[/a /b].join(File::PATH_SEPARATOR)
+        stub_env 'PATHEXT', '.com;.bat'
+
+        [
+          [:file?,        '/a/abc.com', false],
+          [:file?,        '/a/abc.bat', true],
+          [:executable?,  '/a/abc.bat', false],
+          [:file?,        '/b/abc.com', true],
+          [:executable?,  '/b/abc.com', true],
+        ].each do |method, path, result|
+          allow(File).to receive(method).
+            with(File.expand_path(path)).and_return(result)
+        end
+
+        expect(full_path('abc')).
+          to eq(File.expand_path('/b/abc.com'))
+      end
     end
 
     it 'returns nil on failure' do
-      stub_env 'PATH', 'lib'
+      stub_env 'PATH', ''
       expect(full_path('image_optim')).to be_nil
-    end
-
-    %w[ls sh which bash image_optim does_not_exist].each do |name|
-      it "returns same path as `command -v` for #{name}" do
-        expect(full_path(name)).to eq(command_v(name))
-      end
     end
   end
 
-  it 'combines path in order dir:pack:path:vendor' do
+  it 'combines path in order dir, pack, path, vendor' do
     allow(image_optim).to receive(:pack).and_return(true)
     stub_const('ImageOptim::Pack', Class.new do
       def self.path
@@ -125,22 +126,27 @@ describe ImageOptim::BinResolver do
   end
 
   it 'resolves bin specified in ENV' do
-    path = 'bin/image_optim'
-    stub_env 'IMAGE_OPTIM_BIN', path
+    path = 'bin/the_optimizer'
+    stub_env 'THE_OPTIMIZER_BIN', path
     tmpdir = double(:tmpdir, :to_str => 'tmpdir')
     symlink = double(:symlink)
+
+    full_path = File.expand_path(path)
+    allow(File).to receive(:exist?).with(full_path).and_return(true)
+    allow(File).to receive(:file?).with(full_path).and_return(true)
+    allow(File).to receive(:executable?).with(full_path).and_return(true)
 
     expect(FSPath).to receive(:temp_dir).
       once.and_return(tmpdir)
     expect(tmpdir).to receive(:/).
-      with(:image_optim).once.and_return(symlink)
+      with(:the_optimizer).once.and_return(symlink)
     expect(symlink).to receive(:make_symlink).
       with(File.expand_path(path)).once
 
     expect(resolver).not_to receive(:full_path)
     bin = double
     expect(Bin).to receive(:new).
-      with(:image_optim, File.expand_path(path)).and_return(bin)
+      with(:the_optimizer, File.expand_path(path)).and_return(bin)
     expect(bin).to receive(:check!).once
     expect(bin).to receive(:check_fail!).exactly(5).times
 
@@ -150,7 +156,7 @@ describe ImageOptim::BinResolver do
     end
 
     5.times do
-      resolver.resolve!(:image_optim)
+      resolver.resolve!(:the_optimizer)
     end
     expect(resolver.env_path).to eq([
       tmpdir,
@@ -162,25 +168,52 @@ describe ImageOptim::BinResolver do
     at_exit_blocks.each(&:call)
   end
 
-  {
-    'some/path/does/not/exist' => 'doesn\'t exist',
-    '.' => 'is not a file',
-    __FILE__ => 'is not executable',
-  }.each do |path, error_message|
-    it "raises when bin specified in ENV #{error_message}" do
-      stub_env 'IMAGE_OPTIM_BIN', path
+  describe 'checking bin' do
+    let(:path){ 'the_optimizer' }
+    let(:exist?){ true }
+    let(:file?){ true }
+    let(:executable?){ true }
+
+    before do
+      stub_env 'THE_OPTIMIZER_BIN', path
       expect(FSPath).not_to receive(:temp_dir)
       expect(resolver).not_to receive(:at_exit)
+      allow(File).to receive_messages(:exist? => exist?,
+                                      :file? => file?,
+                                      :executable? => executable?)
+    end
 
-      5.times do
-        expect do
-          resolver.resolve!(:image_optim)
-        end.to raise_error RuntimeError, /#{Regexp.escape(error_message)}/
-      end
+    after do
       expect(resolver.env_path).to eq([
         ENV['PATH'],
         BinResolver::VENDOR_PATH,
       ].join(File::PATH_SEPARATOR))
+    end
+
+    def raises_error(error_message)
+      5.times do
+        expect do
+          resolver.resolve!(:the_optimizer)
+        end.to raise_error RuntimeError, /#{Regexp.escape(error_message)}/
+      end
+    end
+
+    context 'presence' do
+      let(:exist?){ false }
+
+      it{ raises_error('doesn\'t exist') }
+    end
+
+    context 'been a file' do
+      let(:file?){ false }
+
+      it{ raises_error('is not a file') }
+    end
+
+    context 'been a file' do
+      let(:executable?){ false }
+
+      it{ raises_error('is not executable') }
     end
   end
 
