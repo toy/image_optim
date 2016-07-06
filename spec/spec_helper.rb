@@ -3,12 +3,19 @@ if ENV['CODECLIMATE'] && ENV['CODECLIMATE_REPO_TOKEN']
   CodeClimate::TestReporter.start
 end
 
+require 'image_optim/pack'
 require 'image_optim/path'
+
+ENV['PATH'] = [
+  ImageOptim::Pack.path,
+  ENV['PATH'],
+].compact.join File::PATH_SEPARATOR
 
 RSpec.configure do |c|
   c.before do
     stub_const('ImageOptim::Config::GLOBAL_PATH', ImageOptim::Path::NULL)
     stub_const('ImageOptim::Config::LOCAL_PATH', ImageOptim::Path::NULL)
+    ImageOptim.class_eval{ def pack; end }
   end
 
   c.order = :random
