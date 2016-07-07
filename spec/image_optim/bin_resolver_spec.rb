@@ -3,11 +3,9 @@ require 'image_optim/bin_resolver'
 require 'image_optim/cmd'
 
 describe ImageOptim::BinResolver do
-  def with_env(key, value)
-    saved, ENV[key] = ENV[key], value
-    yield
-  ensure
-    ENV[key] = saved
+  def stub_env(key, value)
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with(key).and_return(value)
   end
 
   before do
@@ -31,17 +29,15 @@ describe ImageOptim::BinResolver do
     end
 
     it 'finds binary in path' do
-      with_env 'PATH', 'bin' do
-        expect(full_path('image_optim')).
-          to eq(File.expand_path('bin/image_optim'))
-      end
+      stub_env 'PATH', 'bin'
+      expect(full_path('image_optim')).
+        to eq(File.expand_path('bin/image_optim'))
     end
 
     it 'finds bin in vendor' do
-      with_env 'PATH', nil do
-        expect(full_path('jpegrescan')).
-          to eq(File.expand_path('vendor/jpegrescan'))
-      end
+      stub_env 'PATH', nil
+      expect(full_path('jpegrescan')).
+        to eq(File.expand_path('vendor/jpegrescan'))
     end
 
     it 'finds bin in pack' do
@@ -52,24 +48,21 @@ describe ImageOptim::BinResolver do
         end
       end)
 
-      with_env 'PATH', nil do
-        expect(full_path('update_worker_options_in_readme')).
-          to eq(File.expand_path('script/update_worker_options_in_readme'))
-      end
+      stub_env 'PATH', nil
+      expect(full_path('update_worker_options_in_readme')).
+        to eq(File.expand_path('script/update_worker_options_in_readme'))
     end
 
     it 'works with different path separator' do
       stub_const('File::PATH_SEPARATOR', 'O_o')
-      with_env 'PATH', 'bin' do
-        expect(full_path('image_optim')).
-          to eq(File.expand_path('bin/image_optim'))
-      end
+      stub_env 'PATH', 'bin'
+      expect(full_path('image_optim')).
+        to eq(File.expand_path('bin/image_optim'))
     end
 
     it 'returns nil on failure' do
-      with_env 'PATH', 'lib' do
-        expect(full_path('image_optim')).to be_nil
-      end
+      stub_env 'PATH', 'lib'
+      expect(full_path('image_optim')).to be_nil
     end
 
     %w[ls sh which bash image_optim does_not_exist].each do |name|
@@ -97,79 +90,76 @@ describe ImageOptim::BinResolver do
   end
 
   it 'resolves bin in path and returns instance of Bin' do
-    with_env 'LS_BIN', nil do
-      expect(FSPath).not_to receive(:temp_dir)
-      expect(resolver).to receive(:full_path).with(:ls).and_return('/bin/ls')
-      bin = double
-      expect(Bin).to receive(:new).with(:ls, '/bin/ls').and_return(bin)
-      expect(bin).to receive(:check!).once
-      expect(bin).to receive(:check_fail!).exactly(5).times
+    stub_env 'LS_BIN', nil
+    expect(FSPath).not_to receive(:temp_dir)
+    expect(resolver).to receive(:full_path).with(:ls).and_return('/bin/ls')
+    bin = double
+    expect(Bin).to receive(:new).with(:ls, '/bin/ls').and_return(bin)
+    expect(bin).to receive(:check!).once
+    expect(bin).to receive(:check_fail!).exactly(5).times
 
-      5.times do
-        expect(resolver.resolve!(:ls)).to eq(bin)
-      end
-      expect(resolver.env_path).to eq([
-        ENV['PATH'],
-        BinResolver::VENDOR_PATH,
-      ].join(File::PATH_SEPARATOR))
+    5.times do
+      expect(resolver.resolve!(:ls)).to eq(bin)
     end
+    expect(resolver.env_path).to eq([
+      ENV['PATH'],
+      BinResolver::VENDOR_PATH,
+    ].join(File::PATH_SEPARATOR))
   end
 
   it 'raises on failure to resolve bin' do
-    with_env 'LS_BIN', nil do
-      expect(FSPath).not_to receive(:temp_dir)
-      expect(resolver).to receive(:full_path).with(:ls).and_return(nil)
-      expect(Bin).not_to receive(:new)
+    stub_env 'LS_BIN', nil
+    expect(FSPath).not_to receive(:temp_dir)
+    expect(resolver).to receive(:full_path).with(:ls).and_return(nil)
+    expect(Bin).not_to receive(:new)
 
-      5.times do
-        expect do
-          resolver.resolve!(:ls)
-        end.to raise_error BinResolver::BinNotFound
-      end
-      expect(resolver.env_path).to eq([
-        ENV['PATH'],
-        BinResolver::VENDOR_PATH,
-      ].join(File::PATH_SEPARATOR))
+    5.times do
+      expect do
+        resolver.resolve!(:ls)
+      end.to raise_error BinResolver::BinNotFound
     end
+    expect(resolver.env_path).to eq([
+      ENV['PATH'],
+      BinResolver::VENDOR_PATH,
+    ].join(File::PATH_SEPARATOR))
   end
 
   it 'resolves bin specified in ENV' do
     path = 'bin/image_optim'
-    with_env 'IMAGE_OPTIM_BIN', path do
-      tmpdir = double(:tmpdir, :to_str => 'tmpdir')
-      symlink = double(:symlink)
+    stub_env 'IMAGE_OPTIM_BIN', path
+    tmpdir = double(:tmpdir, :to_str => 'tmpdir')
+    symlink = double(:symlink)
 
-      expect(FSPath).to receive(:temp_dir).
-        once.and_return(tmpdir)
-      expect(tmpdir).to receive(:/).
-        with(:image_optim).once.and_return(symlink)
-      expect(symlink).to receive(:make_symlink).
-        with(File.expand_path(path)).once
+    expect(FSPath).to receive(:temp_dir).
+      once.and_return(tmpdir)
+    expect(tmpdir).to receive(:/).
+      with(:image_optim).once.and_return(symlink)
+    expect(symlink).to receive(:make_symlink).
+      with(File.expand_path(path)).once
 
-      expect(resolver).not_to receive(:full_path)
-      bin = double
-      expect(Bin).to receive(:new).
-        with(:image_optim, File.expand_path(path)).and_return(bin)
-      expect(bin).to receive(:check!).once
-      expect(bin).to receive(:check_fail!).exactly(5).times
+    expect(resolver).not_to receive(:full_path)
+    bin = double
+    expect(Bin).to receive(:new).
+      with(:image_optim, File.expand_path(path)).and_return(bin)
+    expect(bin).to receive(:check!).once
+    expect(bin).to receive(:check_fail!).exactly(5).times
 
-      at_exit_blocks = []
-      expect(resolver).to receive(:at_exit).once do |&block|
-        at_exit_blocks.unshift(block)
-      end
-
-      5.times do
-        resolver.resolve!(:image_optim)
-      end
-      expect(resolver.env_path).to eq([
-        tmpdir,
-        ENV['PATH'],
-        BinResolver::VENDOR_PATH,
-      ].join(File::PATH_SEPARATOR))
-
-      expect(FileUtils).to receive(:remove_entry_secure).with(tmpdir)
-      at_exit_blocks.each(&:call)
+    at_exit_blocks = []
+    expect(resolver).to receive(:at_exit).once do |&block|
+      at_exit_blocks.unshift(block)
     end
+
+    5.times do
+      resolver.resolve!(:image_optim)
+    end
+    expect(resolver.env_path).to eq([
+      tmpdir,
+      ENV['PATH'],
+      BinResolver::VENDOR_PATH,
+    ].join(File::PATH_SEPARATOR))
+
+    expect(FileUtils).to receive(:remove_entry_secure).with(tmpdir)
+    at_exit_blocks.each(&:call)
   end
 
   {
@@ -178,45 +168,43 @@ describe ImageOptim::BinResolver do
     __FILE__ => 'is not executable',
   }.each do |path, error_message|
     it "raises when bin specified in ENV #{error_message}" do
-      with_env 'IMAGE_OPTIM_BIN', path do
-        expect(FSPath).not_to receive(:temp_dir)
-        expect(resolver).not_to receive(:at_exit)
+      stub_env 'IMAGE_OPTIM_BIN', path
+      expect(FSPath).not_to receive(:temp_dir)
+      expect(resolver).not_to receive(:at_exit)
 
-        5.times do
-          expect do
-            resolver.resolve!(:image_optim)
-          end.to raise_error RuntimeError, /#{Regexp.escape(error_message)}/
-        end
-        expect(resolver.env_path).to eq([
-          ENV['PATH'],
-          BinResolver::VENDOR_PATH,
-        ].join(File::PATH_SEPARATOR))
+      5.times do
+        expect do
+          resolver.resolve!(:image_optim)
+        end.to raise_error RuntimeError, /#{Regexp.escape(error_message)}/
       end
+      expect(resolver.env_path).to eq([
+        ENV['PATH'],
+        BinResolver::VENDOR_PATH,
+      ].join(File::PATH_SEPARATOR))
     end
   end
 
   it 'resolves bin only once, but checks every time' do
-    with_env 'LS_BIN', nil do
-      expect(resolver).to receive(:full_path).once.with(:ls) do
-        sleep 0.1
-        '/bin/ls'
-      end
-      bin = double
-      expect(Bin).to receive(:new).once.with(:ls, '/bin/ls').and_return(bin)
-
-      count = 0
-      mutex = Mutex.new
-      allow(bin).to receive(:check!).once
-      allow(bin).to receive(:check_fail!){ mutex.synchronize{ count += 1 } }
-
-      Array.new(10) do
-        Thread.new do
-          resolver.resolve!(:ls)
-        end
-      end.each(&:join)
-
-      expect(count).to eq(10)
+    stub_env 'LS_BIN', nil
+    expect(resolver).to receive(:full_path).once.with(:ls) do
+      sleep 0.1
+      '/bin/ls'
     end
+    bin = double
+    expect(Bin).to receive(:new).once.with(:ls, '/bin/ls').and_return(bin)
+
+    count = 0
+    mutex = Mutex.new
+    allow(bin).to receive(:check!).once
+    allow(bin).to receive(:check_fail!){ mutex.synchronize{ count += 1 } }
+
+    Array.new(10) do
+      Thread.new do
+        resolver.resolve!(:ls)
+      end
+    end.each(&:join)
+
+    expect(count).to eq(10)
   end
 
   describe 'checking version' do
@@ -225,47 +213,44 @@ describe ImageOptim::BinResolver do
     end
 
     it 'raises every time if did not get bin version' do
-      with_env 'PNGCRUSH_BIN', nil do
-        bin = Bin.new(:pngcrush, '/bin/pngcrush')
+      stub_env 'PNGCRUSH_BIN', nil
+      bin = Bin.new(:pngcrush, '/bin/pngcrush')
 
-        expect(Bin).to receive(:new).and_return(bin)
-        allow(bin).to receive(:version).and_return(nil)
+      expect(Bin).to receive(:new).and_return(bin)
+      allow(bin).to receive(:version).and_return(nil)
 
-        5.times do
-          expect do
-            resolver.resolve!(:pngcrush)
-          end.to raise_error Bin::UnknownVersion
-        end
+      5.times do
+        expect do
+          resolver.resolve!(:pngcrush)
+        end.to raise_error Bin::UnknownVersion
       end
     end
 
     it 'raises every time on detection of misbehaving version' do
-      with_env 'PNGCRUSH_BIN', nil do
-        bin = Bin.new(:pngcrush, '/bin/pngcrush')
+      stub_env 'PNGCRUSH_BIN', nil
+      bin = Bin.new(:pngcrush, '/bin/pngcrush')
 
-        expect(Bin).to receive(:new).and_return(bin)
-        allow(bin).to receive(:version).and_return(SimpleVersion.new('1.7.60'))
+      expect(Bin).to receive(:new).and_return(bin)
+      allow(bin).to receive(:version).and_return(SimpleVersion.new('1.7.60'))
 
-        5.times do
-          expect do
-            resolver.resolve!(:pngcrush)
-          end.to raise_error Bin::BadVersion
-        end
+      5.times do
+        expect do
+          resolver.resolve!(:pngcrush)
+        end.to raise_error Bin::BadVersion
       end
     end
 
     it 'warns once on detection of problematic version' do
-      with_env 'ADVPNG_BIN', nil do
-        bin = Bin.new(:advpng, '/bin/advpng')
+      stub_env 'ADVPNG_BIN', nil
+      bin = Bin.new(:advpng, '/bin/advpng')
 
-        expect(Bin).to receive(:new).and_return(bin)
-        allow(bin).to receive(:version).and_return(SimpleVersion.new('1.15'))
+      expect(Bin).to receive(:new).and_return(bin)
+      allow(bin).to receive(:version).and_return(SimpleVersion.new('1.15'))
 
-        expect(bin).to receive(:warn).once
+      expect(bin).to receive(:warn).once
 
-        5.times do
-          resolver.resolve!(:pngcrush)
-        end
+      5.times do
+        resolver.resolve!(:pngcrush)
       end
     end
   end
