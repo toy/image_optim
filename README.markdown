@@ -56,9 +56,11 @@ gem 'image_optim_pack'
 
 With version:
 
+<!---<update-version>-->
 ```ruby
-gem 'image_optim', '~> 0.11'
+gem 'image_optim', '~> 0.22'
 ```
+<!---</update-version>-->
 
 If you want to check latest changes:
 
