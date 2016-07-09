@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Should work on windows [#24](https://github.com/toy/image_optim/issues/24) [@toy](https://github.com/toy)
 * Rename `ImageOptim::ImagePath` to `ImageOptim::Path` and its method `#format` to `#image_format` [@toy](https://github.com/toy)
 * Ignore empty config files [#133](https://github.com/toy/image_optim/issues/133) [@toy](https://github.com/toy)
 * Use `FileUtils.move` in `ImagePath#replace` to rename file instead of copying on same device, don't preserve mtime and atime [#134](https://github.com/toy/image_optim/issues/134) [@toy](https://github.com/toy)
