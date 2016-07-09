@@ -2,6 +2,7 @@ require 'image_optim/bin_resolver/error'
 require 'image_optim/bin_resolver/simple_version'
 require 'image_optim/bin_resolver/comparable_condition'
 require 'image_optim/cmd'
+require 'image_optim/path'
 require 'shellwords'
 require 'digest/sha1'
 
@@ -74,11 +75,11 @@ class ImageOptim
       def version_string
         case name
         when :advpng, :gifsicle, :jpegoptim, :optipng
-          capture("#{escaped_path} --version 2> /dev/null")[/\d+(\.\d+)+/]
+          capture("#{escaped_path} --version 2> #{Path::NULL}")[/\d+(\.\d+)+/]
         when :svgo, :pngquant
           capture("#{escaped_path} --version 2>&1")[/\d+(\.\d+)+/]
         when :jhead, :'jpeg-recompress'
-          capture("#{escaped_path} -V 2> /dev/null")[/\d+(\.\d+)+/]
+          capture("#{escaped_path} -V 2> #{Path::NULL}")[/\d+(\.\d+)+/]
         when :jpegtran
           capture("#{escaped_path} -v - 2>&1")[/version (\d+\S*)/, 1]
         when :pngcrush

@@ -4,6 +4,12 @@ require 'image_optim/image_meta'
 class ImageOptim
   # FSPath with additional helpful methods
   class Path < FSPath
+    NULL = if defined?(IO::NULL)
+      IO::NULL
+    else
+      %w[/dev/null NUL: NUL nul NIL: NL:].find{ |dev| File.exist?(dev) }
+    end
+
     # Get temp path for this file with same extension
     def temp_path(*args, &block)
       ext = extname

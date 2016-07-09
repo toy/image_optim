@@ -2,6 +2,7 @@
 
 require 'image_optim/cmd'
 require 'image_optim/configuration_error'
+require 'image_optim/path'
 require 'image_optim/worker/class_methods'
 require 'shellwords'
 require 'English'
@@ -139,14 +140,14 @@ class ImageOptim
         %W[
           env PATH=#{@image_optim.env_path.shellescape}
           nice -n #{@image_optim.nice}
-          #{cmd_args.shelljoin} > /dev/null 2>&1
+          #{cmd_args.shelljoin} > #{Path::NULL} 2>&1
         ].join(' ')
       else
         [
           {'PATH' => @image_optim.env_path},
           %W[nice -n #{@image_optim.nice}],
           cmd_args,
-          {:out => '/dev/null', :err => '/dev/null'},
+          {:out => Path::NULL, :err => Path::NULL},
         ].flatten
       end
       Cmd.run(*args)
