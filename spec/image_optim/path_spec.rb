@@ -3,16 +3,7 @@ require 'image_optim/path'
 require 'tempfile'
 
 describe ImageOptim::Path do
-  def any_file_modes_allowed?
-    Tempfile.open 'posix' do |f|
-      File.chmod(0, f.path)
-      File.stat(f.path).mode & 0o777 == 0
-    end
-  end
-
-  def inodes_supported?
-    File.stat(__FILE__).ino != 0
-  end
+  include CapabilityCheckHelpers
 
   before do
     stub_const('Path', ImageOptim::Path)

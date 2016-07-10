@@ -2,12 +2,7 @@ require 'spec_helper'
 require 'image_optim/cmd'
 
 describe ImageOptim::Cmd do
-  def signals_supported?
-    Process.kill(0, 0)
-    true
-  rescue
-    false
-  end
+  include CapabilityCheckHelpers
 
   before do
     stub_const('Cmd', ImageOptim::Cmd)
