@@ -144,6 +144,19 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
   end
 
   op.separator nil
+  op.separator '  Caching:'
+
+  op.on('--cache-dir DIR', 'Cache optimized images '\
+        'into the specified directory') do |cache_dir|
+    options[:cache_dir] = cache_dir
+  end
+
+  op.on('--cache-worker-digests', 'Cache worker digests '\
+        '(updating workers invalidates cache)') do |cache_worker_digests|
+    options[:cache_worker_digests] = cache_worker_digests
+  end
+
+  op.separator nil
   op.separator '  Disabling workers:'
 
   op.on('--[no-]skip-missing-workers', 'Skip workers with missing or '\
