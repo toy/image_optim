@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.23.0 (2016-07-17)
+
 * Added `cache_dir` and `cache_worker_digests` options to cache results [#83](https://github.com/toy/image_optim/issues/83) [@gpakosz](https://github.com/gpakosz)
 * Should work on windows [#24](https://github.com/toy/image_optim/issues/24) [@toy](https://github.com/toy)
 * Rename `ImageOptim::ImagePath` to `ImageOptim::Path` and its method `#format` to `#image_format` [@toy](https://github.com/toy)

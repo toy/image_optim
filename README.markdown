@@ -58,7 +58,7 @@ With version:
 
 <!---<update-version>-->
 ```ruby
-gem 'image_optim', '~> 0.22'
+gem 'image_optim', '~> 0.23'
 ```
 <!---</update-version>-->
 
