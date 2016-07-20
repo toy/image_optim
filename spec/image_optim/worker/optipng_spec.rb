@@ -55,4 +55,48 @@ describe ImageOptim::Worker::Optipng do
       end
     end
   end
+
+  describe '#optimized?' do
+    let(:src){ instance_double(ImageOptim::Path, src_options) }
+    let(:dst){ instance_double(ImageOptim::Path, dst_options) }
+    let(:src_options){ {:size? => 10, :size => 10} }
+    let(:dst_options){ {:size? => 9, :size => 9} }
+    let(:instance){ described_class.new(ImageOptim.new, instance_options) }
+    let(:instance_options){ {} }
+
+    subject{ instance.optimized?(src, dst) }
+
+    context 'when interlace option is enabled' do
+      let(:instance_options){ {:interlace => true} }
+
+      context 'when dst is empty' do
+        let(:dst_options){ {:size? => nil} }
+        it{ is_expected.to be_falsy }
+      end
+
+      context 'when dst is not empty' do
+        let(:dst_options){ {:size? => 20, :size => 20} }
+        it{ is_expected.to be_truthy }
+      end
+    end
+
+    context 'when interlace option is disabled' do
+      let(:instance_options){ {:interlace => false} }
+
+      context 'when dst is empty' do
+        let(:dst_options){ {:size? => nil} }
+        it{ is_expected.to be_falsy }
+      end
+
+      context 'when dst is greater than or equal to src' do
+        let(:dst_options){ {:size? => 10, :size => 10} }
+        it{ is_expected.to be_falsy }
+      end
+
+      context 'when dst is less than src' do
+        let(:dst_options){ {:size? => 9, :size => 9} }
+        it{ is_expected.to be_truthy }
+      end
+    end
+  end
 end
