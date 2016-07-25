@@ -49,7 +49,7 @@ matrix:
     - env: RAILS_VERSION='~> 4.0' CODECLIMATE=1
       rvm: '2'
     - env: RUBOCOP=true
-      rvm: default
+      rvm: '2'
   allow_failures:
     - rvm: jruby-19mode
 addons:

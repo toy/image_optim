@@ -85,6 +85,7 @@ test_script:
         echo "################################################################################"
         $env:Path = "$rubypath;" + $path
         ruby --version
+        bundle package --all
         bundle install --local -j4
         bundle exec rspec
         if ($LASTEXITCODE -gt 0) {
