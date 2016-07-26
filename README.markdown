@@ -98,7 +98,7 @@ Besides permanently setting environment variables in `~/.profile`, `~/.bash_prof
 
 ### Binaries pack
 
-Easiest way to get latest versions of most binaries for `image_optim` for Linux and Mac OS X is by installing [`image_optim_pack`](https://github.com/toy/image_optim_pack) gem.
+Easiest way to get latest versions of most binaries for `image_optim` for Linux, Mac OS X, FreeBSD and OpenBSD is by installing [`image_optim_pack`](https://github.com/toy/image_optim_pack) gem.
 
 Check installation instructions in [Gem installation](#gem-installation) section.
 
