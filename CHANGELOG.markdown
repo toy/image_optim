@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Add proper handling of `ImageOptim.respond_to?` [@toy](https://github.com/toy)
+
 ## v0.23.0 (2016-07-17)
 
 * Added `cache_dir` and `cache_worker_digests` options to cache results [#83](https://github.com/toy/image_optim/issues/83) [@gpakosz](https://github.com/gpakosz)

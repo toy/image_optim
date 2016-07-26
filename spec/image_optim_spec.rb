@@ -227,4 +227,33 @@ describe ImageOptim do
       end
     end
   end
+
+  %w[
+    optimize_image
+    optimize_image!
+    optimize_image_data
+    optimize_images
+    optimize_images!
+    optimize_images_data
+  ].each do |method|
+    describe ".#{method}" do
+      it 'is checkable by respond_to?' do
+        expect(ImageOptim).to respond_to(method)
+      end
+
+      it 'calls same method on a new ImageOptim instance' do
+        image_optim = instance_double(ImageOptim)
+        method_arg = double
+        method_block = proc{ :x }
+
+        allow(ImageOptim).to receive(:new).and_return(image_optim)
+        expect(image_optim).to receive(method) do |arg, &block|
+          expect(arg).to eq(method_arg)
+          expect(block).to eq(method_block)
+        end
+
+        ImageOptim.send(method, method_arg, &method_block)
+      end
+    end
+  end
 end

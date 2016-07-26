@@ -168,25 +168,43 @@ class ImageOptim
     run_method_for(datas, :optimize_image_data, &block)
   end
 
-  # Optimization methods with default options
-  def self.method_missing(method, *args, &block)
-    if method_defined?(method) && method.to_s =~ /^optimize_image/
-      new.send(method, *args, &block)
-    else
-      super
+  class << self
+    # Optimization methods with default options
+    def method_missing(method, *args, &block)
+      if optimize_image_method?(method)
+        new.send(method, *args, &block)
+      else
+        super
+      end
     end
-  end
 
-  # Version of image_optim gem spec loaded
-  def self.version
-    Gem.loaded_specs['image_optim'].version.to_s
-  rescue
-    'DEV'
-  end
+    def respond_to_missing?(method, include_private = false)
+      optimize_image_method?(method) || super
+    end
 
-  # Full version of image_optim
-  def self.full_version
-    "image_optim v#{version}"
+    if RUBY_VERSION < '1.9'
+      def respond_to?(method, include_private = false)
+        optimize_image_method?(method) || super
+      end
+    end
+
+    # Version of image_optim gem spec loaded
+    def version
+      Gem.loaded_specs['image_optim'].version.to_s
+    rescue
+      'DEV'
+    end
+
+    # Full version of image_optim
+    def full_version
+      "image_optim v#{version}"
+    end
+
+  private
+
+    def optimize_image_method?(method)
+      method_defined?(method) && method.to_s =~ /^optimize_image/
+    end
   end
 
   # Are there workers for file at path?
