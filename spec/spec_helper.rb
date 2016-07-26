@@ -78,12 +78,12 @@ module CapabilityCheckHelpers
   def any_file_modes_allowed?
     Tempfile.open 'posix' do |f|
       File.chmod(0, f.path)
-      File.stat(f.path).mode & 0o777 == 0
+      (File.stat(f.path).mode & 0o777).zero?
     end
   end
 
   def inodes_supported?
-    File.stat(__FILE__).ino != 0
+    !File.stat(__FILE__).ino.zero?
   end
 
   def signals_supported?
