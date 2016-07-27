@@ -28,7 +28,7 @@ class ImageOptim
     #
     # See FileUtils.mv
     def move(dst)
-      FileUtils.move(self, dst)
+      FileUtils.move(self, dst, :force => true)
     end
 
     # Copy metadata: uid, gid, mode, optionally atime and mtime
