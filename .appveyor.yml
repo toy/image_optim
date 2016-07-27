@@ -97,4 +97,7 @@ test_script:
       1..32 | foreach {
         cp spec/images/ tmp/optimize_test -recurse -force
         bundle exec image_optim --verbose --allow-lossy -r tmp/optimize_test
+        if ($LASTEXITCODE -gt 0) {
+          exit 1
+        }
       }
