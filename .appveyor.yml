@@ -81,7 +81,7 @@ test_script:
   - ps: |
       $path = $env:Path
       $rubypaths = ls -Path C:\Ruby*\bin
-      foreach ($rubypath in $rubypaths[0, -2, -1]) {
+      foreach ($rubypath in $rubypaths[-2, -1]) {
         echo "################################################################################"
         $env:Path = "$rubypath;" + $path
         ruby --version
@@ -91,6 +91,11 @@ test_script:
         if ($LASTEXITCODE -gt 0) {
           exit 1
         }
+        rm tmp/optimize_test -recurse -force
+        cp spec/images tmp/optimize_test -recurse -force
+        bundle exec image_optim --allow-lossy -r tmp/optimize_test
+        if ($LASTEXITCODE -gt 0) {
+          exit 1
+        }
       }
       $env:Path = $path
-  - bundle exec image_optim --allow-lossy -r spec/images
