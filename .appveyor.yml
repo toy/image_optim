@@ -93,4 +93,8 @@ test_script:
         }
       }
       $env:Path = $path
-  - bundle exec image_optim --allow-lossy -r spec/images
+  - ps: |
+      1..32 | foreach {
+        cp spec/images/ tmp/optimize_test -recurse -force
+        bundle exec image_optim --verbose --allow-lossy -r tmp/optimize_test
+      }
