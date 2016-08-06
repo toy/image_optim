@@ -241,12 +241,7 @@ image_optim.optimize_images_data(datas)
 
 ### From rails
 
-`ImageOptim::Railtie` will automatically register sprockets preprocessor unless you set `config.assets.image_optim = false` or `config.assets.compress = false` (later for partial rails 3 compatibility).
-
-You can provide options for image_optim used for preprocessor through config `config.assets.image_optim = {nice: 20, svgo: false}` (ruby1.8 style: `{:nice => 20, :svgo => false}`).
-Check available options in [options section](#options).
-
-Image optimization can be time consuming, so depending on your deployment process you may prefer to optimize original asset files.
+Rails image assets optimization is extracted into [image\_optim\_rails gem](https://github.com/toy/image_optim_rails).
 
 ## Configuration
 

@@ -18,9 +18,6 @@ script: |
     set -ex
     if [ -n "$RUBOCOP" ]; then
       bundle exec rubocop
-    elif [ -n "$RAILS_VERSION" ] && [ -z "$CODECLIMATE" ]; then
-      bundle exec image_optim --info
-      bundle exec rspec spec/image_optim/railtie_spec.rb
     else
       bundle exec image_optim --info
       bundle exec rspec
@@ -40,13 +37,7 @@ before_install: |
 matrix:
   fast_finish: true
   include:
-    - env: RAILS_VERSION='~> 3.2' SPROCKETS_VERSION='~> 2.0'
-      rvm: default
-    - env: RAILS_VERSION='~> 3.2'
-      rvm: default
-    - env: RAILS_VERSION='~> 4.0' SPROCKETS_RAILS_VERSION='~> 2.0'
-      rvm: '2'
-    - env: RAILS_VERSION='~> 4.0' CODECLIMATE=1
+    - env: CODECLIMATE=true
       rvm: '2'
     - env: RUBOCOP=true
       rvm: '2'

@@ -15,6 +15,11 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = %w[lib]
 
+  s.post_install_message = <<-EOF
+Rails image assets optimization is extracted into image_optim_rails gem
+You can safely remove `config.assets.image_optim = false` if you are not going to use that gem
+EOF
+
   s.add_dependency 'fspath', '~> 3.0'
   s.add_dependency 'image_size', '~> 1.3'
   s.add_dependency 'exifr', '~> 1.2', '>= 1.2.2'
