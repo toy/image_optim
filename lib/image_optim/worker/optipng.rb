@@ -42,6 +42,10 @@ class ImageOptim
         end
         execute(:optipng, *args) && optimized?(src, dst)
       end
+
+      def optimized?(src, dst)
+        interlace ? dst.size? : super
+      end
     end
   end
 end
