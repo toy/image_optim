@@ -4,6 +4,7 @@
 
 * Add proper handling of `ImageOptim.respond_to?` [@toy](https://github.com/toy)
 * Fix an issue not working OptiPNG `interlace` option [#136](https://github.com/toy/image_optim/pull/136) [@mrk21](https://github.com/mrk21)
+* Minimize number of file system calls in default implementation of `optimized?` [#137](https://github.com/toy/image_optim/issues/137) [@toy](https://github.com/toy)
 
 ## v0.23.0 (2016-07-17)
 

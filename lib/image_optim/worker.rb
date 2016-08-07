@@ -73,7 +73,8 @@ class ImageOptim
 
     # Check if operation resulted in optimized file
     def optimized?(src, dst)
-      dst.size? && dst.size < src.size
+      dst_size = dst.size?
+      dst_size && dst_size < src.size
     end
 
     # Short inspect
