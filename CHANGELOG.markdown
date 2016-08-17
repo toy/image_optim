@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Don't show `?` for unknown bin version in message about inability to determine version [@toy](https://github.com/toy)
 * Deduplicate bin resolving error messages [@toy](https://github.com/toy)
 
 ## v0.24.0 (2016-08-14)

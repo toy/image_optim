@@ -255,7 +255,7 @@ describe ImageOptim::BinResolver do
       5.times do
         expect do
           resolver.resolve!(:pngcrush)
-        end.to raise_error Bin::UnknownVersion
+        end.to raise_error Bin::UnknownVersion, %r{pngcrush at /bin/pngcrush}
       end
     end
 

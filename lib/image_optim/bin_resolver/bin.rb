@@ -48,7 +48,9 @@ class ImageOptim
 
       # Fail if version will not work properly
       def check_fail!
-        fail UnknownVersion, "didn't get version of #{self}" unless version
+        unless version
+          fail UnknownVersion, "could not get version of #{name} at #{path}"
+        end
 
         FAIL_CHECKS.each do |bin_name, matcher, message|
           next unless bin_name == name
