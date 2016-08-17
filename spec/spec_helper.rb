@@ -78,7 +78,7 @@ module CapabilityCheckHelpers
   def any_file_modes_allowed?
     Tempfile.open 'posix' do |f|
       File.chmod(0, f.path)
-      (File.stat(f.path).mode & 0o777).zero?
+      return (File.stat(f.path).mode & 0o777).zero?
     end
   end
 
