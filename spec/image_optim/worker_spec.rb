@@ -160,11 +160,11 @@ describe ImageOptim::Worker do
 
     describe 'with missing workers' do
       let(:workers) do
-        Array.new(3) do |i|
+        %w[a b c c].map do |bin|
           worker = worker_double
-          unless i == 1
+          unless bin == 'b'
             allow(worker).to receive(:resolve_used_bins!).
-              and_raise(BinResolver::BinNotFound, "not found #{i}")
+              and_raise(BinResolver::BinNotFound, "not found #{bin}")
           end
           worker
         end
@@ -176,32 +176,27 @@ describe ImageOptim::Worker do
       end
 
       describe 'if skip_missing_workers is true' do
-        define :bin_not_found do |message|
-          match do |error|
-            error.is_a?(BinResolver::BinNotFound) && error.message == message
-          end
-        end
-
-        it 'shows warnings and returns resolved workers ' do
+        it 'shows deduplicated warnings and returns resolved workers ' do
           allow(image_optim).to receive(:skip_missing_workers).and_return(true)
 
-          expect(Worker).to receive(:warn).
-            once.with(bin_not_found('not found 0'))
-          expect(Worker).to receive(:warn).
-            once.with(bin_not_found('not found 2'))
+          expect(Worker).to receive(:warn).once.with('not found a')
+          expect(Worker).to receive(:warn).once.with('not found c')
 
-          expect(Worker.create_all(image_optim){ {} }).
-            to eq([workers[1]])
+          expect(Worker.create_all(image_optim){ {} }).to eq([workers[1]])
         end
       end
 
       describe 'if skip_missing_workers is false' do
-        it 'fails with a joint exception' do
+        it 'fails with a joint exception of deduplicated messages' do
           allow(image_optim).to receive(:skip_missing_workers).and_return(false)
 
           expect do
             Worker.create_all(image_optim){ {} }
-          end.to raise_error(BinResolver::Error, /not found 0\nnot found 2/)
+          end.to raise_error(BinResolver::Error, [
+            'Bin resolving errors:',
+            'not found a',
+            'not found c',
+          ].join("\n"))
         end
       end
     end

@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Deduplicate bin resolving error messages [@toy](https://github.com/toy)
+
 ## v0.24.0 (2016-08-14)
 
 * Rails image assets optimization is extracted into [image\_optim\_rails gem](https://github.com/toy/image_optim_rails) [#127](https://github.com/toy/image_optim/issues/127) [@toy](https://github.com/toy)

@@ -65,11 +65,12 @@ class ImageOptim
         end
 
         unless errors.empty?
+          messages = errors.map(&:to_s).uniq
           if image_optim.skip_missing_workers
-            errors.each{ |error| warn error }
+            messages.each{ |message| warn message }
           else
-            message = ['Bin resolving errors:', *errors].join("\n")
-            fail BinResolver::Error, message
+            joint_message = ['Bin resolving errors:', *messages].join("\n")
+            fail BinResolver::Error, joint_message
           end
         end
 
