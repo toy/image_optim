@@ -269,7 +269,7 @@ describe ImageOptim::BinResolver do
       5.times do
         expect do
           resolver.resolve!(:pngcrush)
-        end.to raise_error Bin::BadVersion
+        end.to raise_error Bin::BadVersion, /is known to produce broken pngs/
       end
     end
 
@@ -280,7 +280,7 @@ describe ImageOptim::BinResolver do
       expect(Bin).to receive(:new).and_return(bin)
       allow(bin).to receive(:version).and_return(SimpleVersion.new('1.15'))
 
-      expect(bin).to receive(:warn).once
+      expect(bin).to receive(:warn).once.with(match(/does not use zopfli/))
 
       5.times do
         resolver.resolve!(:pngcrush)
