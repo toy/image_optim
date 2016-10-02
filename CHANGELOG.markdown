@@ -240,7 +240,7 @@
 
 ## v0.7.1 (2013-01-17)
 
-* Use more compatible redirect syntax `>&` [#9](https://github.com/toy/image_optim/issues/9) @"Chris Thompson"
+* Use more compatible redirect syntax `>&` [#9](https://github.com/toy/image_optim/issues/9) [@teaforthecat](https://github.com/teaforthecat)
 
 ## v0.7.0 (2013-01-17)
 
