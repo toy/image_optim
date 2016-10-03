@@ -26,11 +26,11 @@ def flatten_animation(image)
     flattened = image.temp_path
     command = %W[
       convert
-      #{image.to_s.shellescape}
+      #{image}
       -coalesce
       -append
-      #{flattened.to_s.shellescape}
-    ].join(' ')
+      #{flattened}
+    ].shelljoin
     expect(ImageOptim::Cmd.run(command)).to be_truthy
     flattened
   else
@@ -41,7 +41,7 @@ end
 def mepp(image_a, image_b)
   coalesce_a = flatten_animation(image_a)
   coalesce_b = flatten_animation(image_b)
-  command = %W[
+  output = ImageOptim::Cmd.capture(%W[
     compare
     -metric MEPP
     -alpha Background
@@ -49,8 +49,7 @@ def mepp(image_a, image_b)
     #{coalesce_b.to_s.shellescape}
     #{ImageOptim::Path::NULL}
     2>&1
-  ].join(' ')
-  output = ImageOptim::Cmd.capture(command)
+  ].join(' '))
   unless [0, 1].include?($CHILD_STATUS.exitstatus)
     fail "compare #{image_a} with #{image_b} failed with `#{output}`"
   end

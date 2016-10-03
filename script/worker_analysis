@@ -81,10 +81,6 @@ Process.times.class.class_eval do
 end
 
 ImageOptim::Path.class_eval do
-  def shellescape
-    to_s.shellescape
-  end
-
   def digest
     @digest ||= Digest::SHA256.file(to_s).hexdigest
   end
@@ -313,13 +309,13 @@ class Analyser
         images = [flatten_animation(@path), flatten_animation(other)]
 
         alpha_presence = images.map do |image|
-          Cmd.capture("identify -format '%A' #{image.shellescape}")
+          Cmd.capture("identify -format '%A' #{image.to_s.shellescape}")
         end
         if alpha_presence.uniq.length == 2
           images.map!{ |image| underlay_noise(image) }
         end
 
-        nrmse_command = %W[
+        nrmse = Cmd.capture(*%W[
           convert
           #{images[0]} -auto-orient
           #{images[1]} -auto-orient
@@ -327,8 +323,7 @@ class Analyser
           -compare
           -format %[distortion]
           info:
-        ].shelljoin
-        nrmse = Cmd.capture(nrmse_command).to_f
+        ]).to_f
         unless $CHILD_STATUS.success?
           fail "failed comparison of #{@path} with #{other}"
         end
@@ -342,14 +337,11 @@ class Analyser
           flattened = image.temp_path
           Cmd.run(*%W[
             convert
-            #{image.shellescape}
+            #{image}
             -coalesce
             -append
-            #{flattened.shellescape}
-          ])
-          unless $CHILD_STATUS.success?
-            fail "failed flattening of #{image}"
-          end
+            #{flattened}
+          ]) || fail("failed flattening of #{image}")
           flattened
         else
           image
@@ -362,16 +354,13 @@ class Analyser
         with_noise = image.temp_path
         Cmd.run(*%W[
           convert
-          #{image.shellescape}
+          #{image}
           +noise Random
-          #{image.shellescape}
+          #{image}
           -flatten
           -alpha off
-          #{with_noise.shellescape}
-        ])
-        unless $CHILD_STATUS.success?
-          fail "failed underlaying noise to #{image}"
-        end
+          #{with_noise}
+        ]) || fail("failed underlaying noise to #{image}")
         with_noise
       end
     end
