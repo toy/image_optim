@@ -315,7 +315,7 @@ class Analyser
           images.map!{ |image| underlay_noise(image) }
         end
 
-        nrmse = Cmd.capture(*%W[
+        nrmse = Cmd.capture(%W[
           convert
           #{images[0]} -auto-orient
           #{images[1]} -auto-orient
@@ -323,7 +323,7 @@ class Analyser
           -compare
           -format %[distortion]
           info:
-        ]).to_f
+        ].shelljoin).to_f
         unless $CHILD_STATUS.success?
           fail "failed comparison of #{@path} with #{other}"
         end
