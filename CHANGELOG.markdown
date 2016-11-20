@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.24.1 (2016-11-20)
+
 * Use `image_size ~> 1.5` with `apng` detection, so apng images are not optimised to one frame version [#142](https://github.com/toy/image_optim/issues/142) [@toy](https://github.com/toy)
 * Don't show `?` for unknown bin version in message about inability to determine version [@toy](https://github.com/toy)
 * Deduplicate bin resolving error messages [@toy](https://github.com/toy)
