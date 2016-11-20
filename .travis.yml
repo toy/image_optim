@@ -34,6 +34,8 @@ before_install: |
       }
     fi
   )
+after_success:
+  - if [ -n "$CODECLIMATE" ]; then bundle exec codeclimate-test-reporter; fi
 matrix:
   fast_finish: true
   include:

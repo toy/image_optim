@@ -3,5 +3,8 @@ source 'https://rubygems.org'
 gemspec
 
 if ENV['CODECLIMATE']
-  gem 'codeclimate-test-reporter', :group => :test, :require => nil
+  group :test do
+    gem 'simplecov'
+    gem 'codeclimate-test-reporter'
+  end
 end
