@@ -161,12 +161,12 @@ sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush png
 ### OS X: Brew
 
 ```bash
-brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush pngquant
+brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush pngquant jonof/kenutils/pngout
 ```
 
 ### pngout installation (optional)
 
-You can install `pngout` by downloading and installing the [binary versions](http://www.jonof.id.au/kenutils).
+If you installed the dependencies via brew, pngout should be installed already. Otherwise, you can install `pngout` by downloading and installing the [binary versions](http://www.jonof.id.au/kenutils).
 
 _Note: pngout is free to use even in commercial soft, but you can not redistribute, repackage or reuse it without consent and agreement of creator. [license](http://advsys.net/ken/utils.htm#pngoutkziplicense)_
 
