@@ -4,63 +4,10 @@ install:
   - set PATH=%cd%\tmp\bin;%PATH%
   - ruby --version
   - bundle package --all
-  - echo curl.exe -fsSL --max-time 15 --retry 5 -o %%%%1 %%%%2 > tmp\bin\download.bat
 
-  - ps: | # advpng
-      if (-not (test-path tmp/bin/advpng.exe)) {
-        download.bat tmp/advancecomp.zip https://github.com/amadvance/advancecomp/releases/download/v1.20/advancecomp-1.20-windows-x86.zip
-        7z e tmp/advancecomp.zip -otmp/bin advpng.exe
-      }
-
-  - ps: | # gifsicle
-      if (-not (test-path tmp/bin/gifsicle.exe)) {
-        download.bat tmp/gifsicle.zip https://eternallybored.org/misc/gifsicle/releases/gifsicle-1.88-win64.zip
-        7z e tmp/gifsicle.zip -otmp/bin */gifsicle.exe
-      }
-
-  - ps: | # jhead
-      if (-not (test-path tmp/bin/jhead.exe)) {
-        download.bat tmp/bin/jhead.exe http://www.sentex.net/~mwandel/jhead/jhead.exe
-      }
-
-  - ps: | # jpeg-recompress
-      if (-not (test-path tmp/bin/jpeg-recompress.exe)) {
-        download.bat tmp/jpeg-archive.zip https://ci.appveyor.com/api/buildjobs/8t8vga27t8vn1js2/artifacts/jpeg-archive.zip
-        7z e tmp/jpeg-archive.zip -otmp/bin jpeg-recompress.exe
-      }
-
-  - ps: | # jpegoptim
-      if (-not (test-path tmp/bin/jpegoptim.exe)) {
-        download.bat tmp/jpegoptim.zip https://bitbucket.org/rorgoroth/jpegoptim-for-windows/downloads/jpegoptim-1.4.3-Win32.zip
-        7z e tmp/jpegoptim.zip -otmp/bin */jpegoptim.exe
-      }
-
-  - ps: | # jpegtran
-      if (-not (test-path tmp/bin/jpegtran.exe)) {
-        download.bat tmp/bin/jpegtran.exe http://jpegclub.org/jpegtran.exe
-      }
-
-  - ps: | # optipng
-      if (-not (test-path tmp/bin/optipng.exe)) {
-        download.bat tmp/optipng.zip https://sourceforge.net/projects/optipng/files/OptiPNG/optipng-0.7.6/optipng-0.7.6-win32.zip/download
-        7z e tmp/optipng.zip -otmp/bin */optipng.exe
-      }
-
-  - ps: | # pngcrush
-      if (-not (test-path tmp/bin/pngcrush.exe)) {
-        download.bat tmp/bin/pngcrush.exe https://sourceforge.net/projects/pmt/files/pngcrush-executables/1.8.1/pngcrush_1_8.1_w32.exe/download
-      }
-
-  - ps: | # pngout
-      if (-not (test-path tmp/bin/pngout.exe)) {
-        download.bat tmp/bin/pngout.exe http://advsys.net/ken/util/pngout.exe
-      }
-
-  - ps: | # pngquant
-      if (-not (test-path tmp/bin/pngquant.exe)) {
-        download.bat tmp/pngquant.zip https://pngquant.org/pngquant-windows.zip
-        7z e tmp/pngquant.zip -otmp/bin */pngquant.exe
-      }
+  - ps: git --work-tree=tmp\bin checkout origin/windows-binaries --
+      advpng.exe gifsicle.exe jhead.exe jpeg-recompress.exe jpegoptim.exe
+      jpegtran.exe optipng.exe pngcrush.exe pngout.exe pngquant.exe
 
   - ps: | # svgo
       npm install -g svgo
