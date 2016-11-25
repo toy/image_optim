@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+  gem 'rubyzip'
+end
+
+require 'zip'
+require 'tempfile'
+require 'open-uri'
+
+def OpenURI.redirectable?(uri1, uri2)
+  puts "redirect to #{uri2}"
+  [uri1, uri2].all?{ |uri| %w[http https].include?(uri.scheme.downcase) }
+end
+
+def atomic_write(path, data)
+  Tempfile.open(path, Dir.pwd) do |tmp|
+    tmp.write data
+    File.rename(tmp.path, path)
+  end
+end
+
+def extract(path, url, zip_path = path)
+  return if File.size?(path)
+  puts "extracting #{path} from #{url}"
+  open(url, 'rb') do |url_io|
+    Zip::File.open_buffer(url_io) do |zip|
+      entry = zip.glob(zip_path).first
+      fail "can't find #{zip_path}" unless entry
+      atomic_write(path, entry.get_input_stream(&:read))
+    end
+  end
+end
+
+def get(path, url)
+  return if File.size?(path)
+  puts "downloading #{path} from #{url}"
+  atomic_write(path, open(url, 'rb', &:read))
+end
+
+extract 'advpng.exe', 'https://github.com/amadvance/advancecomp/releases/download/v1.20/advancecomp-1.20-windows-x86.zip'
+
+extract 'gifsicle.exe', 'https://eternallybored.org/misc/gifsicle/releases/gifsicle-1.88-win64.zip', '*/gifsicle.exe'
+
+get 'jhead.exe', 'http://www.sentex.net/~mwandel/jhead/jhead.exe'
+
+extract 'jpeg-recompress.exe', 'https://ci.appveyor.com/api/buildjobs/8t8vga27t8vn1js2/artifacts/jpeg-archive.zip'
+
+extract 'jpegoptim.exe', 'https://github.com/vikas5914/jpegoptim-win32/releases/download/V1.4.3/jpegoptim-1.4.3-win32-binary.zip'
+
+get 'jpegtran.exe', 'http://jpegclub.org/jpegtran.exe'
+
+extract 'optipng.exe', 'http://sourceforge.net/projects/optipng/files/OptiPNG/optipng-0.7.6/optipng-0.7.6-win32.zip/download', '*/optipng.exe'
+
+get 'pngcrush.exe', 'http://sourceforge.net/projects/pmt/files/pngcrush-executables/1.8.10/pngcrush_1_8_10_w32.exe/download'
+
+get 'pngout.exe', 'http://advsys.net/ken/util/pngout.exe'
+
+extract 'pngquant.exe', 'https://pngquant.org/pngquant-windows.zip', 'pngquant/pngquant.exe'
