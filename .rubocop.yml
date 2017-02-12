@@ -4,7 +4,7 @@ AllCops:
     - 'vendor/**/*'
 
 Lint/EndAlignment:
-  AlignWith: variable
+  EnforcedStyleAlignWith: variable
 
 Lint/UnneededSplatExpansion:
   Enabled: false
@@ -30,6 +30,10 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 8
 
+Security/MarshalLoad:
+  Exclude:
+    - 'script/worker_analysis'
+
 Style/AccessModifierIndentation:
   EnforcedStyle: outdent
 
@@ -37,7 +41,7 @@ Style/Alias:
   EnforcedStyle: prefer_alias_method
 
 Style/CaseIndentation:
-  IndentWhenRelativeTo: end
+  EnforcedStyle: end
 
 Style/DotPosition:
   EnforcedStyle: trailing
