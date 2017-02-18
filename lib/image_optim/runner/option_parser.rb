@@ -133,7 +133,9 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
     options[:threads] = threads
   end
 
-  op.on('--[no-]nice N', Integer, 'Nice level (defaults to 10)') do |nice|
+  op.on('--[no-]nice N', Integer, 'Nice level, priority of all used tools '\
+      'with higher value meaning lower priority, in range -20..19, negative '\
+      'values can be set only if run by root user (defaults to 10)') do |nice|
     options[:nice] = nice
   end
 

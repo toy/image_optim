@@ -263,7 +263,7 @@ optipng:
 
 ## Options
 
-* `:nice` — Nice level *(defaults to `10`)*
+* `:nice` — Nice level, priority of all used tools with higher value meaning lower priority, in range `-20..19`, negative values can be set only if run by root user *(defaults to `10`)*
 * `:threads` — Number of threads or disable *(defaults to number of processors)*
 * `:verbose` — Verbose output *(defaults to `false`)*
 * `:pack` — Require image\_optim\_pack or disable it, by default image\_optim\_pack will be used if available, will turn on `:skip-missing-workers` unless explicitly disabled *(defaults to `nil`)*

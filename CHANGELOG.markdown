@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Describe `nice` level option [#140](https://github.com/toy/image_optim/issues/140) [@toy](https://github.com/toy)
+
 ## v0.24.1 (2016-11-20)
 
 * Use `image_size ~> 1.5` with `apng` detection, so apng images are not optimised to one frame version [#142](https://github.com/toy/image_optim/issues/142) [@toy](https://github.com/toy)
