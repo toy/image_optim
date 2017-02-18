@@ -3,6 +3,7 @@
 ## unreleased
 
 * Describe `nice` level option [#140](https://github.com/toy/image_optim/issues/140) [@toy](https://github.com/toy)
+* Add instruction for installing `pngout` using brew [#143](https://github.com/toy/image_optim/pull/143) [@lukaselmer](https://github.com/lukaselmer)
 
 ## v0.24.1 (2016-11-20)
 
