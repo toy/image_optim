@@ -37,7 +37,6 @@ before_install: |
 after_success:
   - if [ -n "$CODECLIMATE" ]; then bundle exec codeclimate-test-reporter; fi
 matrix:
-  fast_finish: true
   include:
     - env: CODECLIMATE=true
       rvm: '2'
