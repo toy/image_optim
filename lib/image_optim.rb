@@ -12,7 +12,7 @@ require 'shellwords'
 %w[
   pngcrush pngout advpng optipng pngquant
   jhead jpegoptim jpegrecompress jpegtran
-  gifsicle
+  gifsicle guetzli
   svgo
 ].each do |worker|
   require "image_optim/worker/#{worker}"

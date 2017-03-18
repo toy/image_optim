@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Introduce support for the [Guetzli JPEG encoder](https://research.googleblog.com/2017/03/announcing-guetzli-new-open-source-jpeg.html) [@ignisf](https://github.com/ignisf)
+
 ## v0.24.2 (2017-02-18)
 
 * Describe `nice` level option [#140](https://github.com/toy/image_optim/issues/140) [@toy](https://github.com/toy)
