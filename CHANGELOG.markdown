@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Introduce support for the [Guetzli JPEG encoder](https://research.googleblog.com/2017/03/announcing-guetzli-new-open-source-jpeg.html) [@ignisf](https://github.com/ignisf)
+
 ## v0.24.3 (2017-05-04)
 
 * Set mode of cache files to `0666 & ~umask`, related to [#147](https://github.com/toy/image_optim/issues/147) [@toy](https://github.com/toy)
