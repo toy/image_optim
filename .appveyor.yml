@@ -5,9 +5,7 @@ install:
   - ruby --version
   - bundle package --all
 
-  - ps: git --work-tree=tmp\bin checkout origin/windows-binaries --
-      advpng.exe gifsicle.exe jhead.exe jpeg-recompress.exe jpegoptim.exe
-      jpegtran.exe optipng.exe pngcrush.exe pngout.exe pngquant.exe
+  - ps: git --work-tree=tmp\bin checkout origin/windows-binaries -- '*.exe'
 
   - ps: | # svgo
       npm install -g svgo
