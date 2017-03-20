@@ -92,6 +92,30 @@ describe ImageOptim::OptionDefinition do
         end
       end
     end
+
+    context 'when proc with arity 2 given' do
+      subject do
+        described_class.new('abc', :def, 'desc'){ |a, b| [a.inspect, b] }
+      end
+
+      context 'when option not provided' do
+        it 'returns default passed through proc' do
+          expect(subject.value(nil, {})).to eq([':def', subject])
+        end
+      end
+
+      context 'when option is nil' do
+        it 'returns nil passed through proc' do
+          expect(subject.value(nil, :abc => nil)).to eq(['nil', subject])
+        end
+      end
+
+      context 'when option is set' do
+        it 'returns value passed through proc' do
+          expect(subject.value(nil, :abc => 123)).to eq(['123', subject])
+        end
+      end
+    end
   end
 
   describe '#default_description' do
