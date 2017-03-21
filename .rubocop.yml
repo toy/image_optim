@@ -3,6 +3,9 @@ AllCops:
     - '*.gemspec'
     - 'vendor/**/*'
 
+Bundler/OrderedGems:
+  Enabled: false
+
 Lint/EndAlignment:
   EnforcedStyleAlignWith: variable
 

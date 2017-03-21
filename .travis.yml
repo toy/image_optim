@@ -3,48 +3,39 @@ language: ruby
 cache:
   bundler: true
   directories:
-  - $(npm root)
-  - ~/bin
+    - $(npm root)
+    - ~/bin
 rvm:
-  - '1.8'
-  - '1.9'
-  - '2.0'
-  - '2.1'
-  - '2.2'
-  - jruby-19mode
-  - ree
-script: |
-  (
-    set -ex
-    if [ -n "$RUBOCOP" ]; then
-      bundle exec rubocop
-    else
-      bundle exec image_optim --info
-      bundle exec rspec
-    fi
-  )
-before_install: |
-  (
-    set -ex
-    if [ -z "$RUBOCOP" ]; then
-      command -v svgo || npm install svgo
-      command -v pngout || {
-        mkdir -p ~/bin
-        curl -L "http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/x86_64/pngout'
-      }
-    fi
-  )
-after_success:
-  - if [ -n "$CODECLIMATE" ]; then bundle exec codeclimate-test-reporter; fi
+  - '1.8.7-p371'
+  - '1.9.3-p551'
+  - '2.0.0-p648'
+  - '2.1.10'
+  - '2.2.6'
+  - '2.3.3'
+  - '2.4.0'
+  - 'jruby-1.7.26'
+  - 'jruby-9.0.5.0'
+  - 'jruby-9.1.5.0'
+script:
+  - bundle exec image_optim --info
+  - bundle exec rspec
+before_install:
+  - mkdir -p ~/bin
+  - command -v svgo || npm install svgo
+  - command -v pngout || curl -L "http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/x86_64/pngout'
 matrix:
-  fast_finish: true
   include:
-    - env: CODECLIMATE=true
-      rvm: '2'
-    - env: RUBOCOP=true
-      rvm: '2'
-  allow_failures:
-    - rvm: jruby-19mode
+    - env: CODECLIMATE=✓
+      rvm: '2.4.0'
+      after_success: bundle exec codeclimate-test-reporter
+    - env: RUBOCOP=✓
+      rvm: '2.4.0'
+      script: bundle exec rubocop
+      before_install:
+    - env: CHECK_RUBIES=✓
+      rvm: '2.4.0'
+      script: bundle exec travis_check_rubies
+      before_install:
 addons:
   code_climate:
     repo_token:
