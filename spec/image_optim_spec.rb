@@ -204,7 +204,7 @@ describe ImageOptim do
           image_optim = ImageOptim.new
           results = test_images.map do |src|
             dst = double
-            expect(image_optim).to receive(method).with(src).and_return(dst)
+            allow(image_optim).to receive(method).with(src).and_return(dst)
             [src, dst]
           end
           expect(image_optim.send(list_method, test_images)).to eq(results)
@@ -217,7 +217,7 @@ describe ImageOptim do
           image_optim = ImageOptim.new
           results = test_images.map do |src|
             dst = double
-            expect(image_optim).to receive(method).with(src).and_return(dst)
+            allow(image_optim).to receive(method).with(src).and_return(dst)
             [src, dst, :test]
           end
           expect(image_optim.send(list_method, test_images) do |src, dst|
