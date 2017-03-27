@@ -6,6 +6,10 @@ AllCops:
 Bundler/OrderedGems:
   Enabled: false
 
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*_spec.rb
+
 Lint/EndAlignment:
   EnforcedStyleAlignWith: variable
 
@@ -73,6 +77,9 @@ Style/IndentAssignment:
 Style/IndentHash:
   EnforcedStyle: consistent
 
+Style/IndentHeredoc:
+  Enabled: false
+
 Style/ParallelAssignment:
   Enabled: false
 
@@ -98,3 +105,6 @@ Style/TrailingCommaInArguments:
 
 Style/TrailingCommaInLiteral:
   EnforcedStyleForMultiline: comma
+
+Style/SymbolArray:
+  Enabled: false

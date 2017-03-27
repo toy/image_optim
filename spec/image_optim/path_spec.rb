@@ -97,9 +97,7 @@ describe ImageOptim::Path do
 
     it 'changes inode of destination' do
       skip 'inodes are not supported' unless inodes_supported?
-      expect do
-        src.replace(dst)
-      end.to change{ dst.stat.ino }
+      expect{ src.replace(dst) }.to change{ dst.stat.ino }
     end
   end
 end
