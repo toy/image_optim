@@ -41,6 +41,9 @@ class ImageOptim
   # Cache directory
   attr_reader :cache_dir
 
+  # Cache directory permissions mode per https://apidock.com/ruby/FileUtils/chmod
+  attr_reader :cache_dir_mode
+
   # Cache worker digests
   attr_reader :cache_worker_digests
 
@@ -75,6 +78,7 @@ class ImageOptim
       skip_missing_workers
       allow_lossy
       cache_dir
+      cache_dir_mode
       cache_worker_digests
     ].each do |name|
       instance_variable_set(:"@#{name}", config.send(name))
@@ -106,7 +110,7 @@ class ImageOptim
     return unless (workers = workers_for_image(original))
 
     optimized = @cache.fetch(original) do
-      Handler.for(original) do |handler|
+      Handler.for(self, original) do |handler|
         workers.each do |worker|
           handler.process do |src, dst|
             worker.optimize(src, dst)

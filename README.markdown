@@ -270,6 +270,7 @@ optipng:
 * `:skip_missing_workers` — Skip workers with missing or problematic binaries *(defaults to `false`)*
 * `:allow_lossy` — Allow lossy workers and optimizations *(defaults to `false`)*
 * `:cache_dir` — Configure cache directory
+* `:cache_dir_mode` — Configure cache directory permissions mode per https://apidock.com/ruby/FileUtils/chmod
 * `:cache_worker_digests` - Also cache worker digests along with original file digest and worker options: updating workers invalidates cache
 
 Worker can be disabled by passing `false` instead of options hash or by setting option `:disable` to `true`.
