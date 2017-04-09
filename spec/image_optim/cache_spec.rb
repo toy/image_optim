@@ -72,6 +72,9 @@ describe ImageOptim::Cache do
           expect(FileUtils).to receive(:mv).with(optimized, tmp_file)
           expect(tmp_file).to receive(:rename).with(cached)
 
+          allow(File).to receive(:umask).and_return(0o024)
+          expect(tmp_file).to receive(:chmod).with(0o642)
+
           expect(cache.fetch(original){ optimized }).to eq(cached)
         end
 
