@@ -153,6 +153,11 @@ class ImageOptim
       dir unless dir.nil? || dir.empty?
     end
 
+    def cache_dir_mode
+      dir_mode = get!(:cache_dir_mode)
+      dir_mode unless dir_mode.nil?
+    end
+
     def cache_worker_digests
       !!get!(:cache_worker_digests)
     end

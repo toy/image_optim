@@ -8,6 +8,7 @@ class ImageOptim
     def initialize(image_optim, workers_by_format)
       return unless image_optim.cache_dir
       @cache_dir = FSPath.new(image_optim.cache_dir)
+      @cache_dir_mode = image_optim.cache_dir_mode
       @cache_worker_digests = image_optim.cache_worker_digests
       @options_by_format = Hash[workers_by_format.map do |format, workers|
         [format, workers.map(&:inspect).sort.join(', ')]
@@ -33,6 +34,7 @@ class ImageOptim
 
       if optimized
         tmp = FSPath.temp_file_path(digest, @cache_dir)
+        FileUtils.chmod(@cache_dir_mode, tmp) unless @cache_dir_mode.nil?
         FileUtils.mv(optimized, tmp)
         tmp.chmod(0o666 & ~File.umask)
         tmp.rename(cached)
