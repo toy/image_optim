@@ -45,6 +45,8 @@ extract 'advpng.exe', 'https://github.com/amadvance/advancecomp/releases/downloa
 
 extract 'gifsicle.exe', 'https://eternallybored.org/misc/gifsicle/releases/gifsicle-1.88-win64.zip', '*/gifsicle.exe'
 
+get 'guetzli.exe', 'https://github.com/google/guetzli/releases/download/v1.0/guetzli_windows_x86.exe'
+
 get 'jhead.exe', 'http://www.sentex.net/~mwandel/jhead/jhead.exe'
 
 extract 'jpeg-recompress.exe', 'https://ci.appveyor.com/api/buildjobs/8t8vga27t8vn1js2/artifacts/jpeg-archive.zip'
