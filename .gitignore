@@ -1,1 +1,5 @@
+/Gemfile.lock
+/tmp/
+
 /analysis/
+/.analysis_variants.yml
