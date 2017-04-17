@@ -32,6 +32,14 @@ class ImageOptim
         @option_definitions ||= []
       end
 
+      def timeout_option
+        option(
+          :timeout,
+          nil,
+          'Number of seconds before worker is timed out.'
+        ){ |v| v.to_i if v }
+      end
+
       def option(name, default, type, description = nil, &proc)
         attr_reader name
         OptionDefinition.new(name, default, type, description, &proc).
@@ -83,9 +91,12 @@ class ImageOptim
         klasses.map do |klass|
           options = options_proc[klass]
           next if options[:disable]
-          if !options.key?(:allow_lossy) && klass.method_defined?(:allow_lossy)
-            options[:allow_lossy] = image_optim.allow_lossy
+
+          [:allow_lossy, :timeout].each do |option|
+            next unless !options.key?(option) && klass.method_defined?(option)
+            options[option] = image_optim.send(option)
           end
+
           klass.init(image_optim, options)
         end.compact.flatten
       end

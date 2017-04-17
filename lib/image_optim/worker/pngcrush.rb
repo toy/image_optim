@@ -22,6 +22,8 @@ class ImageOptim
       BLACKEN_OPTION =
       option(:blacken, true, 'Blacken fully transparent pixels'){ |v| !!v }
 
+      TIMEOUT_OPTION = timeout_option
+
       def run_order
         -6
       end

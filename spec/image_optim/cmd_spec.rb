@@ -41,6 +41,29 @@ describe ImageOptim::Cmd do
     end
   end
 
+  describe '.run_with_timeout', :if => ImageOptim::Cmd.supports_timeout? do
+    it 'spawns a process in a thread and returns status' do
+      expect(Cmd.run_with_timeout(20, 'sh -c "exit 0"')).to eq(true)
+
+      [1, 66].each do |status|
+        expect(Cmd.run_with_timeout(20, "sh -c \"exit #{status}\"")).
+          to eq(false)
+      end
+    end
+
+    it 'raises Timeout::Error if process timeout' do
+      expect{ Cmd.run_with_timeout(0.001, 'sleep 1') }.
+        to raise_error(Cmd::TimeoutExceeded)
+    end
+
+    it 'calls system if timeout is <= zero' do
+      expect(Cmd.run_with_timeout(0, 'sh -c "sleep 0.001; exit 0"')).to eq(true)
+
+      expect(Cmd.run_with_timeout(-1, 'sh -c "sleep 0.001; exit 1"')).
+        to eq(false)
+    end
+  end
+
   describe '.capture' do
     it 'calls ` and returns result' do
       output = double

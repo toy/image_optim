@@ -35,6 +35,8 @@ class ImageOptim
       CAREFUL_OPTION =
       option(:careful, false, 'Avoid bugs with some software'){ |v| !!v }
 
+      TIMEOUT_OPTION = timeout_option
+
       def optimize(src, dst)
         args = %W[
           --output=#{dst}

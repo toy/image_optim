@@ -39,6 +39,8 @@ class ImageOptim
         OptionHelpers.limit_with_range(v.to_i, 1..11)
       end
 
+      TIMEOUT_OPTION = timeout_option
+
       def run_order
         -2
       end

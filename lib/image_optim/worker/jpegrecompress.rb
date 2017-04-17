@@ -24,6 +24,8 @@ class ImageOptim
         OptionHelpers.limit_with_range(v.to_i, 0...QUALITY_NAMES.length)
       end
 
+      TIMEOUT_OPTION = timeout_option
+
       def used_bins
         [:'jpeg-recompress']
       end

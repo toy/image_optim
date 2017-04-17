@@ -181,6 +181,10 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
     options[:allow_lossy] = allow_lossy
   end
 
+  op.on('--timeout N', Integer, 'Sets a timeout for workers') do |timeout|
+    options[:timeout] = timeout
+  end
+
   op.separator nil
 
   ImageOptim::Worker.klasses.each_with_index do |klass, i|
@@ -196,7 +200,7 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
       type, marking = case
       when [TrueClass, FalseClass, ImageOptim::TrueFalseNil].include?(type)
         [type, 'B']
-      when Integer >= type
+      when Integer >= type || type == NilClass
         [Integer, 'N']
       when Array >= type
         [Array, 'a,b,c']

@@ -7,6 +7,8 @@ class ImageOptim
     #
     # Jhead internally uses jpegtran which should be on path
     class Jhead < Worker
+      TIMEOUT_OPTION = timeout_option
+
       ORIENTED = 2..8 # not top-left
 
       # Works on jpegs
