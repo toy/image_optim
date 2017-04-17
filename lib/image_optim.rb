@@ -44,6 +44,9 @@ class ImageOptim
   # Cache worker digests
   attr_reader :cache_worker_digests
 
+  # Timeout
+  attr_reader :timeout
+
   # Initialize workers, specify options using worker underscored name:
   #
   # pass false to disable worker
@@ -76,6 +79,7 @@ class ImageOptim
       allow_lossy
       cache_dir
       cache_worker_digests
+      timeout
     ].each do |name|
       instance_variable_set(:"@#{name}", config.send(name))
       $stderr << "#{name}: #{send(name)}\n" if verbose
