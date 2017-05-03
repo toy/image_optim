@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Set mode of cache files to `0666 & ~umask`, related to [#147](https://github.com/toy/image_optim/issues/147) [@toy](https://github.com/toy)
+
 ## v0.24.2 (2017-02-18)
 
 * Describe `nice` level option [#140](https://github.com/toy/image_optim/issues/140) [@toy](https://github.com/toy)
