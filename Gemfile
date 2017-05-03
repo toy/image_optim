@@ -12,5 +12,4 @@ end
 
 if RUBY_VERSION >= '2.0'
   gem 'travis_check_rubies', '~> 0.2'
-  gem 'rainbow', '!= 2.2.1' # TODO: remove when sickill/rainbow#44 is resolved
 end
