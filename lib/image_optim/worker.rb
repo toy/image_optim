@@ -12,6 +12,8 @@ class ImageOptim
   class Worker
     extend ClassMethods
 
+    class Timeout < Timeout::Error; end
+
     class << self
       # Default init for worker is new
       # Check example of override in gifsicle worker
@@ -151,7 +153,16 @@ class ImageOptim
           {:out => Path::NULL, :err => Path::NULL},
         ].flatten
       end
-      Cmd.run(*args)
+
+      if @image_optim.timeout > 0
+        begin
+          Cmd.run_with_timeout(@image_optim.timeout, *args)
+        rescue ::Timeout::Error
+          raise ImageOptim::Worker::Timeout
+        end
+      else
+        Cmd.run(*args)
+      end
     end
   end
 end

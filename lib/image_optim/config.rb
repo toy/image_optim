@@ -157,6 +157,11 @@ class ImageOptim
       !!get!(:cache_worker_digests)
     end
 
+    def timeout
+      timeout = get!(:timeout)
+      timeout ? timeout.to_i : 0
+    end
+
     # Options for worker class by its `bin_sym`:
     # * `Hash` passed as is
     # * `{}` for `true` or `nil`

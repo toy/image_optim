@@ -94,6 +94,22 @@ describe ImageOptim::Config do
     end
   end
 
+  describe '#timeout' do
+    before do
+      allow(IOConfig).to receive(:read_options).and_return({})
+    end
+
+    it 'is 0 by default' do
+      config = IOConfig.new({})
+      expect(config.timeout).to eq(0)
+    end
+
+    it 'converts value to number' do
+      config = IOConfig.new(:timeout => '15')
+      expect(config.timeout).to eq(15)
+    end
+  end
+
   describe '#for_worker' do
     before do
       allow(IOConfig).to receive(:read_options).and_return({})
