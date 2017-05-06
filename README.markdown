@@ -319,6 +319,7 @@ Worker has no options
 
 ### pngquant:
 * `:allow_lossy` — Allow quality option *(defaults to `false`)*
+* `:max_colors` — Maximum number of colors to use *(defaults to `256`)*
 * `:quality` — min..max - don't save below min, use less colors below max (both in range `0..100`; in yaml - `!ruby/range 0..100`), ignored in default/lossless mode *(defaults to `100..100`, `0..100` in lossy mode)*
 * `:speed` — speed/quality trade-off: `1` - slow, `3` - default, `11` - fast & rough *(defaults to `3`)*
 
