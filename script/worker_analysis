@@ -133,14 +133,20 @@ class Analyser
 
   # Delegate to worker with short id
   class WorkerVariant < DelegateClass(ImageOptim::Worker)
-    attr_reader :name, :id, :cons_id
+    attr_reader :name, :id, :cons_id, :required
     def initialize(klass, image_optim, options)
+      @required = options.delete(:required)
+      @run_order = options.delete(:run_order)
       allow_consecutive_on = Array(options.delete(:allow_consecutive_on))
       @image_optim = image_optim
       @name = klass.bin_sym.to_s + options_string(options)
       __setobj__(klass.new(image_optim, options))
       @id = klass.bin_sym.to_s + options_string(self.options)
       @cons_id = [klass, allow_consecutive_on.map{ |key| [key, send(key)] }]
+    end
+
+    def run_order
+      @run_order || super
     end
 
     def etag
@@ -155,7 +161,8 @@ class Analyser
 
     def bin_versions
       @bin_versions ||= used_bins.map do |name|
-        @image_optim.resolve_bin!(name).to_s
+        bin = @image_optim.resolve_bin!(name)
+        "#{bin.name} #{bin.version}"
       end
     end
 
@@ -189,7 +196,7 @@ class Analyser
 
       dst_size = success ? dst.size : nil
       digest = (success ? dst : src).digest
-      cache = digest.sub(/../, '\0/') + ".#{src.image_format}"
+      cache = digest.sub(/../, '\0/')
       result = new(worker.id, success, time, src.size, dst_size, cache)
       if success
         path = result.path
@@ -274,7 +281,9 @@ class Analyser
     end
 
     def run_workers(src, workers, last_result = nil, &block)
+      required_workers = workers.select(&:required)
       with_progress(workers, last_result) do |worker|
+        next if required_workers.any?{ |w| w.run_order < worker.run_order }
         worker_result, result_image = run_worker(src, worker)
 
         steps = (last_result ? last_result.steps : []) + [worker_result]
@@ -306,19 +315,12 @@ class Analyser
     def difference_with(other)
       run_cache[:difference][other.digest] ||=
       Cache.get(:difference, [@path.digest, other.digest].sort, nil) do
-        images = [flatten_animation(@path), flatten_animation(other)]
-
-        alpha_presence = images.map do |image|
-          Cmd.capture("identify -format '%A' #{image.to_s.shellescape}")
-        end
-        if alpha_presence.uniq.length == 2
-          images.map!{ |image| underlay_noise(image) }
-        end
+        images = for_compare(@path, other)
 
         nrmse = Cmd.capture(%W[
           convert
-          #{images[0]} -auto-orient
-          #{images[1]} -auto-orient
+          #{images[0].image_format}:#{images[0]} -auto-orient
+          #{images[1].image_format}:#{images[1]} -auto-orient
           -metric RMSE
           -compare
           -format %[distortion]
@@ -331,16 +333,33 @@ class Analyser
       end
     end
 
+    def for_compare(*images)
+      images.map!{ |image| flatten_animation(image) }
+
+      alpha_presence = images.map do |image|
+        !!Cmd.capture(%W[
+          identify
+          -format %A
+          #{image.image_format}:#{image.to_s.shellescape}
+        ].shelljoin)[/true/i]
+      end
+      if alpha_presence.uniq.length != 1
+        images.map!{ |image| underlay_noise(image) }
+      end
+
+      images
+    end
+
     def flatten_animation(image)
       run_cache[:flatten][image.digest] ||= begin
         if image.image_format == :gif
           flattened = image.temp_path
           Cmd.run(*%W[
             convert
-            #{image}
+            #{image.image_format}:#{image}
             -coalesce
             -append
-            #{flattened}
+            #{image.image_format}:#{flattened}
           ]) || fail("failed flattening of #{image}")
           flattened
         else
@@ -354,12 +373,12 @@ class Analyser
         with_noise = image.temp_path
         Cmd.run(*%W[
           convert
-          #{image}
+          #{image.image_format}:#{image}
           +noise Random
-          #{image}
+          #{image.image_format}:#{image}
           -flatten
           -alpha off
-          #{with_noise}
+          #{image.image_format}:#{with_noise}
         ]) || fail("failed underlaying noise to #{image}")
         with_noise
       end
@@ -455,25 +474,24 @@ class Analyser
     end
   end
 
-  def initialize(option_variants)
-    option_variants = HashHelpers.deep_symbolise_keys(option_variants)
+  def initialize(config)
+    config = HashHelpers.deep_symbolise_keys(config)
     image_optim = ImageOptim.new
 
     @workers_by_format = Hash.new{ |h, k| h[k] = [] }
     ImageOptim::Worker.klasses.each do |klass|
-      worker_options_config = option_variants.delete(klass.bin_sym) || {}
-      allow_consecutive_on = worker_options_config.delete(:allow_consecutive_on)
-      worker_option_variants = case worker_options_config
-      when Array
-        worker_options_config
-      when Hash
-        worker_options_config.variants
-      else
-        fail "Array or Hash expected, got #{worker_options_config}"
+      worker_config = config.delete(klass.bin_sym)
+      next if worker_config == false
+      worker_config ||= {}
+
+      option_variants = worker_config.delete(:variants) || [{}]
+      option_variants = case option_variants
+      when Array then option_variants
+      when Hash then option_variants.variants
+      else fail "Array or Hash expected, got #{option_variants}"
       end
-      worker_option_variants.each do |options|
-        options = HashHelpers.deep_symbolise_keys(options)
-        options[:allow_consecutive_on] = allow_consecutive_on
+      option_variants.each do |options|
+        options = HashHelpers.deep_symbolise_keys(options).merge(worker_config)
         worker = WorkerVariant.new(klass, image_optim, options)
         worker.image_formats.each do |format|
           @workers_by_format[format] << worker
@@ -483,7 +501,7 @@ class Analyser
 
     log_workers_by_format
 
-    fail "unknown variants: #{option_variants}" unless option_variants.empty?
+    fail "unknown variants: #{config}" unless config.empty?
   end
 
   def analyse(paths)
@@ -553,7 +571,30 @@ private
   end
 end
 
-def option_variants
+abort <<-HELP if ARGV.empty?
+Specify paths for analysis.
+
+Example of `.analysis_variants.yml`:
+  jhead:
+    required: true # don't skip this worker
+  jpegtran: # 3 worker variants
+    variants:
+      - jpegrescan: true
+      - progressive: true
+      - progressive: false
+  optipng: # 6 worker variants by combining options
+    variants:
+      level: [6, 7]
+      interlace: [true, false, nil]
+  gifsicle: # allow variants with different interlace to run consecutively
+    variants:
+      allow_consecutive_on: interlace
+      interlace: [true, false]
+      careful: [true, false]
+  # other workers will be used with default options
+HELP
+
+Analyser.new(begin
   path = '.analysis_variants.yml'
   case h = YAML.load_file(path)
   when Hash then h
@@ -563,27 +604,4 @@ def option_variants
 rescue Errno::ENOENT => e
   warn e
   {}
-end
-
-analyser = Analyser.new(option_variants)
-
-if ARGV.empty?
-  abort <<-HELP
-Specify paths for analysis.
-
-Example of `.analysis_variants.yml`:
-  jpegtran: # 3 worker variants
-    - jpegrescan: true
-    - progressive: true
-    - progressive: false
-  optipng: # 6 worker variants by combining options
-    level: [6, 7]
-    interlace: [true, false, nil]
-  gifsicle: # allow variants with different interlace to run consecutively
-    allow_consecutive_on: interlace
-    interlace: [true, false]
-    careful: [true, false]
-  # other workers will be used with default options
-  HELP
-end
-analyser.analyse(ARGV)
+end).analyse(ARGV)

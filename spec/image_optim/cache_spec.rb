@@ -69,8 +69,11 @@ describe ImageOptim::Cache do
           cached_s = cached.to_s
           expect(FileTest).to receive(:file?).with(cached_s).and_return(false)
           expect(FileTest).not_to receive(:size?).with(cached_s)
-          expect(FileUtils).to receive(:mv).with(anything, tmp_file)
+          expect(FileUtils).to receive(:mv).with(optimized, tmp_file)
           expect(tmp_file).to receive(:rename).with(cached)
+
+          allow(File).to receive(:umask).and_return(0o024)
+          expect(tmp_file).to receive(:chmod).with(0o642)
 
           expect(cache.fetch(original){ optimized }).to eq(cached)
         end
@@ -79,10 +82,10 @@ describe ImageOptim::Cache do
           cached_s = cached.to_s
           expect(FileTest).to receive(:file?).with(cached_s).and_return(false)
           expect(FileTest).not_to receive(:size?).with(cached_s)
-          expect(FileUtils).to receive(:mv).with(anything, tmp_file)
-          expect(tmp_file).to receive(:rename).with(cached)
+          expect(FileUtils).not_to receive(:mv)
+          expect(FileUtils).to receive(:touch).with(cached)
 
-          expect(cache.fetch(original){ optimized }).to eq(cached)
+          expect(cache.fetch(original){ nil }).to eq(nil)
         end
       end
     end
@@ -106,7 +109,7 @@ describe ImageOptim::Cache do
           expect(FileUtils).not_to receive(:mv)
           expect(File).not_to receive(:rename)
 
-          expect(cache.fetch(original){}).to eq(nil)
+          expect(cache.fetch(original){ nil }).to eq(nil)
         end
       end
     end
