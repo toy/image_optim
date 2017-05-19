@@ -1,5 +1,4 @@
 require 'English'
-require 'open3'
 
 class ImageOptim
   # Helper for running commands
@@ -19,11 +18,7 @@ class ImageOptim
       end
 
       def supports_timeout?
-        if defined?(JRUBY_VERSION)
-          JRUBY_VERSION >= '9.0.0.0'
-        else
-          RUBY_VERSION >= '1.9'
-        end
+        Process.respond_to?(:spawn)
       end
 
       # Run the specified command, and kill it off if it runs longer
@@ -38,15 +33,11 @@ class ImageOptim
         init_options!(args)
 
         begin
-          stdin, stdout, thread = Open3.popen2(*args)
-          stdin.close
-          stdout.close
-
-          pid = thread[:pid]
+          pid = Process.spawn(*args)
+          thread = Process.detach(pid)
 
           if thread.join(timeout).nil?
             cleanup_process(pid)
-            thread.kill
             fail TimeoutExceeded
           elsif thread.value.exitstatus
             success = thread.value.exitstatus.zero?
@@ -98,22 +89,26 @@ class ImageOptim
 
       def cleanup_process(pid)
         Thread.new do
-          Process.kill('-TERM', pid)
-          Process.detach(pid)
-          now = Time.now
+          begin
+            Process.kill('-TERM', pid)
+            Process.detach(pid)
+            now = Time.now
 
-          while Time.now - now < 10
-            begin
-              Process.kill(0, pid)
-              sleep 0.001
-              next
-            rescue Errno::ESRCH
-              break
+            while Time.now - now < 10
+              begin
+                Process.kill(0, pid)
+                sleep 0.001
+                next
+              rescue Errno::ESRCH
+                break
+              end
             end
-          end
 
-          if Process.getpgid(pid)
-            Process.kill('-KILL', pid)
+            if Process.getpgid(pid)
+              Process.kill('-KILL', pid)
+            end
+          rescue Errno::ESRCH
+            true
           end
         end
       end

@@ -112,8 +112,10 @@ class ImageOptim
     optimized = @cache.fetch(original) do
       Handler.for(original) do |handler|
         workers.each do |worker|
-          handler.process do |src, dst|
-            worker.optimize(src, dst)
+          begin
+            handler.process{ |src, dst| worker.optimize(src, dst) }
+          rescue Worker::TimeoutExceeded
+            next
           end
         end
       end
