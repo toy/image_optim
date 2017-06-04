@@ -23,7 +23,7 @@ class ImageOptim
       end
 
       def run_order
-        quality < 100 ? -1 : 0
+        -3
       end
 
       def optimize(src, dst)
