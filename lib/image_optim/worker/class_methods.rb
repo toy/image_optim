@@ -77,12 +77,23 @@ class ImageOptim
         resolved.sort_by.with_index{ |worker, i| [worker.run_order, i] }
       end
 
+      # Indicate that the worker should not be used unless explicitly enabled
+      # with a `disabled: false` option passed to `ImageOptim.new` for it.
+      def disabled_by_default
+        false
+      end
+
     private
 
       def init_all(image_optim, &options_proc)
         klasses.map do |klass|
           options = options_proc[klass]
-          next if options[:disable]
+
+          if klass.disabled_by_default && options[:disable].nil?
+            options[:disable] = true
+          end
+
+          next if options.delete(:disable)
           if !options.key?(:allow_lossy) && klass.method_defined?(:allow_lossy)
             options[:allow_lossy] = image_optim.allow_lossy
           end

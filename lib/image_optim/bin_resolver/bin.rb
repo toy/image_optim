@@ -98,6 +98,9 @@ class ImageOptim
         when :jpegrescan
           # jpegrescan has no version so use first 8 characters of sha1 hex
           Digest::SHA1.file(path).hexdigest[0, 8] if path
+        when :guetzli
+          # guetzli has no version so use first 8 characters of sha1 hex
+          Digest::SHA1.file(path).hexdigest[0, 8] if path
         else
           fail "getting `#{name}` version is not defined"
         end

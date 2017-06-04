@@ -13,6 +13,7 @@ Optimize (lossless compress, optionally lossy) images (jpeg, png, gif, svg) usin
 * [advpng](http://advancemame.sourceforge.net/doc-advpng.html) from [AdvanceCOMP](http://advancemame.sourceforge.net/comp-readme.html)
 (will use [zopfli](https://code.google.com/p/zopfli/) on default/maximum level 4)
 * [gifsicle](http://www.lcdf.org/gifsicle/)
+* [guetzli](https://github.com/google/guetzli)
 * [jhead](http://www.sentex.net/~mwandel/jhead/)
 * [jpegoptim](http://www.kokkonen.net/tjko/projects.html)
 * [jpeg-recompress](https://github.com/danielgtaylor/jpeg-archive#jpeg-recompress)
@@ -152,6 +153,19 @@ cd pngcrush-$PNGCRUSH_VERSION
 make && cp -f pngcrush /usr/local/bin
 ```
 
+#### guetzli
+
+Replace `X.Y` with latest version number from https://github.com/google/guetzli/releases.
+
+```bash
+GUETZLI_VERSION=X.Y
+cd /tmp
+curl -L -o guetzli-$GUETZLI_VERSION.tar.gz https://github.com/google/guetzli/archive/v$GUETZLI_VERSION.tar.gz
+tar zxf guetzli-$GUETZLI_VERSION.tar.gz
+cd guetzli-$GUETZLI_VERSION
+make && cp -f bin/Release/guetzli /usr/local/bin
+```
+
 ### OS X: Macports
 
 ```bash
@@ -284,6 +298,10 @@ Worker can be disabled by passing `false` instead of options hash or by setting 
 * `:interlace` — Interlace: `true` - interlace on, `false` - interlace off, `nil` - as is in original image (defaults to running two instances, one with interlace off and one with on)
 * `:level` — Compression level: `1` - light and fast, `2` - normal, `3` - heavy (slower) *(defaults to `3`)*
 * `:careful` — Avoid bugs with some software *(defaults to `false`)*
+
+### guetzli:
+* `:allow_lossy` — Allow quality option *(defaults to `false`)*
+* `:quality` — JPEG quality `0`..`100`, ignored in default/lossless mode *(defaults to `100`)*
 
 ### jhead:
 Worker has no options
