@@ -167,9 +167,11 @@ class ImageOptim
 
       case worker_options
       when Hash
-        worker_options
-      when true, nil
+        {:disable => false}.merge(worker_options)
+      when nil
         {}
+      when true
+        {:disable => false}
       when false
         {:disable => true}
       else

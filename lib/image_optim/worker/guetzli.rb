@@ -13,6 +13,11 @@ class ImageOptim
         super if options[:allow_lossy]
       end
 
+      # Disable this worker by default due to it being very memory intensive.
+      def self.disabled_by_default
+        true
+      end
+
       QUALITY_OPTION =
       option(:quality, 100, 'JPEG quality `0`..`100`') do |v, opt_def|
         OptionHelpers.limit_with_range(v.to_i, 0..100)

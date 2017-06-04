@@ -126,7 +126,9 @@ describe ImageOptim::Worker do
     end
 
     def worker_class_doubles(workers)
-      workers.map{ |worker| class_double(Worker, :init => worker) }
+      workers.map do |worker|
+        class_double(Worker, :init => worker, :disabled_by_default => false)
+      end
     end
 
     let(:image_optim){ double(:allow_lossy => false) }

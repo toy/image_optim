@@ -111,12 +111,22 @@ describe ImageOptim::Config do
 
     it 'returns passed hash' do
       config = IOConfig.new(:abc => {:option => true})
-      expect(config.for_worker(Abc)).to eq(:option => true)
+      expect(config.for_worker(Abc)).to include(:option => true)
     end
 
     it 'returns {:disable => true} for false' do
       config = IOConfig.new(:abc => false)
       expect(config.for_worker(Abc)).to eq(:disable => true)
+    end
+
+    it 'returns {:disable => false} for true' do
+      config = IOConfig.new(:abc => true)
+      expect(config.for_worker(Abc)).to eq(:disable => false)
+    end
+
+    it 'includes {:disable => false} when passed a hash' do
+      config = IOConfig.new(:abc => {:option => true})
+      expect(config.for_worker(Abc)).to include(:disable => false)
     end
 
     it 'raises on unknown option' do
