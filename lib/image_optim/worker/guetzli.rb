@@ -6,20 +6,16 @@ class ImageOptim
     # https://github.com/google/guetzli/
     class Guetzli < Worker
       ALLOW_LOSSY_OPTION =
-        option(:allow_lossy, false, 'Allow quality option'){ |v| !!v }
+      option(:allow_lossy, false, 'Allow worker, it is always lossy'){ |v| !!v }
+
+      # Initialize only if allow_lossy
+      def self.init(image_optim, options = {})
+        super if options[:allow_lossy]
+      end
 
       QUALITY_OPTION =
-      option(:quality, 100, 'JPEG quality `0`..`100`, ignored in '\
-         'default/lossless mode') do |v, opt_def|
-        if allow_lossy
-          OptionHelpers.limit_with_range(v.to_i, 0..100)
-        else
-          if v != opt_def.default
-            warn "#{self.class.bin_sym} #{opt_def.name} #{v} ignored " \
-                 'in lossless mode'
-          end
-          opt_def.default
-        end
+      option(:quality, 100, 'JPEG quality `0`..`100`') do |v, opt_def|
+        OptionHelpers.limit_with_range(v.to_i, 0..100)
       end
 
       def image_formats
