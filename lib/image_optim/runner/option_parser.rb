@@ -200,7 +200,7 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
       type, marking = case
       when [TrueClass, FalseClass, ImageOptim::TrueFalseNil].include?(type)
         [type, 'B']
-      when Integer >= type || type == NilClass
+      when Integer >= type
         [Integer, 'N']
       when Array >= type
         [Array, 'a,b,c']

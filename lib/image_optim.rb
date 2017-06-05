@@ -114,8 +114,8 @@ class ImageOptim
         workers.each do |worker|
           begin
             handler.process{ |src, dst| worker.optimize(src, dst) }
-          rescue Worker::TimeoutExceeded
-            next
+          rescue Cmd::TimeoutExceeded
+            $stderr << "#{worker.class}: Timeout exceeded.\n" if verbose
           end
         end
       end

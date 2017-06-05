@@ -29,22 +29,20 @@ class ImageOptim
       def run_with_timeout(timeout, *args)
         return run(*args) unless timeout > 0 && supports_timeout?
 
-        success = false
-        init_options!(args)
-
-        begin
-          pid = Process.spawn(*args)
-          thread = Process.detach(pid)
-
-          if thread.join(timeout).nil?
-            cleanup_process(pid)
-            fail TimeoutExceeded
-          elsif thread.value.exitstatus
-            success = thread.value.exitstatus.zero?
-          end
+        if args.last.is_a?(Hash)
+          args.last[Gem.win_platform? ? :new_pgroup : :pgroup] = true
         end
 
-        success
+        pid = Process.spawn(*args)
+        thread = Process.detach(pid)
+
+        if thread.join(timeout).nil?
+          cleanup_process(pid)
+          fail TimeoutExceeded
+        end
+
+        check_status!
+        thread.value.success?
       end
 
       # Run using backtick
@@ -77,28 +75,16 @@ class ImageOptim
         fail SignalException, status.termsig
       end
 
-      def init_options!(args)
-        pgroup_opt = Gem.win_platform? ? :new_pgroup : :pgroup
-
-        if args.last.is_a?(Hash)
-          args.last[pgroup_opt] = true
-        else
-          args.push(pgroup_opt => true)
-        end
-      end
-
       def cleanup_process(pid)
         Thread.new do
           begin
             Process.kill('-TERM', pid)
-            Process.detach(pid)
             now = Time.now
 
             while Time.now - now < 10
               begin
-                Process.kill(0, pid)
-                sleep 0.001
-                next
+                Process.getpgid(pid)
+                sleep 0.1
               rescue Errno::ESRCH
                 break
               end
@@ -108,7 +94,7 @@ class ImageOptim
               Process.kill('-KILL', pid)
             end
           rescue Errno::ESRCH
-            true
+            return
           end
         end
       end

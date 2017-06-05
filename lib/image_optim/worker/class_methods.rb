@@ -36,6 +36,7 @@ class ImageOptim
         option(
           :timeout,
           nil,
+          Integer,
           'Number of seconds before worker is timed out.'
         ){ |v| v.to_i if v }
       end
