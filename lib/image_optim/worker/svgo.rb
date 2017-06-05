@@ -14,6 +14,8 @@ class ImageOptim
         Array(v).map(&:to_s)
       end
 
+      TIMEOUT_OPTION = timeout_option
+
       def optimize(src, dst)
         args = %W[
           --input #{src}

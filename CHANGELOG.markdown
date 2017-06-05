@@ -2,6 +2,9 @@
 
 ## unreleased
 
+* Add `timeout` option to workers [#21](https://github.com/toy/image_optim/issues/21)
+[@tgxworld](http://github.com/tgxworld)
+
 ## v0.24.3 (2017-05-04)
 
 * Set mode of cache files to `0666 & ~umask`, related to [#147](https://github.com/toy/image_optim/issues/147) [@toy](https://github.com/toy)

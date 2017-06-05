@@ -151,7 +151,12 @@ class ImageOptim
           {:out => Path::NULL, :err => Path::NULL},
         ].flatten
       end
-      Cmd.run(*args)
+
+      if respond_to?(:timeout) && timeout
+        Cmd.run_with_timeout(timeout, *args)
+      else
+        Cmd.run(*args)
+      end
     end
   end
 end

@@ -17,6 +17,8 @@ class ImageOptim
       option(:jpegrescan, false, 'Use jpegtran through jpegrescan, '\
           'ignore progressive option'){ |v| !!v }
 
+      TIMEOUT_OPTION = timeout_option
+
       def used_bins
         jpegrescan ? [:jpegtran, :jpegrescan] : [:jpegtran]
       end

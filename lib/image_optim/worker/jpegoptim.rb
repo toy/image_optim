@@ -38,6 +38,8 @@ class ImageOptim
         end
       end
 
+      TIMEOUT_OPTION = timeout_option
+
       # Run earlier if max_quality is less than 100
       def run_order
         max_quality < 100 ? -1 : 0

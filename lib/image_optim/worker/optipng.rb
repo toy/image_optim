@@ -24,6 +24,8 @@ class ImageOptim
       STRIP_OPTION =
       option(:strip, true, 'Remove all auxiliary chunks'){ |v| !!v }
 
+      TIMEOUT_OPTION = timeout_option
+
       def run_order
         -4
       end

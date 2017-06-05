@@ -129,7 +129,7 @@ describe ImageOptim::Worker do
       workers.map{ |worker| class_double(Worker, :init => worker) }
     end
 
-    let(:image_optim){ double(:allow_lossy => false) }
+    let(:image_optim){ double(:allow_lossy => false, :timeout => 30) }
 
     it 'creates all workers for which options_proc returns true' do
       workers = Array.new(3){ worker_double }
@@ -223,22 +223,24 @@ describe ImageOptim::Worker do
       end
     end
 
-    describe 'passing allow_lossy' do
-      it 'passes allow_lossy if worker has such attribute' do
-        klasses = worker_class_doubles([worker_double, worker_double])
+    describe 'configuring workers' do
+      [:allow_lossy, :timeout].each do |option|
+        it "passes #{option} if worker has such attribute" do
+          klasses = worker_class_doubles([worker_double, worker_double])
 
-        allow(Worker).to receive(:klasses).and_return(klasses)
+          allow(Worker).to receive(:klasses).and_return(klasses)
 
-        klasses[0].send(:attr_reader, :allow_lossy)
-        expect(klasses[0]).to receive(:init).
-          with(image_optim, hash_including(:allow_lossy))
-        expect(klasses[1]).to receive(:init).
-          with(image_optim, hash_not_including(:allow_lossy))
+          klasses[0].send(:attr_reader, option)
+          expect(klasses[0]).to receive(:init).
+            with(image_optim, hash_including(option))
+          expect(klasses[1]).to receive(:init).
+            with(image_optim, hash_not_including(option))
 
-        Worker.create_all(image_optim){ {} }
+          Worker.create_all(image_optim){ {} }
+        end
       end
 
-      it 'allows overriding per worker' do
+      it 'allows overriding allow_lossy per worker' do
         klasses = worker_class_doubles([worker_double, worker_double])
         options_proc = proc do |klass|
           klass == klasses[1] ? {:allow_lossy => :b} : {}
@@ -251,6 +253,23 @@ describe ImageOptim::Worker do
           with(image_optim, hash_including(:allow_lossy => false))
         expect(klasses[1]).to receive(:init).
           with(image_optim, hash_including(:allow_lossy => :b))
+
+        Worker.create_all(image_optim, &options_proc)
+      end
+
+      it 'allows overriding timeout per worker' do
+        klasses = worker_class_doubles([worker_double, worker_double])
+        options_proc = proc do |klass|
+          klass == klasses[1] ? {:timeout => 50} : {}
+        end
+
+        allow(Worker).to receive(:klasses).and_return(klasses)
+
+        klasses.each{ |klass| klass.send(:attr_reader, :timeout) }
+        expect(klasses[0]).to receive(:init).
+          with(image_optim, hash_including(:timeout => 30))
+        expect(klasses[1]).to receive(:init).
+          with(image_optim, hash_including(:timeout => 50))
 
         Worker.create_all(image_optim, &options_proc)
       end
