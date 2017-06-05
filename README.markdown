@@ -289,7 +289,7 @@ Worker can be disabled by passing `false` instead of options hash or by setting 
 * `:timeout` — Number of seconds before worker is timed out. *(defaults to `nil`)*
 
 ### jhead:
-* `:timeout` — Number of seconds before worker is timed out. *(defaults to `nil`)*
+Worker has no options
 
 ### jpegoptim:
 * `:allow_lossy` — Allow limiting maximum quality *(defaults to `false`)*
