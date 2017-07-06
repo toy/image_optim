@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.25.0 (2017-07-06)
+
 * Fix error `uninitialized constant EXIFR::JPEG` (breaking change in [exifr v1.3.0](https://github.com/remvee/exifr/commit/e073a22d06c39f2c1c0e77f5b5fe71545b25e967)) [#150](https://github.com/toy/image_optim/pull/150) [@abemedia](https://github.com/abemedia)
 * Add option to `pngquant` worker to limit maximum number of colors to use [#144](https://github.com/toy/image_optim/issues/144) [@toy](https://github.com/toy)
 
