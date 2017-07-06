@@ -1,5 +1,5 @@
 require 'image_optim/worker'
-require 'exifr'
+require 'exifr/jpeg'
 
 class ImageOptim
   class Worker
