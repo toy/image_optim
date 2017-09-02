@@ -9,6 +9,11 @@ class ImageOptim
       ALLOW_LOSSY_OPTION =
       option(:allow_lossy, false, 'Allow quality option'){ |v| !!v }
 
+      MAX_COLORS_OPTION =
+      option(:max_colors, 256, 'Maximum number of colors to use') do |v|
+        OptionHelpers.limit_with_range(v.to_i, 2..256)
+      end
+
       QUALITY_OPTION =
       option(:quality, '`100..100`, `0..100` in lossy mode',
              NonNegativeIntegerRange, 'min..max - don\'t '\
@@ -49,6 +54,7 @@ class ImageOptim
           --speed=#{speed}
           --output=#{dst}
           --force
+          #{max_colors}
           --
           #{src}
         ]

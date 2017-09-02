@@ -79,7 +79,7 @@ class ImageOptim
       end
 
       # Getting version of bin, will fail for an unknown name
-      def version_string # rubocop:disable AbcSize, CyclomaticComplexity
+      def version_string
         case name
         when :advpng, :gifsicle, :jpegoptim, :optipng
           capture("#{escaped_path} --version 2> #{Path::NULL}")[/\d+(\.\d+)+/]

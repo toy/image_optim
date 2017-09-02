@@ -15,13 +15,14 @@ rvm:
   - '2.4.1'
   - 'jruby-1.7.26'
   - 'jruby-9.0.5.0'
-  - 'jruby-9.1.5.0'
+  - 'jruby-9.1.9.0'
 script:
   - bundle exec image_optim --info
   - bundle exec rspec
 before_install:
   - gem update --system
   - gem update bundler
+  - nvm install stable
   - mkdir -p ~/bin
   - command -v svgo || npm install svgo
   - command -v pngout || curl -L "http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/x86_64/pngout'

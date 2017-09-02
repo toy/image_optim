@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'image_optim'
-  s.version     = '0.24.3'
+  s.version     = '0.25.0'
   s.summary     = %q{Optimize (lossless compress, optionally lossy) images (jpeg, png, gif, svg) using external utilities (advpng, gifsicle, jhead, jpeg-recompress, jpegoptim, jpegrescan, jpegtran, optipng, pngcrush, pngout, pngquant, svgo)}
   s.homepage    = "http://github.com/toy/#{s.name}"
   s.authors     = ['Ivan Kuchin']
@@ -29,6 +29,6 @@ EOF
   s.add_development_dependency 'image_optim_pack', '~> 0.2', '>= 0.2.2'
   s.add_development_dependency 'rspec', '~> 3.0'
   if RUBY_VERSION >= '2.0'
-    s.add_development_dependency 'rubocop', '~> 0.47'
+    s.add_development_dependency 'rubocop', '~> 0.49'
   end
 end
