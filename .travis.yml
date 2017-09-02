@@ -24,7 +24,7 @@ before_install:
   - gem update bundler
   - nvm install stable
   - mkdir -p ~/bin
-  - command -v svgo || npm install svgo
+  - command -v svgo || npm install -g svgo
   - command -v pngout || curl -L "http://static.jonof.id.au/dl/kenutils/pngout-20130221-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/x86_64/pngout'
 matrix:
   include:
