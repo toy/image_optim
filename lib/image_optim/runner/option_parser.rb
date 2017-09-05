@@ -221,7 +221,9 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
   op.separator nil
   op.separator '  Common options:'
 
-  op.on_tail('-v', '--verbose', 'Verbose output') do
+  op.on_tail('-v', '--verbose', 'Verbose output (show global and worker '\
+      'config, binary resolution log, information about each tool invocation, '\
+      'backtrace of exception)') do
     options[:verbose] = true
   end
 
