@@ -40,6 +40,9 @@ Lint/AmbiguousBlockAssociation:
 Lint/EndAlignment:
   EnforcedStyleAlignWith: variable
 
+Lint/RescueWithoutErrorClass:
+  Enabled: false
+
 Lint/UnneededSplatExpansion:
   Enabled: false
 
@@ -78,7 +81,7 @@ Style/EmptyCaseCondition:
   Enabled: false
 
 Style/Encoding:
-  EnforcedStyle: when_needed
+  Enabled: false
 
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
