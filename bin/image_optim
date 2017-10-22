@@ -10,7 +10,7 @@ options = ImageOptim::Runner::OptionParser.parse!(args)
 
 begin
   if options[:verbose]
-    $stderr.puts ImageOptim.full_version
+    $stderr << "#{ImageOptim.full_version}\n"
   end
 
   only_info = options.delete(:only_info)
