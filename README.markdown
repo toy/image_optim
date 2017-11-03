@@ -335,10 +335,6 @@ Worker has no options
 
 If you would like to contribute - that is great and you are very welcome. Please check few notes in file [CONTRIBUTING.markdown](CONTRIBUTING.markdown).
 
-Financial contributions can be made via [gratipay](https://gratipay.com/toy/).
-
-[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.2/dist/gratipay.png)](https://gratipay.com/toy/)
-
 ## ChangeLog
 
 In separate file [CHANGELOG.markdown](CHANGELOG.markdown).
