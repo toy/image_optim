@@ -141,7 +141,8 @@ class ImageOptim
         %W[
           env PATH=#{@image_optim.env_path.shellescape}
           nice -n #{@image_optim.nice}
-          #{cmd_args.shelljoin} > #{Path::NULL} 2>&1
+          #{cmd_args.shelljoin}
+          > #{Path::NULL} 2>&1
         ].join(' ')
       else
         [
