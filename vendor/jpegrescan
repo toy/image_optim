@@ -1,11 +1,20 @@
-#!/usr/bin/perl -ws
+#!/usr/bin/env perl
 # jpegrescan by Loren Merritt
 # Last updated: 2008-11-29 / 2013-03-19
 # This code is public domain.
 
+use warnings;
 use File::Slurp;
 use File::Temp qw/ tempfile /;
 
+%switches = ();
+while (@ARGV && $ARGV[0] =~ /^-.+/) {
+    for (shift @ARGV) {
+        m/^--$/ && last;
+        m/^-([svq])$/ && do { $switches{$1} = 1; next; };
+        die "Unknown switch: $_";
+    }
+}
 @ARGV==2 or die "usage: jpegrescan in.jpg out.jpg
 tries various progressive scan orders
 switches:
@@ -17,10 +26,9 @@ $fin = $ARGV[0];
 $fout = $ARGV[1];
 (undef, $ftmp) = tempfile(SUFFIX => ".scan");
 $jtmp = $fout;
-$verbose = $v;
-$quiet = $q;
-@strip = $s ? ("-copy","none") : ("-copy","all");
-undef $_ for $v,$q,$s;
+$verbose = $switches{'v'};
+$quiet = $switches{'q'};
+@strip = $switches{'s'} ? ("-copy","none") : ("-copy","all");
 undef $/;
 $|=1;
 
