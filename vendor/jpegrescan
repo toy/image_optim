@@ -4,7 +4,6 @@
 # This code is public domain.
 
 use warnings;
-use File::Slurp;
 use File::Temp qw/ tempfile /;
 
 %switches = ();
@@ -31,6 +30,31 @@ $quiet = $switches{'q'};
 @strip = $switches{'s'} ? ("-copy","none") : ("-copy","all");
 undef $/;
 $|=1;
+
+sub read_file {
+    my ($path) = @_;
+    my $data;
+
+    open my $fh, '<', $path
+        or die "Could not open file $path: $!\n";
+    binmode $fh;
+    $data = <$fh>;
+    close $fh
+        or die "Could not close $path: $!\n";
+
+    return $data;
+}
+
+sub write_file {
+    my ($path, $data) = @_;
+
+    open my $fh, '>', $path
+        or die "Could not open file $path: $!\n";
+    binmode $fh;
+    print $fh $data;
+    close $fh
+        or die "Could not close $path: $!\n";
+}
 
 # convert the input to baseline, just to make all the other conversions faster
 # FIXME there's still a bunch of redundant computation in separate calls to jpegtran
