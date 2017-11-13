@@ -300,7 +300,7 @@ Worker has no options
 ### jpegtran:
 * `:copy_chunks` — Copy all chunks *(defaults to `false`)*
 * `:progressive` — Create progressive JPEG file *(defaults to `true`)*
-* `:jpegrescan` — Use jpegtran through jpegrescan, ignore progressive option *(defaults to `false`)*
+* `:jpegrescan` — Use jpegtran through jpegrescan, ignore progressive option *(defaults to `true`)*
 
 ### optipng:
 * `:level` — Optimization level preset: `0` is least, `7` is best *(defaults to `6`)*

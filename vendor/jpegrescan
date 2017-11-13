@@ -1,11 +1,19 @@
-#!/usr/bin/perl -ws
+#!/usr/bin/env perl
 # jpegrescan by Loren Merritt
 # Last updated: 2008-11-29 / 2013-03-19
 # This code is public domain.
 
-use File::Slurp;
+use warnings;
 use File::Temp qw/ tempfile /;
 
+%switches = ();
+while (@ARGV && $ARGV[0] =~ /^-.+/) {
+    for (shift @ARGV) {
+        m/^--$/ && last;
+        m/^-([svq])$/ && do { $switches{$1} = 1; next; };
+        die "Unknown switch: $_";
+    }
+}
 @ARGV==2 or die "usage: jpegrescan in.jpg out.jpg
 tries various progressive scan orders
 switches:
@@ -15,26 +23,49 @@ switches:
 ";
 $fin = $ARGV[0];
 $fout = $ARGV[1];
-(undef, $ftmp) = tempfile(SUFFIX => ".scan");
-$jtmp = $fout;
-$verbose = $v;
-$quiet = $q;
-@strip = $s ? ("-copy","none") : ("-copy","all");
-undef $_ for $v,$q,$s;
+(undef, $meta_tmp) = tempfile(SUFFIX => ".scan");
+(undef, $baseline_tmp) = tempfile(SUFFIX => ".jpg");
+$output_tmp = $fout;
+$verbose = $switches{'v'};
+$quiet = $switches{'q'};
+@strip = $switches{'s'} ? ("-copy","none") : ("-copy","all");
 undef $/;
 $|=1;
+
+sub read_file {
+    my ($path) = @_;
+    my $data;
+
+    open my $fh, '<', $path
+        or die "Could not open file $path: $!\n";
+    binmode $fh;
+    $data = <$fh>;
+    close $fh
+        or die "Could not close $path: $!\n";
+
+    return $data;
+}
+
+sub write_file {
+    my ($path, $data) = @_;
+
+    open my $fh, '>', $path
+        or die "Could not open file $path: $!\n";
+    binmode $fh;
+    print $fh $data;
+    close $fh
+        or die "Could not close $path: $!\n";
+}
 
 # convert the input to baseline, just to make all the other conversions faster
 # FIXME there's still a bunch of redundant computation in separate calls to jpegtran
 open $OLDERR, ">&", STDERR;
-open STDERR, ">", $ftmp;
-open TRAN, "-|", "jpegtran", "-v", @strip, "-optimize", $fin or die;
-write_file($jtmp, <TRAN>);
-close TRAN;
+open STDERR, ">", $meta_tmp;
+system("jpegtran", "-v", @strip, "-optimize", "-outfile", $baseline_tmp, $fin) == 0 or die;
 open STDERR, ">&", $OLDERR;
 
-$type = read_file($ftmp);
-$type =~ /components=(\d+)/ or die;
+$type = read_file($meta_tmp);
+$type =~ /components=(\d+)/ or die "Could not find components=\d+ in $type";
 $rgb = $1==3 ? 1 : $1==1 ? 0 : die "not RGB nor gray\n";
 
 # FIXME optimize order for either progressive transfer or decoding speed
@@ -55,10 +86,9 @@ sub canonize {
 sub try {
     my $txt = canonize(shift);
     return $memo{$txt} if $memo{$txt};
-    write_file($ftmp, $txt);
-    open TRAN, "-|", "jpegtran", @strip, "-scans", $ftmp, $jtmp or die;
-    $data = <TRAN>;
-    close TRAN;
+    write_file($meta_tmp, $txt);
+    system("jpegtran", @strip, "-scans", $meta_tmp, "-outfile", $output_tmp, $baseline_tmp) == 0 or die;
+    $data = read_file($output_tmp);
     my $s = length $data;
     $s or die;
     $memo{$txt} = $s;
@@ -140,4 +170,4 @@ $old_size = -s $fin;
 if($size < $old_size) {
     write_file($fout, $data);
 }
-unlink $ftmp;
+unlink $meta_tmp, $baseline_tmp;
