@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.26.0 (2017-11-13)
+
 * Enable `jpegrescan` by default after removing its dependency on `File::Slurp` and fixing for windows [#153](https://github.com/toy/image_optim/issues/153) [@toy](https://github.com/toy)
 * Extend description of `--verbose` flag [#152](https://github.com/toy/image_optim/issues/152) [@toy](https://github.com/toy)
 
