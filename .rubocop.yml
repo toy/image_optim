@@ -40,7 +40,7 @@ Lint/AmbiguousBlockAssociation:
 Lint/EndAlignment:
   EnforcedStyleAlignWith: variable
 
-Lint/RescueWithoutErrorClass:
+Lint/NestedPercentLiteral:
   Enabled: false
 
 Lint/UnneededSplatExpansion:
@@ -83,14 +83,20 @@ Style/EmptyCaseCondition:
 Style/Encoding:
   Enabled: false
 
+Style/FormatStringToken:
+  Enabled: false
+
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
 Style/IfUnlessModifier:
-  MaxLineLength: 40
+  Enabled: false
 
 Style/ParallelAssignment:
   Enabled: false
+
+Style/RescueStandardError:
+  EnforcedStyle: implicit
 
 Style/Semicolon:
   AllowAsExpressionSeparator: true
