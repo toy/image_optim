@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Require `'date'` which is used in parsing pngout version [toy/image_optim_pack#14](https://github.com/toy/image_optim_pack/issues/14) [@toy](https://github.com/toy)
+
 ## v0.26.0 (2017-11-13)
 
 * Enable `jpegrescan` by default after removing its dependency on `File::Slurp` and fixing for windows [#153](https://github.com/toy/image_optim/issues/153) [@toy](https://github.com/toy)

@@ -5,6 +5,7 @@ require 'image_optim/cmd'
 require 'image_optim/path'
 require 'shellwords'
 require 'digest/sha1'
+require 'date'
 
 class ImageOptim
   class BinResolver
