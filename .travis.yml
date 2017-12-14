@@ -10,9 +10,9 @@ rvm:
   - '1.9.3-p551'
   - '2.0.0-p648'
   - '2.1.10'
-  - '2.2.8'
-  - '2.3.5'
-  - '2.4.2'
+  - '2.2.9'
+  - '2.3.6'
+  - '2.4.3'
   - 'jruby-9.0.5.0'
   - 'jruby-9.1.9.0'
 script:
@@ -28,14 +28,14 @@ before_install:
 matrix:
   include:
     - env: CODECLIMATE=✓
-      rvm: '2.4.2'
+      rvm: '2.4.3'
       after_success: bundle exec codeclimate-test-reporter
     - env: RUBOCOP=✓
-      rvm: '2.4.2'
+      rvm: '2.4.3'
       script: bundle exec rubocop
       before_install:
     - env: CHECK_RUBIES=✓
-      rvm: '2.4.2'
+      rvm: '2.4.3'
       script: bundle exec travis_check_rubies
       before_install:
 addons:
