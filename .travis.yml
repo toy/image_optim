@@ -20,7 +20,7 @@ script:
   - bundle exec rspec
 before_install:
   - gem update --system
-  - gem update bundler
+  - if bundle --version; then gem update bundler; else gem install bundler; fi
   - nvm install stable
   - mkdir -p ~/bin
   - command -v svgo || npm install -g svgo
