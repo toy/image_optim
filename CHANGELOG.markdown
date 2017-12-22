@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Show full bin search path in verbose output [@toy](https://github.com/toy)
+
 ## v0.26.1 (2017-12-14)
 
 * Require `'date'` which is used in parsing pngout version [toy/image_optim_pack#14](https://github.com/toy/image_optim_pack/issues/14) [@toy](https://github.com/toy)

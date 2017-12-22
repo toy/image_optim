@@ -83,6 +83,8 @@ class ImageOptim
 
     @bin_resolver = BinResolver.new(self)
 
+    $stderr << "PATH: #{@bin_resolver.env_path}\n" if verbose
+
     @workers_by_format = Worker.create_all_by_format(self) do |klass|
       config.for_worker(klass)
     end
