@@ -284,6 +284,8 @@ Worker can be disabled by passing `false` instead of options hash or by setting 
 * `:interlace` — Interlace: `true` - interlace on, `false` - interlace off, `nil` - as is in original image (defaults to running two instances, one with interlace off and one with on)
 * `:level` — Compression level: `1` - light and fast, `2` - normal, `3` - heavy (slower) *(defaults to `3`)*
 * `:careful` — Avoid bugs with some software *(defaults to `false`)*
+* `:allow_lossy` — Allow `:lossy` option (available only on giflossy, fork of gifsicle) *(defaults to `false`)*
+* `:lossy` — lossy compression level (requires giflossy). Value type is signed integer. Use low positive values for better quality or low negative values for extremly bad quality. Example values: `0` - no lossy compression, `20` - low level compression (low noise), `1000` - high level of compression (high noise), `-1` - max level of compression (max noise) *(defaults to `0`)*
 
 ### jhead:
 Worker has no options

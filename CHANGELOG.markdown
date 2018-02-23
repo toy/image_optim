@@ -3,6 +3,7 @@
 ## unreleased
 
 * Show full bin search path in verbose output [@toy](https://github.com/toy)
+* Add support for lossy option for `giflossy` (`gifsicle` fork) [@dejan](https://github.com/dejan)
 
 ## v0.26.1 (2017-12-14)
 

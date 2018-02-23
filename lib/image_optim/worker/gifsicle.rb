@@ -14,6 +14,10 @@ class ImageOptim
         end
       end
 
+      ALLOW_LOSSY_OPTION =
+      option(:allow_lossy, false, 'Allow lossy option (available only on '\
+        'giflossy, fork of gifsicle'){ |v| !!v }
+
       INTERLACE_OPTION =
       option(:interlace, false, TrueFalseNil, 'Interlace: '\
           '`true` - interlace on, '\
@@ -30,6 +34,26 @@ class ImageOptim
           '`2` - normal, '\
           '`3` - heavy (slower)') do |v|
         OptionHelpers.limit_with_range(v.to_i, 1..3)
+      end
+
+      LOSSY_OPTION =
+      option(:lossy, 0, 'lossy compression level (requires giflossy); '\
+        'ignored in default/lossless mode. Value type is signed integer. '\
+        'Low positive values produce better quality, while negative values '\
+        'give extremely bad quality. Example values:'\
+          '`0` - no lossy compression, '\
+          '`20` - low level compression (low noise), '\
+          '`1000` - high level of compression (high noise), '\
+          '`-1` - max level of compression (max noise)') do |v, opt_def|
+        if allow_lossy
+          v.to_i
+        else
+          if v != opt_def.default
+            warn "#{self.class.bin_sym} #{opt_def.name} #{v} ignored "\
+                'in lossless mode'
+          end
+          0
+        end
       end
 
       CAREFUL_OPTION =
@@ -56,6 +80,7 @@ class ImageOptim
         end
         args.unshift '--careful' if careful
         args.unshift "--optimize=#{level}" if level
+        args.unshift "--lossy=#{lossy}" unless lossy.zero?
         execute(:gifsicle, *args) && optimized?(src, dst)
       end
     end
