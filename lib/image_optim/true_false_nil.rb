@@ -9,8 +9,8 @@ class ImageOptim
     end
 
     # Convert everything truthy to `true`, leave `false` and `nil` as is
-    def self.convert(v)
-      v && true
+    def self.convert(value)
+      value && true
     end
   end
 end

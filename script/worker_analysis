@@ -167,7 +167,7 @@ class Analyser
     end
 
     def source_digest
-      @digest ||= begin
+      @source_digest ||= begin
         source_path = __getobj__.method(:optimize).source_location[0]
         Digest::SHA256.file(source_path).hexdigest
       end

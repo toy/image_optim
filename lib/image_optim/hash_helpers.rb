@@ -15,8 +15,8 @@ class ImageOptim
       end
 
       # Returns a new hash with recursive merge of all keys
-      def deep_merge(a, b)
-        a.merge(b) do |_key, value_a, value_b|
+      def deep_merge(hash_a, hash_b)
+        hash_a.merge(hash_b) do |_key, value_a, value_b|
           if value_a.is_a?(Hash) && value_b.is_a?(Hash)
             deep_merge(value_a, value_b)
           else

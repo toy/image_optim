@@ -21,7 +21,7 @@ class ImageOptim
 
       # Underscored class name symbol
       def bin_sym
-        @underscored_name ||=
+        @bin_sym ||=
           name.
           split('::').last. # get last part
           gsub(/([a-z])([A-Z])/, '\1_\2').downcase. # convert AbcDef to abc_def
