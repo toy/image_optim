@@ -178,6 +178,20 @@ _Note: pngout is free to use even in commercial soft, but you can not redistribu
 npm install -g svgo
 ```
 
+If you prefer to install `svgo` to your project directory, use one of the following commands instead:
+
+```bash
+npm install svgo
+
+yarn add svgo
+```
+
+When installing `svgo` to the project directory, you must add the following to your environment:
+
+```
+SVGO_BIN='node_modules/svgo/bin/svgo'
+```
+
 ### jpeg-recompress installation (optional)
 
 Download and install the `jpeg-recompress` binary from the [JPEG-Archive Releases](https://github.com/danielgtaylor/jpeg-archive/releases) page,
