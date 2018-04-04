@@ -21,7 +21,7 @@ script:
   - bundle exec rspec
 before_install:
   - gem update --system
-  - if bundle --version; then gem update bundler; else gem install bundler; fi
+  - gem install bundler
   - nvm install stable
   - mkdir -p ~/bin
   - command -v svgo || npm install -g svgo
@@ -34,11 +34,11 @@ matrix:
     - env: RUBOCOP=✓
       rvm: '2.4.4'
       script: bundle exec rubocop
-      before_install:
+      before_install: gem update --system && gem install bundler
     - env: CHECK_RUBIES=✓
       rvm: '2.4.4'
       script: bundle exec travis_check_rubies
-      before_install:
+      before_install: gem update --system && gem install bundler
 addons:
   code_climate:
     repo_token:
