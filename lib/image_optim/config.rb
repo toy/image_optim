@@ -119,6 +119,11 @@ class ImageOptim
       end
     end
 
+    def timeout
+      timeout = get!(:timeout)
+      timeout ? timeout.to_f : nil
+    end
+
     # Verbose mode, converted to boolean
     def verbose
       !!get!(:verbose)

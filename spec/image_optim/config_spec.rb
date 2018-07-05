@@ -237,4 +237,20 @@ describe ImageOptim::Config do
       expect(IOConfig.read_options(path)).to eq({})
     end
   end
+
+  describe '#timeout' do
+    before do
+      allow(IOConfig).to receive(:read_options).and_return({})
+    end
+
+    it 'is nil by default' do
+      config = IOConfig.new({})
+      expect(config.timeout).to eq(nil)
+    end
+
+    it 'converts value to a float' do
+      config = IOConfig.new(:timeout => '15.1')
+      expect(config.timeout).to eq(15.1)
+    end
+  end
 end

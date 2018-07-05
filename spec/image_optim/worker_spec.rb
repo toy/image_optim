@@ -31,7 +31,7 @@ describe ImageOptim::Worker do
 
       worker = worker_class.new(ImageOptim.new, :three => '...')
 
-      expect(worker.options).to eq(:one => 1, :two => 2, :three => '...')
+      expect(worker.options).to eq(:one => 1, :two => 2, :three => '...', :timeout => false)
     end
   end
 
@@ -74,7 +74,7 @@ describe ImageOptim::Worker do
 
       worker = DefOptim.new(ImageOptim.new, :three => '...')
 
-      expect(worker.inspect).to eq('#<DefOptim @one=1, @two=2, @three="...">')
+      expect(worker.inspect).to eq('#<DefOptim @one=1, @two=2, @three="...", @timeout=false>')
     end
   end
 
@@ -281,6 +281,36 @@ describe ImageOptim::Worker do
       expect(definition).to be_an(ImageOptim::OptionDefinition)
       expect(definition.name).to eq(:test)
       expect(definition.default).to eq(1)
+    end
+  end
+
+  describe 'worker timeout option' do
+    it 'exists on every worker by default' do
+      worker_class = Class.new(Worker)
+      worker = worker_class.new(ImageOptim.new)
+
+      expect(worker.timeout).to eq(false)
+    end
+
+    it 'only accepts numbers' do
+      worker_class = Class.new(Worker)
+      worker = worker_class.new(ImageOptim.new, :timeout => 'asdf')
+
+      expect(worker.timeout).to eq(false)
+    end
+
+    it 'converts to floats' do
+      worker_class = Class.new(Worker)
+      worker = worker_class.new(ImageOptim.new, :timeout => 9)
+
+      expect(worker.timeout).to eq(9.0)
+    end
+
+    it 'only accepts positive numbers' do
+      worker_class = Class.new(Worker)
+      worker = worker_class.new(ImageOptim.new, :timeout => -1)
+
+      expect(worker.timeout).to eq(false)
     end
   end
 end

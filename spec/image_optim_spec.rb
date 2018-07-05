@@ -82,6 +82,36 @@ describe ImageOptim do
           end
         end
       end
+
+      it 'will timeout if specified' do
+        options = {:skip_missing_workers => false, :timeout => 0.001}
+        image_optim = ImageOptim.new(options)
+        copies = test_images.map{ |image| temp_copy(image) }
+        expect do
+          image_optim.optimize_images(copies)
+        end.to raise_error(ImageOptim::TimeoutExceeded)
+      end
+
+      it 'will continue to optimize if single worker timeout exceeds' do
+        options = {
+          :skip_missing_workers => true,
+          :timeout => 2,
+          :optipng => {:level => 2, :strip => true, :timeout => 0.001},
+          :advpng => {:level => 1},
+        }
+        image_optim = ImageOptim.new(options)
+        copies = test_images.map{ |image| temp_copy(image) }
+        pairs = image_optim.optimize_images(copies)
+        test_images.zip(*pairs.transpose).each do |original, copy, optimized|
+          expect(copy).to have_same_data_as(original)
+
+          expect(optimized).not_to be_nil
+          expect(optimized).to be_a(ImageOptim::OptimizedPath)
+          expect(optimized).to have_size
+          expect(optimized).to be_smaller_than(original)
+          expect(optimized).not_to have_same_data_as(original)
+        end
+      end
     end
 
     it 'ignores text file' do
@@ -104,6 +134,33 @@ describe ImageOptim do
         expect(ImageOptim::ImageMeta).to receive(:warn)
         expect(ImageOptim.optimize_image(path)).to be_nil
       end
+    end
+
+    it 'allows timeout to be configured' do
+      base_options = {:timeout => 0.001}
+      image_optim = ImageOptim.new(base_options)
+
+      original_threads = Thread.list
+
+      expect do
+        image_optim.optimize_image(test_images.first)
+      end.to raise_error(ImageOptim::TimeoutExceeded)
+
+      # Ensure we don't leak any threads
+      (Thread.list - original_threads).each(&:join)
+      expect(Thread.list.count).to eq(original_threads.count)
+    end
+
+    it 'does not raise if optimized exists on a timeout' do
+      base_options = {
+        :skip_missing_workers => true,
+        :timeout => 1,
+        :optipng => {:level => 2, :strip => true, :timeout => 1},
+        :advpng => {:level => 0.001},
+      }
+      image_optim = ImageOptim.new(base_options)
+
+      expect(image_optim.optimize_image(test_images.first)).to_not eq(nil)
     end
   end
 

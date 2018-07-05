@@ -17,13 +17,6 @@ describe ImageOptim::Cmd do
   end
 
   describe '.run' do
-    it 'calls system and returns result' do
-      status = double
-      expect(Cmd).to receive(:system).with('cmd', 'arg').and_return(status)
-      allow(Cmd).to receive(:check_status!)
-      expect(Cmd.run('cmd', 'arg')).to eq(status)
-    end
-
     it 'returns process success status' do
       expect(Cmd.run('sh -c "exit 0"')).to eq(true)
       expect($CHILD_STATUS.exitstatus).to eq(0)
@@ -33,6 +26,14 @@ describe ImageOptim::Cmd do
 
       expect(Cmd.run('sh -c "exit 66"')).to eq(false)
       expect($CHILD_STATUS.exitstatus).to eq(66)
+    end
+
+    it 'accepts a block that yields the pid' do
+      expect(
+        Cmd.run('sh -c "exit 66"') do |pid|
+          expect(pid.is_a?(Integer)).to eq(true)
+        end
+      ).to eq(false)
     end
 
     it 'raises SignalException if process terminates after signal' do

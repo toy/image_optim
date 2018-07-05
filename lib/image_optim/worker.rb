@@ -19,6 +19,8 @@ class ImageOptim
       alias_method :init, :new
     end
 
+    attr_accessor :pid
+
     # Configure (raises on extra options)
     def initialize(image_optim, options = {})
       unless image_optim.is_a?(ImageOptim)
@@ -26,6 +28,7 @@ class ImageOptim
       end
 
       @image_optim = image_optim
+      default_options
       parse_options(options)
       assert_no_unknown_options!(options)
     end
@@ -90,6 +93,17 @@ class ImageOptim
     end
 
   private
+
+    # Specify any options that should exist on every worker
+    def default_options
+      self.class.option('timeout', false, 'Specify a worker specific timeout') do |v|
+        if v && v.to_f > 0
+          v.to_f
+        else
+          false
+        end
+      end
+    end
 
     def parse_options(options)
       self.class.option_definitions.each do |option_definition|
@@ -157,7 +171,8 @@ class ImageOptim
           {:out => Path::NULL, :err => Path::NULL},
         ].flatten
       end
-      Cmd.run(*args)
+
+      Cmd.run(*args){ |pid| self.pid = pid }
     end
   end
 end

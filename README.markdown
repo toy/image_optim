@@ -291,6 +291,7 @@ optipng:
 * `:allow_lossy` — Allow lossy workers and optimizations *(defaults to `false`)*
 * `:cache_dir` — Configure cache directory
 * `:cache_worker_digests` - Also cache worker digests along with original file digest and worker options: updating workers invalidates cache
+* `:timeout` - Number of seconds before ImageOptim is timed out.
 
 Worker can be disabled by passing `false` instead of options hash or by setting option `:disable` to `true`.
 

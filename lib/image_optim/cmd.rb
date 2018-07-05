@@ -10,11 +10,32 @@ class ImageOptim
       # Return success status
       # Will raise SignalException if process was interrupted
       def run(*args)
-        success = system(*args)
+        if Process.respond_to?(:spawn)
+          if args.last.is_a?(Hash)
+            args.last[Gem.win_platform? ? :new_pgroup : :pgroup] = true
+          end
 
-        check_status!
+          begin
+            pid = Process.spawn(*args)
+          ensure
+            yield pid if block_given?
+          end
 
-        success
+          begin
+            Process.waitpid(pid)
+          rescue Errno::ECHILD
+            return
+          end
+
+          check_status!
+          $CHILD_STATUS.success?
+        else
+          success = system(*args)
+
+          check_status!
+
+          success
+        end
       end
 
       # Run using backtick

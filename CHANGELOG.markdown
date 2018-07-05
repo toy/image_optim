@@ -4,6 +4,7 @@
 
 * Add `--skip-if-larger` flag to pngquant worker. The pngquant worker already does this, but this will make it fail faster. [#125](https://github.com/toy/image_optim/pull/125) [#181](https://github.com/toy/image_optim/pull/181) [@iggant][https://github.com/iggant] [@oblakeerickson][https://github.com/oblakeerickson]
 * Add `method` option for jpegrecompress, default to `ssim` [#102](https://github.com/toy/image_optim/issues/102) [#103](https://github.com/toy/image_optim/pull/103) [#182](https://github.com/toy/image_optim/pull/182) [@ramiroaraujo](https://github.com/ramiroaraujo) [@oblakeerickson](https://github.com/oblakeerickson)
+* Add `timeout` option to ImageOptim [#21](https://github.com/toy/image_optim/issues/21) [@tgxworld](https://github.com/tgxworld) [@oblakeerickson](https://github.com/oblakeerickson)
 
 ## v0.27.1 (2020-09-30)
 

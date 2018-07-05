@@ -22,6 +22,8 @@ end
 
 # Main interface
 class ImageOptim
+  class TimeoutExceeded < StandardError; end
+
   # Nice level
   attr_reader :nice
 
@@ -45,6 +47,9 @@ class ImageOptim
 
   # Cache worker digests
   attr_reader :cache_worker_digests
+
+  # Timeout
+  attr_reader :timeout
 
   # Initialize workers, specify options using worker underscored name:
   #
@@ -78,6 +83,7 @@ class ImageOptim
       allow_lossy
       cache_dir
       cache_worker_digests
+      timeout
     ].each do |name|
       instance_variable_set(:"@#{name}", config.send(name))
       $stderr << "#{name}: #{send(name)}\n" if verbose
@@ -111,9 +117,33 @@ class ImageOptim
 
     optimized = @cache.fetch(original) do
       Handler.for(original) do |handler|
-        workers.each do |worker|
-          handler.process do |src, dst|
-            worker.optimize(src, dst)
+        current_worker = nil
+        was_optimized = false
+
+        begin
+          with_timeout(@timeout) do # Global timeout
+            workers.each.with_index(1) do |worker, index|
+              current_worker = worker
+              if worker.timeout && worker.timeout >= 0
+                with_timeout(worker.timeout, index, workers.count) do # Worker timeout
+                  handler.process do |src, dst|
+                    result = worker.optimize(src, dst)
+                    was_optimized = result if result
+                  end
+                end
+              else
+                handler.process{ |src, dst| worker.optimize(src, dst) }
+              end
+            end
+          end
+        rescue TimeoutExceeded => e
+          unless was_optimized
+            if current_worker && current_worker.pid
+              pid = current_worker.pid
+              cleanup_process(pid)
+            end
+
+            raise e
           end
         end
       end
@@ -230,6 +260,44 @@ class ImageOptim
   end
 
 private
+
+  def with_timeout(timeout, worker_index = nil, total_workers = nil)
+    if timeout && timeout >= 0
+      thread = Thread.new{ yield if block_given? }
+      if thread.respond_to?(:report_on_exception)
+        thread.report_on_exception = false
+      end
+
+      if total_workers.nil? # Global timeout
+        fail TimeoutExceeded if thread.join(timeout).nil?
+      else # Worker timeout. Only throw on last worker.
+        fail TimeoutExceeded if thread.join(timeout).nil? && worker_index == total_workers
+
+        yield if block_given?
+      end
+    elsif block_given?
+      yield
+    end
+  end
+
+  def cleanup_process(pid)
+    Process.detach(pid)
+    Process.kill('-TERM', pid)
+    now = Time.now
+
+    while Time.now - now < 10
+      begin
+        Process.getpgid(pid)
+        sleep 0.1
+      rescue Errno::ESRCH
+        break
+      end
+    end
+
+    Process.kill('-KILL', pid) if Process.getpgid(pid)
+  rescue Errno::ESRCH
+    pid
+  end
 
   def log_workers_by_format
     $stderr << "Workers by format:\n"
