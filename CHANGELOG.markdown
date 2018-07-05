@@ -5,6 +5,7 @@
 * Allow `image_size` 2.x [@toy](https://github.com/toy)
 * Add instructions for installing `svgo` in project folder [#156](https://github.com/toy/image_optim/issues/156) [@brian-kephart](https://github.com/brian-kephart)
 * Show full bin search path in verbose output [@toy](https://github.com/toy)
+* Add `timeout` option to ImageOptim [#21](https://github.com/toy/image_optim/issues/21) [@tgxworld](http://github.com/tgxworld)
 
 ## v0.26.1 (2017-12-14)
 

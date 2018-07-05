@@ -20,6 +20,8 @@ end
 
 # Main interface
 class ImageOptim
+  class TimeoutExceeded < StandardError; end
+
   # Nice level
   attr_reader :nice
 
@@ -43,6 +45,9 @@ class ImageOptim
 
   # Cache worker digests
   attr_reader :cache_worker_digests
+
+  # Timeout
+  attr_reader :timeout
 
   # Initialize workers, specify options using worker underscored name:
   #
@@ -76,6 +81,7 @@ class ImageOptim
       allow_lossy
       cache_dir
       cache_worker_digests
+      timeout
     ].each do |name|
       instance_variable_set(:"@#{name}", config.send(name))
       $stderr << "#{name}: #{send(name)}\n" if verbose
@@ -109,10 +115,22 @@ class ImageOptim
 
     optimized = @cache.fetch(original) do
       Handler.for(original) do |handler|
-        workers.each do |worker|
-          handler.process do |src, dst|
-            worker.optimize(src, dst)
+        current_worker = nil
+
+        begin
+          with_timeout(@timeout) do
+            workers.each do |worker|
+              current_worker = worker
+              handler.process{ |src, dst| worker.optimize(src, dst) }
+            end
           end
+        rescue TimeoutExceeded => e
+          if current_worker && current_worker.pid
+            pid = current_worker.pid
+            cleanup_process(pid)
+          end
+
+          raise e
         end
       end
     end
@@ -225,6 +243,37 @@ class ImageOptim
   end
 
 private
+
+  def with_timeout(timeout)
+    if timeout && timeout >= 0
+      thread = Thread.new{ yield if block_given? }
+      if thread.respond_to?(:report_on_exception)
+        thread.report_on_exception = false
+      end
+      fail TimeoutExceeded if thread.join(timeout).nil?
+    elsif block_given?
+      yield
+    end
+  end
+
+  def cleanup_process(pid)
+    Process.detach(pid)
+    Process.kill('-TERM', pid)
+    now = Time.now
+
+    while Time.now - now < 10
+      begin
+        Process.getpgid(pid)
+        sleep 0.1
+      rescue Errno::ESRCH
+        break
+      end
+    end
+
+    Process.kill('-KILL', pid) if Process.getpgid(pid)
+  rescue Errno::ESRCH
+    pid
+  end
 
   def log_workers_by_format
     $stderr << "Workers by format:\n"

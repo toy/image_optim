@@ -18,6 +18,8 @@ class ImageOptim
       alias_method :init, :new
     end
 
+    attr_accessor :pid
+
     # Configure (raises on extra options)
     def initialize(image_optim, options = {})
       unless image_optim.is_a?(ImageOptim)
@@ -152,7 +154,8 @@ class ImageOptim
           {:out => Path::NULL, :err => Path::NULL},
         ].flatten
       end
-      Cmd.run(*args)
+
+      Cmd.run(*args){ |pid| self.pid = pid }
     end
   end
 end

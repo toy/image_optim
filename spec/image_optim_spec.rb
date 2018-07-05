@@ -102,6 +102,21 @@ describe ImageOptim do
         expect(ImageOptim.optimize_image(path)).to be_nil
       end
     end
+
+    it 'allows timeout to be configured' do
+      base_options = {:timeout => 0.001}
+      image_optim = ImageOptim.new(base_options)
+
+      original_threads = Thread.list
+
+      expect do
+        image_optim.optimize_image(test_images.first)
+      end.to raise_error(ImageOptim::TimeoutExceeded)
+
+      # Ensure we don't leak any threads
+      (Thread.list - original_threads).each(&:join)
+      expect(Thread.list.count).to eq(original_threads.count)
+    end
   end
 
   describe '#optimize_image!' do
