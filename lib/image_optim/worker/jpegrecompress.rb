@@ -49,7 +49,7 @@ class ImageOptim
         -5
       end
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         args = %W[
           --quality #{QUALITY_NAMES[quality]}
           --method #{method}
@@ -57,7 +57,7 @@ class ImageOptim
           #{src}
           #{dst}
         ]
-        execute(:'jpeg-recompress', *args) && optimized?(src, dst)
+        execute(:'jpeg-recompress', args, options) && optimized?(src, dst)
       end
     end
   end

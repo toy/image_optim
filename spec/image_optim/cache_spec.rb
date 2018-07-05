@@ -45,7 +45,7 @@ describe ImageOptim::Cache do
 
   context 'when cache is disabled (default)' do
     let(:image_optim) do
-      double(:image_optim, :cache_dir => nil, :cache_worker_digests => false)
+      double(:image_optim, :cache_dir => nil, :cache_worker_digests => false, :timeout => nil)
     end
     let(:cache){ Cache.new(image_optim, double) }
 
@@ -122,7 +122,7 @@ describe ImageOptim::Cache do
   context 'when cache is enabled (without worker digests)' do
     let(:image_optim) do
       double(:image_optim,
-             :cache_dir => cache_dir, :cache_worker_digests => false)
+             :cache_dir => cache_dir, :cache_worker_digests => false, :timeout => nil)
     end
     let(:cache) do
       cache = Cache.new(image_optim, {})
@@ -145,7 +145,7 @@ describe ImageOptim::Cache do
     let(:image_optim) do
       double(:image_optim,
              :cache_dir => cache_dir,
-             :cache_worker_digests => true)
+             :cache_worker_digests => true, :timeout => nil)
     end
     let(:cache) do
       cache = Cache.new(image_optim, {})

@@ -21,6 +21,11 @@ class ImageOptim
           "#{bin.name}[#{bin.digest}]"
         end.sort!.uniq.join(', ')]
       end]
+      @global_options = begin
+        options = {}
+        options[:timeout] = image_optim.timeout if image_optim.timeout
+        options.empty? ? '' : options.inspect
+      end
     end
 
     def fetch(original)
@@ -68,6 +73,7 @@ class ImageOptim
       digest = Digest::SHA1.file(path)
       digest.update options_by_format(format)
       digest.update bins_by_format(format) if @cache_worker_digests
+      digest.update @global_options
       s = digest.hexdigest
       "#{s[0..1]}/#{s[2..-1]}"
     end

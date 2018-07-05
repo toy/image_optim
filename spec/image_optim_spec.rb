@@ -105,6 +105,43 @@ describe ImageOptim do
         expect(ImageOptim.optimize_image(path)).to be_nil
       end
     end
+
+    context 'using timeout' do
+      let(:timeout){ 123 }
+      let(:image_optim){ ImageOptim.new(isolated_options_base.merge(:timeout => timeout)) }
+      let(:timer){ instance_double(ImageOptim::Timer) }
+      let(:workers){ Array.new(3){ instance_double(ImageOptim::Worker) } }
+      let(:path){ test_images.first }
+
+      before do
+        allow(ImageOptim::Timer).to receive(:new).with(timeout).and_return(timer)
+        allow(image_optim).to receive(:workers_for_image).and_return(workers)
+      end
+
+      it 'sends timeout to every worker' do
+        some_path = instance_of(ImageOptim::Path)
+
+        expect(workers[0]).to receive(:optimize).with(some_path, some_path, :timeout => timer)
+        expect(workers[1]).to receive(:optimize).with(some_path, some_path, :timeout => timer)
+        expect(workers[2]).to receive(:optimize).with(some_path, some_path, :timeout => timer)
+
+        image_optim.optimize_image(path)
+      end
+
+      it 'returns nil if there was no success before worker times out' do
+        allow(workers[0]).to receive(:optimize).and_return(false)
+        allow(workers[1]).to receive(:optimize).and_raise(ImageOptim::Errors::TimeoutExceeded)
+
+        expect(image_optim.optimize_image(path)).to be_nil
+      end
+
+      it 'returns result if there was success before worker times out' do
+        allow(workers[0]).to receive(:optimize).and_return(true)
+        allow(workers[1]).to receive(:optimize).and_raise(ImageOptim::Errors::TimeoutExceeded)
+
+        expect(image_optim.optimize_image(path)).to be_an(ImageOptim::OptimizedPath)
+      end
+    end
   end
 
   describe '#optimize_image!' do

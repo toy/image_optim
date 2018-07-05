@@ -24,7 +24,7 @@ class ImageOptim
         2
       end
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         args = %W[
           -k#{copy_chunks ? 1 : 0}
           -s#{strategy}
@@ -33,7 +33,7 @@ class ImageOptim
           #{src}
           #{dst}
         ]
-        execute(:pngout, *args) && optimized?(src, dst)
+        execute(:pngout, args, options) && optimized?(src, dst)
       rescue SignalException => e
         raise unless Signal.list.key(e.signo) == 'SEGV'
         raise unless resolve_bin!(:pngout).version <= '20150920'

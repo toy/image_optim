@@ -3,10 +3,12 @@
 require 'image_optim/bin_resolver'
 require 'image_optim/cache'
 require 'image_optim/config'
+require 'image_optim/errors'
 require 'image_optim/handler'
 require 'image_optim/image_meta'
 require 'image_optim/optimized_path'
 require 'image_optim/path'
+require 'image_optim/timer'
 require 'image_optim/worker'
 require 'in_threads'
 require 'shellwords'
@@ -46,6 +48,9 @@ class ImageOptim
   # Cache worker digests
   attr_reader :cache_worker_digests
 
+  # Timeout in seconds for each image
+  attr_reader :timeout
+
   # Initialize workers, specify options using worker underscored name:
   #
   # pass false to disable worker
@@ -78,6 +83,7 @@ class ImageOptim
       allow_lossy
       cache_dir
       cache_worker_digests
+      timeout
     ].each do |name|
       instance_variable_set(:"@#{name}", config.send(name))
       $stderr << "#{name}: #{send(name)}\n" if verbose
@@ -110,11 +116,17 @@ class ImageOptim
     return unless (workers = workers_for_image(original))
 
     optimized = @cache.fetch(original) do
+      timer = timeout && Timer.new(timeout)
+
       Handler.for(original) do |handler|
-        workers.each do |worker|
-          handler.process do |src, dst|
-            worker.optimize(src, dst)
+        begin
+          workers.each do |worker|
+            handler.process do |src, dst|
+              worker.optimize(src, dst, :timeout => timer)
+            end
           end
+        rescue Errors::TimeoutExceeded
+          handler.result
         end
       end
     end

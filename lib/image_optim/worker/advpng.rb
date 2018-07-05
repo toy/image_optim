@@ -21,7 +21,7 @@ class ImageOptim
         4
       end
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         src.copy(dst)
         args = %W[
           --recompress
@@ -30,7 +30,7 @@ class ImageOptim
           --
           #{dst}
         ]
-        execute(:advpng, *args) && optimized?(src, dst)
+        execute(:advpng, args, options) && optimized?(src, dst)
       end
     end
   end

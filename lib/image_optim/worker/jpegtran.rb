@@ -23,7 +23,7 @@ class ImageOptim
         jpegrescan ? [:jpegtran, :jpegrescan] : [:jpegtran]
       end
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         if jpegrescan
           args = %W[
             #{src}
@@ -31,7 +31,7 @@ class ImageOptim
           ]
           args.unshift '-s' unless copy_chunks
           resolve_bin!(:jpegtran)
-          execute(:jpegrescan, *args) && optimized?(src, dst)
+          execute(:jpegrescan, args, options) && optimized?(src, dst)
         else
           args = %W[
             -optimize
@@ -40,7 +40,7 @@ class ImageOptim
           ]
           args.unshift '-copy', (copy_chunks ? 'all' : 'none')
           args.unshift '-progressive' if progressive
-          execute(:jpegtran, *args) && optimized?(src, dst)
+          execute(:jpegtran, args, options) && optimized?(src, dst)
         end
       end
     end

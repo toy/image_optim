@@ -30,7 +30,7 @@ class ImageOptim
         -4
       end
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         src.copy(dst)
         args = %W[
           -o #{level}
@@ -42,7 +42,7 @@ class ImageOptim
         if strip && resolve_bin!(:optipng).version >= '0.7'
           args.unshift '-strip', 'all'
         end
-        execute(:optipng, *args) && optimized?(src, dst)
+        execute(:optipng, args, options) && optimized?(src, dst)
       end
 
       def optimized?(src, dst)

@@ -28,7 +28,7 @@ class ImageOptim
         -6
       end
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         flags = %w[
           -reduce
           -cc
@@ -49,7 +49,7 @@ class ImageOptim
           #{dst}
         ]
 
-        execute(:pngcrush, *args) && optimized?(src, dst)
+        execute(:pngcrush, args, options) && optimized?(src, dst)
       end
     end
   end

@@ -25,7 +25,7 @@ class ImageOptim
         [:jhead, :jpegtran]
       end
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         return false unless oriented?(src)
 
         src.copy(dst)
@@ -34,7 +34,7 @@ class ImageOptim
           #{dst}
         ]
         resolve_bin!(:jpegtran)
-        execute(:jhead, *args) && dst.size?
+        execute(:jhead, args, options) && dst.size?
       end
 
     private
