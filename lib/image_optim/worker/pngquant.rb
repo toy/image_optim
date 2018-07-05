@@ -50,7 +50,7 @@ class ImageOptim
         -2
       end
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         args = %W[
           --quality=#{quality.begin}-#{quality.end}
           --speed=#{speed}
@@ -61,7 +61,7 @@ class ImageOptim
           --
           #{src}
         ]
-        execute(:pngquant, *args) && optimized?(src, dst)
+        execute(:pngquant, args, options) && optimized?(src, dst)
       end
     end
   end

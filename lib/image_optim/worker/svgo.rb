@@ -16,7 +16,7 @@ class ImageOptim
         Array(v).map(&:to_s)
       end
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         args = %W[
           --input #{src}
           --output #{dst}
@@ -27,7 +27,7 @@ class ImageOptim
         enable_plugins.each do |plugin_name|
           args.unshift "--enable=#{plugin_name}"
         end
-        execute(:svgo, *args) && optimized?(src, dst)
+        execute(:svgo, args, options) && optimized?(src, dst)
       end
     end
   end

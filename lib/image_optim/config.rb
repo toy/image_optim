@@ -117,6 +117,14 @@ class ImageOptim
       end
     end
 
+    # Timeout in seconds for each image:
+    # * not set by default and for `nil`
+    # * otherwise converted to float
+    def timeout
+      timeout = get!(:timeout)
+      timeout ? timeout.to_f : nil
+    end
+
     # Verbose mode, converted to boolean
     def verbose
       !!get!(:verbose)

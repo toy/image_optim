@@ -37,7 +37,7 @@ class ImageOptim
       CAREFUL_OPTION =
       option(:careful, false, 'Avoid bugs with some software'){ |v| !!v }
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         args = %W[
           --output=#{dst}
           --no-comments
@@ -58,7 +58,7 @@ class ImageOptim
         end
         args.unshift '--careful' if careful
         args.unshift "--optimize=#{level}" if level
-        execute(:gifsicle, *args) && optimized?(src, dst)
+        execute(:gifsicle, args, options) && optimized?(src, dst)
       end
     end
   end

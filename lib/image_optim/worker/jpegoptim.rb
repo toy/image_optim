@@ -47,7 +47,7 @@ class ImageOptim
         max_quality < 100 ? -1 : 0
       end
 
-      def optimize(src, dst)
+      def optimize(src, dst, options = {})
         src.copy(dst)
         args = %W[
           --quiet
@@ -58,7 +58,7 @@ class ImageOptim
           args.unshift "--strip-#{strip_marker}"
         end
         args.unshift "--max=#{max_quality}" if max_quality < 100
-        execute(:jpegoptim, *args) && optimized?(src, dst)
+        execute(:jpegoptim, args, options) && optimized?(src, dst)
       end
     end
   end

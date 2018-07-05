@@ -3,6 +3,7 @@
 
 require 'image_optim/cmd'
 require 'image_optim/configuration_error'
+require 'image_optim/elapsed_time'
 require 'image_optim/path'
 require 'image_optim/worker/class_methods'
 require 'shellwords'
@@ -41,7 +42,7 @@ class ImageOptim
 
     # Optimize image at src, output at dst, must be overriden in subclass
     # return true on success
-    def optimize(_src, _dst)
+    def optimize(_src, _dst, options = {})
       fail NotImplementedError, "implement method optimize in #{self.class}"
     end
 
@@ -122,33 +123,44 @@ class ImageOptim
     end
 
     # Run command setting priority and hiding output
-    def execute(bin, *arguments)
+    def execute(bin, arguments, options)
       resolve_bin!(bin)
 
       cmd_args = [bin, *arguments].map(&:to_s)
 
-      start = Time.now
-
-      success = run_command(cmd_args)
-
       if @image_optim.verbose
-        seconds = Time.now - start
-        $stderr << "#{success ? '✓' : '✗'} #{seconds}s #{cmd_args.shelljoin}\n"
+        run_command_verbose(cmd_args, options)
+      else
+        run_command(cmd_args, options)
       end
-
-      success
     end
 
     # Run command defining environment, setting nice level, removing output and
     # reraising signal exception
-    def run_command(cmd_args)
+    def run_command(cmd_args, options)
       args = [
         {'PATH' => @image_optim.env_path},
         *%W[nice -n #{@image_optim.nice}],
         *cmd_args,
-        {:out => Path::NULL, :err => Path::NULL},
+        options.merge(:out => Path::NULL, :err => Path::NULL),
       ]
       Cmd.run(*args)
+    end
+
+    # Wrap run_command and output status, elapsed time and command
+    def run_command_verbose(cmd_args, options)
+      start = ElapsedTime.now
+
+      begin
+        success = run_command(cmd_args, options)
+        status = success ? '✓' : '✗'
+        success
+      rescue Errors::TimeoutExceeded
+        status = 'timeout'
+        raise
+      ensure
+        $stderr << format("%s %.1fs %s\n", status, ElapsedTime.now - start, cmd_args.shelljoin)
+      end
     end
   end
 end
