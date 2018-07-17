@@ -44,6 +44,9 @@ Lint/AmbiguousBlockAssociation:
 Lint/NestedPercentLiteral:
   Enabled: false
 
+Lint/UnneededRequireStatement:
+  Enabled: false
+
 Lint/UnneededSplatExpansion:
   Enabled: false
 
