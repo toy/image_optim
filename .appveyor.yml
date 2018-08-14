@@ -1,7 +1,7 @@
 version: '{build}-{branch}'
 install:
   - mkdir tmp\bin || exit 0
-  - set PATH=%cd%\tmp\bin;%PATH%
+  - set PATH=C:\Ruby25-x64\bin;%cd%\tmp\bin;%PATH%
   - ruby --version
   - bundle package --all
 
