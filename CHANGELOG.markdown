@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Ignore segmentation fault for `pngout` <= `20150920` [#158](https://github.com/toy/image_optim/issues/158) [@toy](https://github.com/toy)
 * Allow `image_size` 2.x [@toy](https://github.com/toy)
 * Add instructions for installing `svgo` in project folder [#156](https://github.com/toy/image_optim/issues/156) [@brian-kephart](https://github.com/brian-kephart)
 * Show full bin search path in verbose output [@toy](https://github.com/toy)
