@@ -8,7 +8,7 @@
 
 # image_optim
 
-Optimize (lossless compress, optionally lossy) images (jpeg, png, gif, svg) using external utilities:
+Command line tool and ruby interface to optimize (lossless compress, optionally lossy) jpeg, png, gif and svg images using external utilities:
 
 * [advpng](http://advancemame.sourceforge.net/doc-advpng.html) from [AdvanceCOMP](http://advancemame.sourceforge.net/comp-readme.html)
 (will use [zopfli](https://code.google.com/p/zopfli/) on default/maximum level 4)
@@ -25,7 +25,7 @@ Optimize (lossless compress, optionally lossy) images (jpeg, png, gif, svg) usin
 
 Based on [ImageOptim.app](http://imageoptim.com/).
 
-Documentation for [latest version](http://rubydoc.info/gems/image_optim/frames) and [master](http://rubydoc.info/github/toy/image_optim/master/frames).
+Documentation for [latest gem version](http://rubydoc.info/gems/image_optim/frames) and [master branch](http://rubydoc.info/github/toy/image_optim/master/frames).
 
 ## Gem installation
 
