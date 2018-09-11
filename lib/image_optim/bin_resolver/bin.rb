@@ -23,6 +23,7 @@ class ImageOptim
 
       def digest
         return @digest if defined?(@digest)
+
         @digest = File.exist?(@path) && Digest::SHA1.file(@path).hexdigest
       end
 
@@ -56,6 +57,7 @@ class ImageOptim
         FAIL_CHECKS.each do |bin_name, matcher, message|
           next unless bin_name == name
           next unless matcher.match(version)
+
           fail BadVersion, "#{self} (#{matcher}) #{message}"
         end
       end
@@ -67,6 +69,7 @@ class ImageOptim
         WARN_CHECKS.each do |bin_name, matcher, message|
           next unless bin_name == name
           next unless matcher.match(version)
+
           warn "WARN: #{self} (#{matcher}) #{message}"
         end
       end

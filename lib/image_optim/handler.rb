@@ -39,6 +39,7 @@ class ImageOptim
       @dst ||= @original.temp_path
 
       return unless yield @src, @dst
+
       @result = @dst
       if @src == @original
         @src, @dst = @dst, nil
@@ -50,6 +51,7 @@ class ImageOptim
     # Remove extra temp files
     def cleanup
       return unless @dst
+
       @dst.unlink
       @dst = nil
     end

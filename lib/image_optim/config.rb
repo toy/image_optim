@@ -32,10 +32,12 @@ class ImageOptim
           return {}
         end
         return {} unless File.size?(full_path)
+
         config = YAML.load_file(full_path)
         unless config.is_a?(Hash)
           fail "expected hash, got #{config.inspect}"
         end
+
         HashHelpers.deep_symbolise_keys(config)
       rescue => e
         warn "exception when reading #{full_path}: #{e}"
@@ -77,6 +79,7 @@ class ImageOptim
     def assert_no_unused_options!
       unknown_options = @options.reject{ |key, _value| @used.include?(key) }
       return if unknown_options.empty?
+
       fail ConfigurationError, "unknown options #{unknown_options.inspect}"
     end
 
@@ -131,6 +134,7 @@ class ImageOptim
       true
     rescue LoadError => e
       raise "Cannot load image_optim_pack: #{e}" if pack
+
       false
     end
 

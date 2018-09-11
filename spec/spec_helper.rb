@@ -53,6 +53,7 @@ def mepp(image_a, image_b)
   unless [0, 1].include?($CHILD_STATUS.exitstatus)
     fail "compare #{image_a} with #{image_b} failed with `#{output}`"
   end
+
   num_r = '\d+(?:\.\d+(?:[eE][-+]?\d+)?)?'
   output[/\((#{num_r}), #{num_r}\)/, 1].to_f
 end

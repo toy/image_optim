@@ -104,6 +104,7 @@ class ImageOptim
         if File.file?(path)
           next if exclude_file?(dir, path)
           next unless @image_optim.optimizable?(path)
+
           to_optimize << path
         elsif File.directory?(path)
           Find.prune if dir != path && exclude_dir?(dir, path)

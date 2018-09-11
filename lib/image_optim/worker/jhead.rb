@@ -25,6 +25,7 @@ class ImageOptim
 
       def optimize(src, dst)
         return false unless oriented?(src)
+
         src.copy(dst)
         args = %W[
           -autorot

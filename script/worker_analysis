@@ -118,8 +118,10 @@ class Analyser
       def get!(key, etag)
         raw = DB[Marshal.dump(key)]
         return unless raw
+
         entry = Marshal.load(raw)
         return unless entry[1] == etag
+
         entry[0]
       end
 
@@ -175,6 +177,7 @@ class Analyser
 
     def options_string(options)
       return '' if options.empty?
+
       "(#{options.sort.map{ |k, v| "#{k}:#{v.inspect}" }.join(', ')})"
     end
   end
@@ -284,6 +287,7 @@ class Analyser
       required_workers = workers.select(&:required)
       with_progress(workers, last_result) do |worker|
         next if required_workers.any?{ |w| w.run_order < worker.run_order }
+
         worker_result, result_image = run_worker(src, worker)
 
         steps = (last_result ? last_result.steps : []) + [worker_result]
@@ -329,6 +333,7 @@ class Analyser
         unless $CHILD_STATUS.success?
           fail "failed comparison of #{@path} with #{other}"
         end
+
         nrmse
       end
     end
@@ -482,6 +487,7 @@ class Analyser
     ImageOptim::Worker.klasses.each do |klass|
       worker_config = config.delete(klass.bin_sym)
       next if worker_config == false
+
       worker_config ||= {}
 
       option_variants = worker_config.delete(:variants) || [{}]

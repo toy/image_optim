@@ -83,6 +83,7 @@ class ImageOptim
         klasses.map do |klass|
           options = options_proc[klass]
           next if options[:disable]
+
           if !options.key?(:allow_lossy) && klass.method_defined?(:allow_lossy)
             options[:allow_lossy] = image_optim.allow_lossy
           end

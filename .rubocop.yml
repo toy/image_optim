@@ -30,6 +30,9 @@ Layout/IndentHash:
 Layout/IndentHeredoc:
   Enabled: false
 
+Layout/RescueEnsureAlignment:
+  Enabled: false
+
 Layout/SpaceBeforeBlockBraces:
   EnforcedStyle: no_space
   EnforcedStyleForEmptyBraces: no_space

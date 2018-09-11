@@ -118,6 +118,7 @@ class ImageOptim
     end
 
     return unless optimized
+
     OptimizedPath.new(optimized, original)
   end
 
@@ -126,6 +127,7 @@ class ImageOptim
   def optimize_image!(original)
     original = Path.convert(original)
     return unless (result = optimize_image(original))
+
     result.replace(original)
     OptimizedPath.new(original, result.original_size)
   end
@@ -134,6 +136,7 @@ class ImageOptim
   def optimize_image_data(original_data)
     format = ImageMeta.format_for_data(original_data)
     return unless format
+
     Path.temp_file %W[image_optim .#{format}] do |temp|
       temp.binmode
       temp.write(original_data)

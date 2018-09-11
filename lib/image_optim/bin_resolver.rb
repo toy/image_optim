@@ -97,6 +97,7 @@ class ImageOptim
     # Double-checked locking
     def resolving(name)
       return if @bins.include?(name)
+
       @lock.synchronize do
         yield unless @bins.include?(name)
       end
@@ -108,11 +109,13 @@ class ImageOptim
       env_name = "#{name}_bin".upcase
       path = ENV[env_name]
       return unless path
+
       path = File.expand_path(path)
       desc = "`#{path}` specified in #{env_name}"
       fail "#{desc} doesn\'t exist" unless File.exist?(path)
       fail "#{desc} is not a file" unless File.file?(path)
       fail "#{desc} is not executable" unless File.executable?(path)
+
       if @image_optim.verbose
         $stderr << "Custom path for #{name} specified in #{env_name}: #{path}\n"
       end

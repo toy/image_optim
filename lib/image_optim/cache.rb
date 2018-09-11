@@ -7,6 +7,7 @@ class ImageOptim
   class Cache
     def initialize(image_optim, workers_by_format)
       return unless image_optim.cache_dir
+
       @cache_dir = FSPath.new(image_optim.cache_dir)
       @cache_worker_digests = image_optim.cache_worker_digests
       @options_by_format = Hash[workers_by_format.map do |format, workers|

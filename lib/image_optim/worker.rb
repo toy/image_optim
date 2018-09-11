@@ -23,6 +23,7 @@ class ImageOptim
       unless image_optim.is_a?(ImageOptim)
         fail ArgumentError, 'first parameter should be an ImageOptim instance'
       end
+
       @image_optim = image_optim
       parse_options(options)
       assert_no_unknown_options!(options)
@@ -49,6 +50,7 @@ class ImageOptim
       unless format_from_name
         fail "#{self.class}: can't guess applicable format from worker name"
       end
+
       [format_from_name.to_sym]
     end
 
@@ -68,6 +70,7 @@ class ImageOptim
         @image_optim.resolve_bin!(bin)
       end
       return if errors.empty?
+
       fail BinResolver::Error, wrap_resolver_error_message(errors.join(', '))
     end
 
@@ -98,6 +101,7 @@ class ImageOptim
       known_keys = self.class.option_definitions.map(&:name)
       unknown_options = options.reject{ |key, _value| known_keys.include?(key) }
       return if unknown_options.empty?
+
       fail ConfigurationError, "unknown options #{unknown_options.inspect} "\
           "for #{self}"
     end

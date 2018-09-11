@@ -185,6 +185,7 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
 
   ImageOptim::Worker.klasses.each_with_index do |klass, i|
     next if klass.option_definitions.empty?
+
     op.separator nil unless i.zero?
 
     bin = klass.bin_sym
