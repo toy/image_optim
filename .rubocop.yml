@@ -54,7 +54,7 @@ Lint/UnneededSplatExpansion:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 30
+  Max: 33
 
 Metrics/BlockLength:
   Exclude:
@@ -66,7 +66,7 @@ Metrics/ClassLength:
   Max: 150
 
 Metrics/CyclomaticComplexity:
-  Max: 10
+  Max: 11
 
 Metrics/LineLength:
   Max: 120

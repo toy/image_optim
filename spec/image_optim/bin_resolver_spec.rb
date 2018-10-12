@@ -278,9 +278,9 @@ describe ImageOptim::BinResolver do
       bin = Bin.new(:advpng, '/bin/advpng')
 
       expect(Bin).to receive(:new).and_return(bin)
-      allow(bin).to receive(:version).and_return(SimpleVersion.new('1.15'))
+      allow(bin).to receive(:version).and_return(SimpleVersion.new('none'))
 
-      expect(bin).to receive(:warn).once.with(match(/does not use zopfli/))
+      expect(bin).to receive(:warn).once.with(match(/is of unknown version/))
 
       5.times do
         resolver.resolve!(:pngcrush)
