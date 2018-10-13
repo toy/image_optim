@@ -3,6 +3,7 @@
 [![AppVeyor Status](https://img.shields.io/appveyor/ci/toy/image-optim/master.svg?style=flat&label=windows)](https://ci.appveyor.com/project/toy/image-optim)
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/toy/image_optim.svg?style=flat)](https://codeclimate.com/github/toy/image_optim)
 [![Code Climate Coverage](https://img.shields.io/codeclimate/c/toy/image_optim.svg?style=flat)](https://codeclimate.com/github/toy/image_optim)
+[![Depfu](https://badges.depfu.com/badges/221b4832fa96f613aa5401f7cb4030ac/overview.svg)](https://depfu.com/github/toy/image_optim)
 [![Inch CI](https://inch-ci.org/github/toy/image_optim.svg?branch=master&style=flat)](https://inch-ci.org/github/toy/image_optim)
 
 # image_optim
