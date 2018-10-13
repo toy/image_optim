@@ -2,7 +2,7 @@
 
 ## unreleased
 
-* Handle `vnone` version of `advpng` [#165](https://github.com/toy/image_optim/issues/165) [@toy](https://github.com/toy)
+* Handle `vnone` version of `advpng` that was erroneously produced for `ubuntu` and `homebrew` [#165](https://github.com/toy/image_optim/issues/165) [@toy](https://github.com/toy)
 
 ## v0.26.2 (2018-08-15)
 
