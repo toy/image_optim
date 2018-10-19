@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
 
   s.metadata = {
     'bug_tracker_uri'   => "https://github.com/toy/#{s.name}/issues",
-    'changelog_uri'     => "https://github.com/toy/#{s.name}/CHANGELOG.markdown",
+    'changelog_uri'     => "https://github.com/toy/#{s.name}/blob/master/CHANGELOG.markdown",
     'documentation_uri' => "https://www.rubydoc.info/gems/#{s.name}/#{s.version}",
     'source_code_uri'   => "https://github.com/toy/#{s.name}",
   }
