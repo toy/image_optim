@@ -21,7 +21,7 @@ class ImageOptim
             .*            # what is left
           )
           \z
-        /x
+        /x.freeze
 
         # Expand curly braces in glob as fnmatch in ruby before 2.0 doesn't
         # support them
