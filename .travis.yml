@@ -21,7 +21,7 @@ script:
   - bundle exec image_optim --info
   - bundle exec rspec
 before_install:
-  - gem install bundler
+  - gem install bundler || gem install bundler --version '< 2'
   - ruby -e 'require "rubygems"; require "bundler/inline"; gemfile{ source "https://rubygems.org"; gem "rubygems-update" }' # get compatible version of rubygems-update
   - gem update --system
   - nvm install stable
