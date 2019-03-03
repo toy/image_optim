@@ -3,6 +3,7 @@ install:
   - mkdir tmp\bin || exit 0
   - set PATH=C:\Ruby25-x64\bin;%cd%\tmp\bin;%PATH%
   - ruby --version
+  - gem --version
   - bundle package --all
 
   - ps: git --work-tree=tmp\bin checkout origin/windows-binaries -- '*.exe'
@@ -26,10 +27,16 @@ test_script:
   - ps: |
       $path = $env:Path
       $rubypaths = ls -Path C:\Ruby*\bin
-      foreach ($rubypath in $rubypaths[-2, -1]) {
-        echo "################################################################################"
+      foreach ($rubypath in $rubypaths) {
         $env:Path = "$rubypath;" + $path
+        ruby -e "abort unless RUBY_VERSION > '2.3'"
+        if ($LASTEXITCODE -gt 0) {
+          continue
+        }
+
+        echo "################################ $rubypath ################################"
         ruby --version
+        gem --version
         bundle package --all
         bundle install --local -j4
         bundle exec rspec
