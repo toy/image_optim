@@ -18,13 +18,13 @@ Layout/DotPosition:
 Layout/EndAlignment:
   EnforcedStyleAlignWith: variable
 
-Layout/IndentArray:
+Layout/IndentFirstArrayElement:
   EnforcedStyle: consistent
 
 Layout/IndentAssignment:
   Enabled: false
 
-Layout/IndentHash:
+Layout/IndentFirstHashElement:
   EnforcedStyle: consistent
 
 Layout/IndentHeredoc:
