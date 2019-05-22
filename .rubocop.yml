@@ -105,11 +105,17 @@ Style/HashSyntax:
 Style/IfUnlessModifier:
   Enabled: false
 
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
 Style/ParallelAssignment:
   Enabled: false
 
 Style/RescueStandardError:
   EnforcedStyle: implicit
+
+Style/SafeNavigation:
+  Enabled: false
 
 Style/Semicolon:
   AllowAsExpressionSeparator: true

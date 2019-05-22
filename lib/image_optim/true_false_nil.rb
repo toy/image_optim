@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImageOptim
   # Denote ternary value (`true`/`false`/`nil`) for worker option
   class TrueFalseNil

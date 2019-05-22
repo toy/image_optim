@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImageOptim
   class BinResolver
     # Allows to externalize conditions for an instance of Comparable to use in

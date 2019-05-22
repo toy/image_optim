@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImageOptim
   class BinResolver
     # Allows comparision of simple versions, only numbers separated by dots are

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'image_optim/bin_resolver/error'
 require 'image_optim/bin_resolver/simple_version'
 require 'image_optim/bin_resolver/comparable_condition'

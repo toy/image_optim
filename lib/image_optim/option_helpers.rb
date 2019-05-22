@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImageOptim
   # Helper methods for options
   module OptionHelpers

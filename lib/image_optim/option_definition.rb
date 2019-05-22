@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImageOptim
   # Hold information about an option
   class OptionDefinition

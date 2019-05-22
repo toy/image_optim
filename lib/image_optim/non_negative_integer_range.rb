@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImageOptim
   # Denote range of non negative integers for worker option
   class NonNegativeIntegerRange

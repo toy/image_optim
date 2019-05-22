@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'image_optim'
 require 'image_optim/hash_helpers'
 require 'image_optim/runner/glob_helpers'

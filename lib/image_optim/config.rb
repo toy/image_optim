@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'image_optim/option_helpers'
 require 'image_optim/configuration_error'
 require 'image_optim/hash_helpers'
@@ -18,7 +20,7 @@ class ImageOptim
     end
 
     # Local config path at `./.image_optim.yml`
-    LOCAL_PATH = './.image_optim.yml'.freeze
+    LOCAL_PATH = './.image_optim.yml'
 
     class << self
       # Read options at path: expand path (warn on failure), return {} if file

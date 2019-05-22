@@ -1,4 +1,5 @@
 # encoding: UTF-8
+# frozen_string_literal: true
 
 require 'image_optim'
 require 'image_optim/true_false_nil'
@@ -186,7 +187,7 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
   ImageOptim::Worker.klasses.each_with_index do |klass, i|
     next if klass.option_definitions.empty?
 
-    op.separator nil unless i.zero?
+    op.separator nil unless i == 0
 
     bin = klass.bin_sym
     klass.option_definitions.each do |option_definition|
