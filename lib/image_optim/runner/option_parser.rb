@@ -43,7 +43,7 @@ class ImageOptim
         # don't try to wrap if there is too little space for description
         return text if wrapped_width < 20
 
-        wrapped = ''
+        wrapped = ''.dup
         text.split("\n").each do |line|
           if line.length <= columns
             wrapped << line << "\n"
