@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.26.4 (2019-05-23)
+
 * Enable frozen string literals [@toy](https://github.com/toy)
 
 ## v0.26.3 (2018-10-13)
