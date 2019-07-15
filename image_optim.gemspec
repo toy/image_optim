@@ -25,7 +25,7 @@ Rails image assets optimization is extracted into image_optim_rails gem
 You can safely remove `config.assets.image_optim = false` if you are not going to use that gem
 EOF
 
-  s.add_dependency 'fspath', '~> 3.0'
+  s.add_dependency 'fspath', '3.1.2'
   s.add_dependency 'image_size', '>= 1.5', '< 3'
   s.add_dependency 'exifr', '~> 1.2', '>= 1.2.2'
   s.add_dependency 'progress', '~> 3.0', '>= 3.0.1'
