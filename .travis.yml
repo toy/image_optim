@@ -13,9 +13,9 @@ rvm:
   - '2.1.10'
   - '2.2.10'
   - '2.3.8'
-  - '2.4.6'
-  - '2.5.5'
-  - '2.6.3'
+  - '2.4.7'
+  - '2.5.6'
+  - '2.6.4'
   - 'jruby-9.1.9.0'
 script:
   - bundle exec image_optim --info
@@ -31,14 +31,14 @@ before_install:
 matrix:
   include:
     - env: CODECLIMATE=✓
-      rvm: '2.4.6'
+      rvm: '2.4.7'
       after_success: bundle exec codeclimate-test-reporter
     - env: RUBOCOP=✓
-      rvm: '2.4.6'
+      rvm: '2.4.7'
       script: bundle exec rubocop
       before_install: gem update --system && gem install bundler
     - env: CHECK_RUBIES=✓
-      rvm: '2.4.6'
+      rvm: '2.4.7'
       script: bundle exec travis_check_rubies
       before_install: gem update --system && gem install bundler
 addons:
