@@ -27,6 +27,8 @@ Based on [ImageOptim.app](http://imageoptim.com/).
 
 Documentation for [latest gem version](http://rubydoc.info/gems/image_optim/frames) and [master branch](http://rubydoc.info/github/toy/image_optim/master/frames).
 
+A test application with latest `image_optim` and `image_optim_pack` is available on heroku: https://iopack.herokuapp.com/.
+
 ## Gem installation
 
 ```sh
@@ -355,4 +357,4 @@ In separate file [CHANGELOG.markdown](CHANGELOG.markdown).
 
 ## Copyright
 
-Copyright (c) 2012-2018 Ivan Kuchin. See [LICENSE.txt](LICENSE.txt) for details.
+Copyright (c) 2012-2019 Ivan Kuchin. See [LICENSE.txt](LICENSE.txt) for details.

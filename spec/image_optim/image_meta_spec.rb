@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'image_optim/image_meta'
 
 describe ImageOptim::ImageMeta do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'image_optim/worker'
 require 'image_optim/option_helpers'
 require 'image_optim/non_negative_integer_range'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fspath'
 require 'image_optim/image_meta'
 

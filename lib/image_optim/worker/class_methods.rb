@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'image_optim/bin_resolver'
 require 'image_optim/option_definition'
 

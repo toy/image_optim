@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'image_optim/worker'
 require 'image_optim/bin_resolver'

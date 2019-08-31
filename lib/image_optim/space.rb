@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImageOptim
   # Present size in readable form as fixed length string
   module Space
@@ -15,7 +17,7 @@ class ImageOptim
       else
         log_denominator = Math.log(size.abs) / Math.log(BASE)
         degree = [log_denominator.floor, SIZE_SYMBOLS.length - 1].min
-        number_string = if degree.zero?
+        number_string = if degree == 0
           size.to_s
         else
           denominator = BASE**degree

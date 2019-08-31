@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'image_optim/optimized_path'
 
 describe ImageOptim::OptimizedPath do

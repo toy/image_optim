@@ -1,4 +1,5 @@
 sudo: false
+dist: trusty
 language: ruby
 cache:
   bundler: true
@@ -12,19 +13,18 @@ rvm:
   - '2.1.10'
   - '2.2.10'
   - '2.3.8'
-  - '2.4.5'
-  - '2.5.3'
-  - '2.6.0'
-  - 'jruby-9.0.5.0'
+  - '2.4.7'
+  - '2.5.6'
+  - '2.6.4'
   - 'jruby-9.1.17.0'
   - 'jruby-9.2.8.0'
 script:
   - bundle exec image_optim --info
   - bundle exec rspec
 before_install:
-  - gem install bundler || gem install bundler --version '< 2'
-  - ruby -e 'require "rubygems"; require "bundler/inline"; gemfile{ source "https://rubygems.org"; gem "rubygems-update" }' # get compatible version of rubygems-update
+  - gem install rubygems-update || gem install rubygems-update --version '< 3'
   - gem update --system
+  - gem install bundler || gem install bundler --version '< 2'
   - nvm install stable
   - mkdir -p ~/bin
   - command -v svgo || npm install -g svgo
@@ -32,14 +32,14 @@ before_install:
 matrix:
   include:
     - env: CODECLIMATE=✓
-      rvm: '2.4.5'
+      rvm: '2.4.7'
       after_success: bundle exec codeclimate-test-reporter
     - env: RUBOCOP=✓
-      rvm: '2.4.5'
+      rvm: '2.4.7'
       script: bundle exec rubocop
       before_install: gem update --system && gem install bundler
     - env: CHECK_RUBIES=✓
-      rvm: '2.4.5'
+      rvm: '2.4.7'
       script: bundle exec travis_check_rubies
       before_install: gem update --system && gem install bundler
 addons:

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'thread'
 require 'fspath'
 require 'image_optim/bin_resolver/error'

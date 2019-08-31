@@ -2,6 +2,14 @@
 
 ## unreleased
 
+## v0.26.5 (2019-07-14)
+
+* Remove deprecated `rubyforge_project` attribute from gemspec [rubygems/rubygems#2436](https://github.com/rubygems/rubygems/pull/2436) [@toy](https://github.com/toy)
+
+## v0.26.4 (2019-05-23)
+
+* Enable frozen string literals [@toy](https://github.com/toy)
+
 ## v0.26.3 (2018-10-13)
 
 * Handle `vnone` version of `advpng` that was erroneously produced for `ubuntu` and `homebrew` [#165](https://github.com/toy/image_optim/issues/165) [@toy](https://github.com/toy)

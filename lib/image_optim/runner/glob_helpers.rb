@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImageOptim
   class Runner
     # Helper methods for glob
