@@ -13,9 +13,9 @@ rvm:
   - '2.1.10'
   - '2.2.10'
   - '2.3.8'
-  - '2.4.7'
-  - '2.5.6'
-  - '2.6.4'
+  - '2.4.9'
+  - '2.5.7'
+  - '2.6.5'
   - 'jruby-9.1.17.0'
   - 'jruby-9.2.7.0'
 script:
@@ -32,14 +32,14 @@ before_install:
 matrix:
   include:
     - env: CODECLIMATE=✓
-      rvm: '2.4.7'
+      rvm: '2.4.9'
       after_success: bundle exec codeclimate-test-reporter
     - env: RUBOCOP=✓
-      rvm: '2.4.7'
+      rvm: '2.4.9'
       script: bundle exec rubocop
       before_install: gem update --system && gem install bundler
     - env: CHECK_RUBIES=✓
-      rvm: '2.4.7'
+      rvm: '2.4.9'
       script: bundle exec travis_check_rubies
       before_install: gem update --system && gem install bundler
 addons:
