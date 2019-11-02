@@ -47,10 +47,10 @@ Lint/AmbiguousBlockAssociation:
 Lint/NestedPercentLiteral:
   Enabled: false
 
-Lint/UnneededRequireStatement:
+Lint/RedundantRequireStatement:
   Enabled: false
 
-Lint/UnneededSplatExpansion:
+Lint/RedundantSplatExpansion:
   Enabled: false
 
 Metrics/AbcSize:
