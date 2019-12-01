@@ -9,6 +9,9 @@ Bundler/OrderedGems:
 Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
 
+Layout/AssignmentIndentation:
+  Enabled: false
+
 Layout/CaseIndentation:
   EnforcedStyle: end
 
@@ -18,16 +21,13 @@ Layout/DotPosition:
 Layout/EndAlignment:
   EnforcedStyleAlignWith: variable
 
-Layout/IndentFirstArrayElement:
+Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
 
-Layout/IndentAssignment:
-  Enabled: false
-
-Layout/IndentFirstHashElement:
+Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
 
-Layout/IndentHeredoc:
+Layout/HeredocIndentation:
   Enabled: false
 
 Layout/RescueEnsureAlignment:
