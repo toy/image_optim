@@ -29,7 +29,7 @@ before_install:
   - nvm install stable
   - mkdir -p ~/bin
   - command -v svgo || npm install -g svgo
-  - command -v pngout || curl -L "http://static.jonof.id.au/dl/kenutils/pngout-20150319-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/x86_64/pngout'
+  - command -v pngout || curl -L "https://www.jonof.id.au/files/kenutils/pngout-20200115-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/amd64/pngout'
 matrix:
   include:
     - env: CODECLIMATE=✓
