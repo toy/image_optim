@@ -30,6 +30,9 @@ Layout/FirstHashElementIndentation:
 Layout/HeredocIndentation:
   Enabled: false
 
+Layout/LineLength:
+  Max: 120
+
 Layout/RescueEnsureAlignment:
   Enabled: false
 
@@ -68,9 +71,6 @@ Metrics/ClassLength:
 Metrics/CyclomaticComplexity:
   Max: 11
 
-Metrics/LineLength:
-  Max: 120
-
 Metrics/MethodLength:
   Max: 25
 
@@ -99,8 +99,17 @@ Style/ExpandPathArguments:
 Style/FormatStringToken:
   Enabled: false
 
+Style/HashEachMethods:
+  Enabled: true
+
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
+
+Style/HashTransformKeys:
+  Enabled: false
+
+Style/HashTransformValues:
+  Enabled: false
 
 Style/IfUnlessModifier:
   Enabled: false
