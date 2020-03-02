@@ -32,14 +32,14 @@ before_install:
   - command -v pngout || curl -L "https://www.jonof.id.au/files/kenutils/pngout-20200115-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/amd64/pngout'
 matrix:
   include:
-    - env: CODECLIMATE=✓
+    - env: CODECLIMATE=1
       rvm: '2.4.9'
       after_success: bundle exec codeclimate-test-reporter
-    - env: RUBOCOP=✓
+    - env: RUBOCOP=1
       rvm: '2.4.9'
       script: bundle exec rubocop
       before_install: gem update --system && gem install bundler
-    - env: CHECK_RUBIES=✓
+    - env: CHECK_RUBIES=1
       rvm: '2.4.9'
       script: bundle exec travis_check_rubies
       before_install: gem update --system && gem install bundler
