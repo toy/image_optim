@@ -23,6 +23,7 @@ script:
   - bundle exec image_optim --info
   - bundle exec rspec
 before_install:
+  - 'echo "gem: --no-ri --no-rdoc --no-document" > ~/.gemrc'
   - gem install rubygems-update || gem install rubygems-update --version '< 3'
   - gem update --system
   - gem install bundler || gem install bundler --version '< 2'
