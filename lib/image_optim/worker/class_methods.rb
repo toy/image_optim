@@ -36,6 +36,7 @@ class ImageOptim
 
       def option(name, default, type, description = nil, &proc)
         attr_reader name
+
         OptionDefinition.new(name, default, type, description, &proc).
           tap{ |option_definition| option_definitions << option_definition }
       end

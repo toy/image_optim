@@ -17,6 +17,7 @@ class ImageOptim
       class BadVersion < Error; end
 
       attr_reader :name, :path, :version
+
       def initialize(name, path)
         @name = name.to_sym
         @path = path.to_s

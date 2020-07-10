@@ -2,6 +2,7 @@ AllCops:
   Exclude:
     - '*.gemspec'
     - 'vendor/**/*'
+  NewCops: enable
 
 Bundler/OrderedGems:
   Enabled: false
@@ -80,6 +81,9 @@ Metrics/PerceivedComplexity:
 Security/MarshalLoad:
   Exclude:
     - 'script/worker_analysis'
+
+Style/AccessorGrouping:
+  Enabled: false
 
 Style/Alias:
   EnforcedStyle: prefer_alias_method

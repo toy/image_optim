@@ -137,6 +137,7 @@ class Analyser
   # Delegate to worker with short id
   class WorkerVariant < DelegateClass(ImageOptim::Worker)
     attr_reader :name, :id, :cons_id, :required
+
     def initialize(klass, image_optim, options)
       @required = options.delete(:required)
       @run_order = options.delete(:run_order)
@@ -452,6 +453,7 @@ class Analyser
       attr_reader :name
       attr_reader :success_count
       attr_reader :time, :avg_time
+
       def initialize(name, steps)
         @name = name
         @success_count = steps.count(&:success)
@@ -465,6 +467,7 @@ class Analyser
     end
 
     attr_reader :name, :results, :ids2names
+
     def initialize(name, results, ids2names)
       @name = name.to_s
       @results = results

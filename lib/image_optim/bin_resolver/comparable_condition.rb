@@ -26,6 +26,7 @@ class ImageOptim
       end
 
       attr_reader :method, :args
+
       def initialize(method, *args)
         @method, @args = method.to_sym, args
 
