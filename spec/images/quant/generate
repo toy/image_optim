@@ -17,8 +17,8 @@ palettes.each do |palette|
     rgb:-
     PNG24:#{palette}.png
   ].shelljoin, 'w') do |f|
-    (side * side).times do |i|
-      color = i * palette / (side * side) * 0x10000 / palette
+    (side**2).times do |i|
+      color = i * palette / (side**2) * 0x10000 / palette
       f << [color / 0x100, color % 0x100, 0].pack('C*')
     end
   end

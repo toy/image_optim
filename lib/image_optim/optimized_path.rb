@@ -7,7 +7,7 @@ class ImageOptim
   class OptimizedPath < DelegateClass(Path)
     def initialize(path, original_or_size = nil)
       path = Path.convert(path)
-      __setobj__(path)
+      super(path)
       if original_or_size.is_a?(Integer)
         @original = path
         @original_size = original_or_size

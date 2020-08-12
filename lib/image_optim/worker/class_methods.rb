@@ -18,6 +18,7 @@ class ImageOptim
 
       # Remember all classes inheriting from this one
       def inherited(base)
+        super
         @klasses << base
       end
 

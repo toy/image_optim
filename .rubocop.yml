@@ -76,7 +76,7 @@ Metrics/MethodLength:
   Max: 25
 
 Metrics/PerceivedComplexity:
-  Max: 8
+  Max: 10
 
 Security/MarshalLoad:
   Exclude:
@@ -120,6 +120,9 @@ Style/IfUnlessModifier:
 
 Style/NumericPredicate:
   EnforcedStyle: comparison
+
+Style/OptionalBooleanParameter:
+  Enabled: false
 
 Style/ParallelAssignment:
   Enabled: false

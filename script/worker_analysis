@@ -144,7 +144,7 @@ class Analyser
       allow_consecutive_on = Array(options.delete(:allow_consecutive_on))
       @image_optim = image_optim
       @name = klass.bin_sym.to_s + options_string(options)
-      __setobj__(klass.new(image_optim, options))
+      super(klass.new(image_optim, options))
       @id = klass.bin_sym.to_s + options_string(self.options)
       @cons_id = [klass, allow_consecutive_on.map{ |key| [key, send(key)] }]
     end
