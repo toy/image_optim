@@ -277,6 +277,10 @@ optipng:
   level: 5
 ```
 
+### Temporary directory
+
+`image_optim` uses standard ruby library for creating temporary files. Temporary directory can be changed using one of `TMPDIR`, `TMP` or `TEMP` environment variables.
+
 ## Options
 
 * `:nice` — Nice level, priority of all used tools with higher value meaning lower priority, in range `-20..19`, negative values can be set only if run by root user *(defaults to `10`)*
