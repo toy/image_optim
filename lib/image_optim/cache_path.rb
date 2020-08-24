@@ -11,7 +11,7 @@ class ImageOptim
       tmpdir = [dirname, Path.new(Dir.tmpdir)].find do |dir|
         dir.same_dev?(dst.dirname)
       end
-      dst.temp_path(tmpdir || dst.dirname) do |temp|
+      dst.temp_path_with_tmp_ext(tmpdir || dst.dirname) do |temp|
         copy(temp)
         dst.copy_metadata(temp)
         temp.rename(dst.to_s)

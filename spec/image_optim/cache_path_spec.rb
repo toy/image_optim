@@ -56,6 +56,12 @@ describe ImageOptim::CachePath do
         skip 'inodes are not supported' unless inodes_supported?
         expect{ src.replace(dst) }.to change{ dst.stat.ino }
       end
+
+      it 'is using temporary file with .tmp extension' do
+        expect(src).to receive(:copy).with(having_attributes(:extname => '.tmp'))
+
+        src.replace(dst)
+      end
     end
 
     context 'when src and dst are on same device' do

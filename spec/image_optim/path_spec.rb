@@ -118,6 +118,12 @@ describe ImageOptim::Path do
       end
 
       include_examples 'replaces file'
+
+      it 'is using temporary file with .tmp extension' do
+        expect(src).to receive(:move).with(having_attributes(:extname => '.tmp'))
+
+        src.replace(dst)
+      end
     end
   end
 end
