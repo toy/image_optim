@@ -60,7 +60,7 @@ With version:
 
 <!---<update-version>-->
 ```ruby
-gem 'image_optim', '~> 0.26'
+gem 'image_optim', '~> 0.27'
 ```
 <!---</update-version>-->
 
@@ -361,4 +361,4 @@ In separate file [CHANGELOG.markdown](CHANGELOG.markdown).
 
 ## Copyright
 
-Copyright (c) 2012-2019 Ivan Kuchin. See [LICENSE.txt](LICENSE.txt) for details.
+Copyright (c) 2012-2020 Ivan Kuchin. See [LICENSE.txt](LICENSE.txt) for details.
