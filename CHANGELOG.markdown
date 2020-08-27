@@ -2,6 +2,9 @@
 
 ## unreleased
 
+* Use `.tmp` as the extension for temporary file if it needs to be created for atomic replacement [#178](https://github.com/toy/image_optim/issues/178) [@toy](https://github.com/toy)
+* Don't create a temporary file in destination directory for atomic replacement if temporary directory is on same device as destination [#178](https://github.com/toy/image_optim/issues/178) [@toy](https://github.com/toy)
+
 ## v0.26.5 (2019-07-14)
 
 * Remove deprecated `rubyforge_project` attribute from gemspec [rubygems/rubygems#2436](https://github.com/rubygems/rubygems/pull/2436) [@toy](https://github.com/toy)

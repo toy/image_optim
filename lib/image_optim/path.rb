@@ -50,11 +50,16 @@ class ImageOptim
 
     # Atomic replace dst with self
     def replace(dst)
-      dst = self.class.new(dst)
-      dst.temp_path(dst.dirname) do |temp|
-        move(temp)
-        dst.copy_metadata(temp)
-        temp.rename(dst.to_s)
+      dst = self.class.convert(dst)
+      if same_dev?(dst.dirname)
+        dst.copy_metadata(self)
+        rename(dst.to_s)
+      else
+        dst.temp_path_with_tmp_ext(dst.dirname) do |temp|
+          move(temp)
+          dst.copy_metadata(temp)
+          temp.rename(dst.to_s)
+        end
       end
     end
 
@@ -67,6 +72,16 @@ class ImageOptim
     # instance
     def self.convert(path)
       path.is_a?(self) ? path : new(path)
+    end
+
+  protected
+
+    def same_dev?(other)
+      stat.dev == other.stat.dev
+    end
+
+    def temp_path_with_tmp_ext(*args, &block)
+      self.class.temp_file_path([basename.to_s, '.tmp'], *args, &block)
     end
   end
 end

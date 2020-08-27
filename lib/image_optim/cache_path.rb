@@ -7,8 +7,11 @@ class ImageOptim
   class CachePath < Path
     # Atomic replace dst with self
     def replace(dst)
-      dst = self.class.new(dst)
-      dst.temp_path(dst.dirname) do |temp|
+      dst = self.class.convert(dst)
+      tmpdir = [dirname, Path.new(Dir.tmpdir)].find do |dir|
+        dir.same_dev?(dst.dirname)
+      end
+      dst.temp_path_with_tmp_ext(tmpdir || dst.dirname) do |temp|
         copy(temp)
         dst.copy_metadata(temp)
         temp.rename(dst.to_s)
