@@ -23,10 +23,11 @@ describe ImageOptim do
     stub_const('Cmd', ImageOptim::Cmd)
   end
 
-  isolated_options_base = {:skip_missing_workers => false}
-  ImageOptim::Worker.klasses.each do |klass|
-    isolated_options_base[klass.bin_sym] = false
-  end
+  isolated_options_base = Hash[
+    ImageOptim::Worker.klasses.map do |klass|
+      [klass.bin_sym, false]
+    end
+  ].merge(:skip_missing_workers => false)
 
   ImageOptim::Worker.klasses.each do |worker_klass|
     describe "#{worker_klass.bin_sym} worker" do
