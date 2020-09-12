@@ -27,7 +27,7 @@ EOF
 
   s.add_dependency 'fspath', '~> 3.0'
   s.add_dependency 'image_size', '>= 1.5', '< 3'
-  s.add_dependency 'exifr', '~> 1.2', '>= 1.2.2'
+  s.add_dependency 'exifr', '1.3.7'
   s.add_dependency 'progress', '~> 3.0', '>= 3.0.1'
   s.add_dependency 'in_threads', '~> 1.3'
 
