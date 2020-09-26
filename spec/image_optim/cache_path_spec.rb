@@ -8,12 +8,14 @@ describe ImageOptim::CachePath do
   include CapabilityCheckHelpers
 
   before do
+    stub_const('Path', ImageOptim::Path)
     stub_const('CachePath', ImageOptim::CachePath)
   end
 
   describe '#replace' do
-    let(:src){ CachePath.temp_file_path }
-    let(:dst){ CachePath.temp_file_path }
+    let(:src_dir){ Path.temp_dir }
+    let(:src){ CachePath.temp_file_path(nil, src_dir) }
+    let(:dst){ Path.temp_file_path }
 
     shared_examples 'replaces file' do
       it 'moves data to destination' do
@@ -58,7 +60,7 @@ describe ImageOptim::CachePath do
       end
 
       it 'is using temporary file with .tmp extension' do
-        expect(src).to receive(:copy).with(having_attributes(:extname => '.tmp'))
+        expect(src).to receive(:copy).with(having_attributes(:extname => '.tmp')).at_least(:once)
 
         src.replace(dst)
       end
@@ -75,6 +77,23 @@ describe ImageOptim::CachePath do
     context 'when src and dst are on different devices' do
       before do
         allow_any_instance_of(File::Stat).to receive(:dev, &:__id__)
+      end
+
+      include_examples 'replaces file'
+    end
+
+    context 'when src and dst are on same device, but rename causes Errno::EXDEV' do
+      before do
+        allow_any_instance_of(File::Stat).to receive(:dev).and_return(0)
+        allow(described_class).to receive(:temp_file_path).and_call_original
+        expect(described_class).to receive(:temp_file_path).
+          with([dst.basename.to_s, '.tmp'], src.dirname).
+          and_wrap_original do |m, *args, &block|
+            m.call(*args) do |tmp|
+              expect(tmp).to receive(:rename).with(dst.to_s).and_raise(Errno::EXDEV)
+              block.call(tmp)
+            end
+          end
       end
 
       include_examples 'replaces file'

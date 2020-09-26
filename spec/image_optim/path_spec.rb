@@ -125,5 +125,20 @@ describe ImageOptim::Path do
         src.replace(dst)
       end
     end
+
+    context 'when src and dst are on same device, but rename causes Errno::EXDEV' do
+      before do
+        allow_any_instance_of(File::Stat).to receive(:dev).and_return(0)
+        expect(src).to receive(:rename).with(dst.to_s).once.and_raise(Errno::EXDEV)
+      end
+
+      include_examples 'replaces file'
+
+      it 'is using temporary file with .tmp extension' do
+        expect(src).to receive(:move).with(having_attributes(:extname => '.tmp'))
+
+        src.replace(dst)
+      end
+    end
   end
 end

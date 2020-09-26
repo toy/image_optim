@@ -11,7 +11,21 @@ class ImageOptim
       tmpdir = [dirname, Path.new(Dir.tmpdir)].find do |dir|
         dir.same_dev?(dst.dirname)
       end
-      dst.temp_path_with_tmp_ext(tmpdir || dst.dirname) do |temp|
+      if tmpdir
+        begin
+          replace_using_tmp_file(dst, tmpdir)
+        rescue Errno::EXDEV
+          replace_using_tmp_file(dst, dst.dirname)
+        end
+      else
+        replace_using_tmp_file(dst, dst.dirname)
+      end
+    end
+
+  private
+
+    def replace_using_tmp_file(dst, tmpdir)
+      dst.temp_path_with_tmp_ext(tmpdir) do |temp|
         copy(temp)
         dst.copy_metadata(temp)
         temp.rename(dst.to_s)

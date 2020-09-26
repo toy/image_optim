@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Fixed atomic replacement for case when equal `File::Stat#dev` doesn't mean that file can be linked [#180](https://github.com/toy/image_optim/issues/180) [@toy](https://github.com/toy)
+
 ## v0.27.0 (2020-08-27)
 
 * Use `.tmp` as the extension for temporary file if it needs to be created for atomic replacement [#178](https://github.com/toy/image_optim/issues/178) [@toy](https://github.com/toy)
