@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.27.1 (2020-09-30)
+
 * Fixed atomic replacement for case when equal `File::Stat#dev` doesn't mean that file can be linked [#180](https://github.com/toy/image_optim/issues/180) [@toy](https://github.com/toy)
 
 ## v0.27.0 (2020-08-27)
