@@ -18,7 +18,7 @@ def write_worker_options(io, klass)
     klass.option_definitions.each do |option_definition|
       line = "* `:#{option_definition.name}` — #{option_definition.description}"
       unless line['(defaults']
-        line << " *(defaults to #{option_definition.default_description})*"
+        line += " *(defaults to #{option_definition.default_description})*"
       end
       io.puts line
     end
