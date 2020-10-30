@@ -102,7 +102,7 @@ describe ImageOptim::Cache do
           expect(FileUtils).not_to receive(:mv)
           expect(File).not_to receive(:rename)
 
-          expect(cache.fetch(original){}).to eq(cached)
+          expect(cache.fetch(original){ nil }).to eq(cached)
         end
 
         it 'returns nil when file is already optimized' do
