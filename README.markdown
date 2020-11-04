@@ -316,6 +316,7 @@ Worker has no options
 ### jpegrecompress:
 * `:allow_lossy` — Allow worker, it is always lossy *(defaults to `false`)*
 * `:quality` — JPEG quality preset: `0` - low, `1` - medium, `2` - high, `3` - veryhigh *(defaults to `3`)*
+* `:method` — Comparison Metric: `mpe` - Mean pixel error, `ssim` - Structural similarity, `ms-ssim` - Multi-scale structural similarity (slow!), `smallfry` - Linear-weighted BBCQ-like (may be patented) *(defaults to ssim)*
 
 ### jpegtran:
 * `:copy_chunks` — Copy all chunks *(defaults to `false`)*

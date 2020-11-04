@@ -202,6 +202,8 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
         [Integer, 'N']
       when Array >= type
         [Array, 'a,b,c']
+      when String >= type
+        [String, 'S']
       when ImageOptim::NonNegativeIntegerRange == type
         [type, 'M-N']
       else
