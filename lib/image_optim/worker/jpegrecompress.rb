@@ -32,11 +32,11 @@ class ImageOptim
           '`ssim` - Structural similarity, '\
           '`ms-ssim` - Multi-scale structural similarity (slow!), '\
           '`smallfry` - Linear-weighted BBCQ-like (may be patented)') do |v, opt_def|
-        if !%w[mpe ssim ms-ssim smallfry].include? v
+        if %w[mpe ssim ms-ssim smallfry].include? v
+          v
+        else
           warn "Unknown method for jpegrecompress: #{v}"
           opt_def.default
-        else
-          v
         end
       end
 

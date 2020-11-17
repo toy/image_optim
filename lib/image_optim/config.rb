@@ -197,10 +197,10 @@ class ImageOptim
       when /darwin9/
         Cmd.capture 'hwprefs cpu_count'
       when /darwin/
-        if (Cmd.capture 'which hwprefs') != ''
-          Cmd.capture 'hwprefs thread_count'
-        else
+        if (Cmd.capture 'which hwprefs') == ''
           Cmd.capture 'sysctl -n hw.ncpu'
+        else
+          Cmd.capture 'hwprefs thread_count'
         end
       when /linux/
         Cmd.capture 'grep -c processor /proc/cpuinfo'
