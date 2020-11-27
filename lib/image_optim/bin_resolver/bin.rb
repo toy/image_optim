@@ -14,6 +14,7 @@ class ImageOptim
     # Holds bin name and path, gets version
     class Bin
       class UnknownVersion < Error; end
+
       class BadVersion < Error; end
 
       attr_reader :name, :path, :version
