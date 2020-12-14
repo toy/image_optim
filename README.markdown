@@ -310,7 +310,7 @@ Worker has no options
 
 ### jpegoptim:
 * `:allow_lossy` — Allow limiting maximum quality *(defaults to `false`)*
-* `:strip` — List of extra markers to strip: `:comments`, `:exif`, `:iptc`, `:icc` or `:all` *(defaults to `:all`)*
+* `:strip` — List of markers to strip: `:com`, `:exif`, `:iptc`, `:icc`, `:xmp`, `:none` or `:all` *(defaults to `:all`)*
 * `:max_quality` — Maximum image quality factor `0`..`100`, ignored in default/lossless mode *(defaults to `100`)*
 
 ### jpegrecompress:

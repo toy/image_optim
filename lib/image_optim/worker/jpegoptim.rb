@@ -11,14 +11,16 @@ class ImageOptim
       option(:allow_lossy, false, 'Allow limiting maximum quality'){ |v| !!v }
 
       STRIP_OPTION =
-      option(:strip, :all, Array, 'List of extra markers to strip: '\
-          '`:comments`, '\
+      option(:strip, :all, Array, 'List of markers to strip: '\
+          '`:com`, '\
           '`:exif`, '\
           '`:iptc`, '\
-          '`:icc` or '\
+          '`:icc`, '\
+          '`:xmp`, '\
+          '`:none` or '\
           '`:all`') do |v|
         values = Array(v).map(&:to_s)
-        known_values = %w[all comments exif iptc icc]
+        known_values = %w[com exif iptc icc xmp none all]
         unknown_values = values - known_values
         unless unknown_values.empty?
           warn "Unknown markers for jpegoptim: #{unknown_values.join(', ')}"
