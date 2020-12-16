@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Fix `Path#copy_metadata` by rescuing also `Errno::EACCES` as it is done in `fileutils` [#187](https://github.com/toy/image_optim/issues/187) [@toy](https://github.com/toy)
 * More precise regular expression for capturing svgo version [@toy](https://github.com/toy)
 
 ## v0.28.0 (2020-12-18)

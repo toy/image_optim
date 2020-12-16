@@ -41,7 +41,7 @@ class ImageOptim
       dst.utime(stat.atime, stat.mtime) if time
       begin
         dst.chown(stat.uid, stat.gid)
-      rescue Errno::EPERM
+      rescue Errno::EPERM, Errno::EACCES
         dst.chmod(stat.mode & 0o1777)
       else
         dst.chmod(stat.mode)
