@@ -14,7 +14,7 @@ require 'in_threads'
 require 'shellwords'
 
 %w[
-  pngcrush pngout advpng optipng pngquant
+  pngcrush pngout advpng optipng pngquant oxipng
   jhead jpegoptim jpegrecompress jpegtran
   gifsicle
   svgo
