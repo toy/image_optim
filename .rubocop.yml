@@ -103,6 +103,9 @@ Style/ExpandPathArguments:
 Style/FormatStringToken:
   Enabled: false
 
+Style/HashConversion:
+  Enabled: false
+
 Style/HashEachMethods:
   Enabled: true
 
