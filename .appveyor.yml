@@ -6,6 +6,8 @@ install:
   - gem --version
   - bundle package --all
 
+  - ps: Install-Product node 12
+
   - ps: git --work-tree=tmp\bin checkout origin/windows-binaries -- '*.exe'
 
   - ps: | # svgo
