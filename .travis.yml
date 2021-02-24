@@ -26,8 +26,8 @@ before_install:
   - update_rubygems
   - gem install bundler || gem install bundler --version '< 2'
   - nvm install stable
-  - mkdir -p ~/bin
   - command -v svgo || npm install -g svgo
+  - mkdir -p ~/bin
   - command -v pngout || curl -L "https://www.jonof.id.au/files/kenutils/pngout-20200115-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/amd64/pngout'
 matrix:
   include:
