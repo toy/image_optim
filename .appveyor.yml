@@ -6,7 +6,7 @@ install:
   - gem --version
   - bundle package --all
 
-  - ps: Install-Product node 12
+  - ps: Install-Product node
 
   - ps: git --work-tree=tmp\bin checkout origin/windows-binaries -- '*.exe'
 
