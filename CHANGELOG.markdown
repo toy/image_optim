@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* More precise regular expression for capturing svgo version [@toy](https://github.com/toy)
+
 ## v0.28.0 (2020-12-18)
 
 * Fix and update list of markers in jpegoptim worker: allow to pass `com` instead of incorrect `comments` and add missing `xmp` and `none` [#188](https://github.com/toy/image_optim/issues/188) [@toy](https://github.com/toy)
