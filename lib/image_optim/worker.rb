@@ -142,21 +142,12 @@ class ImageOptim
     # Run command defining environment, setting nice level, removing output and
     # reraising signal exception
     def run_command(cmd_args)
-      args = if RUBY_VERSION < '1.9' || defined?(JRUBY_VERSION)
-        %W[
-          env PATH=#{@image_optim.env_path.shellescape}
-          nice -n #{@image_optim.nice}
-          #{cmd_args.shelljoin}
-          > #{Path::NULL} 2>&1
-        ].join(' ')
-      else
-        [
-          {'PATH' => @image_optim.env_path},
-          %W[nice -n #{@image_optim.nice}],
-          cmd_args,
-          {:out => Path::NULL, :err => Path::NULL},
-        ].flatten
-      end
+      args = [
+        {'PATH' => @image_optim.env_path},
+        *%W[nice -n #{@image_optim.nice}],
+        *cmd_args,
+        {:out => Path::NULL, :err => Path::NULL},
+      ]
       Cmd.run(*args)
     end
   end

@@ -8,6 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ['Ivan Kuchin']
   s.license     = 'MIT'
 
+  s.required_ruby_version = '>= 1.9.3'
+
   s.metadata = {
     'bug_tracker_uri'   => "https://github.com/toy/#{s.name}/issues",
     'changelog_uri'     => "https://github.com/toy/#{s.name}/blob/master/CHANGELOG.markdown",

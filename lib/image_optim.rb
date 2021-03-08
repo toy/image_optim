@@ -188,12 +188,6 @@ class ImageOptim
       optimize_image_method?(method) || super
     end
 
-    if RUBY_VERSION < '1.9'
-      def respond_to?(method, include_private = false)
-        optimize_image_method?(method) || super
-      end
-    end
-
     # Version of image_optim gem spec loaded
     def version
       Gem.loaded_specs['image_optim'].version.to_s
