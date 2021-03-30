@@ -358,20 +358,18 @@ class Analyser
     end
 
     def flatten_animation(image)
-      run_cache[:flatten][image.digest] ||= begin
-        if image.image_format == :gif
-          flattened = image.temp_path
-          Cmd.run(*%W[
-            convert
-            #{image.image_format}:#{image}
-            -coalesce
-            -append
-            #{image.image_format}:#{flattened}
-          ]) || fail("failed flattening of #{image}")
-          flattened
-        else
-          image
-        end
+      run_cache[:flatten][image.digest] ||= if image.image_format == :gif
+        flattened = image.temp_path
+        Cmd.run(*%W[
+          convert
+          #{image.image_format}:#{image}
+          -coalesce
+          -append
+          #{image.image_format}:#{flattened}
+        ]) || fail("failed flattening of #{image}")
+        flattened
+      else
+        image
       end
     end
 
