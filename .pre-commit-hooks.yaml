@@ -1,0 +1,9 @@
+- id: image_optim
+  name: image_optim
+  entry: image_optim
+  language: ruby
+  types:
+  - image
+  args: []
+  additional_dependencies:
+  - image_optim_pack
