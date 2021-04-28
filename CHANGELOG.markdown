@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.29.0 (2021-04-28)
+
 * Require at least ruby 1.9.3 [@toy](https://github.com/toy)
 * Add support for use as [pre-commit](https://pre-commit.com/) hook [#192](https://github.com/toy/image_optim/pull/192) [@proinsias](https://github.com/proinsias)
 * Fix `Path#copy_metadata` by rescuing also `Errno::EACCES` as it is done in `fileutils` [#187](https://github.com/toy/image_optim/issues/187) [@toy](https://github.com/toy)
