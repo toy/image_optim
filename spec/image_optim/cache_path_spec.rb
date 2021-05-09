@@ -60,7 +60,7 @@ describe ImageOptim::CachePath do
       end
 
       it 'is using temporary file with .tmp extension' do
-        expect(src).to receive(:copy).with(having_attributes(:extname => '.tmp')).at_least(:once)
+        expect(src).to receive(:copy).with(having_attributes(extname: '.tmp')).at_least(:once)
 
         src.replace(dst)
       end

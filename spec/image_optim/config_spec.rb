@@ -19,7 +19,7 @@ describe ImageOptim::Config do
     end
 
     it 'raises when there are unused options' do
-      config = IOConfig.new(:unused => true)
+      config = IOConfig.new(unused: true)
       expect do
         config.assert_no_unused_options!
       end.to raise_error(ImageOptim::ConfigurationError)
@@ -37,12 +37,12 @@ describe ImageOptim::Config do
     end
 
     it 'is 0 if disabled' do
-      config = IOConfig.new(:nice => false)
+      config = IOConfig.new(nice: false)
       expect(config.nice).to eq(0)
     end
 
     it 'converts value to number' do
-      config = IOConfig.new(:nice => '13')
+      config = IOConfig.new(nice: '13')
       expect(config.nice).to eq(13)
     end
   end
@@ -59,12 +59,12 @@ describe ImageOptim::Config do
     end
 
     it 'is 1 if disabled' do
-      config = IOConfig.new(:threads => false)
+      config = IOConfig.new(threads: false)
       expect(config.threads).to eq(1)
     end
 
     it 'converts value to number' do
-      config = IOConfig.new(:threads => '616')
+      config = IOConfig.new(threads: '616')
       expect(config.threads).to eq(616)
     end
   end
@@ -80,7 +80,7 @@ describe ImageOptim::Config do
     end
 
     it 'converts value to a float' do
-      config = IOConfig.new(:timeout => '15.1')
+      config = IOConfig.new(timeout: '15.1')
       expect(config.timeout).to eq(15.1)
     end
   end
@@ -96,7 +96,7 @@ describe ImageOptim::Config do
     end
 
     it 'is nil if set to the empty string' do
-      config = IOConfig.new(:cache_dir => '')
+      config = IOConfig.new(cache_dir: '')
       expect(config.cache_dir).to be nil
     end
   end
@@ -128,17 +128,17 @@ describe ImageOptim::Config do
     end
 
     it 'returns passed hash' do
-      config = IOConfig.new(:abc => {:option => true})
-      expect(config.for_worker(Abc)).to eq(:option => true)
+      config = IOConfig.new(abc: {option: true})
+      expect(config.for_worker(Abc)).to eq(option: true)
     end
 
     it 'returns {:disable => true} for false' do
-      config = IOConfig.new(:abc => false)
-      expect(config.for_worker(Abc)).to eq(:disable => true)
+      config = IOConfig.new(abc: false)
+      expect(config.for_worker(Abc)).to eq(disable: true)
     end
 
     it 'raises on unknown option' do
-      config = IOConfig.new(:abc => 13)
+      config = IOConfig.new(abc: 13)
       expect do
         config.for_worker(Abc)
       end.to raise_error(ImageOptim::ConfigurationError)
@@ -148,11 +148,11 @@ describe ImageOptim::Config do
   describe '#initialize' do
     it 'reads options from default locations' do
       expect(IOConfig).to receive(:read_options).
-        with(IOConfig::GLOBAL_PATH).and_return(:a => 1, :b => 2, :c => 3)
+        with(IOConfig::GLOBAL_PATH).and_return(a: 1, b: 2, c: 3)
       expect(IOConfig).to receive(:read_options).
-        with(IOConfig::LOCAL_PATH).and_return(:a => 10, :b => 20)
+        with(IOConfig::LOCAL_PATH).and_return(a: 10, b: 20)
 
-      config = IOConfig.new(:a => 100)
+      config = IOConfig.new(a: 100)
       expect(config.get!(:a)).to eq(100)
       expect(config.get!(:b)).to eq(20)
       expect(config.get!(:c)).to eq(3)
@@ -162,17 +162,17 @@ describe ImageOptim::Config do
     it 'does not read options with empty config_paths' do
       expect(IOConfig).not_to receive(:read_options)
 
-      config = IOConfig.new(:config_paths => [])
+      config = IOConfig.new(config_paths: [])
       config.assert_no_unused_options!
     end
 
     it 'reads options from specified paths' do
       expect(IOConfig).to receive(:read_options).
-        with('/etc/image_optim.yml').and_return(:a => 1, :b => 2, :c => 3)
+        with('/etc/image_optim.yml').and_return(a: 1, b: 2, c: 3)
       expect(IOConfig).to receive(:read_options).
-        with('config/image_optim.yml').and_return(:a => 10, :b => 20)
+        with('config/image_optim.yml').and_return(a: 10, b: 20)
 
-      config = IOConfig.new(:a => 100, :config_paths => %w[
+      config = IOConfig.new(a: 100, config_paths: %w[
         /etc/image_optim.yml
         config/image_optim.yml
       ])
@@ -186,7 +186,7 @@ describe ImageOptim::Config do
       expect(IOConfig).to receive(:read_options).
         with('config/image_optim.yml').and_return({})
 
-      config = IOConfig.new(:config_paths => 'config/image_optim.yml')
+      config = IOConfig.new(config_paths: 'config/image_optim.yml')
       config.assert_no_unused_options!
     end
   end
@@ -216,7 +216,7 @@ describe ImageOptim::Config do
 
     it 'returns hash with deep symbolised keys from reader' do
       stringified = {'config' => {'this' => true}}
-      symbolized = {:config => {:this => true}}
+      symbolized = {config: {this: true}}
 
       expect(IOConfig).not_to receive(:warn)
       expect(File).to receive(:expand_path).

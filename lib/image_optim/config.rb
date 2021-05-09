@@ -183,7 +183,7 @@ class ImageOptim
       when true, nil
         {}
       when false
-        {:disable => true}
+        {disable: true}
       else
         fail ConfigurationError, "Got #{worker_options.inspect} for "\
             "#{klass.name} options"

@@ -142,7 +142,7 @@ class ImageOptim
         {'PATH' => @image_optim.env_path},
         *%W[nice -n #{@image_optim.nice}],
         *cmd_args,
-        options.merge(:out => Path::NULL, :err => Path::NULL),
+        options.merge(out: Path::NULL, err: Path::NULL),
       ]
       Cmd.run(*args)
     end

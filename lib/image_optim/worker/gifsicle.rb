@@ -12,7 +12,7 @@ class ImageOptim
         return super if options.key?(:interlace)
 
         [false, true].map do |interlace|
-          new(image_optim, options.merge(:interlace => interlace))
+          new(image_optim, options.merge(interlace: interlace))
         end
       end
 

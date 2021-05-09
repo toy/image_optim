@@ -14,7 +14,7 @@ describe ImageOptim::Worker::Jpegrecompress do
     end
 
     context 'uses default when invalid' do
-      let(:method){ {:method => 'invalid'} }
+      let(:method){ {method: 'invalid'} }
 
       it 'warns and keeps default' do
         expect_any_instance_of(described_class).
@@ -24,7 +24,7 @@ describe ImageOptim::Worker::Jpegrecompress do
     end
 
     context 'can use a valid option' do
-      let(:method){ {:method => 'smallfry'} }
+      let(:method){ {method: 'smallfry'} }
 
       it{ is_expected.to eq('smallfry') }
     end

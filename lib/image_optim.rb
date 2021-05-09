@@ -122,7 +122,7 @@ class ImageOptim
         begin
           workers.each do |worker|
             handler.process do |src, dst|
-              worker.optimize(src, dst, :timeout => timer)
+              worker.optimize(src, dst, timeout: timer)
             end
           end
         rescue Errors::TimeoutExceeded

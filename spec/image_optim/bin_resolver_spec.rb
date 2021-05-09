@@ -19,7 +19,7 @@ describe ImageOptim::BinResolver do
     allow(ENV).to receive(:[]).and_call_original
   end
 
-  let(:image_optim){ double(:image_optim, :verbose => false, :pack => false) }
+  let(:image_optim){ double(:image_optim, verbose: false, pack: false) }
   let(:resolver){ BinResolver.new(image_optim) }
 
   describe '#full_path' do
@@ -130,7 +130,7 @@ describe ImageOptim::BinResolver do
   it 'resolves bin specified in ENV' do
     path = 'bin/the_optimizer'
     stub_env 'THE_OPTIMIZER_BIN', path
-    tmpdir = double(:tmpdir, :to_str => 'tmpdir')
+    tmpdir = double(:tmpdir, to_str: 'tmpdir')
     symlink = double(:symlink)
 
     full_path = File.expand_path(path)
@@ -180,9 +180,9 @@ describe ImageOptim::BinResolver do
       stub_env 'THE_OPTIMIZER_BIN', path
       expect(FSPath).not_to receive(:temp_dir)
       expect(resolver).not_to receive(:at_exit)
-      allow(File).to receive_messages(:exist? => exist?,
-                                      :file? => file?,
-                                      :executable? => executable?)
+      allow(File).to receive_messages(exist?: exist?,
+                                      file?: file?,
+                                      executable?: executable?)
     end
 
     after do

@@ -37,7 +37,7 @@ describe ImageOptim::Runner::OptionParser do
       %w[-r -R --recursive].each do |flag|
         it "is parsed from #{flag}" do
           args = %W[#{flag} foo bar]
-          expect(OptionParser.parse!(args)).to eq(:recursive => true)
+          expect(OptionParser.parse!(args)).to eq(recursive: true)
           expect(args).to eq(%w[foo bar])
         end
       end
@@ -46,19 +46,19 @@ describe ImageOptim::Runner::OptionParser do
     describe 'numeric option threads' do
       it 'is parsed with space separator' do
         args = %w[--threads 616 foo bar]
-        expect(OptionParser.parse!(args)).to eq(:threads => 616)
+        expect(OptionParser.parse!(args)).to eq(threads: 616)
         expect(args).to eq(%w[foo bar])
       end
 
       it 'is parsed with equal separator' do
         args = %w[--threads=616 foo bar]
-        expect(OptionParser.parse!(args)).to eq(:threads => 616)
+        expect(OptionParser.parse!(args)).to eq(threads: 616)
         expect(args).to eq(%w[foo bar])
       end
 
       it 'is parsed with no- prefix' do
         args = %w[--no-threads 616 foo bar]
-        expect(OptionParser.parse!(args)).to eq(:threads => false)
+        expect(OptionParser.parse!(args)).to eq(threads: false)
         expect(args).to eq(%w[616 foo bar])
       end
     end

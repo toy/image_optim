@@ -27,7 +27,7 @@ describe ImageOptim do
     ImageOptim::Worker.klasses.map do |klass|
       [klass.bin_sym, false]
     end
-  ].merge(:skip_missing_workers => false)
+  ].merge(skip_missing_workers: false)
 
   ImageOptim::Worker.klasses.each do |worker_klass|
     describe "#{worker_klass.bin_sym} worker" do
@@ -36,7 +36,7 @@ describe ImageOptim do
 
         image_optim = ImageOptim.new(options)
         if Array(worker_klass.init(image_optim)).empty?
-          image_optim = ImageOptim.new(options.merge(:allow_lossy => true))
+          image_optim = ImageOptim.new(options.merge(allow_lossy: true))
         end
 
         expect(test_images.any? do |original|
@@ -59,10 +59,10 @@ describe ImageOptim do
       rotated = images_dir / 'orient/original.jpg'
       rotate_images = images_dir.glob('orient/?.jpg')
 
-      base_options = {:skip_missing_workers => false}
+      base_options = {skip_missing_workers: false}
       [
         ['lossless', base_options, 0],
-        ['lossy', base_options.merge(:allow_lossy => true), 0.001],
+        ['lossy', base_options.merge(allow_lossy: true), 0.001],
       ].each do |type, options, max_difference|
         it "does it #{type}" do
           image_optim = ImageOptim.new(options)
@@ -95,8 +95,8 @@ describe ImageOptim do
     end
 
     {
-      :png => "\211PNG\r\n\032\n",
-      :jpeg => "\377\330",
+      png: "\211PNG\r\n\032\n",
+      jpeg: "\377\330",
     }.each do |type, data|
       it "ingores broken #{type}" do
         path = FSPath.temp_file_path
@@ -108,7 +108,7 @@ describe ImageOptim do
 
     context 'using timeout' do
       let(:timeout){ 123 }
-      let(:image_optim){ ImageOptim.new(isolated_options_base.merge(:timeout => timeout)) }
+      let(:image_optim){ ImageOptim.new(isolated_options_base.merge(timeout: timeout)) }
       let(:timer){ instance_double(ImageOptim::Timer) }
       let(:workers){ Array.new(3){ instance_double(ImageOptim::Worker) } }
       let(:path){ test_images.first }
@@ -121,9 +121,9 @@ describe ImageOptim do
       it 'sends timeout to every worker' do
         some_path = instance_of(ImageOptim::Path)
 
-        expect(workers[0]).to receive(:optimize).with(some_path, some_path, :timeout => timer)
-        expect(workers[1]).to receive(:optimize).with(some_path, some_path, :timeout => timer)
-        expect(workers[2]).to receive(:optimize).with(some_path, some_path, :timeout => timer)
+        expect(workers[0]).to receive(:optimize).with(some_path, some_path, timeout: timer)
+        expect(workers[1]).to receive(:optimize).with(some_path, some_path, timeout: timer)
+        expect(workers[2]).to receive(:optimize).with(some_path, some_path, timeout: timer)
 
         image_optim.optimize_image(path)
       end
@@ -147,7 +147,7 @@ describe ImageOptim do
   describe '#optimize_image!' do
     it 'optimizes image and replaces original' do
       original = double
-      optimized = double(:original_size => 12_345)
+      optimized = double(original_size: 12_345)
       optimized_wrap = double
       image_optim = ImageOptim.new
 
@@ -181,7 +181,7 @@ describe ImageOptim do
   describe '#optimize_image_data' do
     it 'create temp file, optimizes image and returns data' do
       data = double
-      temp = double(:path => double)
+      temp = double(path: double)
       optimized = double
       optimized_data = double
       image_optim = ImageOptim.new
@@ -202,7 +202,7 @@ describe ImageOptim do
 
     it 'returns nil if optimization fails' do
       data = double
-      temp = double(:path => double)
+      temp = double(path: double)
       image_optim = ImageOptim.new
 
       allow(ImageOptim::ImageMeta).to receive(:format_for_data).

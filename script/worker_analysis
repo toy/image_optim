@@ -525,10 +525,10 @@ class Analyser
       stats = Stats.new('all', by_format[format], worker_ids2names)
       path = FSPath("#{DIR}/#{basenames[format]}")
       model = {
-        :stats_format => format,
-        :stats => stats,
-        :format_links => basenames,
-        :template_dir => template_path.dirname.relative_path_from(path.dirname),
+        stats_format: format,
+        stats: stats,
+        format_links: basenames,
+        template_dir: template_path.dirname.relative_path_from(path.dirname),
       }
       html = template.result(OpenStruct.new(model).instance_eval{ binding })
       path.write(html)

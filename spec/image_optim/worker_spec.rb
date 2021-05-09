@@ -29,9 +29,9 @@ describe ImageOptim::Worker do
         option(:three, 3, 'Three')
       end
 
-      worker = worker_class.new(ImageOptim.new, :three => '...')
+      worker = worker_class.new(ImageOptim.new, three: '...')
 
-      expect(worker.options).to eq(:one => 1, :two => 2, :three => '...')
+      expect(worker.options).to eq(one: 1, two: 2, three: '...')
     end
   end
 
@@ -72,7 +72,7 @@ describe ImageOptim::Worker do
         option(:three, 3, 'Three')
       end)
 
-      worker = DefOptim.new(ImageOptim.new, :three => '...')
+      worker = DefOptim.new(ImageOptim.new, three: '...')
 
       expect(worker.inspect).to eq('#<DefOptim @one=1, @two=2, @three="...">')
     end
@@ -104,17 +104,17 @@ describe ImageOptim::Worker do
 
     it 'create hash by format' do
       workers = [
-        double(:image_formats => [:a]),
-        double(:image_formats => [:a, :b]),
-        double(:image_formats => [:b, :c]),
+        double(image_formats: [:a]),
+        double(image_formats: [:a, :b]),
+        double(image_formats: [:b, :c]),
       ]
 
       expect(Worker).to receive(:create_all).and_return(workers)
 
       worker_by_format = {
-        :a => [workers[0], workers[1]],
-        :b => [workers[1], workers[2]],
-        :c => [workers[2]],
+        a: [workers[0], workers[1]],
+        b: [workers[1], workers[2]],
+        c: [workers[2]],
       }
 
       expect(Worker.create_all_by_format(double)).to eq(worker_by_format)
@@ -123,21 +123,21 @@ describe ImageOptim::Worker do
 
   describe '.create_all' do
     def worker_double(override = {})
-      stubs = {:resolve_used_bins! => nil, :run_order => 0}.merge(override)
+      stubs = {resolve_used_bins!: nil, run_order: 0}.merge(override)
       instance_double(Worker, stubs)
     end
 
     def worker_class_doubles(workers)
-      workers.map{ |worker| class_double(Worker, :init => worker) }
+      workers.map{ |worker| class_double(Worker, init: worker) }
     end
 
-    let(:image_optim){ double(:allow_lossy => false) }
+    let(:image_optim){ double(allow_lossy: false) }
 
     it 'creates all workers for which options_proc returns true' do
       workers = Array.new(3){ worker_double }
       klasses = worker_class_doubles(workers)
       options_proc = proc do |klass|
-        klass == klasses[1] ? {:disable => true} : {}
+        klass == klasses[1] ? {disable: true} : {}
       end
 
       allow(Worker).to receive(:klasses).and_return(klasses)
@@ -206,7 +206,7 @@ describe ImageOptim::Worker do
     it 'orders workers by run_order' do
       run_orders = [10, -10, 0, 0, 0, 10, -10]
       workers = run_orders.map do |run_order|
-        worker_double(:run_order => run_order)
+        worker_double(run_order: run_order)
       end
       klasses_list = worker_class_doubles(workers)
 
@@ -243,16 +243,16 @@ describe ImageOptim::Worker do
       it 'allows overriding per worker' do
         klasses = worker_class_doubles([worker_double, worker_double])
         options_proc = proc do |klass|
-          klass == klasses[1] ? {:allow_lossy => :b} : {}
+          klass == klasses[1] ? {allow_lossy: :b} : {}
         end
 
         allow(Worker).to receive(:klasses).and_return(klasses)
 
         klasses.each{ |klass| klass.send(:attr_reader, :allow_lossy) }
         expect(klasses[0]).to receive(:init).
-          with(image_optim, hash_including(:allow_lossy => false))
+          with(image_optim, hash_including(allow_lossy: false))
         expect(klasses[1]).to receive(:init).
-          with(image_optim, hash_including(:allow_lossy => :b))
+          with(image_optim, hash_including(allow_lossy: :b))
 
         Worker.create_all(image_optim, &options_proc)
       end

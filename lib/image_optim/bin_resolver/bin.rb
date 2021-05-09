@@ -38,30 +38,30 @@ class ImageOptim
       is = ComparableCondition.is
 
       FAIL_CHECKS = {
-        :pngcrush => [
+        pngcrush: [
           [is.between?('1.7.60', '1.7.65'), 'is known to produce broken pngs'],
           [is == '1.7.80', 'loses one color in indexed images'],
         ],
-        :pngquant => [
+        pngquant: [
           [is < '2.0', 'is not supported'],
         ],
       }.freeze
 
       WARN_CHECKS = {
-        :advpng => [
+        advpng: [
           [is == 'none', 'is of unknown version'],
           [is < '1.17', 'does not use zopfli'],
         ],
-        :gifsicle => [
+        gifsicle: [
           [is < '1.85', 'does not support removing extension blocks'],
         ],
-        :pngcrush => [
+        pngcrush: [
           [is < '1.7.38', 'does not have blacken flag'],
         ],
-        :pngquant => [
+        pngquant: [
           [is < '2.1', 'may be lossy even with quality `100-`'],
         ],
-        :optipng => [
+        optipng: [
           [is < '0.7', 'does not support -strip option'],
         ],
       }.freeze

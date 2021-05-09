@@ -10,10 +10,10 @@ describe ImageOptim::HashHelpers do
 
   context 'stringify/simbolyze' do
     symbol_keys = {
-      :a => 1,
-      :b => {
-        :c => [:a, 'a'],
-        :d => {},
+      a: 1,
+      b: {
+        c: [:a, 'a'],
+        d: {},
       },
     }
 
@@ -38,22 +38,22 @@ describe ImageOptim::HashHelpers do
 
   it 'deep merges hashes' do
     merge_a = {
-      :a => {
-        :b => 1,
-        :c => {
-          :d => 2,
-          :e => {:f => true},
+      a: {
+        b: 1,
+        c: {
+          d: 2,
+          e: {f: true},
         },
       },
-      :y => 10,
+      y: 10,
     }
 
     merge_b = {
       :a => {
-        :b => 2,
-        :c => {
-          :d => 3,
-          :e => false,
+        b: 2,
+        c: {
+          d: 3,
+          e: false,
         },
       },
       'z' => 20,
@@ -61,10 +61,10 @@ describe ImageOptim::HashHelpers do
 
     merge_result = {
       :a => {
-        :b => 2,
-        :c => {
-          :d => 3,
-          :e => false,
+        b: 2,
+        c: {
+          d: 3,
+          e: false,
         },
       },
       :y => 10,

@@ -11,7 +11,7 @@ describe ImageOptim::Cache do
     stub_const('CachePath', ImageOptim::CachePath)
   end
 
-  let(:tmp_file){ double('/somewhere/tmp/foo/bar', :rename => 0) }
+  let(:tmp_file){ double('/somewhere/tmp/foo/bar', rename: 0) }
 
   let(:cache_dir) do
     dir = '/somewhere/cache'
@@ -24,7 +24,7 @@ describe ImageOptim::Cache do
   end
 
   let(:original) do
-    original = double('/somewhere/original', :image_format => :ext)
+    original = double('/somewhere/original', image_format: :ext)
     allow(Digest::SHA1).to receive(:file).with(original) do
       Digest::SHA1.new << 'some content!'
     end
@@ -32,7 +32,7 @@ describe ImageOptim::Cache do
   end
 
   let(:optimized) do
-    double('/somewhere/optimized', :format => :ext, :basename => 'optimized')
+    double('/somewhere/optimized', format: :ext, basename: 'optimized')
   end
 
   let(:cached) do
@@ -45,7 +45,7 @@ describe ImageOptim::Cache do
 
   context 'when cache is disabled (default)' do
     let(:image_optim) do
-      double(:image_optim, :cache_dir => nil, :cache_worker_digests => false, :timeout => nil)
+      double(:image_optim, cache_dir: nil, cache_worker_digests: false, timeout: nil)
     end
     let(:cache){ Cache.new(image_optim, double) }
 
@@ -122,7 +122,7 @@ describe ImageOptim::Cache do
   context 'when cache is enabled (without worker digests)' do
     let(:image_optim) do
       double(:image_optim,
-             :cache_dir => cache_dir, :cache_worker_digests => false, :timeout => nil)
+             cache_dir: cache_dir, cache_worker_digests: false, timeout: nil)
     end
     let(:cache) do
       cache = Cache.new(image_optim, {})
@@ -144,8 +144,8 @@ describe ImageOptim::Cache do
   context 'when cache is enabled (with worker digests)' do
     let(:image_optim) do
       double(:image_optim,
-             :cache_dir => cache_dir,
-             :cache_worker_digests => true, :timeout => nil)
+             cache_dir: cache_dir,
+             cache_worker_digests: true, timeout: nil)
     end
     let(:cache) do
       cache = Cache.new(image_optim, {})
