@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.30.0 (2021-05-11)
+
 * Add `timeout` option to restrict maximum time spent on every image [#21](https://github.com/toy/image_optim/issues/21) [#148](https://github.com/toy/image_optim/pull/148) [#149](https://github.com/toy/image_optim/pull/149) [#162](https://github.com/toy/image_optim/pull/162) [#184](https://github.com/toy/image_optim/pull/184) [#189](https://github.com/toy/image_optim/pull/189) [@tgxworld](https://github.com/tgxworld) [@oblakeerickson](https://github.com/oblakeerickson) [@toy](https://github.com/toy)
 
 ## v0.29.0 (2021-04-28)
