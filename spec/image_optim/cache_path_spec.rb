@@ -5,8 +5,6 @@ require 'image_optim/cache_path'
 require 'tempfile'
 
 describe ImageOptim::CachePath do
-  include CapabilityCheckHelpers
-
   before do
     stub_const('Path', ImageOptim::Path)
     stub_const('CachePath', ImageOptim::CachePath)
@@ -32,8 +30,7 @@ describe ImageOptim::CachePath do
         expect(src).to exist
       end
 
-      it 'preserves attributes of destination file' do
-        skip 'full file modes are not support' unless any_file_modes_allowed?
+      it 'preserves attributes of destination file', skip: SkipConditions[:any_file_mode_allowed] do
         mode = 0o666
 
         dst.chmod(mode)
@@ -54,8 +51,7 @@ describe ImageOptim::CachePath do
         expect(dst.mtime).to be >= time
       end
 
-      it 'changes inode of destination' do
-        skip 'inodes are not supported' unless inodes_supported?
+      it 'changes inode of destination', skip: SkipConditions[:inodes_support] do
         expect{ src.replace(dst) }.to change{ dst.stat.ino }
       end
 

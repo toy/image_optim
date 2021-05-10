@@ -4,8 +4,6 @@ require 'spec_helper'
 require 'image_optim/cmd'
 
 describe ImageOptim::Cmd do
-  include CapabilityCheckHelpers
-
   before do
     stub_const('Cmd', ImageOptim::Cmd)
   end
@@ -35,8 +33,7 @@ describe ImageOptim::Cmd do
       expect($CHILD_STATUS.exitstatus).to eq(66)
     end
 
-    it 'raises SignalException if process terminates after signal' do
-      skip 'signals are not supported' unless signals_supported?
+    it 'raises SignalException if process terminates after signal', skip: SkipConditions[:signals_support] do
       expect_int_exception do
         Cmd.run('kill -s INT $$')
       end
@@ -51,8 +48,7 @@ describe ImageOptim::Cmd do
         expect(Cmd.run('sh -c "exit 66"', timeout: 1)).to eq(false)
       end
 
-      it 'raises SignalException if process terminates after signal' do
-        skip 'signals are not supported' unless signals_supported?
+      it 'raises SignalException if process terminates after signal', skip: SkipConditions[:signals_support] do
         expect_int_exception do
           Cmd.run('kill -s INT $$', timeout: 1)
         end
@@ -74,8 +70,7 @@ describe ImageOptim::Cmd do
         end.not_to change{ Thread.list }
       end
 
-      it 'receives TERM' do
-        skip 'signals are not supported' unless signals_supported?
+      it 'receives TERM', skip: SkipConditions[:signals_support] do
         waiter = double
         allow(Process).to receive(:detach).once{ |pid| @pid = pid; waiter }
         allow(waiter).to receive(:join){ sleep 0.1; nil }
@@ -87,8 +82,7 @@ describe ImageOptim::Cmd do
         expect(Process.wait2(@pid).last.termsig).to eq(Signal.list['TERM'])
       end
 
-      it 'receives KILL if it does not react on TERM' do
-        skip 'signals are not supported' unless signals_supported?
+      it 'receives KILL if it does not react on TERM', skip: SkipConditions[:signals_support] do
         waiter = double
         allow(Process).to receive(:detach).once{ |pid| @pid = pid; waiter }
         allow(waiter).to receive(:join){ sleep 0.1; nil }
@@ -121,8 +115,7 @@ describe ImageOptim::Cmd do
       expect($CHILD_STATUS.exitstatus).to eq(66)
     end
 
-    it 'raises SignalException if process terminates after signal' do
-      skip 'signals are not supported' unless signals_supported?
+    it 'raises SignalException if process terminates after signal', skip: SkipConditions[:signals_support] do
       expect_int_exception do
         Cmd.capture('kill -s INT $$')
       end

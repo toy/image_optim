@@ -75,22 +75,23 @@ RSpec::Matchers.define :be_similar_to do |expected, max_difference|
   end
 end
 
-module CapabilityCheckHelpers
-  def any_file_modes_allowed?
-    Tempfile.open 'posix' do |f|
+SkipConditions = Hash.new do |cache, name|
+  cache[name] = case name
+  when :any_file_mode_allowed
+    Tempfile.open('posix') do |f|
       File.chmod(0, f.path)
-      return (File.stat(f.path).mode & 0o777).zero?
+      'full file modes are not support' unless (File.stat(f.path).mode & 0o777).zero?
     end
-  end
-
-  def inodes_supported?
-    !File.stat(__FILE__).ino.zero?
-  end
-
-  def signals_supported?
-    Process.kill(0, 0)
-    true
-  rescue
-    false
+  when :inodes_support
+    'inodes are not supported' if File.stat(__FILE__).ino.zero?
+  when :signals_support
+    begin
+      Process.kill(0, 0)
+      nil
+    rescue
+      'signals are not supported'
+    end
+  else
+    fail "Unknown check #{name}"
   end
 end
