@@ -55,7 +55,7 @@
       table[data-sortable] tbody tr:hover {
         background: #ddf;
       }
-      body:not(.show-unused) tr.unused, tr.filtered-out {
+      tr.filtered-out {
         display: none;
       }
 
@@ -110,17 +110,10 @@
       .worker-avg-time {
         background: #fdd;
       }
-      .worker-name.unused {
-        text-decoration: line-through;
-      }
     </style>
-    <script src="<%= template_dir %>/jquery-2.1.3.min.js"></script>
-    <script src="<%= template_dir %>/sortable-0.6.0.min.js"></script>
+    <script>//<![CDATA[<%= (template_dir / 'jquery-2.1.3.min.js').read %>//]]></script>
+    <script>//<![CDATA[<%= (template_dir / 'sortable-0.6.0.min.js').read %>//]]></script>
     <script>
-      function toggleShowUnused(){
-        var checked = document.getElementById('toggle-show-unused').checked
-        document.body.classList[checked ? 'add' : 'remove']('show-unused')
-      }
       function filterTable(){
         var filterText = document.getElementById('filter').value
         var invert = filterText[0] == '-'
@@ -193,20 +186,14 @@
       <span class='worker-avg-time'>0.123</span> - average time in seconds
     </p>
     <p>
-      <label>
-        <input id='toggle-show-unused' onchange='toggleShowUnused()' type='checkbox'>
-        Show chains with workers failed for every image
-      </label>
-    </p>
-    <p>
       <label for='filter'>
         Filter chains by regexp (prefix with "-" to filter-out):
         <input id='filter' onkeyup='filterTable()' type='text'>
       </label>
     </p>
     <p>
-      Images: <%= stats.each_chain.first.entry_count %>,
-      size: <%= stats.each_chain.first.original_size %>
+      Images: <%= stats.chains.first.entry_count %>,
+      size: <%= stats.chains.first.original_size %>
     </p>
     <table data-sortable>
       <thead>
@@ -222,17 +209,15 @@
         </tr>
       </thead>
       <tbody class='filterable'>
-        <% stats.each_chain do |chain| %>
-          <tr class="<%= chain.unused_workers ? 'unused' : '' %>">
+        <% stats.chains.reject(&:unused_workers).each do |chain| %>
+          <tr>
             <td class="nowrap">
               <% chain.worker_stats.each do |worker_stat| %>
-                <div class='worker-name <%= worker_stat.unused? ? 'unused' : '' %>'>
+                <div class='worker-name'>
                   <%= worker_stat.name %>
-                  <% unless worker_stat.unused? %>
-                    <div class='worker-success-count'>
-                      <%= worker_stat.success_count %>
-                    </div>
-                  <% end %>
+                  <div class='worker-success-count'>
+                    <%= worker_stat.success_count %>
+                  </div>
                   <div class='worker-avg-time'>
                     <%= format '%.3f', worker_stat.avg_time %>
                   </div>
