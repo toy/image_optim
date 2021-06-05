@@ -1,0 +1,28 @@
+jhead:
+  required: true # don't skip this worker
+jpegtran: # 3 worker variants
+  variants:
+    - jpegrescan: true
+    - progressive: true
+    - progressive: false
+gifsicle: # allow variants with different interlace to run consecutively
+  variants:
+    allow_consecutive_on: interlace
+    interlace: [true, false]
+    careful: [true, false]
+advpng:
+  run_order: 0
+pngcrush:
+  run_order: 0
+pngout:
+  run_order: 0
+pngquant:
+  run_order: 0
+optipng:
+  run_order: 0
+  variants:
+    level: [2, 4, 5]
+oxipng:
+  run_order: 0
+  variants:
+    level: [2, 3]
