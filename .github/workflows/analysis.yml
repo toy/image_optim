@@ -1,0 +1,21 @@
+name: analysis
+on: [push]
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+      - run: bundle install
+      - run: cp .analysis_variants.yml.example .analysis_variants.yml
+      - run: |
+          curl -L "https://www.jonof.id.au/files/kenutils/pngout-20200115-linux.tar.gz" | tar -xz -C /usr/local/bin --strip-components 2 --wildcards '*/amd64/pngout'
+          curl -L "https://github.com/shssoichiro/oxipng/releases/download/v4.0.3/oxipng-4.0.3-x86_64-unknown-linux-musl.tar.gz" | tar -xz -C /usr/local/bin --strip-components 1 --wildcards '*oxipng'
+      - run: sudo rm /etc/ImageMagick-*/policy.xml
+      - run: git clone https://github.com/toy/image_optim_analysis.git analysis
+      - run: shopt -s globstar; script/worker_analysis {spec/images,analysis}/**/*.{gif,jp*,png}
+      - uses: actions/upload-artifact@v2
+        with:
+          path: tmp/worker-analysis-*.html

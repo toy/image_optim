@@ -13,5 +13,5 @@ Makefile
 /tmp/
 /.vagrant/
 
-/analysis/
+/analysis
 /.analysis_variants.yml
