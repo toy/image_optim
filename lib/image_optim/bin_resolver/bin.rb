@@ -109,7 +109,7 @@ class ImageOptim
         case name
         when :advpng
           capture("#{escaped_path} --version 2> #{Path::NULL}")[/\bv(\d+(\.\d+)+|none)/, 1]
-        when :gifsicle, :jpegoptim, :optipng
+        when :gifsicle, :jpegoptim, :optipng, :oxipng
           capture("#{escaped_path} --version 2> #{Path::NULL}")[/\d+(\.\d+)+/]
         when :svgo, :pngquant
           capture("#{escaped_path} --version 2>&1")[/\A\d+(\.\d+)+/]

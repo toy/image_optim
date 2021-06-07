@@ -29,6 +29,7 @@ before_install:
   - command -v svgo || npm install -g svgo
   - mkdir -p ~/bin
   - command -v pngout || curl -L "https://www.jonof.id.au/files/kenutils/pngout-20200115-linux.tar.gz" | tar -xz -C ~/bin --strip-components 2 --wildcards '*/amd64/pngout'
+  - command -v oxipng || curl -L "https://github.com/shssoichiro/oxipng/releases/download/v4.0.3/oxipng-4.0.3-x86_64-unknown-linux-musl.tar.gz" | tar -xz -C ~/bin --strip-components 1 --wildcards '*oxipng'
 matrix:
   include:
     - env: CODECLIMATE=1
