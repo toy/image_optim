@@ -11,4 +11,4 @@
 * Rebase on master and squash commits to logical units
 * Push your branch: `git push origin awesome-changes`
 * Create pull request
-* Check if [travis is happy](https://travis-ci.org/toy/image_optim/pull_requests)
+* Check if [github actions workflow is happy](https://github.com/toy/image_optim_pack/actions/workflows/check.yml)

@@ -4,14 +4,8 @@ source 'https://rubygems.org'
 
 gemspec
 
-if ENV['CODECLIMATE']
+if ENV['CC_TEST_REPORTER_ID']
   group :test do
     gem 'simplecov'
-
-    gem 'codeclimate-test-reporter'
   end
-end
-
-if ENV['CHECK_RUBIES']
-  gem 'travis_check_rubies', '~> 0.2'
 end

@@ -1,0 +1,57 @@
+name: check
+on:
+  push:
+  pull_request:
+  schedule:
+  - cron: 45 4 * * 2
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby:
+        - '2.0'
+        - '2.1'
+        - '2.2'
+        - '2.3'
+        - '2.4'
+        - '2.5'
+        - '2.6'
+        - '2.7'
+        - '3.0'
+        - jruby-9.2
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "${{ matrix.ruby }}"
+        bundler-cache: true
+    - run: sudo npm install -g svgo
+    - run: curl -L "https://www.jonof.id.au/files/kenutils/pngout-20200115-linux.tar.gz" | sudo tar -xz -C /usr/local/bin --strip-components 2 --wildcards '*/amd64/pngout'
+    - run: bundle exec image_optim --info
+    - run: bundle exec rspec
+  coverage:
+    runs-on: ubuntu-latest
+    env:
+      CC_TEST_REPORTER_ID: b433c6540d220a2da0663670c9b260806bafdb3a43c6f22b2e81bfb1f87b12fe
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+        bundler-cache: true
+    - run: sudo npm install -g svgo
+    - run: curl -L "https://www.jonof.id.au/files/kenutils/pngout-20200115-linux.tar.gz" | sudo tar -xz -C /usr/local/bin --strip-components 2 --wildcards '*/amd64/pngout'
+    - uses: paambaati/codeclimate-action@v2.7.5
+      with:
+        coverageCommand: bundle exec rspec
+  rubocop:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+        bundler-cache: true
+    - run: bundle exec rubocop
