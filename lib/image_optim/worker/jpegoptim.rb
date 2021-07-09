@@ -12,13 +12,13 @@ class ImageOptim
 
       STRIP_OPTION =
       option(:strip, :all, Array, 'List of markers to strip: '\
-          '`:com`, '\
-          '`:exif`, '\
-          '`:iptc`, '\
-          '`:icc`, '\
-          '`:xmp`, '\
-          '`:none` or '\
-          '`:all`') do |v|
+                                  '`:com`, '\
+                                  '`:exif`, '\
+                                  '`:iptc`, '\
+                                  '`:icc`, '\
+                                  '`:xmp`, '\
+                                  '`:none` or '\
+                                  '`:all`') do |v|
         values = Array(v).map(&:to_s)
         known_values = %w[com exif iptc icc xmp none all]
         unknown_values = values - known_values
@@ -30,13 +30,13 @@ class ImageOptim
 
       MAX_QUALITY_OPTION =
       option(:max_quality, 100, 'Maximum image quality factor '\
-          '`0`..`100`, ignored in default/lossless mode') do |v, opt_def|
+                                '`0`..`100`, ignored in default/lossless mode') do |v, opt_def|
         if allow_lossy
           OptionHelpers.limit_with_range(v.to_i, 0..100)
         else
           if v != opt_def.default
             warn "#{self.class.bin_sym} #{opt_def.name} #{v} ignored " \
-                'in lossless mode'
+                 'in lossless mode'
           end
           opt_def.default
         end

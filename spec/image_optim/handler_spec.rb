@@ -9,7 +9,7 @@ describe ImageOptim::Handler do
   end
 
   it 'uses original as source for first conversion '\
-      'and two temp files for further conversions' do
+     'and two temp files for further conversions' do
     original = double(:original)
     allow(original).to receive(:respond_to?).with(:temp_path).and_return(true)
 

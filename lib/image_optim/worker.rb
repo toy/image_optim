@@ -105,7 +105,7 @@ class ImageOptim
       return if unknown_options.empty?
 
       fail ConfigurationError, "unknown options #{unknown_options.inspect} "\
-          "for #{self}"
+                               "for #{self}"
     end
 
     # Forward bin resolving to image_optim
@@ -118,8 +118,8 @@ class ImageOptim
     def wrap_resolver_error_message(message)
       name = self.class.bin_sym
       "#{name} worker: #{message}; please provide proper binary or "\
-          "disable this worker (--no-#{name} argument or "\
-          "`:#{name} => false` through options)"
+        "disable this worker (--no-#{name} argument or "\
+        "`:#{name} => false` through options)"
     end
 
     # Run command setting priority and hiding output

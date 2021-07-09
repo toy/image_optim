@@ -19,9 +19,9 @@ class ImageOptim
       QUALITY_OPTION =
       option(:quality, '`100..100`, `0..100` in lossy mode',
              NonNegativeIntegerRange, 'min..max - don\'t '\
-         'save below min, use less colors below max (both in range `0..100`; '\
-         'in yaml - `!ruby/range 0..100`), ignored in default/lossless '\
-         'mode') do |v, opt_def|
+                                      'save below min, use less colors below max (both in range `0..100`; '\
+                                      'in yaml - `!ruby/range 0..100`), ignored in default/lossless '\
+                                      'mode') do |v, opt_def|
         if allow_lossy
           if v == opt_def.default
             0..100
@@ -32,7 +32,7 @@ class ImageOptim
         else
           if v != opt_def.default
             warn "#{self.class.bin_sym} #{opt_def.name} #{v} ignored " \
-                'in lossless mode'
+                 'in lossless mode'
           end
           100..100
         end
@@ -40,9 +40,9 @@ class ImageOptim
 
       SPEED_OPTION =
       option(:speed, 3, 'speed/quality trade-off: '\
-          '`1` - slow, '\
-          '`3` - default, '\
-          '`11` - fast & rough') do |v|
+                        '`1` - slow, '\
+                        '`3` - default, '\
+                        '`11` - fast & rough') do |v|
         OptionHelpers.limit_with_range(v.to_i, 1..11)
       end
 
