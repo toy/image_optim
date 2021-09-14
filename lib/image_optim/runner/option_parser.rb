@@ -38,7 +38,7 @@ class ImageOptim
         columns = terminal_columns - 1
         # 1 for distance between summary and description
         # 2 for additional indent
-        wrapped_indent = summary_indent + ' ' * (summary_width + 1 + 2)
+        wrapped_indent = summary_indent + (' ' * (summary_width + 1 + 2))
         wrapped_width = columns - wrapped_indent.length
         # don't try to wrap if there is too little space for description
         return text if wrapped_width < 20

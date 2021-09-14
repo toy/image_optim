@@ -17,7 +17,7 @@ IO.popen(%W[
 ].shelljoin, 'w') do |f|
   side.times do |a|
     side.times do |b|
-      alpha = [0, 1, 0x7f, 0xff][(a / 8 + b / 8) % 4]
+      alpha = [0, 1, 0x7f, 0xff][((a / 8) + (b / 8)) % 4]
       f << [rand(256), rand(256), rand(256), alpha].pack('C*')
     end
   end

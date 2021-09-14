@@ -38,7 +38,7 @@ class ImageOptim
         if size_a == size_b
           "------ #{Space::EMPTY_SPACE}"
         else
-          percent = 100 - 100.0 * size_b / size_a
+          percent = 100 - (100.0 * size_b / size_a)
           space = Space.space(size_a - size_b)
           format('%5.2f%% %s', percent, space)
         end
