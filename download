@@ -26,7 +26,7 @@ end
 def extract(path, url, zip_path = path)
   return if File.size?(path)
   puts "extracting #{path} from #{url}"
-  open(url, 'rb') do |url_io|
+  URI(url).open('rb') do |url_io|
     Zip::File.open_buffer(url_io) do |zip|
       entry = zip.glob(zip_path).first
       fail "can't find #{zip_path}" unless entry
@@ -38,7 +38,7 @@ end
 def get(path, url)
   return if File.size?(path)
   puts "downloading #{path} from #{url}"
-  atomic_write(path, open(url, 'rb', &:read))
+  atomic_write(path, URI(url).open('rb', &:read))
 end
 
 extract 'advpng.exe', 'https://github.com/amadvance/advancecomp/releases/download/v1.20/advancecomp-1.20-windows-x86.zip'
@@ -56,6 +56,8 @@ extract 'jpegoptim.exe', 'https://github.com/vikas5914/jpegoptim-win32/releases/
 get 'jpegtran.exe', 'http://jpegclub.org/jpegtran.exe'
 
 extract 'optipng.exe', 'http://sourceforge.net/projects/optipng/files/OptiPNG/optipng-0.7.6/optipng-0.7.6-win32.zip/download', '*/optipng.exe'
+
+extract 'oxipng.exe', 'https://github.com/shssoichiro/oxipng/releases/download/v4.0.3/oxipng-4.0.3-x86_64-pc-windows-msvc.zip'
 
 get 'pngcrush.exe', 'http://sourceforge.net/projects/pmt/files/pngcrush-executables/1.8.10/pngcrush_1_8_10_w32.exe/download'
 
