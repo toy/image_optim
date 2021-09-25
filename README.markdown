@@ -18,6 +18,7 @@ Command line tool and ruby interface to optimize (lossless compress, optionally 
 * [jpeg-recompress](https://github.com/danielgtaylor/jpeg-archive#jpeg-recompress)
 * jpegtran from [Independent JPEG Group's JPEG library](http://www.ijg.org/)
 * [optipng](http://optipng.sourceforge.net/)
+* [oxipng](https://github.com/shssoichiro/oxipng)
 * [pngcrush](http://pmt.sourceforge.net/pngcrush/)
 * [pngout](http://www.advsys.net/ken/util/pngout.htm)
 * [pngquant](http://pngquant.org/)
@@ -164,6 +165,14 @@ sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush png
 
 ```bash
 brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush pngquant jonof/kenutils/pngout
+```
+
+### oxipng installation (optional)
+
+Unless it is available in your chosen package manager, can be installed using cargo:
+
+```bash
+cargo install oxipng
 ```
 
 ### pngout installation (optional)
