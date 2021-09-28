@@ -42,13 +42,14 @@ describe ImageOptim::CachePath do
       end
 
       it 'does not preserve mtime of destination file' do
-        time = src.mtime
+        time = src.mtime - 1000
+        dst.utime(time, time)
 
-        dst.utime(time - 1000, time - 1000)
+        time = dst.mtime
 
         src.replace(dst)
 
-        expect(dst.mtime).to be >= time
+        expect(dst.mtime).to_not eq(time)
       end
 
       it 'changes inode of destination', skip: SkipConditions[:inodes_support] do
