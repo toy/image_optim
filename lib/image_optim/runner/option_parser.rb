@@ -84,7 +84,7 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
   ImageOptim::TrueFalseNil.add_to_option_parser(op)
   ImageOptim::NonNegativeIntegerRange.add_to_option_parser(op)
 
-  op.banner = <<-TEXT.gsub(/^\s*\|/, '')
+  op.banner = <<-TEXT.gsub(/^\s*\|/, '') # rubocop:disable Layout/DotPosition
     |#{ImageOptim.full_version}
     |
     |Usage:
