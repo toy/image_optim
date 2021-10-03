@@ -17,7 +17,7 @@ class ImageOptim
           pid = Process.spawn(*args)
 
           waiter = Process.detach(pid)
-          if waiter.join(timeout)
+          if waiter.join(timeout.to_f)
             status = waiter.value
 
             check_status!(status)

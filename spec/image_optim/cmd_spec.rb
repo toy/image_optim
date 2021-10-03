@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'image_optim/cmd'
+require 'image_optim/timer'
 
 describe ImageOptim::Cmd do
   before do
@@ -46,6 +47,11 @@ describe ImageOptim::Cmd do
         expect(Cmd.run('sh -c "exit 1"', timeout: 1)).to eq(false)
 
         expect(Cmd.run('sh -c "exit 66"', timeout: 1)).to eq(false)
+      end
+
+      it 'returns process success status when timeout is instance of ImageOptim::Timer' do
+        timeout = ImageOptim::Timer.new(1.0)
+        expect(Cmd.run('sh -c "exit 0"', timeout: timeout)).to eq(true)
       end
 
       it 'raises SignalException if process terminates after signal', skip: SkipConditions[:signals_support] do
