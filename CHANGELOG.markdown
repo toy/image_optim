@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.31.0 (2021-10-03)
+
 * Add support for Oxipng [#167](https://github.com/toy/image_optim/issues/167) [#190](https://github.com/toy/image_optim/pull/190) [@oblakeerickson](https://github.com/oblakeerickson)
 * Fix `TypeError: can't convert ImageOptim::Timer into Float` with Ruby 3 [#194](https://github.com/toy/image_optim/pull/194) [@yahonda](https://github.com/yahonda)
 
