@@ -46,6 +46,17 @@ class ImageOptim
         OptionHelpers.limit_with_range(v.to_i, 1..11)
       end
 
+      option(:nofs, false, 'Disable Floyd-Steinberg dithering') do |v|
+        v ? '--nofs' : ''
+      end
+      option(:floyd, false, 'Set dithering level using fractional number '\
+                            'between 0 (none) and 1 (full, the default)') do |v|
+        v ? "--floyd=#{v}" : ''
+      end
+      option(:strip, false, 'Remove optional chunks (metadata) from PNG files') do |v|
+        v ? '--strip' : ''
+      end
+
       def run_order
         -2
       end
@@ -57,6 +68,9 @@ class ImageOptim
           --output=#{dst}
           --skip-if-larger
           --force
+          #{nofs}
+          #{floyd}
+          #{strip}
           #{max_colors}
           --
           #{src}
