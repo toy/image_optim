@@ -353,6 +353,9 @@ Worker has no options
 * `:max_colors` — Maximum number of colors to use *(defaults to `256`)*
 * `:quality` — min..max - don't save below min, use less colors below max (both in range `0..100`; in yaml - `!ruby/range 0..100`), ignored in default/lossless mode *(defaults to `100..100`, `0..100` in lossy mode)*
 * `:speed` — speed/quality trade-off: `1` - slow, `3` - default, `11` - fast & rough *(defaults to `3`)*
+* `:floyd` - Set dithering level using fractional number between 0 (none) and 1 (full, the default)*
+* `:nofs` - Disable Floyd-Steinberg dithering*
+* `:strip` - Remove optional chunks (metadata) from PNG files*
 
 ### svgo:
 * `:disable_plugins` — List of plugins to disable *(defaults to `[]`)*
