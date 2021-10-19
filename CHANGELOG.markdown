@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Allow image_size 3 [@toy](https://github.com/toy)
+
 ## v0.31.0 (2021-10-03)
 
 * Add support for Oxipng [#167](https://github.com/toy/image_optim/issues/167) [#190](https://github.com/toy/image_optim/pull/190) [@oblakeerickson](https://github.com/oblakeerickson)
