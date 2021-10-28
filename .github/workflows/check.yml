@@ -32,6 +32,36 @@ jobs:
     - run: curl -L "https://github.com/shssoichiro/oxipng/releases/download/v4.0.3/oxipng-4.0.3-x86_64-unknown-linux-musl.tar.gz" | tar -xz -C /usr/local/bin --strip-components 1 --wildcards '*oxipng'
     - run: bundle exec image_optim --info
     - run: bundle exec rspec
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        ruby:
+        - '2.6'
+        - '2.7'
+        - '3.0'
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "${{ matrix.ruby }}"
+        bundler-cache: true
+    - uses: actions/cache@v2
+      with:
+        path: "$HOME/bin"
+        key: ${{ runner.os }}
+    - run: |
+        mkdir "$HOME/bin"
+        git fetch origin windows-binaries
+        git --work-tree="$HOME/bin" checkout origin/windows-binaries -- '*.exe'
+        echo "$HOME/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+    - run: |
+        choco install --no-progress imagemagick
+        ls C:\'Program Files'\ImageMagick* | % FullName | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+    - run: npm install -g svgo
+    - run: bundle exec image_optim --info
+    - run: bundle exec rspec
   coverage:
     runs-on: ubuntu-latest
     env:

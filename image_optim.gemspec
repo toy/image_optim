@@ -28,15 +28,15 @@ You can safely remove `config.assets.image_optim = false` if you are not going t
 EOF
 
   s.add_dependency 'fspath', '~> 3.0'
-  s.add_dependency 'image_size', '>= 1.5', '< 3'
+  s.add_dependency 'image_size', '>= 1.5', '< 4'
   s.add_dependency 'exifr', '~> 1.2', '>= 1.2.2'
   s.add_dependency 'progress', '~> 3.0', '>= 3.0.1'
   s.add_dependency 'in_threads', '~> 1.3'
 
   s.add_development_dependency 'image_optim_pack', '~> 0.2', '>= 0.2.2'
   s.add_development_dependency 'rspec', '~> 3.0'
-  if RUBY_VERSION >= '2.4' && !Gem.win_platform? && !defined?(JRUBY_VERSION)
-    s.add_development_dependency 'rubocop', '~> 1.0'
+  if RUBY_VERSION >= '2.5' && !Gem.win_platform? && !defined?(JRUBY_VERSION)
+    s.add_development_dependency 'rubocop', '~> 1.22', '!= 1.22.2'
     s.add_development_dependency 'rubocop-rspec', '~> 2.0'
   end
 end

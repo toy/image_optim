@@ -1,6 +1,5 @@
 [![Gem Version](https://img.shields.io/gem/v/image_optim?logo=rubygems)](https://rubygems.org/gems/image_optim)
 [![Build Status](https://img.shields.io/github/workflow/status/toy/image_optim/check/master?logo=github)](https://github.com/toy/image_optim/actions/workflows/check.yml)
-[![AppVeyor Status](https://img.shields.io/appveyor/build/toy/image-optim/master?label=windows&logo=appveyor)](https://ci.appveyor.com/project/toy/image-optim)
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/toy/image_optim?logo=codeclimate)](https://codeclimate.com/github/toy/image_optim)
 [![Code Climate Coverage](https://img.shields.io/codeclimate/coverage/toy/image_optim?logo=codeclimate)](https://codeclimate.com/github/toy/image_optim)
 [![Depfu](https://img.shields.io/depfu/toy/image_optim)](https://depfu.com/github/toy/image_optim)

@@ -23,16 +23,18 @@ RSpec.configure do |c|
   c.order = :random
 end
 
+IMAGEMAGICK_PREFIX = ImageOptim::Cmd.capture('which magick').empty? ? [] : %w[magick]
+
 def flatten_animation(image)
   if image.image_format == :gif
     flattened = image.temp_path
-    command = %W[
+    command = (IMAGEMAGICK_PREFIX + %W[
       convert
       #{image}
       -coalesce
       -append
       #{flattened}
-    ].shelljoin
+    ]).shelljoin
     expect(ImageOptim::Cmd.run(command)).to be_truthy
     flattened
   else
@@ -43,7 +45,7 @@ end
 def mepp(image_a, image_b)
   coalesce_a = flatten_animation(image_a)
   coalesce_b = flatten_animation(image_b)
-  output = ImageOptim::Cmd.capture(%W[
+  output = ImageOptim::Cmd.capture((IMAGEMAGICK_PREFIX + %W[
     compare
     -metric MEPP
     -alpha Background
@@ -51,7 +53,7 @@ def mepp(image_a, image_b)
     #{coalesce_b.to_s.shellescape}
     #{ImageOptim::Path::NULL}
     2>&1
-  ].join(' '))
+  ]).join(' '))
   unless [0, 1].include?($CHILD_STATUS.exitstatus)
     fail "compare #{image_a} with #{image_b} failed with `#{output}`"
   end
@@ -71,7 +73,7 @@ RSpec::Matchers.define :be_similar_to do |expected, max_difference|
   end
   failure_message do |actual|
     "expected #{actual} to have at most #{max_difference} difference from "\
-      "#{expected}, got normalized root-mean-square error of #{@diff}"
+      "#{expected}, got mean error per pixel of #{@diff}"
   end
 end
 
