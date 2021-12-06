@@ -11,7 +11,6 @@ require 'shellwords'
 require 'gdbm'
 require 'digest'
 require 'erb'
-require 'ostruct'
 
 DIR = 'tmp'
 Pathname(DIR).mkpath
@@ -172,7 +171,7 @@ class Analyser
 
     def source_digest
       @source_digest ||= begin
-        source_path = __getobj__.method(:optimize).source_location[0]
+        source_path = __getobj__.class.instance_method(:optimize).source_location[0]
         Digest::SHA256.file(source_path).hexdigest
       end
     end
@@ -524,13 +523,10 @@ class Analyser
     formats.each do |format|
       stats = Stats.new('all', by_format[format], worker_ids2names)
       path = FSPath("#{DIR}/#{basenames[format]}")
-      model = {
-        stats_format: format,
-        stats: stats,
-        format_links: basenames,
-        template_dir: template_path.dirname.relative_path_from(path.dirname),
-      }
-      html = template.result(OpenStruct.new(model).instance_eval{ binding })
+      stats_format = format
+      format_links = basenames
+      template_dir = template_path.dirname.relative_path_from(path.dirname)
+      html = template.result(binding)
       path.write(html)
       puts "Created #{path}"
     end
