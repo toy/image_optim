@@ -52,9 +52,7 @@ end
 
 readme = File.read(README_FILE)
 if (readme = update_readme(readme))
-  File.open(README_FILE, 'w') do |f|
-    f.write readme
-  end
+  File.write(README_FILE, readme)
 else
   abort 'Did not update worker options'
 end
