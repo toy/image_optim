@@ -337,6 +337,11 @@ Worker has no options
 * `:interlace` — Interlace: `true` - interlace on, `false` - interlace off, `nil` - as is in original image *(defaults to `false`)*
 * `:strip` — Remove all auxiliary chunks *(defaults to `true`)*
 
+### oxipng:
+* `:level` — Optimization level preset: `0` is least, `6` is best *(defaults to `3`)*
+* `:interlace` — Interlace: `true` - interlace on, `false` - interlace off, `nil` - as is in original image *(defaults to `false`)*
+* `:strip` — Remove all auxiliary chunks *(defaults to `true`)*
+
 ### pngcrush:
 * `:chunks` — List of chunks to remove or `:alla` - all except tRNS/transparency or `:allb` - all except tRNS and gAMA/gamma *(defaults to `:alla`)*
 * `:fix` — Fix otherwise fatal conditions such as bad CRCs *(defaults to `false`)*
