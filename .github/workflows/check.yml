@@ -78,12 +78,3 @@ jobs:
     - uses: paambaati/codeclimate-action@v2.7.5
       with:
         coverageCommand: bundle exec rspec
-  rubocop:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.0'
-        bundler-cache: true
-    - run: bundle exec rubocop
