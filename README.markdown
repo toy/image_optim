@@ -70,6 +70,18 @@ If you want to check latest changes:
 gem 'image_optim', :git => 'git://github.com/toy/image_optim.git'
 ```
 
+## Docker
+
+This gem is also be available as [docker image](https://github.com/toy/image_optim_pack/pkgs/container/image_optim) containing most binaries:
+
+```bash
+docker run --rm ghcr.io/toy/image_optim --version # image_optim version
+docker run --rm ghcr.io/toy/image_optim --info # image_optim info including bin versions
+docker run --rm -v "$PWD":/here -w /here ghcr.io/toy/image_optim image-in-this-folder.jpg
+```
+
+See [image_optim_pack repository](https://github.com/toy/image_optim_pack) for [Dockerfile](https://github.com/toy/image_optim_pack/blob/master/Dockerfile) and [instructions](https://github.com/toy/image_optim_pack#docker).
+
 ## Binaries location
 
 Simplest way for `image_optim` to locate binaries is to install them in common location present in `PATH` (see [Binaries installation](#binaries-installation)).
@@ -100,7 +112,7 @@ Besides permanently setting environment variables in `~/.profile`, `~/.bash_prof
 
 ### Binaries pack
 
-Easiest way to get latest versions of most binaries for `image_optim` for Linux, Mac OS X, FreeBSD and OpenBSD is by installing [`image_optim_pack`](https://github.com/toy/image_optim_pack) gem.
+Easiest way to get latest versions of most binaries for `image_optim` for Linux and Mac OS X is by installing [`image_optim_pack`](https://github.com/toy/image_optim_pack) gem.
 
 Check installation instructions in [Gem installation](#gem-installation) section.
 
