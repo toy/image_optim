@@ -8,6 +8,7 @@ require 'image_optim/path'
 describe ImageOptim::BinResolver do
   def stub_env(key, value)
     allow(ENV).to receive(:[]).with(key).and_return(value)
+    allow(ENV).to receive(:fetch).with(key, nil).and_return(value)
   end
 
   before do
@@ -17,6 +18,7 @@ describe ImageOptim::BinResolver do
     stub_const('Cmd', ImageOptim::Cmd)
 
     allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:fetch).and_call_original
   end
 
   let(:image_optim){ double(:image_optim, verbose: false, pack: false) }
@@ -87,7 +89,7 @@ describe ImageOptim::BinResolver do
     expect(resolver.env_path).to eq([
       'temp_dir',
       'pack_path',
-      ENV['PATH'],
+      ENV.fetch('PATH', nil),
       BinResolver::VENDOR_PATH,
     ].join(File::PATH_SEPARATOR))
   end
@@ -105,7 +107,7 @@ describe ImageOptim::BinResolver do
       expect(resolver.resolve!(:ls)).to eq(bin)
     end
     expect(resolver.env_path).to eq([
-      ENV['PATH'],
+      ENV.fetch('PATH', nil),
       BinResolver::VENDOR_PATH,
     ].join(File::PATH_SEPARATOR))
   end
@@ -122,7 +124,7 @@ describe ImageOptim::BinResolver do
       end.to raise_error BinResolver::BinNotFound
     end
     expect(resolver.env_path).to eq([
-      ENV['PATH'],
+      ENV.fetch('PATH', nil),
       BinResolver::VENDOR_PATH,
     ].join(File::PATH_SEPARATOR))
   end
@@ -162,7 +164,7 @@ describe ImageOptim::BinResolver do
     end
     expect(resolver.env_path).to eq([
       tmpdir,
-      ENV['PATH'],
+      ENV.fetch('PATH', nil),
       BinResolver::VENDOR_PATH,
     ].join(File::PATH_SEPARATOR))
 
@@ -187,7 +189,7 @@ describe ImageOptim::BinResolver do
 
     after do
       expect(resolver.env_path).to eq([
-        ENV['PATH'],
+        ENV.fetch('PATH', nil),
         BinResolver::VENDOR_PATH,
       ].join(File::PATH_SEPARATOR))
     end

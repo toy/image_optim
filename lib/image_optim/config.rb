@@ -15,7 +15,7 @@ class ImageOptim
 
     # Global config path at `$XDG_CONFIG_HOME/image_optim.yml` (by default
     # `~/.config/image_optim.yml`)
-    GLOBAL_PATH = File.join(ENV['XDG_CONFIG_HOME'] || '~/.config', 'image_optim.yml')
+    GLOBAL_PATH = File.join(ENV.fetch('XDG_CONFIG_HOME', '~/.config'), 'image_optim.yml')
 
     # Local config path at `./.image_optim.yml`
     LOCAL_PATH = './.image_optim.yml'

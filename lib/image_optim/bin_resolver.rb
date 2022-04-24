@@ -61,7 +61,7 @@ class ImageOptim
       [
         dir,
         pack_path,
-        ENV['PATH'],
+        ENV.fetch('PATH', nil),
         VENDOR_PATH,
       ].compact.join(File::PATH_SEPARATOR)
     end
@@ -109,7 +109,7 @@ class ImageOptim
     # dir as name
     def symlink_custom_bin!(name)
       env_name = "#{name}_bin".upcase
-      path = ENV[env_name]
+      path = ENV.fetch(env_name, nil)
       return unless path
 
       path = File.expand_path(path)
