@@ -142,6 +142,9 @@ Style/Semicolon:
 Style/SignalException:
   EnforcedStyle: semantic
 
+Style/SlicingWithRange:
+  Enabled: false
+
 Style/SymbolArray:
   Enabled: false
 
