@@ -9,16 +9,16 @@ class ImageOptim
     # http://optipng.sourceforge.net/
     class Optipng < Worker
       LEVEL_OPTION =
-      option(:level, 6, 'Optimization level preset: '\
-                        '`0` is least, '\
+      option(:level, 6, 'Optimization level preset: ' \
+                        '`0` is least, ' \
                         '`7` is best') do |v|
         OptionHelpers.limit_with_range(v.to_i, 0..7)
       end
 
       INTERLACE_OPTION =
-      option(:interlace, false, TrueFalseNil, 'Interlace: '\
-                                              '`true` - interlace on, '\
-                                              '`false` - interlace off, '\
+      option(:interlace, false, TrueFalseNil, 'Interlace: ' \
+                                              '`true` - interlace on, ' \
+                                              '`false` - interlace off, ' \
                                               '`nil` - as is in original image') do |v|
         TrueFalseNil.convert(v)
       end

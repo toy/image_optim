@@ -17,19 +17,19 @@ class ImageOptim
       end
 
       INTERLACE_OPTION =
-      option(:interlace, false, TrueFalseNil, 'Interlace: '\
-                                              '`true` - interlace on, '\
-                                              '`false` - interlace off, '\
-                                              '`nil` - as is in original image '\
-                                              '(defaults to running two instances, one with interlace off and '\
+      option(:interlace, false, TrueFalseNil, 'Interlace: ' \
+                                              '`true` - interlace on, ' \
+                                              '`false` - interlace off, ' \
+                                              '`nil` - as is in original image ' \
+                                              '(defaults to running two instances, one with interlace off and ' \
                                               'one with on)') do |v|
         TrueFalseNil.convert(v)
       end
 
       LEVEL_OPTION =
-      option(:level, 3, 'Compression level: '\
-                        '`1` - light and fast, '\
-                        '`2` - normal, '\
+      option(:level, 3, 'Compression level: ' \
+                        '`1` - light and fast, ' \
+                        '`2` - normal, ' \
                         '`3` - heavy (slower)') do |v|
         OptionHelpers.limit_with_range(v.to_i, 1..3)
       end

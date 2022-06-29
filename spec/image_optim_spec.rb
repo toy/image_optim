@@ -252,7 +252,7 @@ describe ImageOptim do
       end
 
       describe 'given block' do
-        it 'optimizes images, yields path and result for each and '\
+        it 'optimizes images, yields path and result for each and ' \
            'returns array of yield results' do
           image_optim = ImageOptim.new
           results = test_images.map do |src|

@@ -8,7 +8,7 @@ describe ImageOptim::Handler do
     stub_const('Handler', ImageOptim::Handler)
   end
 
-  it 'uses original as source for first conversion '\
+  it 'uses original as source for first conversion ' \
      'and two temp files for further conversions' do
     original = double(:original)
     allow(original).to receive(:respond_to?).with(:temp_path).and_return(true)

@@ -7,18 +7,18 @@ class ImageOptim
     # http://pmt.sourceforge.net/pngcrush/
     class Pngcrush < Worker
       CHUNKS_OPTION =
-      option(:chunks, :alla, Array, 'List of chunks to remove or '\
-                                    '`:alla` - all except tRNS/transparency or '\
+      option(:chunks, :alla, Array, 'List of chunks to remove or ' \
+                                    '`:alla` - all except tRNS/transparency or ' \
                                     '`:allb` - all except tRNS and gAMA/gamma') do |v|
         Array(v).map(&:to_s)
       end
 
       FIX_OPTION =
-      option(:fix, false, 'Fix otherwise fatal conditions '\
+      option(:fix, false, 'Fix otherwise fatal conditions ' \
                           'such as bad CRCs'){ |v| !!v }
 
       BRUTE_OPTION =
-      option(:brute, false, 'Brute force try all methods, '\
+      option(:brute, false, 'Brute force try all methods, ' \
                             'very time-consuming and generally not worthwhile'){ |v| !!v }
 
       BLACKEN_OPTION =

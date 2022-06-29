@@ -16,7 +16,7 @@ class ImageOptim
       option(:progressive, true, 'Create progressive JPEG file'){ |v| !!v }
 
       JPEGRESCAN_OPTION =
-      option(:jpegrescan, true, 'Use jpegtran through jpegrescan, '\
+      option(:jpegrescan, true, 'Use jpegtran through jpegrescan, ' \
                                 'ignore progressive option'){ |v| !!v }
 
       def used_bins

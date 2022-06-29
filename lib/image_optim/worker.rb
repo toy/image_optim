@@ -104,7 +104,7 @@ class ImageOptim
       unknown_options = options.reject{ |key, _value| known_keys.include?(key) }
       return if unknown_options.empty?
 
-      fail ConfigurationError, "unknown options #{unknown_options.inspect} "\
+      fail ConfigurationError, "unknown options #{unknown_options.inspect} " \
                                "for #{self}"
     end
 
@@ -117,8 +117,8 @@ class ImageOptim
 
     def wrap_resolver_error_message(message)
       name = self.class.bin_sym
-      "#{name} worker: #{message}; please provide proper binary or "\
-        "disable this worker (--no-#{name} argument or "\
+      "#{name} worker: #{message}; please provide proper binary or " \
+        "disable this worker (--no-#{name} argument or " \
         "`:#{name} => false` through options)"
     end
 

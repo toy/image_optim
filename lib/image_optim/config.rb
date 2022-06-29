@@ -185,7 +185,7 @@ class ImageOptim
       when false
         {disable: true}
       else
-        fail ConfigurationError, "Got #{worker_options.inspect} for "\
+        fail ConfigurationError, "Got #{worker_options.inspect} for " \
                                  "#{klass.name} options"
       end
     end

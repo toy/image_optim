@@ -27,10 +27,10 @@ class ImageOptim
       end
 
       METHOD_OPTION =
-      option(:method, 'ssim', 'Comparison Metric: '\
-                              '`mpe` - Mean pixel error, '\
-                              '`ssim` - Structural similarity, '\
-                              '`ms-ssim` - Multi-scale structural similarity (slow!), '\
+      option(:method, 'ssim', 'Comparison Metric: ' \
+                              '`mpe` - Mean pixel error, ' \
+                              '`ssim` - Structural similarity, ' \
+                              '`ms-ssim` - Multi-scale structural similarity (slow!), ' \
                               '`smallfry` - Linear-weighted BBCQ-like (may be patented)') do |v, opt_def|
         if %w[mpe ssim ms-ssim smallfry].include? v
           v
