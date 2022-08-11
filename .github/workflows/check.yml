@@ -30,7 +30,6 @@ jobs:
         ruby-version: "${{ matrix.ruby }}"
         bundler-cache: true
     - run: sudo npm install -g svgo
-    - run: curl -L "https://www.jonof.id.au/files/kenutils/pngout-20200115-linux.tar.gz" | sudo tar -xz -C /usr/local/bin --strip-components 2 --wildcards '*/amd64/pngout'
     - run: curl -L "https://github.com/shssoichiro/oxipng/releases/download/v4.0.3/oxipng-4.0.3-x86_64-unknown-linux-musl.tar.gz" | tar -xz -C /usr/local/bin --strip-components 1 --wildcards '*oxipng'
     - run: bundle exec image_optim --info
     - run: bundle exec rspec
@@ -76,7 +75,6 @@ jobs:
         ruby-version: '3.1'
         bundler-cache: true
     - run: sudo npm install -g svgo
-    - run: curl -L "https://www.jonof.id.au/files/kenutils/pngout-20200115-linux.tar.gz" | sudo tar -xz -C /usr/local/bin --strip-components 2 --wildcards '*/amd64/pngout'
     - run: curl -L "https://github.com/shssoichiro/oxipng/releases/download/v4.0.3/oxipng-4.0.3-x86_64-unknown-linux-musl.tar.gz" | tar -xz -C /usr/local/bin --strip-components 1 --wildcards '*oxipng'
     - uses: paambaati/codeclimate-action@v2.7.5
       with:
