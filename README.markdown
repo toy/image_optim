@@ -29,7 +29,7 @@ Based on [ImageOptim.app](http://imageoptim.com/).
 
 Documentation for [latest gem version](http://rubydoc.info/gems/image_optim/frames) and [master branch](http://rubydoc.info/github/toy/image_optim/master/frames).
 
-A test application with latest `image_optim` and `image_optim_pack` is available on heroku: https://iopack.herokuapp.com/.
+A test application with latest `image_optim` and `image_optim_pack` is available on render: https://iopack.onrender.com/.
 
 ## Gem installation
 
