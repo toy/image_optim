@@ -114,7 +114,7 @@ class ImageOptim
 
       path = File.expand_path(path)
       desc = "`#{path}` specified in #{env_name}"
-      fail "#{desc} doesn\'t exist" unless File.exist?(path)
+      fail "#{desc} doesn't exist" unless File.exist?(path)
       fail "#{desc} is not a file" unless File.file?(path)
       fail "#{desc} is not executable" unless File.executable?(path)
 
