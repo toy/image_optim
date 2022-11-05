@@ -177,7 +177,7 @@ sudo port install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush png
 ### OS X: Brew
 
 ```bash
-brew install advancecomp gifsicle jhead jpegoptim jpeg optipng pngcrush pngquant jonof/kenutils/pngout
+brew install advancecomp gifsicle jhead jpegoptim jpeg optipng oxipng pngcrush pngquant jonof/kenutils/pngout
 ```
 
 ### oxipng installation (optional)
