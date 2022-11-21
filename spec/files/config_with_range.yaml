@@ -1,0 +1,3 @@
+range: !ruby/range 80..99
+number: 3
+string: foo
