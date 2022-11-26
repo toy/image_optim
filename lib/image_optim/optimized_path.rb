@@ -2,6 +2,8 @@
 
 require 'image_optim/path'
 
+require 'delegate'
+
 class ImageOptim
   # Holds optimized image with reference to original and its size
   class OptimizedPath < DelegateClass(Path)
