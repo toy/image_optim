@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.31.2 (2022-11-27)
+
 * Support jruby 9.4 [@toy](https://github.com/toy)
 
 ## v0.31.1 (2021-10-21)

@@ -1,4 +1,4 @@
-Copyright (c) 2012-2021 Ivan Kuchin
+Copyright (c) 2012-2022 Ivan Kuchin
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

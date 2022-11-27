@@ -390,4 +390,4 @@ In separate file [CHANGELOG.markdown](CHANGELOG.markdown).
 
 ## Copyright
 
-Copyright (c) 2012-2021 Ivan Kuchin. See [LICENSE.txt](LICENSE.txt) for details.
+Copyright (c) 2012-2022 Ivan Kuchin. See [LICENSE.txt](LICENSE.txt) for details.
