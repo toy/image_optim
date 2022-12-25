@@ -25,7 +25,7 @@ jobs:
         - jruby-9.4
       fail-fast: false
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: "${{ matrix.ruby }}"
@@ -46,7 +46,7 @@ jobs:
         - '3.2'
       fail-fast: false
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: "${{ matrix.ruby }}"
@@ -71,7 +71,7 @@ jobs:
     env:
       CC_TEST_REPORTER_ID: b433c6540d220a2da0663670c9b260806bafdb3a43c6f22b2e81bfb1f87b12fe
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3'
