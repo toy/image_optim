@@ -121,9 +121,9 @@ describe ImageOptim do
       it 'sends timeout to every worker' do
         some_path = instance_of(ImageOptim::Path)
 
-        expect(workers[0]).to receive(:optimize).with(some_path, some_path, timeout: timer)
-        expect(workers[1]).to receive(:optimize).with(some_path, some_path, timeout: timer)
-        expect(workers[2]).to receive(:optimize).with(some_path, some_path, timeout: timer)
+        expect(workers[0]).to receive(:optimize).with(some_path, some_path, {timeout: timer})
+        expect(workers[1]).to receive(:optimize).with(some_path, some_path, {timeout: timer})
+        expect(workers[2]).to receive(:optimize).with(some_path, some_path, {timeout: timer})
 
         image_optim.optimize_image(path)
       end
