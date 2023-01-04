@@ -6,7 +6,7 @@ class ImageOptim
     SIZE_SYMBOLS = %w[B K M G T P E].freeze
     BASE = 1024.0
     PRECISION = 1
-    LENGTH = 4 + PRECISION + 1
+    LENGTH = PRECISION + 4 + 1
 
     EMPTY_SPACE = ' ' * LENGTH
 
