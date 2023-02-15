@@ -202,13 +202,13 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
       type, marking = case
       when [TrueClass, FalseClass, ImageOptim::TrueFalseNil].include?(type)
         [type, 'B']
-      when Integer >= type
+      when type <= Integer
         [Integer, 'N']
-      when Array >= type
+      when type <= Array
         [Array, 'a,b,c']
-      when String >= type
+      when type <= String
         [String, 'S']
-      when ImageOptim::NonNegativeIntegerRange == type
+      when type == ImageOptim::NonNegativeIntegerRange
         [type, 'M-N']
       else
         fail "Unknown type #{type}"
