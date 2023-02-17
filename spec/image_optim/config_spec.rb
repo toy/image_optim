@@ -223,7 +223,7 @@ describe ImageOptim::Config do
         with(path).and_return(full_path)
       expect(File).to receive(:size?).
         with(full_path).and_return(true)
-      expect(YAML).to receive(:load_file).
+      expect(IOConfig).to receive(:load_yaml_file).
         with(full_path).and_return(stringified)
 
       expect(IOConfig.read_options(path)).to eq(symbolized)
@@ -235,7 +235,7 @@ describe ImageOptim::Config do
         with(path).and_return(full_path)
       expect(File).to receive(:size?).
         with(full_path).and_return(true)
-      expect(YAML).to receive(:load_file).
+      expect(IOConfig).to receive(:load_yaml_file).
         with(full_path).and_return([:config])
 
       expect(IOConfig.read_options(path)).to eq({})
@@ -247,10 +247,46 @@ describe ImageOptim::Config do
         with(path).and_return(full_path)
       expect(File).to receive(:size?).
         with(full_path).and_return(true)
-      expect(YAML).to receive(:load_file).
+      expect(IOConfig).to receive(:load_yaml_file).
         with(full_path).and_raise
 
       expect(IOConfig.read_options(path)).to eq({})
+    end
+  end
+
+  describe '.load_yaml_file' do
+    describe 'selecting method' do
+      let(:path){ 'foo' }
+      let(:result){ 'bar' }
+      let(:yaml){ double }
+
+      before do
+        stub_const('YAML', yaml)
+      end
+
+      it 'uses YAML.safe_load_file if available' do
+        expect(yaml).to receive(:safe_load_file).
+          with(path, permitted_classes: [Range]).and_return(result)
+
+        expect(IOConfig.load_yaml_file(path)).to eq(result)
+      end
+
+      it 'uses YAML.load if safe_load_file is not available' do
+        expect(yaml).to receive(:load_file).
+          with(path).and_return(result)
+
+        expect(IOConfig.load_yaml_file(path)).to eq(result)
+      end
+    end
+
+    it 'handles yaml that includes `!ruby/range`' do
+      path = 'spec/files/config_with_range.yaml'
+
+      expect(IOConfig.load_yaml_file(path)).to eq({
+        'range' => 80..99,
+        'number' => 3,
+        'string' => 'foo',
+      })
     end
   end
 end

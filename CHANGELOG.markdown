@@ -2,6 +2,8 @@
 
 ## unreleased
 
+* Support Psych4/Ruby 3.1 changes to use safe_yaml methods by default [#203](https://github.com/toy/image_optim/issues/203) [#204](https://github.com/toy/image_optim/pull/204) [@oscillot](https://github.com/oscillot) [@toy](https://github.com/toy)
+
 ## v0.31.2 (2022-11-27)
 
 * Support jruby 9.4 [@toy](https://github.com/toy)
