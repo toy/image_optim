@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
     'changelog_uri'     => "https://github.com/toy/#{s.name}/blob/master/CHANGELOG.markdown",
     'documentation_uri' => "https://www.rubydoc.info/gems/#{s.name}/#{s.version}",
     'source_code_uri'   => "https://github.com/toy/#{s.name}",
-  }
+  } if s.respond_to?(:metadata=)
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
