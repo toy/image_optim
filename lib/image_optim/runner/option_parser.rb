@@ -34,8 +34,8 @@ class ImageOptim
       def help
         text = super
 
-        # reserve one column
-        columns = terminal_columns - 1
+        # reserve one column and limit to 120
+        columns = [terminal_columns - 1, 120].min
         # 1 for distance between summary and description
         # 2 for additional indent
         wrapped_indent = summary_indent + (' ' * (summary_width + 1 + 2))

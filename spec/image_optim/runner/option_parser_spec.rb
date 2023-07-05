@@ -103,5 +103,14 @@ describe ImageOptim::Runner::OptionParser do
       expect(parser.help.split("\n")).
         to all(satisfy{ |line| line.length < 80 })
     end
+
+    it 'wraps texts even for too wide terminals' do
+      parser = OptionParser.new({})
+
+      allow(parser).to receive(:terminal_columns).and_return(1000)
+
+      expect(parser.help.split("\n")).
+        to all(satisfy{ |line| line.length <= 120 })
+    end
   end
 end
