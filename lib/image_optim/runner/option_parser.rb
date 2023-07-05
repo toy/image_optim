@@ -43,24 +43,25 @@ class ImageOptim
         # don't try to wrap if there is too little space for description
         return text if wrapped_width < 20
 
-        wrapped = ''.dup
+        wrapped = StringIO.new
         text.split("\n").each do |line|
           if line.length <= columns
-            wrapped << line << "\n"
+            wrapped.puts line
           else
-            wrapped << line.slice!(wrap_regex(columns)).rstrip << "\n"
+            wrapped.puts line.slice!(wrap_regex(columns)).rstrip
             if line =~ /^\s/
               line.scan(wrap_regex(wrapped_width)) do |part|
-                wrapped << wrapped_indent << part.rstrip << "\n"
+                wrapped << wrapped_indent
+                wrapped.puts part.rstrip
               end
             else
               line.scan(wrap_regex(columns)) do |part|
-                wrapped << part.rstrip << "\n"
+                wrapped.puts part.rstrip
               end
             end
           end
         end
-        wrapped
+        wrapped.string
       end
 
     private
