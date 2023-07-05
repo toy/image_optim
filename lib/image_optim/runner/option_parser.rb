@@ -48,11 +48,15 @@ class ImageOptim
           if line.length <= columns
             wrapped << line << "\n"
           else
-            indented = line =~ /^\s/
-            wrapped << line.slice!(wrap_regex(columns)) << "\n"
-            line.scan(wrap_regex(wrapped_width)) do |part|
-              wrapped << wrapped_indent if indented
-              wrapped << part << "\n"
+            wrapped << line.slice!(wrap_regex(columns)).rstrip << "\n"
+            if line =~ /^\s/
+              line.scan(wrap_regex(wrapped_width)) do |part|
+                wrapped << wrapped_indent << part.rstrip << "\n"
+              end
+            else
+              line.scan(wrap_regex(columns)) do |part|
+                wrapped << part.rstrip << "\n"
+              end
             end
           end
         end

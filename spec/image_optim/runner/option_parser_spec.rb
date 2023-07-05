@@ -101,7 +101,7 @@ describe ImageOptim::Runner::OptionParser do
       allow(parser).to receive(:terminal_columns).and_return(80)
 
       expect(parser.help.split("\n")).
-        to all(satisfy{ |line| line.length <= 80 })
+        to all(satisfy{ |line| line.length < 80 })
     end
   end
 end
