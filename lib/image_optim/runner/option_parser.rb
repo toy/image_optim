@@ -43,25 +43,7 @@ class ImageOptim
         # don't try to wrap if there is too little space for description
         return text if wrapped_width < 20
 
-        wrapped = StringIO.new('')
-        text.split("\n").each do |line|
-          if line.length <= columns
-            wrapped.puts line
-          else
-            wrapped.puts line.slice!(wrap_regex(columns)).rstrip
-            if line =~ /^\s/
-              line.scan(wrap_regex(wrapped_width)) do |part|
-                wrapped << wrapped_indent
-                wrapped.puts part.rstrip
-              end
-            else
-              line.scan(wrap_regex(columns)) do |part|
-                wrapped.puts part.rstrip
-              end
-            end
-          end
-        end
-        wrapped.string
+        wrapped_text(text, wrapped_width, wrapped_indent, columns)
       end
 
     private
@@ -69,6 +51,27 @@ class ImageOptim
       def terminal_columns
         stty_columns = `stty size 2> /dev/null`[/^\d+ (\d+)$/, 1]
         stty_columns ? stty_columns.to_i : `tput cols`.to_i
+      end
+
+      def wrapped_text(text, wrapped_width, wrapped_indent, columns)
+        wrapped = []
+        text.split("\n").each do |line|
+          if line.length <= columns
+            wrapped << line << "\n"
+          else
+            wrapped << line.slice!(wrap_regex(columns)).rstrip << "\n"
+            if line =~ /^\s/
+              line.scan(wrap_regex(wrapped_width)) do |part|
+                wrapped << wrapped_indent << part.rstrip << "\n"
+              end
+            else
+              line.scan(wrap_regex(columns)) do |part|
+                wrapped << part.rstrip << "\n"
+              end
+            end
+          end
+        end
+        wrapped.join(nil)
       end
 
       def wrap_regex(width)
