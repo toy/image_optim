@@ -88,6 +88,9 @@ Style/AccessorGrouping:
 Style/Alias:
   EnforcedStyle: prefer_alias_method
 
+Style/ArgumentsForwarding:
+  Enabled: false
+
 Style/DoubleNegation:
   Enabled: false
 
