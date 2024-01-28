@@ -44,7 +44,7 @@ jobs:
         - ruby:2.2
       fail-fast: false
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     - run: gem install bundler --version '< 2'
     - run: bundle install && bundle install # fighting platform specific gems problem in older bundler
     - run: |
