@@ -31,27 +31,32 @@ jobs:
     - run: sudo npm install -g svgo
     - run: bundle exec image_optim --info
     - run: bundle exec rspec
-  legacy:
+  containers:
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
     strategy:
       matrix:
         container:
-        - ruby:1.9.3
-        - ruby:2.0
-        - ruby:2.1
-        - ruby:2.2
+        - debian:buster
+        - debian:bullseye
+        - debian:bookworm
+        # - alpine
       fail-fast: false
     steps:
     - uses: actions/checkout@v3
-    - run: gem install bundler --version '< 2'
-    - run: bundle install && bundle install # fighting platform specific gems problem in older bundler
     - run: |
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+        if command -v apt-get &> /dev/null; then
+          apt-get update
+          apt-get -y install make gcc git curl imagemagick ruby ruby-dev rubygems
+        fi
+    - run: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
         . ~/.nvm/nvm.sh
-        nvm install 16
-        npm install -g svgo
+        nvm install 20
         echo "PATH=$PATH" >> $GITHUB_ENV
+    - run: npm install -g svgo
+    - run: gem install bundler || gem install bundler --version '< 2.4'
+    - run: bundle install
     - run: bundle exec bin/image_optim --info
     - run: bundle exec rspec
   windows:
