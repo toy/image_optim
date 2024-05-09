@@ -29,7 +29,6 @@ jobs:
         ruby-version: "${{ matrix.ruby }}"
         bundler-cache: true
     - run: sudo npm install -g svgo
-    - run: curl -L "https://github.com/shssoichiro/oxipng/releases/download/v4.0.3/oxipng-4.0.3-x86_64-unknown-linux-musl.tar.gz" | tar -xz -C /usr/local/bin --strip-components 1 --wildcards '*oxipng'
     - run: bundle exec image_optim --info
     - run: bundle exec rspec
   legacy:
@@ -53,7 +52,6 @@ jobs:
         nvm install 16
         npm install -g svgo
         echo "PATH=$PATH" >> $GITHUB_ENV
-    - run: curl -L "https://github.com/shssoichiro/oxipng/releases/download/v4.0.3/oxipng-4.0.3-x86_64-unknown-linux-musl.tar.gz" | tar -xz -C /usr/local/bin --strip-components 1 --wildcards '*oxipng'
     - run: bundle exec bin/image_optim --info
     - run: bundle exec rspec
   windows:
@@ -100,7 +98,6 @@ jobs:
         ruby-version: '3'
         bundler-cache: true
     - run: sudo npm install -g svgo
-    - run: curl -L "https://github.com/shssoichiro/oxipng/releases/download/v4.0.3/oxipng-4.0.3-x86_64-unknown-linux-musl.tar.gz" | tar -xz -C /usr/local/bin --strip-components 1 --wildcards '*oxipng'
     - uses: paambaati/codeclimate-action@v2.7.5
       with:
         coverageCommand: bundle exec rspec
