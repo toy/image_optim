@@ -24,7 +24,7 @@ jobs:
       with:
         ruby-version: "${{ matrix.ruby }}"
         bundler-cache: true
-    - run: sudo npm install -g svgo
+    - run: npm install -g svgo
     - run: bundle exec image_optim --info
     - run: bundle exec rspec
   containers:
@@ -97,7 +97,7 @@ jobs:
       with:
         ruby-version: '3'
         bundler-cache: true
-    - run: sudo npm install -g svgo
+    - run: npm install -g svgo
     - uses: paambaati/codeclimate-action@v2.7.5
       with:
         coverageCommand: bundle exec rspec
