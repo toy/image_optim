@@ -39,7 +39,7 @@ jobs:
         # - alpine
       fail-fast: false
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - run: |
         if command -v apt-get &> /dev/null; then
           apt-get update
@@ -72,7 +72,7 @@ jobs:
       with:
         ruby-version: "${{ matrix.ruby }}"
         bundler-cache: true
-    - uses: actions/cache@v2
+    - uses: actions/cache@v4
       with:
         path: "$HOME/bin"
         key: ${{ runner.os }}
@@ -98,6 +98,6 @@ jobs:
         ruby-version: '3'
         bundler-cache: true
     - run: npm install -g svgo
-    - uses: paambaati/codeclimate-action@v2.7.5
+    - uses: paambaati/codeclimate-action@v8
       with:
         coverageCommand: bundle exec rspec
