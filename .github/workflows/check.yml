@@ -98,6 +98,6 @@ jobs:
         ruby-version: '3'
         bundler-cache: true
     - run: npm install -g svgo
-    - uses: paambaati/codeclimate-action@v8
+    - uses: paambaati/codeclimate-action@v9
       with:
         coverageCommand: bundle exec rspec
