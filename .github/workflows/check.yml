@@ -87,6 +87,15 @@ jobs:
     - run: npm install -g svgo
     - run: bundle exec image_optim --info
     - run: bundle exec rspec
+  update_worker_options_in_readme:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3'
+        bundler-cache: true
+    - run: script/update_worker_options_in_readme -n
   coverage:
     runs-on: ubuntu-latest
     env:

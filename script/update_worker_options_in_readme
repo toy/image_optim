@@ -51,8 +51,21 @@ def update_readme(text)
 end
 
 readme = File.read(README_FILE)
-if (readme = update_readme(readme))
-  File.write(README_FILE, readme)
+program_name = File.basename($PROGRAM_NAME, '.*')
+case ARGV
+when []
+  if (readme = update_readme(readme))
+    File.write(README_FILE, readme)
+  else
+    abort 'Did not update worker options'
+  end
+when %w[-n]
+  updated = update_readme(readme)
+  unless updated == readme
+    puts "Run #{program_name} to update work options in readme"
+    IO.popen('diff -u README.markdown -', 'w'){ |f| f << updated }
+    exit 1
+  end
 else
-  abort 'Did not update worker options'
+  abort "#{program_name} [-n] (-n to change exit code instead of updating)"
 end
