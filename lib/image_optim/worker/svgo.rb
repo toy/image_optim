@@ -22,10 +22,10 @@ class ImageOptim
 
       PRECISION_OPTION =
       option(:precision, 3, 'number of digits in the fractional part ' \
-                            '`0`..`10`, ignored in default/lossless mode') \
+                            '`0`..`20`, ignored in default/lossless mode') \
                             do |v, opt_def|
         if allow_lossy
-          OptionHelpers.limit_with_range(v.to_i, 0..10)
+          OptionHelpers.limit_with_range(v.to_i, 0..20)
         else
           if v != opt_def.default
             warn "#{self.class.bin_sym} #{opt_def.name} #{v} ignored " \
