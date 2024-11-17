@@ -376,7 +376,7 @@ Worker has no options
 * `:disable_plugins` — List of plugins to disable *(defaults to `[]`)*
 * `:enable_plugins` — List of plugins to enable *(defaults to `[]`)*
 * `:allow_lossy` — Allow precision option *(defaults to `false`)*
-* `:precision` — number of digits in the fractional part `0`..`20`, ignored in default/lossless mode *(defaults to `3`)*
+* `:precision` — Number of digits in the fractional part `0`..`20`, ignored in default/lossless mode *(defaults to `3`)*
 
 <!---</worker-options>-->
 

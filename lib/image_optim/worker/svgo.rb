@@ -21,7 +21,7 @@ class ImageOptim
       option(:allow_lossy, false, 'Allow precision option'){ |v| !!v }
 
       PRECISION_OPTION =
-      option(:precision, 3, 'number of digits in the fractional part ' \
+      option(:precision, 3, 'Number of digits in the fractional part ' \
                             '`0`..`20`, ignored in default/lossless mode') \
                             do |v, opt_def|
         if allow_lossy
