@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## v0.31.4 (2024-11-19)
+
 * Added `--svgo-allow-lossy` and `--svgo-precision` options to use svgo in lossy mode. This sets svgo `--precision`, which can result in substantially smaller svgs (see [#211](https://github.com/toy/image_optim/issues/211) for some experiments). Lower values are more lossy. 3 is the default, but many SVGs will work well even with 0 or 1. Like all worker specific lossy flags, this is also enabled with `--allow-lossy`. [#210](https://github.com/toy/image_optim/issues/210) [#211](https://github.com/toy/image_optim/issues/211) [@gurgeous](https://github.com/gurgeous)
 
 ## v0.31.3 (2023-02-17)
