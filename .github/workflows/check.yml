@@ -6,7 +6,7 @@ on:
   - cron: 45 4 * * 2
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         ruby:
@@ -97,7 +97,7 @@ jobs:
         bundler-cache: true
     - run: script/update_worker_options_in_readme -n
   coverage:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       CC_TEST_REPORTER_ID: b433c6540d220a2da0663670c9b260806bafdb3a43c6f22b2e81bfb1f87b12fe
     steps:
