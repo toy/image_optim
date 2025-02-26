@@ -143,14 +143,14 @@ describe ImageOptim::BinResolver do
     expect(FSPath).to receive(:temp_dir).
       once.and_return(tmpdir)
     expect(tmpdir).to receive(:/).
-      with(:the_optimizer).once.and_return(symlink)
+      with(:'the-optimizer').once.and_return(symlink)
     expect(symlink).to receive(:make_symlink).
       with(File.expand_path(path)).once
 
     expect(resolver).not_to receive(:full_path)
     bin = double
     expect(Bin).to receive(:new).
-      with(:the_optimizer, File.expand_path(path)).and_return(bin)
+      with(:'the-optimizer', File.expand_path(path)).and_return(bin)
     expect(bin).to receive(:check!).once
     expect(bin).to receive(:check_fail!).exactly(5).times
 
@@ -160,7 +160,7 @@ describe ImageOptim::BinResolver do
     end
 
     5.times do
-      resolver.resolve!(:the_optimizer)
+      resolver.resolve!(:'the-optimizer')
     end
     expect(resolver.env_path).to eq([
       tmpdir,

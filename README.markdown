@@ -90,7 +90,7 @@ Simplest way for `image_optim` to locate binaries is to install them in common l
 
 If you cannot install to common location, then install to custom one and add it to `PATH`.
 
-Specify custom bin location using `XXX_BIN` environment variable (`JPEGOPTIM_BIN`, `OPTIPNG_BIN`, …).
+Specify custom bin location using `XXX_BIN` environment variable (`JPEGOPTIM_BIN`, `OPTIPNG_BIN`, `JPEG_RECOMPRESS_BIN`, …).
 
 Besides permanently setting environment variables in `~/.profile`, `~/.bash_profile`, `~/.bashrc`, `~/.zshrc`, … they can be set:
 

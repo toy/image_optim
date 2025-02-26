@@ -108,7 +108,7 @@ class ImageOptim
     # Check path in XXX_BIN to exist, be a file and be executable and symlink to
     # dir as name
     def symlink_custom_bin!(name)
-      env_name = "#{name}_bin".upcase
+      env_name = "#{name.to_s.tr('-', '_').upcase}_BIN"
       path = ENV.fetch(env_name, nil)
       return unless path
 
