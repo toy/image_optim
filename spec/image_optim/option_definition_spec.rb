@@ -71,9 +71,7 @@ describe ImageOptim::OptionDefinition do
 
     context 'when proc given' do
       subject do
-        # not using &:inspect due to ruby Bug #13087
-        # to_s is just to calm rubocop
-        described_class.new('abc', :def, 'desc'){ |o| o.inspect.to_s }
+        described_class.new('abc', :def, 'desc', &:inspect)
       end
 
       context 'when option not provided' do
