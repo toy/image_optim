@@ -12,7 +12,7 @@ class ImageOptim
 
     # Convert everything truthy to `true`, leave `false` and `nil` as is
     def self.convert(value)
-      value && true # rubocop:disable Lint/LiteralAsCondition
+      value && true
     end
   end
 end
