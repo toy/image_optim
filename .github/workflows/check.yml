@@ -18,6 +18,7 @@ jobs:
         - '3.3'
         - '3.4'
         - jruby-9.4
+        - jruby-10.0
       fail-fast: false
     steps:
     - uses: actions/checkout@v4
