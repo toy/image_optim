@@ -35,7 +35,6 @@ jobs:
     strategy:
       matrix:
         container:
-        - debian:buster
         - debian:bullseye
         - debian:bookworm
         # - alpine
