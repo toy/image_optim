@@ -56,7 +56,7 @@ class ImageOptim
       @image_optim = ImageOptim.new(options)
     end
 
-    def run!(args)
+    def run!(args) # rubocop:disable Naming/PredicateMethod
       to_optimize = find_to_optimize(args)
       unless to_optimize.empty?
         results = Results.new

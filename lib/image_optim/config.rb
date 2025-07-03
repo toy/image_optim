@@ -134,7 +134,7 @@ class ImageOptim
     end
 
     # Verbose mode, converted to boolean
-    def verbose
+    def verbose # rubocop:disable Naming/PredicateMethod
       !!get!(:verbose)
     end
 
@@ -164,7 +164,7 @@ class ImageOptim
     end
 
     # Allow lossy workers and optimizations, converted to boolean
-    def allow_lossy
+    def allow_lossy # rubocop:disable Naming/PredicateMethod
       !!get!(:allow_lossy)
     end
 
@@ -173,7 +173,7 @@ class ImageOptim
       dir unless dir.nil? || dir.empty?
     end
 
-    def cache_worker_digests
+    def cache_worker_digests # rubocop:disable Naming/PredicateMethod
       !!get!(:cache_worker_digests)
     end
 
