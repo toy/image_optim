@@ -2,8 +2,6 @@
 [![Check](https://img.shields.io/github/actions/workflow/status/toy/image_optim/check.yml?label=check&logo=github)](https://github.com/toy/image_optim/actions/workflows/check.yml)
 [![Rubocop](https://img.shields.io/github/actions/workflow/status/toy/image_optim/rubocop.yml?label=rubocop&logo=rubocop)](https://github.com/toy/image_optim/actions/workflows/rubocop.yml)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/toy/image_optim/codeql.yml?label=codeql&logo=github)](https://github.com/toy/image_optim/actions/workflows/codeql.yml)
-[![Code Climate](https://img.shields.io/codeclimate/maintainability/toy/image_optim?logo=codeclimate)](https://codeclimate.com/github/toy/image_optim)
-[![Code Climate Coverage](https://img.shields.io/codeclimate/coverage/toy/image_optim?logo=codeclimate)](https://codeclimate.com/github/toy/image_optim)
 [![Depfu](https://img.shields.io/depfu/toy/image_optim)](https://depfu.com/github/toy/image_optim)
 [![Inch CI](https://inch-ci.org/github/toy/image_optim.svg?branch=master)](https://inch-ci.org/github/toy/image_optim)
 

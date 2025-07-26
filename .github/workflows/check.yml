@@ -98,17 +98,3 @@ jobs:
         ruby-version: '3'
         bundler-cache: true
     - run: script/update_worker_options_in_readme -n
-  coverage:
-    runs-on: ubuntu-22.04
-    env:
-      CC_TEST_REPORTER_ID: b433c6540d220a2da0663670c9b260806bafdb3a43c6f22b2e81bfb1f87b12fe
-    steps:
-    - uses: actions/checkout@v4
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3'
-        bundler-cache: true
-    - run: npm install -g svgo
-    - uses: paambaati/codeclimate-action@v9
-      with:
-        coverageCommand: bundle exec rspec
