@@ -42,12 +42,12 @@ def flatten_animation(image)
   end
 end
 
-def mepp(image_a, image_b)
+def psnr(image_a, image_b)
   coalesce_a = flatten_animation(image_a)
   coalesce_b = flatten_animation(image_b)
   output = ImageOptim::Cmd.capture((IMAGEMAGICK_PREFIX + %W[
     compare
-    -metric MEPP
+    -metric PSNR
     -alpha Background
     #{coalesce_a.to_s.shellescape}
     #{coalesce_b.to_s.shellescape}
@@ -59,21 +59,21 @@ def mepp(image_a, image_b)
   end
 
   num_r = '\d+(?:\.\d+(?:[eE][-+]?\d+)?)?'
-  output[/\((#{num_r}), #{num_r}\)/, 1].to_f
+  num = output[/\A(#{num_r})/, 1].to_f
+  num == 0 ? Float::INFINITY : num
 end
 
 RSpec::Matchers.define :be_smaller_than do |expected|
   match{ |actual| actual.size < expected.size }
 end
 
-RSpec::Matchers.define :be_similar_to do |expected, max_difference|
+RSpec::Matchers.define :be_similar_to do |expected, psnr_min|
   match do |actual|
-    @diff = mepp(actual, expected)
-    @diff <= max_difference
+    @diff = psnr(actual, expected)
+    @diff >= psnr_min
   end
   failure_message do |actual|
-    "expected #{actual} to have at most #{max_difference} difference from " \
-      "#{expected}, got mean error per pixel of #{@diff}"
+    "expected peaks signal to noise ratio between #{actual} and #{expected} to be #{psnr_min}, got #{@diff}"
   end
 end
 

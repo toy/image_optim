@@ -61,9 +61,10 @@ describe ImageOptim do
 
       base_options = {skip_missing_workers: false}
       [
-        ['lossless', base_options, 0],
-        ['lossy', base_options.merge(allow_lossy: true), 0.00101],
-      ].each do |type, options, max_difference|
+        # 120 comes from https://github.com/ImageMagick/ImageMagick/commit/8a7495a6d9
+        ['lossless', base_options, 120],
+        ['lossy', base_options.merge(allow_lossy: true), 30],
+      ].each do |type, options, psnr_min|
         it "does it #{type}" do
           image_optim = ImageOptim.new(options)
           copies = test_images.map{ |image| temp_copy(image) }
@@ -78,7 +79,7 @@ describe ImageOptim do
             expect(optimized).not_to have_same_data_as(original)
 
             compare_to = rotate_images.include?(original) ? rotated : original
-            expect(optimized).to be_similar_to(compare_to, max_difference)
+            expect(optimized).to be_similar_to(compare_to, psnr_min)
           end
         end
       end

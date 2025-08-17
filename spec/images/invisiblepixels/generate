@@ -7,6 +7,8 @@ require 'shellwords'
 
 side = 64
 
+colors = Array.new(256){ [rand(256), rand(256), rand(256)] }
+
 IO.popen(%W[
   convert
   -depth 8
@@ -18,7 +20,7 @@ IO.popen(%W[
   side.times do |a|
     side.times do |b|
       alpha = [0, 1, 0x7f, 0xff][((a / 8) + (b / 8)) % 4]
-      f << [rand(256), rand(256), rand(256), alpha].pack('C*')
+      f << [*colors.sample, alpha].pack('C*')
     end
   end
 end
