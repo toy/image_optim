@@ -21,7 +21,7 @@ jobs:
         - jruby-10.0
       fail-fast: false
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: "${{ matrix.ruby }}"
@@ -40,7 +40,7 @@ jobs:
         # - alpine
       fail-fast: false
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - run: |
         if command -v apt-get &> /dev/null; then
           apt-get update
@@ -69,7 +69,7 @@ jobs:
         - '3.4'
       fail-fast: false
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: "${{ matrix.ruby }}"
@@ -92,7 +92,7 @@ jobs:
   update_worker_options_in_readme:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3'
