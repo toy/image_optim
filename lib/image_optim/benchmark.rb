@@ -5,7 +5,7 @@ class ImageOptim
   class Benchmark
     attr_reader :bytes, :elapsed, :worker
 
-    def initialize(src: nil, dst: nil, elapsed: nil, worker: nil)
+    def initialize(src, dst, elapsed, worker)
       @bytes = bytes_saved(src, dst)
       @elapsed = elapsed
       @worker = worker.class.bin_sym.to_s

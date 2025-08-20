@@ -178,7 +178,7 @@ class ImageOptim
         rescue Errors::TimeoutExceeded
           # nop
         end
-        Benchmark.new(src: src, dst: dst, elapsed: (ElapsedTime.now - start), worker: worker)
+        Benchmark.new(src, dst, ElapsedTime.now - start, worker)
       ensure
         dst.unlink
       end
