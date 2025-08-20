@@ -45,10 +45,51 @@ class ImageOptim
       end
     end
 
+    # files, elapsed, kb saved, kb/s
+    class BenchmarkResults
+      def initialize
+        @all = []
+      end
+
+      def add(_original, rows)
+        @all.concat(rows)
+      end
+
+      def print
+        if @all.empty?
+          puts 'nothing to report'
+          return
+        end
+
+        # group by worker
+        report = @all.group_by(&:worker).map do |name, results|
+          kb = (results.sum(&:bytes) / 1024.0)
+          elapsed = results.sum(&:elapsed)
+          {
+            'name' => name,
+            'files' => results.length,
+            'elapsed' => elapsed,
+            'kb saved' => kb,
+            'kb/s' => (kb / elapsed),
+          }
+        end
+
+        # sort
+        report = report.sort_by do |row|
+          [-row['kb/s'], row['name']]
+        end
+
+        # output
+        puts "\nBENCHMARK RESULTS\n\n"
+        puts Table.new(report)
+      end
+    end
+
     def initialize(options)
       options = HashHelpers.deep_symbolise_keys(options)
       @recursive = options.delete(:recursive)
       @progress = options.delete(:show_progress) != false
+      @benchmark = options.delete(:benchmark)
       @exclude_dir_globs, @exclude_file_globs = %w[dir file].map do |type|
         glob = options.delete(:"exclude_#{type}_glob") || '.*'
         GlobHelpers.expand_braces(glob)
@@ -59,19 +100,32 @@ class ImageOptim
     def run!(args) # rubocop:disable Naming/PredicateMethod
       to_optimize = find_to_optimize(args)
       unless to_optimize.empty?
-        results = Results.new
+        if @benchmark
+          benchmark_results = BenchmarkResults.new
+          benchmark_images(to_optimize).each do |original, bm|
+            benchmark_results.add(original, bm)
+          end
+          benchmark_results.print
+        else
+          results = Results.new
 
-        optimize_images!(to_optimize).each do |original, optimized|
-          results.add(original, optimized)
+          optimize_images!(to_optimize).each do |original, optimized|
+            results.add(original, optimized)
+          end
+
+          results.print
         end
-
-        results.print
       end
 
       !@warnings
     end
 
   private
+
+    def benchmark_images(to_optimize, &block)
+      to_optimize = to_optimize.with_progress('benchmarking') if @progress
+      @image_optim.benchmark_images(to_optimize, &block)
+    end
 
     def optimize_images!(to_optimize, &block)
       to_optimize = to_optimize.with_progress('optimizing') if @progress
