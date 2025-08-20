@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'image_optim/benchmark'
 require 'image_optim/bin_resolver'
 require 'image_optim/cache'
 require 'image_optim/config'
@@ -8,6 +9,7 @@ require 'image_optim/handler'
 require 'image_optim/image_meta'
 require 'image_optim/optimized_path'
 require 'image_optim/path'
+require 'image_optim/table'
 require 'image_optim/timer'
 require 'image_optim/worker'
 require 'in_threads'
@@ -162,6 +164,27 @@ class ImageOptim
     end
   end
 
+  def benchmark_image(original)
+    src = Path.convert(original)
+    return unless (workers = workers_for_image(src))
+
+    timer = timeout && Timer.new(timeout)
+    workers.map do |worker|
+      start = ElapsedTime.now
+      dst = src.temp_path
+      begin
+        begin
+          worker.optimize(src, dst, timeout: timer)
+        rescue Errors::TimeoutExceeded
+          # nop
+        end
+        Benchmark.new(src: src, dst: dst, elapsed: (ElapsedTime.now - start), worker: worker)
+      ensure
+        dst.unlink
+      end
+    end
+  end
+
   # Optimize multiple images
   # if block given yields path and result for each image and returns array of
   # yield results
@@ -184,6 +207,10 @@ class ImageOptim
   # else return array of path and result pairs
   def optimize_images_data(datas, &block)
     run_method_for(datas, :optimize_image_data, &block)
+  end
+
+  def benchmark_images(paths, &block)
+    run_method_for(paths, :benchmark_image, &block)
   end
 
   class << self
