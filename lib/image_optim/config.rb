@@ -117,6 +117,9 @@ class ImageOptim
 
       case threads
       when true, nil
+        # --benchmark defaults to one thread
+        return 1 if get!(:benchmark)
+
         processor_count
       when false
         1

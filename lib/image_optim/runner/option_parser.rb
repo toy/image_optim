@@ -154,6 +154,11 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
   end
 
   op.separator nil
+  op.on('--benchmark', 'Run in benchmark mode, to compare tools without modifying images') do
+    options[:benchmark] = true
+  end
+
+  op.separator nil
   op.separator '  Caching:'
 
   op.on('--cache-dir DIR', 'Cache optimized images into the specified directory') do |cache_dir|
