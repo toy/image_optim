@@ -111,7 +111,7 @@ class ImageOptim
       unless to_optimize.empty?
         if @benchmark
           benchmark_results = BenchmarkResults.new
-          benchmark_images(to_optimize).each do |_original, rows|
+          benchmark_images(to_optimize).each do |_original, rows| # rubocop:disable Style/HashEachMethods
             benchmark_results.add(rows)
           end
           benchmark_results.print
