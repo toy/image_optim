@@ -10,14 +10,12 @@ class ImageOptim
       @rows = rows
     end
 
-    def to_s
-      lines = []
-      lines << render_row(columns)
-      lines << render_sep
+    def write(io)
+      io.puts render_row(columns)
+      io.puts render_sep
       rows.each do |row|
-        lines << render_row(row.values)
+        io.puts render_row(row.values)
       end
-      lines.join("\n")
     end
 
   protected
@@ -44,8 +42,8 @@ class ImageOptim
 
     # render an array of row values
     def render_row(values)
-      values.map.with_index do |value, ii|
-        fmt(value).send(justs[ii], widths[ii])
+      values.zip(justs, widths).map do |value, just, width|
+        fmt(value).send(just, width)
       end.join('  ')
     end
 

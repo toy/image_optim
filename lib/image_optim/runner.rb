@@ -51,7 +51,7 @@ class ImageOptim
         @all = []
       end
 
-      def add(_original, rows)
+      def add(rows)
         @all.concat(rows)
       end
 
@@ -81,7 +81,7 @@ class ImageOptim
 
         # output
         puts "\nBENCHMARK RESULTS\n\n"
-        puts Table.new(report)
+        Table.new(report).write($stdout)
       end
     end
 
@@ -89,11 +89,20 @@ class ImageOptim
       options = HashHelpers.deep_symbolise_keys(options)
       @recursive = options.delete(:recursive)
       @progress = options.delete(:show_progress) != false
-      @benchmark = options.delete(:benchmark)
       @exclude_dir_globs, @exclude_file_globs = %w[dir file].map do |type|
         glob = options.delete(:"exclude_#{type}_glob") || '.*'
         GlobHelpers.expand_braces(glob)
       end
+
+      # --benchmark
+      @benchmark = options.delete(:benchmark)
+      if @benchmark
+        options[:threads] = 1 # for consistency
+        if options[:timeout]
+          warning '--benchmark ignores --timeout'
+        end
+      end
+
       @image_optim = ImageOptim.new(options)
     end
 
@@ -102,8 +111,8 @@ class ImageOptim
       unless to_optimize.empty?
         if @benchmark
           benchmark_results = BenchmarkResults.new
-          benchmark_images(to_optimize).each do |original, bm|
-            benchmark_results.add(original, bm)
+          benchmark_images(to_optimize).each do |_original, rows|
+            benchmark_results.add(rows)
           end
           benchmark_results.print
         else

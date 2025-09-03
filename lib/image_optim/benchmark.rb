@@ -2,7 +2,7 @@
 
 class ImageOptim
   # Benchmark result for one worker+src
-  class Benchmark
+  class BenchmarkResult
     attr_reader :bytes, :elapsed, :worker
 
     def initialize(src, dst, elapsed, worker)
@@ -10,6 +10,8 @@ class ImageOptim
       @elapsed = elapsed
       @worker = worker.class.bin_sym.to_s
     end
+
+  private
 
     def bytes_saved(src, dst)
       src, dst = src.size, dst.size

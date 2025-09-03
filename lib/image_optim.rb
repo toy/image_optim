@@ -168,17 +168,12 @@ class ImageOptim
     src = Path.convert(original)
     return unless (workers = workers_for_image(src))
 
-    timer = timeout && Timer.new(timeout)
     workers.map do |worker|
       start = ElapsedTime.now
       dst = src.temp_path
       begin
-        begin
-          worker.optimize(src, dst, timeout: timer)
-        rescue Errors::TimeoutExceeded
-          # nop
-        end
-        Benchmark.new(src, dst, ElapsedTime.now - start, worker)
+        worker.optimize(src, dst)
+        BenchmarkResult.new(src, dst, ElapsedTime.now - start, worker)
       ensure
         dst.unlink
       end

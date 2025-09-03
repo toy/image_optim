@@ -301,6 +301,27 @@ optipng:
 
 `image_optim` uses standard ruby library for creating temporary files. Temporary directory can be changed using one of `TMPDIR`, `TMP` or `TEMP` environment variables.
 
+### Benchmark
+
+Run with `--benchmark` to compare the performance of each individual tool on your images:
+
+```
+$ image_optim --benchmark -r /tmp/corpus/
+
+benchmarking: 100.0% (elapsed: 3.9m)
+
+BENCHMARK RESULTS
+
+name      files  elapsed  kb saved     kb/s
+--------  -----  -------  --------  -------
+oxipng       50    8.906  1867.253  209.664
+pngquant     50    1.980   214.597  108.386
+pngcrush     50   22.529  1753.704   77.841
+optipng      50  142.940  1641.101   11.481
+advpng       50  137.753   962.549    6.987
+pngout       50  426.706   444.679    1.042
+```
+
 ## Options
 
 * `:nice` — Nice level, priority of all used tools with higher value meaning lower priority, in range `-20..19`, negative values can be set only if run by root user *(defaults to `10`)*

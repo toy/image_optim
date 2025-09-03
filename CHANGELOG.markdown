@@ -3,6 +3,7 @@
 ## unreleased
 
 * Correct environment variable to specify `jpeg-recompress` location [@toy](https://github.com/toy)
+* Added --benchmark, to compare performance of each tool [#218]
 
 ## v0.31.4 (2024-11-19)
 
