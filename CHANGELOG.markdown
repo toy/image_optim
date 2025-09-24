@@ -3,7 +3,7 @@
 ## unreleased
 
 * Correct environment variable to specify `jpeg-recompress` location [@toy](https://github.com/toy)
-* Added --benchmark, to compare performance of each tool [#218]
+* Added --benchmark, to compare performance of each tool [#217](https://github.com/toy/image_optim/issues/217) [#218](https://github.com/toy/image_optim/pull/218) [@gurgeous](https://github.com/gurgeous)
 
 ## v0.31.4 (2024-11-19)
 

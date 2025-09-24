@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'image_optim/benchmark'
+require 'image_optim/benchmark_result'
 require 'image_optim/bin_resolver'
 require 'image_optim/cache'
 require 'image_optim/config'

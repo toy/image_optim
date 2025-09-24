@@ -97,7 +97,10 @@ class ImageOptim
       # --benchmark
       @benchmark = options.delete(:benchmark)
       if @benchmark
-        options[:threads] = 1 # for consistency
+        unless options[:threads].nil?
+          warning '--benchmark ignores --threads'
+          options[:threads] = 1 # for consistency
+        end
         if options[:timeout]
           warning '--benchmark ignores --timeout'
         end
