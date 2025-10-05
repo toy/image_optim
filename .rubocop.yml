@@ -67,6 +67,8 @@ Metrics/BlockLength:
     - 'spec/**/*.rb'
 
 Metrics/ClassLength:
+  Exclude:
+    - 'lib/image_optim.rb'
   Max: 150
 
 Metrics/CyclomaticComplexity:
