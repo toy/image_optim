@@ -154,12 +154,12 @@ ImageOptim::Runner::OptionParser::DEFINE = proc do |op, options|
   end
 
   op.separator nil
-  op.on('--benchmark [MODE]', String, 'Run benchmarks, to compare tools without modifying images (defaults ' \
-                                      'to `isolated` mode)') do |benchmark|
-    options[:benchmark] = benchmark || 'isolated'
-    if options[:benchmark] != 'isolated'
-      fail OptionParser::ParseError, '--benchmark must be `isolated`'
-    end
+  op.on(
+    '--benchmark TYPE',
+    [:isolated],
+    'Run benchmarks, to compare tools without modifying images. `isolated` is the only supported type so far.'
+  ) do |benchmark|
+    options[:benchmark] = benchmark
   end
 
   op.separator nil

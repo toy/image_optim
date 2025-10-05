@@ -25,6 +25,7 @@ require 'shellwords'
 end
 
 # Main interface
+# rubocop:disable Metrics/ClassLength
 class ImageOptim
   # Nice level
   attr_reader :nice
@@ -296,3 +297,4 @@ private
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
