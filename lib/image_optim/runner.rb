@@ -61,7 +61,6 @@ class ImageOptim
           return
         end
 
-        # group by worker
         report = @all.group_by(&:worker).map do |name, results|
           kb = (results.sum(&:bytes) / 1024.0)
           elapsed = results.sum(&:elapsed)
@@ -74,12 +73,10 @@ class ImageOptim
           }
         end
 
-        # sort
         report = report.sort_by do |row|
           [-row['kb/s'], row['name']]
         end
 
-        # output
         puts "\nBENCHMARK RESULTS\n\n"
         Table.new(report).write($stdout)
       end

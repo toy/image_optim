@@ -306,7 +306,7 @@ optipng:
 Run with `--benchmark` to compare the performance of each individual tool on your images:
 
 ```sh
-image_optim --benchmark -r /tmp/corpus/
+image_optim --benchmark=isolated -r /tmp/corpus/
 ```
 
 ```

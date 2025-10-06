@@ -168,15 +168,15 @@ class ImageOptim
     src = Path.convert(original)
     return unless (workers = workers_for_image(src))
 
-    workers.map do |worker|
-      start = ElapsedTime.now
-      dst = src.temp_path
-      begin
+    dst = src.temp_path
+    begin
+      workers.map do |worker|
+        start = ElapsedTime.now
         worker.optimize(src, dst)
         BenchmarkResult.new(src, dst, ElapsedTime.now - start, worker)
-      ensure
-        dst.unlink
       end
+    ensure
+      dst.unlink
     end
   end
 
