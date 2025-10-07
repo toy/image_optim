@@ -269,6 +269,20 @@ describe ImageOptim do
     end
   end
 
+  describe 'benchmark_images' do
+    it 'does it' do
+      image_optim = ImageOptim.new
+      pairs = image_optim.benchmark_images(test_images)
+      test_images.zip(pairs).each do |original, (src, bm)|
+        expect(original).to equal(src)
+        expect(bm[0]).to be_a(ImageOptim::BenchmarkResult)
+        expect(bm[0].bytes).to be_a(Numeric)
+        expect(bm[0].elapsed).to be_a(Numeric)
+        expect(bm[0].worker).to be_a(String)
+      end
+    end
+  end
+
   %w[
     optimize_image
     optimize_image!

@@ -45,6 +45,43 @@ class ImageOptim
       end
     end
 
+    # files, elapsed, kb saved, kb/s
+    class BenchmarkResults
+      def initialize
+        @all = []
+      end
+
+      def add(rows)
+        @all.concat(rows)
+      end
+
+      def print
+        if @all.empty?
+          puts 'nothing to report'
+          return
+        end
+
+        report = @all.group_by(&:worker).map do |name, results|
+          kb = (results.sum(&:bytes) / 1024.0)
+          elapsed = results.sum(&:elapsed)
+          {
+            'name' => name,
+            'files' => results.length,
+            'elapsed' => elapsed,
+            'kb saved' => kb,
+            'kb/s' => (kb / elapsed),
+          }
+        end
+
+        report = report.sort_by do |row|
+          [-row['kb/s'], row['name']]
+        end
+
+        puts "\nBENCHMARK RESULTS\n\n"
+        Table.new(report).write($stdout)
+      end
+    end
+
     def initialize(options)
       options = HashHelpers.deep_symbolise_keys(options)
       @recursive = options.delete(:recursive)
@@ -53,25 +90,51 @@ class ImageOptim
         glob = options.delete(:"exclude_#{type}_glob") || '.*'
         GlobHelpers.expand_braces(glob)
       end
+
+      # --benchmark
+      @benchmark = options.delete(:benchmark)
+      if @benchmark
+        unless options[:threads].nil?
+          warning '--benchmark ignores --threads'
+          options[:threads] = 1 # for consistency
+        end
+        if options[:timeout]
+          warning '--benchmark ignores --timeout'
+        end
+      end
+
       @image_optim = ImageOptim.new(options)
     end
 
     def run!(args) # rubocop:disable Naming/PredicateMethod
       to_optimize = find_to_optimize(args)
       unless to_optimize.empty?
-        results = Results.new
+        if @benchmark
+          benchmark_results = BenchmarkResults.new
+          benchmark_images(to_optimize).each do |_original, rows| # rubocop:disable Style/HashEachMethods
+            benchmark_results.add(rows)
+          end
+          benchmark_results.print
+        else
+          results = Results.new
 
-        optimize_images!(to_optimize).each do |original, optimized|
-          results.add(original, optimized)
+          optimize_images!(to_optimize).each do |original, optimized|
+            results.add(original, optimized)
+          end
+
+          results.print
         end
-
-        results.print
       end
 
       !@warnings
     end
 
   private
+
+    def benchmark_images(to_optimize, &block)
+      to_optimize = to_optimize.with_progress('benchmarking') if @progress
+      @image_optim.benchmark_images(to_optimize, &block)
+    end
 
     def optimize_images!(to_optimize, &block)
       to_optimize = to_optimize.with_progress('optimizing') if @progress
