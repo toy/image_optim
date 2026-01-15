@@ -16,6 +16,7 @@ jobs:
         - '3.2'
         - '3.3'
         - '3.4'
+        - '4.0'
         - jruby-9.4
         - jruby-10.0
       fail-fast: false
@@ -66,6 +67,7 @@ jobs:
         - '3.2'
         - '3.3'
         - '3.4'
+        - '4.0'
       fail-fast: false
     steps:
     - uses: actions/checkout@v6
@@ -94,6 +96,6 @@ jobs:
     - uses: actions/checkout@v6
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3'
+        ruby-version: '4'
         bundler-cache: true
     - run: script/update_worker_options_in_readme -n
