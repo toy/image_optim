@@ -15,7 +15,9 @@ describe ImageOptim::Cache do
 
   let(:cache_dir) do
     dir = '/somewhere/cache'
-    allow(FileUtils).to receive(:mkpath).with(Regexp.new(Regexp.escape(dir)), any_args)
+    allow(Dir).to receive(:mkdir).with(File.dirname(dir))
+    allow(Dir).to receive(:mkdir).with(dir)
+    allow(Dir).to receive(:mkdir).with(%r{\A#{Regexp.escape(dir)}/[^/]+\z})
     allow(FileUtils).to receive(:touch)
     allow(FSPath).to receive(:temp_file_path) do
       tmp_file
