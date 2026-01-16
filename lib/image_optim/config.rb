@@ -5,12 +5,13 @@ require 'image_optim/configuration_error'
 require 'image_optim/hash_helpers'
 require 'image_optim/worker'
 require 'image_optim/cmd'
+require 'etc'
 require 'set'
 require 'yaml'
 
 class ImageOptim
   # Read, merge and parse configuration
-  class Config
+  class Config # rubocop:disable Metrics/ClassLength
     include OptionHelpers
 
     # Global config path at `$XDG_CONFIG_HOME/image_optim.yml` (by default
@@ -205,9 +206,17 @@ class ImageOptim
 
   private
 
-    # http://stackoverflow.com/a/6420817
     def processor_count
-      @processor_count ||= case host_os = RbConfig::CONFIG['host_os']
+      @processor_count ||= if Etc.respond_to?(:nprocessors)
+        Etc.nprocessors
+      else
+        processor_count_manual
+      end
+    end
+
+    # http://stackoverflow.com/a/6420817
+    def processor_count_manual
+      case host_os = RbConfig::CONFIG['host_os']
       when /darwin9/
         Cmd.capture 'hwprefs cpu_count'
       when /darwin/
