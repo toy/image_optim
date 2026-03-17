@@ -1,0 +1,46 @@
+FROM node:slim AS ruby-build
+
+RUN npm install -g svgo
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    build-essential \
+    ca-certificates \
+    curl \
+    git \
+    imagemagick \
+    libffi-dev \
+    libgmp-dev \
+    librsvg2-bin \
+    libssl-dev \
+    libyaml-dev \
+    rustc \
+    tini \
+    zlib1g-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN git clone https://github.com/rbenv/ruby-build.git /ruby-build \
+ && cd /ruby-build \
+ && git checkout $(git describe --tags "$(git rev-list --tags --max-count=1)") \
+ && /ruby-build/install.sh \
+ && rm -r /ruby-build
+
+FROM ghcr.io/toy/image_optim.test:ruby-build AS test
+
+ARG RUBY_VERSION
+RUN FULL_VERSION=$(ruby-build --definitions | perl -e '$p=shift; while(<>){$l=$_ if index($_,$p)==0} print $l' "${RUBY_VERSION}.") \
+ && RUBY_CONFIGURE_OPTS=--disable-install-doc ruby-build --verbose "$FULL_VERSION" /usr/local
+
+ENV BUNDLE_SILENCE_ROOT_WARNING=1
+COPY script/update-rubygems-n-bundler ./script/
+RUN script/update-rubygems-n-bundler
+
+WORKDIR /gem
+# silence warnings about not being in git directory
+RUN git init
+
+COPY Gemfile *.gemspec ./
+RUN bundle install \
+ && rm Gemfile Gemfile.lock *.gemspec
+
+ENTRYPOINT ["/usr/bin/tini", "--"]

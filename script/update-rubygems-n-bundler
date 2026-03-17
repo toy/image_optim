@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+ruby <<'RUBY'
+  short_version = RUBY_VERSION.to_f
+
+  gemrc_path = File.expand_path('~/.gemrc')
+  unless File.exist?(gemrc_path)
+    File.open(gemrc_path, 'w') do |f|
+      if short_version < 2.0
+        f.puts 'gem: --no-ri --no-rdoc'
+      else
+        f.puts 'gem: --no-document'
+      end
+    end
+  end
+
+  def sh(*args)
+    abort unless system(*args)
+  end
+
+  case
+  when short_version < 2.3
+    sh 'curl --output rubygems-update.gem https://rubygems.org/downloads/rubygems-update-2.7.11.gem'
+    sh 'gem install --local rubygems-update.gem'
+    sh 'update_rubygems'
+    File.unlink(`which bundle`.strip)
+    sh 'curl --output bundler.gem https://rubygems.org/downloads/bundler-1.17.3.gem'
+    sh 'gem install --local bundler.gem'
+  when short_version < 2.6
+    sh 'gem update --system 3.3.27'
+    sh 'gem install bundler --version 2.3.27'
+  when short_version < 3.0
+    sh 'gem update --system 3.4.22'
+    sh 'gem install bundler --version 2.4.22'
+  when short_version < 3.1
+    sh 'gem update --system 3.5.23'
+    sh 'gem install bundler --version 2.5.23'
+  when short_version < 3.2
+    sh 'gem update --system 3.6.9'
+    sh 'gem install bundler --version 2.6.9'
+  else
+    sh 'gem update --system'
+    sh 'gem install bundler'
+  end
+RUBY
+
+gem -v
+bundle -v
