@@ -17,9 +17,19 @@ Gem::Specification.new do |s|
     'source_code_uri'   => "https://github.com/toy/#{s.name}",
   } if s.respond_to?(:metadata=)
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.files = Dir[*%w[
+    .gitignore
+    .pre-commit-hooks.yaml
+    .rubocop.yml
+    Dockerfile.test
+    Gemfile
+    LICENSE.txt
+    *.markdown
+    *.gemspec
+    {.github,bin,lib,script,spec,vendor}/**/*
+  ]].reject(&File.method(:directory?))
+  s.test_files    = Dir['spec/**/*'].reject(&File.method(:directory?))
+  s.executables   = Dir['bin/*'].map(&File.method(:basename))
   s.require_paths = %w[lib]
 
   s.post_install_message = <<-EOF
