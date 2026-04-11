@@ -5,6 +5,7 @@
 * Use `Etc.nprocessors` for default number of threads with fallback to manual way [@toy](https://github.com/toy)
 * Correct environment variable to specify `jpeg-recompress` location [@toy](https://github.com/toy)
 * Added --benchmark, to compare performance of each tool [#217](https://github.com/toy/image_optim/issues/217) [#218](https://github.com/toy/image_optim/pull/218) [@gurgeous](https://github.com/gurgeous)
+* Don't require presence of `git` in gemspec [@toy](https://github.com/toy)
 
 ## v0.31.4 (2024-11-19)
 
