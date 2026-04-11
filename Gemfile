@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'image_optim_pack', force_ruby_platform: true if RUBY_VERSION < '3.1'
+gem 'image_optim_pack', platform: 'ruby' if RUBY_VERSION < '3.1'
 
 if RUBY_VERSION >= '4'
   gem 'logger'
