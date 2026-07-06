@@ -4,6 +4,7 @@ on:
   pull_request:
   schedule:
   - cron: 45 4 * * 2
+permissions: {}
 jobs:
   check:
     runs-on: ubuntu-22.04

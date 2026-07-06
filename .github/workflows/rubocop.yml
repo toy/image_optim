@@ -4,6 +4,7 @@ on:
   pull_request:
   schedule:
   - cron: 45 4 * * 2
+permissions: {}
 jobs:
   rubocop:
     runs-on: ubuntu-latest
