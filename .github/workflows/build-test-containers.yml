@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
     - uses: docker/login-action@v4
       with:
         registry: ghcr.io
@@ -45,6 +47,8 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
     - uses: docker/login-action@v4
       with:
         registry: ghcr.io

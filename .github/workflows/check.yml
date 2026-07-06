@@ -22,6 +22,8 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: "${{ matrix.ruby }}"
@@ -41,6 +43,8 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
     - run: |
         if command -v apt-get &> /dev/null; then
           apt-get update
@@ -71,6 +75,8 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: "${{ matrix.ruby }}"
@@ -94,6 +100,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: '4'
