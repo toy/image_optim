@@ -22,10 +22,10 @@ jobs:
         - jruby-10.1
       fail-fast: false
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
-    - uses: ruby/setup-ruby@v1
+    - uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 # v1.315.0
       with:
         ruby-version: "${{ matrix.ruby }}"
         bundler-cache: true
@@ -43,7 +43,7 @@ jobs:
         # - alpine
       fail-fast: false
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
     - run: |
@@ -75,14 +75,14 @@ jobs:
         - '4.0'
       fail-fast: false
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
-    - uses: ruby/setup-ruby@v1
+    - uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 # v1.315.0
       with:
         ruby-version: "${{ matrix.ruby }}"
         bundler-cache: true
-    - uses: actions/cache@v5
+    - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
       with:
         path: "$HOME/bin"
         key: ${{ runner.os }}
@@ -100,10 +100,10 @@ jobs:
   update_worker_options_in_readme:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
-    - uses: ruby/setup-ruby@v1
+    - uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 # v1.315.0
       with:
         ruby-version: '4'
         bundler-cache: true

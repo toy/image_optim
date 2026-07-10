@@ -8,10 +8,10 @@ jobs:
   base:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
-    - uses: docker/login-action@v4
+    - uses: docker/login-action@c99871dec2022cc055c062a10cc1a1310835ceb4 # v4.3.0
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
@@ -47,10 +47,10 @@ jobs:
         - '4.0'
       fail-fast: false
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
-    - uses: docker/login-action@v4
+    - uses: docker/login-action@c99871dec2022cc055c062a10cc1a1310835ceb4 # v4.3.0
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
