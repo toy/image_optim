@@ -6,3 +6,8 @@ updates:
     interval: weekly
   cooldown:
     default-days: 7
+  groups:
+    non-major:
+      applies-to: version-updates
+      patterns: ["*"]
+      update-types: [patch, minor]
