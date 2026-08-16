@@ -3,7 +3,8 @@ on:
   workflow_dispatch:
   schedule:
   - cron: 11 2 13 * *
-permissions: {}
+permissions:
+  packages: write
 jobs:
   base:
     runs-on: ubuntu-latest
