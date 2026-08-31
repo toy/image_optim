@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.9.3'
 
   s.metadata = {
+    'rubygems_mfa_required' => 'true',
     'bug_tracker_uri'   => "https://github.com/toy/#{s.name}/issues",
     'changelog_uri'     => "https://github.com/toy/#{s.name}/blob/master/CHANGELOG.markdown",
     'documentation_uri' => "https://www.rubydoc.info/gems/#{s.name}/#{s.version}",
