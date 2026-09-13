@@ -66,7 +66,7 @@ describe ImageOptim::Cache do
     end
   end
 
-  # rubocop:disable Style/RedundantFetchBlock
+  # rubocop:disable-next Style/RedundantFetchBlock
   shared_examples 'an enabled cache' do
     context 'when cached file does not exist' do
       describe :fetch do
@@ -96,7 +96,7 @@ describe ImageOptim::Cache do
     end
 
     context 'when cached file exists (options and/or workers match)' do
-      describe(:fetch) do
+      describe :fetch do
         it 'returns cached file' do
           cached_s = cached.to_s
           allow(FileTest).to receive(:file?).with(cached_s).and_return(true)
@@ -119,7 +119,6 @@ describe ImageOptim::Cache do
       end
     end
   end
-  # rubocop:enable Style/RedundantFetchBlock
 
   context 'when cache is enabled (without worker digests)' do
     let(:image_optim) do
