@@ -1,5 +1,9 @@
 name: build-test-containers
 on:
+  push:
+    paths:
+      - .github/workflows/build-test-containers.yml
+      - Dockerfile.test
   workflow_dispatch:
   schedule:
   - cron: 11 2 13 * *
