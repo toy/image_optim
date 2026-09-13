@@ -46,8 +46,8 @@ EOF
 
   s.add_development_dependency 'image_optim_pack', '~> 0.2', '>= 0.2.2'
   s.add_development_dependency 'rspec', '~> 3.0'
-  if RUBY_VERSION >= '2.5' && !Gem.win_platform? && !defined?(JRUBY_VERSION)
-    s.add_development_dependency 'rubocop', '~> 1.22', '!= 1.22.2'
+  if RUBY_VERSION >= '2.7' && !Gem.win_platform? && !defined?(JRUBY_VERSION)
+    s.add_development_dependency 'rubocop', '~> 1.90'
     s.add_development_dependency 'rubocop-rspec', '~> 2.0'
   end
 end
