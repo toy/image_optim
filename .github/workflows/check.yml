@@ -34,12 +34,14 @@ jobs:
     - run: bundle exec rspec
   containers:
     runs-on: ubuntu-latest
-    container: ${{ matrix.container }}
+    container:
+      image: ${{ matrix.container }}
+      options: --cap-add=SYS_ADMIN
     strategy:
       matrix:
         container:
-        - debian:bullseye
         - debian:bookworm
+        - debian:trixie
         # - alpine
       fail-fast: false
     steps:
