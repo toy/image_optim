@@ -4,10 +4,10 @@ require 'spec_helper'
 require 'image_optim/worker/svgo'
 
 describe ImageOptim::Worker::Svgo do
-  %i[
+  %w[
     disable_plugins
     enable_plugins
-  ].each do |option|
+  ].map(&:to_sym).each do |option|
     describe "#{option} option" do
       let(:subject){ described_class.new(ImageOptim.new, value).send(option) }
 
@@ -26,7 +26,7 @@ describe ImageOptim::Worker::Svgo do
       end
 
       context 'when passed multiple valid values' do
-        let(:value){ {option => %i[pluginName anotherName]} }
+        let(:value){ {option => [:pluginName, :anotherName]} }
 
         it 'converts them to a string array' do
           is_expected.to eq(%w[pluginName anotherName])
