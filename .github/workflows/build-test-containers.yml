@@ -5,8 +5,11 @@ on:
   - cron: 11 2 13 * *
 permissions:
   packages: write
+env:
+  IMAGE_NAME: ghcr.io/toy/image_optim.test
+  PERMANENT_SUFFIX: ${{ github.run_id }}-${{ github.run_attempt }}
 jobs:
-  base:
+  ruby-build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -17,16 +20,18 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - run:
+    - env:
+        RUBY_BUILD_TAG: ${{ env.IMAGE_NAME }}:ruby-build-${{ env.PERMANENT_SUFFIX }}
+      run:
         docker build
           -f Dockerfile.test
           --target ruby-build
-          -t ghcr.io/toy/image_optim.test:ruby-build
+          -t "$RUBY_BUILD_TAG"
           --push
           .
 
   test-images:
-    needs: base
+    needs: ruby-build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -56,11 +61,24 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - run:
-        docker build
-          -f Dockerfile.test
-          --target test
-          --build-arg "RUBY_VERSION=${{ matrix.ruby }}"
-          -t "ghcr.io/toy/image_optim.test:${{ matrix.ruby }}"
-          --push
+    - env:
+        RUBY_BUILD_TAG: ${{ env.IMAGE_NAME }}:ruby-build-${{ env.PERMANENT_SUFFIX }}
+        NAME_TAG: ${{ env.IMAGE_NAME }}:${{ matrix.ruby }}
+        PERMANENT_TAG: ${{ env.IMAGE_NAME }}:${{ matrix.ruby }}-${{ env.PERMANENT_SUFFIX }}
+      run: |
+        set -euxo pipefail
+
+        docker build \
+          -f Dockerfile.test \
+          --target test \
+          --build-arg "RUBY_BUILD_TAG=$RUBY_BUILD_TAG" \
+          --build-arg "RUBY_VERSION=${{ matrix.ruby }}" \
+          -t "$PERMANENT_TAG" \
           .
+
+        docker run --rm -i --volume "$PWD:/gem" "$PERMANENT_TAG" bundle exec bin/image_optim --info
+        docker run --rm -i --volume "$PWD:/gem" "$PERMANENT_TAG" bundle exec rspec
+
+        docker tag "$PERMANENT_TAG" "$NAME_TAG"
+        docker push "$PERMANENT_TAG"
+        docker push "$NAME_TAG"
