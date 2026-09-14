@@ -4,6 +4,7 @@ RUN npm install -g svgo
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
+    autoconf \
     build-essential \
     ca-certificates \
     curl \
@@ -14,6 +15,7 @@ RUN apt-get update \
     librsvg2-bin \
     libssl-dev \
     libyaml-dev \
+    patch \
     rustc \
     tini \
     zlib1g-dev \
@@ -29,7 +31,9 @@ FROM ghcr.io/toy/image_optim.test:ruby-build AS test
 
 ARG RUBY_VERSION
 RUN FULL_VERSION=$(ruby-build --definitions | perl -e '$p=shift; while(<>){$l=$_ if index($_,$p)==0} print $l' "${RUBY_VERSION}.") \
- && RUBY_CONFIGURE_OPTS=--disable-install-doc ruby-build --verbose "$FULL_VERSION" /usr/local
+ && RUBY_CONFIGURE_OPTS=--disable-install-doc \
+    CFLAGS=-Wno-error=implicit-function-declaration \
+    ruby-build --verbose "$FULL_VERSION" /usr/local
 
 ENV BUNDLE_SILENCE_ROOT_WARNING=1
 COPY script/update-rubygems-n-bundler ./script/
