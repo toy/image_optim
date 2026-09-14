@@ -38,8 +38,8 @@ jobs:
     strategy:
       matrix:
         container:
-        - debian:bullseye
         - debian:bookworm
+        - debian:trixie
         # - alpine
       fail-fast: false
     steps:
