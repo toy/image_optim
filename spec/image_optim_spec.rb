@@ -65,7 +65,7 @@ describe ImageOptim do
         ['lossless', base_options, 120],
         ['lossy', base_options.merge(allow_lossy: true), 30],
       ].each do |type, options, psnr_min|
-        it "does it #{type}" do
+        it "does it #{type}", :aggregate_failures do
           image_optim = ImageOptim.new(options)
           copies = test_images.map{ |image| temp_copy(image) }
           pairs = image_optim.optimize_images(copies)
