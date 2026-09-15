@@ -60,6 +60,9 @@ def psnr(image_a, image_b)
 
   num_r = '\d+(?:\.\d+(?:[eE][-+]?\d+)?)?'
   num = output[/\A(#{num_r})/, 1].to_f
+
+  p [output, num]
+
   num == 0 ? Float::INFINITY : num
 end
 
