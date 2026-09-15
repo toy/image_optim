@@ -73,7 +73,7 @@ RSpec::Matchers.define :be_similar_to do |expected, psnr_min|
     @diff >= psnr_min
   end
   failure_message do |actual|
-    "expected peaks signal to noise ratio between #{actual} and #{expected} to be #{psnr_min}, got #{@diff}"
+    "expected peak signal to noise ratio between #{actual} and #{expected} to be #{psnr_min}, got #{@diff}"
   end
 end
 
