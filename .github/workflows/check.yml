@@ -40,9 +40,9 @@ jobs:
     strategy:
       matrix:
         container:
+        - alpine
         - debian:bookworm
         - debian:trixie
-        # - alpine
       fail-fast: false
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -51,13 +51,11 @@ jobs:
     - run: |
         if command -v apt-get &> /dev/null; then
           apt-get update
-          apt-get -y install make gcc git curl imagemagick ruby ruby-dev rubygems
+          apt-get -y install make gcc git curl imagemagick ruby ruby-dev rubygems nodejs npm
+        elif command -v apk &> /dev/null; then
+          apk update
+          apk add --no-cache build-base git curl perl imagemagick imagemagick-jpeg imagemagick-svg potrace ruby ruby-dev nodejs npm
         fi
-    - run: |
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-        . ~/.nvm/nvm.sh
-        nvm install 20
-        echo "PATH=$PATH" >> $GITHUB_ENV
     - run: npm install -g svgo
     - run: gem install bundler || gem install bundler --version '< 2.4'
     - run: bundle install
