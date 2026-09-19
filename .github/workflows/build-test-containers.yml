@@ -72,13 +72,16 @@ jobs:
       run: |
         set -euxo pipefail
 
-        docker build \
-          -f Dockerfile.test \
-          --target test \
-          --build-arg "RUBY_BUILD_TAG=$RUBY_BUILD_TAG" \
-          --build-arg "RUBY_VERSION=${{ matrix.ruby }}" \
-          -t "$PERMANENT_TAG" \
-          .
+        build(){
+          docker build \
+            -f Dockerfile.test \
+            --target test \
+            --build-arg "RUBY_BUILD_TAG=$RUBY_BUILD_TAG" \
+            --build-arg "RUBY_VERSION=${{ matrix.ruby }}" \
+            -t "$PERMANENT_TAG" \
+            .
+        }
+        build || build || build
 
         docker run --rm -i --volume "$PWD:/gem" "$PERMANENT_TAG" bundle exec bin/image_optim --info
         docker run --rm -i --volume "$PWD:/gem" --cap-add=SYS_ADMIN "$PERMANENT_TAG" bundle exec rspec --format documentation
